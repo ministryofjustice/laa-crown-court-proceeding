@@ -14,3 +14,15 @@ management:
     web:
       exposure:
         include: health,info,metrics,prometheus
+
+springdoc:
+  packagesToScan: uk.gov.justice.laa.crime.crowncourt
+  show-actuator: true
+  api-docs:
+    path: /crown-court-proceeding
+    enabled: true
+
+  swagger-ui:
+    path: /open-api/docs.html
+    enabled: true
+    operationsSorter: method
