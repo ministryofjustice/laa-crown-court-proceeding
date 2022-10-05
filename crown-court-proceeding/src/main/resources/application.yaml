@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: DEBUG
+
+management:
+  server:
+    port: 8096
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
