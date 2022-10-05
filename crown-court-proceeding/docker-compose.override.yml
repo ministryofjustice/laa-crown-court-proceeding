@@ -1,0 +1,24 @@
+version: "3.2"
+
+services:
+  app:
+    environment:
+      - DATASOURCE_HOST_PORT=postgres:5432
+      - DATASOURCE_DBNAME=crown_court_proceeding
+      - DATASOURCE_USERNAME=postgres
+      - DATASOURCE_PASSWORD=postgres
+      - SENTRY_ENV=development
+      - MAAT_API_OAUTH_URL=https://maat-cd-api-dev.auth.eu-west-2.amazoncognito.com/oauth2/token
+      - MAAT_API_OAUTH_CLIENT_ID=ihkljbt4jr88sh945e8c573qm
+      - MAAT_API_OAUTH_CLIENT_SECRET=1hvt6a0813sslvubufpsq3an0pdsahtlbigb9f384sgupj2hnuo9
+      - MAAT_API_BASE_URL=https://maat-cd-api.dev.legalservices.gov.uk
+
+    ports:
+      - "8081:8081"
+    command: java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8081 -jar app.jar
+
+  postgres:
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=crown_court_proceeding
