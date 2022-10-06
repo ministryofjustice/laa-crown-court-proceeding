@@ -13,7 +13,7 @@ group = 'uk.gov.justice.laa.crime'
 def versions = [
         springdocVersion: '1.6.11',
         springauthserverVersion            : '0.2.2',
-        sonarVersion                       : '2.7',
+        sonarVersion                       : '9.4',
         sonarPitest                        : '0.5',
         gradlePitest                       : '1.4.6',
         pitest                             : '1.4.10'
