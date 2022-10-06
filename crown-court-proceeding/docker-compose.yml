@@ -5,8 +5,8 @@ services:
     build:
       context: .
     ports:
-    - "8080:8080"
-    - "8096:8096"
+      - "8080:8080"
+      - "8096:8096"
     depends_on:
       - postgres
 
@@ -21,4 +21,3 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  
