@@ -79,7 +79,9 @@ dependencies {
 tasks.named('test').configure {
     it.useJUnitPlatform()
     it.dependsOn 'cleanTest'
+/*
     finalizedBy jacocoTestReport
+*/
 }
 
 jacocoTestReport {
