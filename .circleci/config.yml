@@ -132,15 +132,15 @@ jobs:
       - run:
           name: Run tests
           command: ./gradlew test
-      - run:
-          name: Generate code coverage report
-          command: ./gradlew jacocoTestReport
+#      - run:
+#          name: Generate code coverage report
+#          command: ./gradlew jacocoTestReport
       - store_test_results:
           path: build/test-results/test
       - store_artifacts:
           path: build/test-results/test
-      - store_artifacts:
-          path: build/reports/jacoco/test/html
+ #     - store_artifacts:
+ #         path: build/reports/jacoco/test/html
       - run:
           name: Assemble JAR
           command: ./gradlew assemble
