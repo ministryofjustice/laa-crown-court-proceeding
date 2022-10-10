@@ -3,13 +3,20 @@ plugins {
     id 'jacoco'
     id 'org.springframework.boot' version '2.7.4'
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+    id "org.sonarqube" version "3.4.0.2513"
+    id 'info.solidsoft.pitest' version '1.7.4'
+    id 'org.jsonschema2dataclass' version '4.2.0'
 }
 
 group = 'uk.gov.justice.laa.crime'
-version = '0.0.1-SNAPSHOT'
 
 def versions = [
-        springdocVersion: '1.6.11'
+        springdocVersion: '1.6.11',
+        springauthserverVersion            : '0.2.2',
+        sonarVersion                       : '3.3',
+        sonarPitest                        : '0.5',
+        gradlePitest                       : '1.7.4',
+        pitest                             : '1.4.10'
 ]
 
 java {
@@ -28,9 +35,31 @@ repositories {
 }
 
 dependencies {
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-resource-server'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client'
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-jose'
+    implementation group: 'org.springframework.security', name: 'spring-security-cas'
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-authorization-server', version: versions.springauthserverVersion
+    implementation group: 'org.springframework', name: 'spring-jms'
+    implementation group: 'io.projectreactor.netty', name: 'reactor-netty'
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation "org.liquibase:liquibase-core"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
+
+    implementation 'org.postgresql:postgresql'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+
+    implementation group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: versions.sonarVersion
+    implementation group: 'org.pitest', name: 'pitest', version: versions.pitest
 
     compileOnly "org.projectlombok:lombok"
 
@@ -48,7 +77,9 @@ dependencies {
 tasks.named('test').configure {
     it.useJUnitPlatform()
     it.dependsOn 'cleanTest'
+/*
     finalizedBy jacocoTestReport
+*/
 }
 
 jacocoTestReport {
@@ -65,6 +96,32 @@ jacocoTestReport {
                             '**/config/**'
                     ])
         }))
+    }
+
+    pitest {
+        targetClasses = ['uk.gov.justice.laa.crime.crowncourt.*','uk.gov.justice.laa.crime.crowncourt.controller.*','uk.gov.justice.laa.crime.crowncourt.validation.*']
+        excludedClasses = ['uk.gov.justice.laa.crime.crowncourt.dto.*', 'uk.gov.justice.laa.crime.crowncourt.mapper.*', 'uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication']
+        threads = 5
+        outputFormats = ['XML', 'HTML']
+        timestampedReports = false
+        mutationThreshold = 60
+    }
+
+    tasks['sonarqube'].dependsOn test
+
+    sonarqube {
+        properties {
+            property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java"
+            property "sonar.coverage.exclusions", "**/CrownCourtProceedingApplication.java"
+            property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+            property "sonar.projectKey", "ministryofjustice_laa-crown-court-proceeding"
+            property "sonar.organization", "ministryofjustice"
+            property "sonar.host.url", "https://sonarcloud.io"
+            property "sonar.projectName", "Crime Apps :: crown-court-proceeding"
+            property "sonar.pitest.mode", "reuseReport"
+            property "sonar.pitest.reportsDirectory", "build/reports/pitest"
+
+        }
     }
 
 }
