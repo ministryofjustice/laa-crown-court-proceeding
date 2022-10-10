@@ -1,0 +1,25 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JAVA-COMH2DATABASE-2348247:
+    - '*':
+        reason: supported version for liquibase
+        expires: 2023-05-01T00:00:00.000Z
+        created: 2022-06-06T09:17:44.052Z
+  SNYK-JAVA-COMH2DATABASE-2331071:
+    - '*':
+        reason: supported version for liquibase
+        expires: 2023-05-01T00:00:00.000Z
+        created: 2022-06-06T09:35:09.828Z
+  SNYK-JAVA-COMH2DATABASE-1769238:
+    - '*':
+        reason: supported version for liquibase
+        expires: 2023-05-01T00:00:00.000Z
+        created: 2022-06-06T09:35:39.017Z
+  SNYK-DEBIAN10-GCC8-347558:
+    - '*':
+        reason: no fix available
+        expires: 2023-01-10T00:00:00.000Z
+        created: 2022-06-09T10:28:24.517Z
+patch: {}

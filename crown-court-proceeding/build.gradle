@@ -14,8 +14,8 @@ def versions = [
         springdocVersion: '1.6.11',
         springauthserverVersion            : '0.2.2',
         sonarVersion                       : '3.3',
-        sonarPitest                        : '0.5',
-        gradlePitest                       : '1.4.6',
+        sonarPitest                        : '0.9',
+        gradlePitest                       : '1.7.4',
         pitest                             : '1.4.10'
 ]
 
