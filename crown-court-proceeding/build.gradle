@@ -10,10 +10,14 @@ plugins {
 
 group = 'uk.gov.justice.laa.crime'
 
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+
 def versions = [
         springdocVersion: '1.6.11',
         springauthserverVersion            : '0.2.2',
-        sonarVersion                       : '3.3',
         sonarPitest                        : '0.5',
         gradlePitest                       : '1.7.4',
         pitest                             : '1.4.10'
@@ -58,7 +62,6 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
 
-    implementation group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: versions.sonarVersion
     implementation group: 'org.pitest', name: 'pitest', version: versions.pitest
 
     compileOnly "org.projectlombok:lombok"
@@ -74,15 +77,17 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
-tasks.named('test').configure {
-    it.useJUnitPlatform()
-    it.dependsOn 'cleanTest'
-/*
+jar {
+    enabled = false
+}
+
+test {
+    dependsOn 'cleanTest'
     finalizedBy jacocoTestReport
-*/
 }
 
 jacocoTestReport {
+    onlyIf = { true }
     reports {
         xml.required = true
         html.required = true
@@ -97,31 +102,32 @@ jacocoTestReport {
                     ])
         }))
     }
-
-    pitest {
-        targetClasses = ['uk.gov.justice.laa.crime.crowncourt.*','uk.gov.justice.laa.crime.crowncourt.controller.*','uk.gov.justice.laa.crime.crowncourt.validation.*']
-        excludedClasses = ['uk.gov.justice.laa.crime.crowncourt.dto.*', 'uk.gov.justice.laa.crime.crowncourt.mapper.*', 'uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication']
-        threads = 5
-        outputFormats = ['XML', 'HTML']
-        timestampedReports = false
-        mutationThreshold = 60
-    }
-
-    tasks['sonarqube'].dependsOn test
-
-    sonarqube {
-        properties {
-            property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java"
-            property "sonar.coverage.exclusions", "**/CrownCourtProceedingApplication.java"
-            property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
-            property "sonar.projectKey", "ministryofjustice_laa-crown-court-proceeding"
-            property "sonar.organization", "ministryofjustice"
-            property "sonar.host.url", "https://sonarcloud.io"
-            property "sonar.projectName", "Crime Apps :: crown-court-proceeding"
-            property "sonar.pitest.mode", "reuseReport"
-            property "sonar.pitest.reportsDirectory", "build/reports/pitest"
-
-        }
-    }
-
 }
+
+pitest {
+    targetClasses = ['uk.gov.justice.laa.crime.crowncourt.*','uk.gov.justice.laa.crime.crowncourt.controller.*','uk.gov.justice.laa.crime.crowncourt.validation.*']
+    excludedClasses = ['uk.gov.justice.laa.crime.crowncourt.dto.*', 'uk.gov.justice.laa.crime.crowncourt.mapper.*', 'uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication']
+    threads = 5
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
+    mutationThreshold = 60
+}
+
+tasks['sonarqube'].dependsOn test
+
+sonarqube {
+    properties {
+        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java"
+        property "sonar.coverage.exclusions", "**/CrownCourtProceedingApplication.java"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/jacoco/jacocoFullReport/jacocoFullReport.xml"
+        property "sonar.projectKey", "ministryofjustice_laa-crown-court-proceeding"
+        property "sonar.organization", "ministryofjustice"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.projectName", "Crime Apps :: crown-court-proceeding"
+        property "sonar.pitest.mode", "reuseReport"
+        property "sonar.pitest.reportsDirectory", "build/reports/pitest"
+
+    }
+}
+
+

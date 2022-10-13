@@ -71,7 +71,7 @@ jobs:
     environment:
       # Configure the JVM and Gradle to avoid OOM errors
       _JAVA_OPTIONS: "-Xmx3g"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.workers.max=2"
     docker:
       - image: cimg/openjdk:17.0.4
     working_directory: ~/laa-crown-court-proceeding/crown-court-proceeding
@@ -116,7 +116,7 @@ jobs:
   test_and_assemble:
     environment:
       _JAVA_OPTIONS: "-Xmx3g"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.workers.max=2"
     docker:
       - image: cimg/openjdk:17.0.4
     working_directory: ~/laa-crown-court-proceeding/crown-court-proceeding
