@@ -87,7 +87,7 @@ jobs:
           command: ./gradlew build -x test
       - run:
           name: Run SonarQube
-          command: ./gradlew sonarqube -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.organization=${SONAR_ORG} --debug
+          command: ./gradlew sonarqube -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.organization=${SONAR_ORG}
       - save_cache:
           paths:
             - ~/.gradle/wrapper
