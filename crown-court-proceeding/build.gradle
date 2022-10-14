@@ -10,13 +10,21 @@ plugins {
 
 group = 'uk.gov.justice.laa.crime'
 
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+
 def versions = [
         springdocVersion: '1.6.11',
         springauthserverVersion            : '0.2.2',
-        sonarVersion                       : '3.3',
         sonarPitest                        : '0.5',
+        junitVersion                       : '5.9.1',
         gradlePitest                       : '1.7.4',
-        pitest                             : '1.4.10'
+        pitest                             : '1.4.10',
+        commonsCollections4Version         : '4.4',
+        commonsLang3Version                : '3.10',
+        lombokVersion                      : '1.18.24'
 ]
 
 java {
@@ -24,11 +32,11 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-configurations {
+/*configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-}
+}*/
 
 repositories {
     mavenCentral()
@@ -58,18 +66,26 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
 
-    implementation group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: versions.sonarVersion
     implementation group: 'org.pitest', name: 'pitest', version: versions.pitest
 
-    compileOnly "org.projectlombok:lombok"
+    // Utility Libraries
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: versions.commonsCollections4Version
+
+    implementation group: 'com.google.code.gson', name: 'gson', version: versions.gsonVersion
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commonsLang3Version
+
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
+
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     runtimeOnly "org.postgresql:postgresql"
 
-    annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
+    testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: versions.junitVersion
+    testRuntimeOnly group: 'org.junit.jupiter', name:'junit-jupiter-engine', version: versions.junitVersion
     testImplementation "com.h2database:h2"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
@@ -77,12 +93,11 @@ dependencies {
 tasks.named('test').configure {
     it.useJUnitPlatform()
     it.dependsOn 'cleanTest'
-/*
     finalizedBy jacocoTestReport
-*/
 }
 
 jacocoTestReport {
+    onlyIf = { true }
     reports {
         xml.required = true
         html.required = true
@@ -97,31 +112,33 @@ jacocoTestReport {
                     ])
         }))
     }
-
-    pitest {
-        targetClasses = ['uk.gov.justice.laa.crime.crowncourt.*','uk.gov.justice.laa.crime.crowncourt.controller.*','uk.gov.justice.laa.crime.crowncourt.validation.*']
-        excludedClasses = ['uk.gov.justice.laa.crime.crowncourt.dto.*', 'uk.gov.justice.laa.crime.crowncourt.mapper.*', 'uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication']
-        threads = 5
-        outputFormats = ['XML', 'HTML']
-        timestampedReports = false
-        mutationThreshold = 60
-    }
-
-    tasks['sonarqube'].dependsOn test
-
-    sonarqube {
-        properties {
-            property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java"
-            property "sonar.coverage.exclusions", "**/CrownCourtProceedingApplication.java"
-            property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
-            property "sonar.projectKey", "ministryofjustice_laa-crown-court-proceeding"
-            property "sonar.organization", "ministryofjustice"
-            property "sonar.host.url", "https://sonarcloud.io"
-            property "sonar.projectName", "Crime Apps :: crown-court-proceeding"
-            property "sonar.pitest.mode", "reuseReport"
-            property "sonar.pitest.reportsDirectory", "build/reports/pitest"
-
-        }
-    }
-
 }
+
+pitest {
+    targetClasses = ['uk.gov.justice.laa.crime.crowncourt.*','uk.gov.justice.laa.crime.crowncourt.controller.*','uk.gov.justice.laa.crime.crowncourt.validation.*']
+    excludedClasses = ['uk.gov.justice.laa.crime.crowncourt.dto.*', 'uk.gov.justice.laa.crime.crowncourt.mapper.*', 'uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication']
+    threads = 5
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
+    mutationThreshold = 60
+}
+
+tasks['sonarqube'].dependsOn test
+
+sonarqube {
+    properties {
+        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java"
+        property "sonar.coverage.exclusions", "**/CrownCourtProceedingApplication.java"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.projectKey", "ministryofjustice_laa-crown-court-proceeding"
+        property "sonar.organization", "ministryofjustice"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.projectName", "Crime Apps :: crown-court-proceeding"
+        property "sonar.pitest.mode", "reuseReport"
+        property "sonar.pitest.reportsDirectory", "build/reports/pitest"
+        property "sonar.debug", "true"
+        property "sonar_token", "9e8f9c619d6dbffe4aa14ededfaad127f69c1e62"
+    }
+}
+
+
