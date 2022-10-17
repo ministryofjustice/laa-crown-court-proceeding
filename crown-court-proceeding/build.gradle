@@ -16,7 +16,7 @@ jacoco {
 
 
 def versions = [
-        springdocVersion: '1.6.11',
+        springdocVersion: '1.6.12',
         springauthserverVersion            : '0.2.2',
         sonarPitest                        : '0.5',
         gradlePitest                       : '1.7.4',
