@@ -19,9 +19,9 @@ public enum CrownCourtOutcome {
     SUCCESSFUL("SUCCESSFUL", CrownCourtOutcomeType.APPEAL, "Successful"),
     UNSUCCESSFUL("UNSUCCESSFUL", CrownCourtOutcomeType.APPEAL, "Unsuccessful");
 
-    private String code;
-    private String type;
-    private String description;
+    private final String code;
+    private final String type;
+    private final String description;
 
     public static CrownCourtOutcome getFrom(String code) {
         if (StringUtils.isBlank(code)) return null;
