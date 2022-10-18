@@ -5,7 +5,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id "org.sonarqube" version "3.4.0.2513"
     id 'info.solidsoft.pitest' version '1.7.4'
-    id 'org.jsonschema2dataclass' version '4.2.0'
+    id 'org.jsonschema2dataclass' version '4.4.0'
 }
 
 group = 'uk.gov.justice.laa.crime'
@@ -19,8 +19,12 @@ def versions = [
         springdocVersion: '1.6.12',
         springauthserverVersion            : '0.2.2',
         sonarPitest                        : '0.5',
+        junitVersion                       : '5.9.1',
         gradlePitest                       : '1.7.4',
-        pitest                             : '1.4.10'
+        pitest                             : '1.4.10',
+        commonsCollections4Version         : '4.4',
+        commonsLang3Version                : '3.10',
+        lombokVersion                      : '1.18.24'
 ]
 
 java {
@@ -64,25 +68,30 @@ dependencies {
 
     implementation group: 'org.pitest', name: 'pitest', version: versions.pitest
 
-    compileOnly "org.projectlombok:lombok"
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: versions.commonsCollections4Version
+
+    implementation group: 'com.google.code.gson', name: 'gson', version: versions.gsonVersion
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commonsLang3Version
+
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
+
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     runtimeOnly "org.postgresql:postgresql"
 
-    annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
+    testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: versions.junitVersion
+    testRuntimeOnly group: 'org.junit.jupiter', name:'junit-jupiter-engine', version: versions.junitVersion
     testImplementation "com.h2database:h2"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
-jar {
-    enabled = false
-}
-
-test {
-    dependsOn 'cleanTest'
+tasks.named('test').configure {
+    it.useJUnitPlatform()
+    it.dependsOn 'cleanTest'
     finalizedBy jacocoTestReport
 }
 
@@ -119,14 +128,13 @@ sonarqube {
     properties {
         property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java"
         property "sonar.coverage.exclusions", "**/CrownCourtProceedingApplication.java"
-        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/jacoco/jacocoFullReport/jacocoFullReport.xml"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.projectKey", "ministryofjustice_laa-crown-court-proceeding"
         property "sonar.organization", "ministryofjustice"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.projectName", "Crime Apps :: crown-court-proceeding"
         property "sonar.pitest.mode", "reuseReport"
         property "sonar.pitest.reportsDirectory", "build/reports/pitest"
-
     }
 }
 
