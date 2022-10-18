@@ -4,7 +4,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.4'
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id "org.sonarqube" version "3.4.0.2513"
-    id 'info.solidsoft.pitest' version '1.7.4'
+    id 'info.solidsoft.pitest' version '1.9.0'
     id 'org.jsonschema2dataclass' version '4.4.0'
 }
 
