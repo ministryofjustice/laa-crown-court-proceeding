@@ -1,0 +1,30 @@
+package uk.gov.justice.laa.crime.crowncourt.service;
+
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.repository.CrownCourtsRepository;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+@ExtendWith(MockitoExtension.class)
+class CrownCourtsServiceTest {
+
+    @InjectMocks
+    private CrownCourtsService crownCourtsService;
+
+    @Mock
+    private CrownCourtsRepository crownCourtsRepository;
+
+    @Test
+    void testCrownCourtsService_whenGetCrownCourtByIdInvoked_shouldSuccess() {
+        crownCourtsService.getCrownCourtById("401");
+        verify(crownCourtsRepository, times(1)).findById(any());
+    }
+
+}
