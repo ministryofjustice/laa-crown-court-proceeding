@@ -23,7 +23,7 @@ class CrownCourtsServiceTest {
 
     @Test
     void testCrownCourtsService_whenGetCrownCourtByIdInvoked_shouldSuccess() {
-        crownCourtsService.getCrownCourtById("401");
+        crownCourtsService.getById("401");
         verify(crownCourtsRepository, times(1)).findById(any());
     }
 

@@ -15,7 +15,7 @@ public class CrownCourtsService {
 
     private final CrownCourtsRepository incomeEvidenceRepository;
 
-    public Optional<CrownCourtsEntity> getCrownCourtById(String id) {
+    public Optional<CrownCourtsEntity> getById(String id) {
         return incomeEvidenceRepository.findById(id);
     }
 }

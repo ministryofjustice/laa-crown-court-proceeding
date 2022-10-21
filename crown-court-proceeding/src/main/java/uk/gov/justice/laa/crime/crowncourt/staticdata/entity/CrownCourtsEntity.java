@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "crown_courts", schema = "crown_court_proceeding")
 public class CrownCourtsEntity {
     @Id
@@ -24,12 +25,6 @@ public class CrownCourtsEntity {
 
     @Column(name = "USER_CREATED", nullable = false, length = 100)
     private String userCreated;
-
-    @Column(name = "DATE_MODIFIED")
-    private LocalDateTime dateModified;
-
-    @Column(name = "USER_MODIFIED", length = 100)
-    private String userModified;
 
     @Column(name = "GO_LIVE_DATE")
     private LocalDateTime goLiveDate;
