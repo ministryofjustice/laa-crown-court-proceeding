@@ -77,11 +77,8 @@ dependencies {
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
 
-<<<<<<< HEAD
     // AWS
     implementation group: 'com.amazonaws', name: 'amazon-sqs-java-messaging-lib', version: versions.amazonSQSVersion
-=======
->>>>>>> main
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -89,13 +86,9 @@ dependencies {
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-<<<<<<< HEAD
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junitVersion
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junitVersion
-=======
-    testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: versions.junitVersion
-    testRuntimeOnly group: 'org.junit.jupiter', name:'junit-jupiter-engine', version: versions.junitVersion
->>>>>>> main
+
     testImplementation "com.h2database:h2"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
@@ -123,11 +116,7 @@ jacocoTestReport {
 }
 
 pitest {
-<<<<<<< HEAD
-    targetClasses = ['uk.gov.justice.laa.crime.crowncourt.*', 'uk.gov.justice.laa.crime.crowncourt.controller.*', 'uk.gov.justice.laa.crime.crowncourt.validation.*']
-=======
     targetClasses = ['uk.gov.justice.laa.crime.crowncourt.*','uk.gov.justice.laa.crime.crowncourt.controller.*','uk.gov.justice.laa.crime.crowncourt.validation.*']
->>>>>>> main
     excludedClasses = ['uk.gov.justice.laa.crime.crowncourt.dto.*', 'uk.gov.justice.laa.crime.crowncourt.mapper.*', 'uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication']
     threads = 5
     outputFormats = ['XML', 'HTML']
