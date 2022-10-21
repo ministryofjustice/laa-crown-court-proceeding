@@ -1,3 +1,7 @@
 databaseChangeLog:
   - include:
       file: db/changelog/changeset/01-crown-court-proceeding-create-schema.sql
+  - include:
+      file: db/changelog/changeset/02-crown-courts-table-create.sql
+  - include:
+      file: db/changelog/changeset/03-crown-courts-table-data-insert.sql
