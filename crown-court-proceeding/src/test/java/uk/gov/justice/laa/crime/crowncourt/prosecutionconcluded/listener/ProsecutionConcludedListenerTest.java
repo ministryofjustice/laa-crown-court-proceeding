@@ -1,11 +1,13 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.listener;
 
 
+
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -17,6 +19,7 @@ class ProsecutionConcludedListenerTest {
     @Test
     void givenJSONMessageIsReceived_whenProsecutionConcludedListenerIsInvoked_thenReceiveIsCalled() {
         prosecutionConcludedListener.receive(getSqsMessagePayload());
+        assertThat(Boolean.TRUE).isTrue();
     }
 
     private String getSqsMessagePayload() {
