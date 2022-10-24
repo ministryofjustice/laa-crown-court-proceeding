@@ -49,3 +49,8 @@ spring:
       ddl-auto: validate
     properties:
       hibernate.temp.use_jdbc_metadata_defaults: false
+
+retry-config:
+  max-retries: 3
+  min-back-off-period: 5
+  jitter-value: 0.75
