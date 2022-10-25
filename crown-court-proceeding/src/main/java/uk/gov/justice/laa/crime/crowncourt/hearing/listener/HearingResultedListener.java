@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class HearingResultedListener {
-    @JmsListener(destination = "${HEARING_RESULTED_QUEUE}", concurrency = "1")
+    @JmsListener(destination = "cloud-platform.aws.sqs.queue.hearingResulted", concurrency = "1")
     public void receive(@Payload final String message) {
         log.debug("Hearing Inbound Message : ", message);
     }

@@ -14,6 +14,8 @@ public class SqsClientConfig {
     private final SqsProperties sqsProperties;
 
     public AmazonSQS awsSqsClient() {
-        return AmazonSQSClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(sqsProperties.getAccessKey(), sqsProperties.getSecretKey()))).withRegion(Regions.fromName(sqsProperties.getRegion())).build();
+        return AmazonSQSClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(
+                new BasicAWSCredentials(sqsProperties.getAccessKey(), sqsProperties.getSecretKey())))
+                .withRegion(Regions.fromName(sqsProperties.getRegion())).build();
     }
 }
