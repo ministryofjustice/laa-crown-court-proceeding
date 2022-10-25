@@ -21,22 +21,10 @@ public class MaatApiConfiguration {
     private boolean oAuthEnabled;
 
     /**
-     * Defines the url for assessment post processing.
-     */
-    @NotNull
-    private String postProcessingUrl;
-
-    /**
      * Defines validation endpoint URLs
      */
     @NotNull
     private ValidationEndpoints validationEndpoints;
-
-    /**
-     * Defines financial assessment endpoint URLs
-     */
-    @NotNull
-    private FinancialAssessmentEndpoints financialAssessmentEndpoints;
 
     @NotNull
     private RepOrderEndpoints repOrderEndpoints;
@@ -78,30 +66,6 @@ public class MaatApiConfiguration {
          */
         @NotNull
         private String outstandingAssessmentsUrl;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    @Setter
-    @NoArgsConstructor
-    public static class FinancialAssessmentEndpoints {
-        /**
-         * Find assessment URL
-         */
-        @NotNull
-        private String searchUrl;
-
-        /**
-         * Create assessment URL
-         */
-        @NotNull
-        private String createUrl;
-
-        /**
-         * Update assessment URL
-         */
-        @NotNull
-        private String updateUrl;
     }
 
     @Getter

@@ -15,7 +15,7 @@ jacoco {
 }
 
 def versions = [
-        sentryVersion                      : '5.6.1',
+        sentryVersion                      : '6.6.0',
         springdocVersion                   : '1.6.12',
         springauthserverVersion            : '0.2.2',
         sonarPitest                        : '0.5',
