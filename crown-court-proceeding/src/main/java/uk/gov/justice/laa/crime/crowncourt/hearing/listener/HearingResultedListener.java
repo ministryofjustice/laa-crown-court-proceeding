@@ -12,6 +12,6 @@ import org.springframework.stereotype.Service;
 public class HearingResultedListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.hearingResulted}", concurrency = "1")
     public void receive(@Payload final String message) {
-        log.debug("Hearing Inbound Message : {}", message);
+        log.info("Hearing Inbound Message : {}", message);
     }
 }
