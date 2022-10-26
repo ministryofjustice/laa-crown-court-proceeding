@@ -16,15 +16,16 @@ jacoco {
 
 
 def versions = [
-        springdocVersion: '1.6.12',
-        springauthserverVersion            : '0.2.2',
-        sonarPitest                        : '0.5',
-        junitVersion                       : '5.9.1',
-        gradlePitest                       : '1.7.4',
-        pitest                             : '1.4.10',
-        commonsCollections4Version         : '4.4',
-        commonsLang3Version                : '3.10',
-        lombokVersion                      : '1.18.24'
+                springdocVersion          : '1.6.12',
+                springauthserverVersion   : '0.2.2',
+                sonarPitest               : '0.5',
+                junitVersion              : '5.9.1',
+                gradlePitest              : '1.7.4',
+                pitest                    : '1.4.10',
+                commonsCollections4Version: '4.4',
+                commonsLang3Version       : '3.10',
+                lombokVersion             : '1.18.24',
+                amazonSQSVersion          : '1.0.8',
 ]
 
 java {
@@ -76,6 +77,8 @@ dependencies {
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombokVersion
 
+    // AWS
+    implementation group: 'com.amazonaws', name: 'amazon-sqs-java-messaging-lib', version: versions.amazonSQSVersion
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -83,8 +86,9 @@ dependencies {
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    testImplementation group: 'org.junit.jupiter', name:'junit-jupiter-api', version: versions.junitVersion
-    testRuntimeOnly group: 'org.junit.jupiter', name:'junit-jupiter-engine', version: versions.junitVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junitVersion
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junitVersion
+
     testImplementation "com.h2database:h2"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
@@ -104,11 +108,9 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it,
-                    exclude: [
-                            '**/entity/**',
-                            '**/dto/**',
-                            '**/config/**'
-                    ])
+                    exclude: ['**/entity/**',
+                              '**/dto/**',
+                              '**/config/**'])
         }))
     }
 }

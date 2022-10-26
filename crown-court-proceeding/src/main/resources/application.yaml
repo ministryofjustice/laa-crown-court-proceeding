@@ -49,3 +49,13 @@ spring:
       ddl-auto: validate
     properties:
       hibernate.temp.use_jdbc_metadata_defaults: false
+
+cloud-platform:
+  aws:
+    sqs:
+      region: ${CLOUD_PLATFORM_QUEUE_REGION}
+      accesskey: ${CLOUD_PLATFORM_QUEUE_ACCESS_KEY}
+      secretkey: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
+      queue:
+        hearingResulted: ${HEARING_RESULTED_QUEUE}
+        prosecutionConcluded: ${LAA_PROSECUTION_CONCLUDED_QUEUE}

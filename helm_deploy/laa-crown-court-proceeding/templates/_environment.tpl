@@ -17,7 +17,17 @@ env:
   - name: MAAT_API_OAUTH_CLIENT_ID
     value: {{ .Values.maatApi.clientId }}
   - name: MAAT_API_OAUTH_CLIENT_SECRET
-    value: {{ .Values.maatApi.clientSecret }}          
+    value: {{ .Values.maatApi.clientSecret }}
+  - name: CLOUD_PLATFORM_QUEUE_REGION
+    value: {{ .Values.cloudplatform.aws.sqs.region }}
+  - name: CLOUD_PLATFORM_QUEUE_ACCESS_KEY
+    value: {{ .Values.cloudplatform.aws.sqs.accesskey }}
+  - name: CLOUD_PLATFORM_QUEUE_SECRET_KEY
+    value: {{ .Values.cloudplatform.aws.sqs.secretkey }}
+  - name: HEARING_RESULTED_QUEUE
+    value: {{ .Values.cloudplatform.aws.sqs.queue.hearingResulted }}
+  - name: PROSECUTION_CONCLUDED_QUEUE
+    value: {{ .Values.cloudplatform.aws.sqs.queue.prosecutionConcluded }}
   - name: DATASOURCE_HOST_PORT
     valueFrom:
       secretKeyRef:
