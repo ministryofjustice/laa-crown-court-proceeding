@@ -24,8 +24,8 @@ def versions = [
         pitest                             : '1.4.10',
         commonsCollections4Version         : '4.4',
         commonsLang3Version                : '3.10',
-        lombokVersion                      : '1.18.24'
-        amazonSQSVersion                   : '1.0.8',
+        lombokVersion                      : '1.18.24',
+        amazonSQSVersion                   : '1.0.8'
 ]
 dependencyManagement {
     dependencies {
