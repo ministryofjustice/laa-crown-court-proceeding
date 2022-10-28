@@ -49,3 +49,26 @@ spring:
       ddl-auto: validate
     properties:
       hibernate.temp.use_jdbc_metadata_defaults: false
+
+sentry:
+  dsn: ${SENTRY_DSN}
+  environment: ${SENTRY_ENV}
+  release: 0.0.1
+  servername: aws-eks-container
+  send-default-pii: true
+  attach-stacktrace: true
+
+retry-config:
+  max-retries: 3
+  min-back-off-period: 5
+  jitter-value: 0.75
+
+cloud-platform:
+  aws:
+    sqs:
+      region: ${CLOUD_PLATFORM_QUEUE_REGION}
+      accesskey: ${CLOUD_PLATFORM_QUEUE_ACCESS_KEY}
+      secretkey: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
+      queue:
+        hearingResulted: ${HEARING_RESULTED_QUEUE}
+        prosecutionConcluded: ${PROSECUTION_CONCLUDED_QUEUE}
