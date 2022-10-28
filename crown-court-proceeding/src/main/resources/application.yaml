@@ -51,7 +51,7 @@ spring:
       hibernate.temp.use_jdbc_metadata_defaults: false
 
 sentry:
-  dsn: https://5427f36530934d12bb20f0f31eb98d92@o345774.ingest.sentry.io/4504043349016576
+  dsn: ${SENTRY_DSN}
   environment: ${SENTRY_ENV}
   release: 0.0.1
   servername: aws-eks-container
