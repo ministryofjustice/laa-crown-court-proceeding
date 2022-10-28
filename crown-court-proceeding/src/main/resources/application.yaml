@@ -71,4 +71,4 @@ cloud-platform:
       secretkey: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
       queue:
         hearingResulted: ${HEARING_RESULTED_QUEUE}
-        prosecutionConcluded: ${LAA_PROSECUTION_CONCLUDED_QUEUE}
+        prosecutionConcluded: ${PROSECUTION_CONCLUDED_QUEUE}

@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 public class ProsecutionConcludedListener {
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}", concurrency = "1")
     public void receive(@Payload final String message) {
-        log.debug("Prosecution Inbound Message : {} ", message);
+        log.info("Prosecution Inbound Message : {} ", message);
     }
 }
