@@ -14,19 +14,27 @@ jacoco {
     toolVersion = "0.8.8"
 }
 
-
 def versions = [
-                springdocVersion          : '1.6.12',
-                springauthserverVersion   : '0.2.2',
-                sonarPitest               : '0.5',
-                junitVersion              : '5.9.1',
-                gradlePitest              : '1.7.4',
-                pitest                    : '1.4.10',
-                commonsCollections4Version: '4.4',
-                commonsLang3Version       : '3.10',
-                lombokVersion             : '1.18.24',
-                amazonSQSVersion          : '1.0.8',
+        sentryVersion                      : '6.6.0',
+        springdocVersion                   : '1.6.12',
+        springauthserverVersion            : '0.2.2',
+        sonarPitest                        : '0.5',
+        junitVersion                       : '5.9.1',
+        gradlePitest                       : '1.7.4',
+        pitest                             : '1.4.10',
+        commonsCollections4Version         : '4.4',
+        commonsLang3Version                : '3.10',
+        lombokVersion                      : '1.18.24',
+        amazonSQSVersion                   : '1.0.8'
 ]
+dependencyManagement {
+    dependencies {
+        dependencySet(group: 'io.sentry', version: versions.sentryVersion) {
+            entry 'sentry-spring-boot-starter'
+            entry 'sentry-logback'
+        }
+    }
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -63,6 +71,9 @@ dependencies {
     implementation "org.liquibase:liquibase-core"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
+
+    implementation group: 'io.sentry', name: 'sentry-spring-boot-starter'
+    implementation group: 'io.sentry', name: 'sentry-logback'
 
     implementation 'org.postgresql:postgresql'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
