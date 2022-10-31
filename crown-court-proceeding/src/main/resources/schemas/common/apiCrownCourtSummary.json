@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "apiCrownCourtOverview.json",
+  "type": "object",
+  "description": "Crown Court Overview",
+  "properties": {
+    "repOrderDecision": {
+      "type": "string",
+      "title": "Rep Order decision"
+    },
+    "ccRepId": {
+      "type": "integer",
+      "title": "Crown court rep id"
+    },
+    "ccRepType": {
+      "type": "string",
+      "title": "crown court rep type"
+    },
+    "ccRepOrderDate": {
+      "type": "string",
+      "title": "crown court Rep Order decision",
+      "format": "date-time"
+    },
+    "ccRepOrderDate": {
+      "type": "string",
+      "title": "crown court withdrawal date",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "repOrderDecision",
+    "ccRepId",
+    "ccRepType",
+    "ccRepOrderDate",
+    "ccRepOrderDate"
+  ]
+}

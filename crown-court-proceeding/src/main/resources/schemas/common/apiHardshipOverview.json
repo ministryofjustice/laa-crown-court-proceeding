@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "apiHardshiptOverview.json",
+  "type": "object",
+  "description": "Hardship overview",
+  "properties": {
+    "reviewResult": {
+      "type": "string",
+      "title": "Review Result"
+    },
+    "asessmentStatus": {
+      "type": "string",
+      "title": "Assessment Status"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["reviewResult", "asessmentStatus"]
+}

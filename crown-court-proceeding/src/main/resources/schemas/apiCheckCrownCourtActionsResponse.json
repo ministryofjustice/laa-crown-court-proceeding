@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "apiCrownCourtActionsResponse.json",
+  "type": "object",
+  "title": "Crown court Request",
+  "description": "Data contract for crown court action response",
+  "properties": {
+    "repOrderDecision": {
+      "type": "string",
+      "title": "Rep Order decision"
+    },
+    "ccRepType": {
+      "type": "string",
+      "title": "crown court rep type"
+    },
+    "ccRepOrderDate": {
+      "type": "string",
+      "title": "crown court withdrawal date",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}
