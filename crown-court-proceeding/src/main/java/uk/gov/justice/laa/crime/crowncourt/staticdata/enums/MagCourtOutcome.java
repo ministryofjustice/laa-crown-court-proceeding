@@ -2,6 +2,9 @@ package uk.gov.justice.laa.crime.crowncourt.staticdata.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.stream.Stream;
 
 @Getter
 @AllArgsConstructor
@@ -15,4 +18,13 @@ public enum MagCourtOutcome {
 
     private String outcome;
     private String description;
+
+    public static MagCourtOutcome getFrom(String outcome) {
+        if (StringUtils.isBlank(outcome)) return null;
+
+        return Stream.of(MagCourtOutcome.values())
+                .filter(f -> f.outcome.equals(outcome))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(String.format("outcome with value: %s does not exist.", outcome)));
+    }
 }
