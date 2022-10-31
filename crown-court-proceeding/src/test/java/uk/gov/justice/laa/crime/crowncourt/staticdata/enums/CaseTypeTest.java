@@ -10,7 +10,7 @@ class CaseTypeTest {
 
     @Test
     void givenABlankString_whenGetFromIsInvoked_thenNullIsReturned() {
-        assertThat(CrownCourtOutcome.getFrom(null)).isNull();
+        assertThat(CaseType.getFrom(null)).isNull();
     }
 
     @Test

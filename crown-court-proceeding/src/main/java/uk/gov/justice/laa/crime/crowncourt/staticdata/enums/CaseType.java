@@ -19,21 +19,16 @@ import java.util.stream.Stream;
 public enum CaseType {
     INDICTABLE("INDICTABLE", "Indictable", Boolean.TRUE),
     SUMMARY_ONLY("SUMMARY ONLY", "Summary-only", Boolean.TRUE),
-    CC_ALREADY("CC ALREADY","Trial already in Crown Court", Boolean.TRUE),
-    APPEAL_CC("APPEAL CC","Appeal to Crown Court", Boolean.FALSE),
-    COMMITAL("COMMITAL","Committal for Sentence", Boolean.TRUE),
-    EITHER_WAY("EITHER WAY","Either-Way", Boolean.FALSE);
+    CC_ALREADY("CC ALREADY", "Trial already in Crown Court", Boolean.TRUE),
+    APPEAL_CC("APPEAL CC", "Appeal to Crown Court", Boolean.FALSE),
+    COMMITAL("COMMITAL", "Committal for Sentence", Boolean.TRUE),
+    EITHER_WAY("EITHER WAY", "Either-Way", Boolean.FALSE);
 
     @NotNull
     @JsonPropertyDescription("Specifies the case type")
     private final String caseTypeString;
     private final String description;
     private final Boolean mcooOutcomeRequired;
-
-    @JsonValue
-    public String getCaseType() {
-        return caseTypeString;
-    }
 
     public static CaseType getFrom(String caseType) {
         if (StringUtils.isBlank(caseType)) return null;
