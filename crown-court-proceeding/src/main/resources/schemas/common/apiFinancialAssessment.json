@@ -8,7 +8,7 @@
       "type": "string",
       "description": "Outcome of initial assessment"
     },
-    "fassInitStatus": {
+    "initStatus": {
       "description": "Assessment Status",
       "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CurrentStatus"
     },
@@ -16,7 +16,7 @@
       "type": "string",
       "description": "Outcome of full assessment"
     },
-    "fassFullStatus": {
+    "fullStatus": {
       "description": "Assessment Status",
       "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CurrentStatus"
     },
@@ -27,5 +27,8 @@
     }
   },
   "additionalProperties": false,
-  "required": ["initResult", "fassInitStatus", "fullResult", "fassFullStatus"]
+  "required": [
+    "initResult",
+    "initStatus"
+  ]
 }

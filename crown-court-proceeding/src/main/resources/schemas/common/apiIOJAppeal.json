@@ -4,11 +4,18 @@
   "type": "object",
   "description": "Crown Court IOJ appeal",
   "properties": {
-    "appealDecisionResult": {
+    "decisionResult": {
       "type": "string",
-      "title": "Rep Order decision"
+      "title": "Rep Order decision result"
+    },
+    "iojResult": {
+      "type": "string",
+      "description": "Ioj Result"
     }
   },
   "additionalProperties": false,
-  "required": ["repOrderDecision"]
+  "required": [
+    "decisionResult",
+    "iojResult"
+  ]
 }

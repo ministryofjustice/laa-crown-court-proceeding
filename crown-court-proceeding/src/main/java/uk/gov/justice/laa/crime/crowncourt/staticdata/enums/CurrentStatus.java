@@ -9,10 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import javax.validation.constraints.NotNull;
 import java.util.stream.Stream;
 
-/**
- * static data migrated from TOGDATA.HARDSHIP_REVIEW_STATUSES,
- * TOGDATA.IOJ_APPEAL_STATUSES and TOGDATA.FIN_ASS_STATUSES tables
- */
 @Getter
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,7 +17,7 @@ public enum CurrentStatus {
     COMPLETE("COMPLETE", "Complete");
 
     @NotNull
-    @JsonPropertyDescription("This will have the frequency code of the selection")
+    @JsonPropertyDescription("This will have the current status")
     private String status;
     private String description;
 

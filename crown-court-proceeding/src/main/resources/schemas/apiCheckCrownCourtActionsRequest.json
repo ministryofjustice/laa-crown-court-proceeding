@@ -23,13 +23,10 @@
       "description": "Magistrate Court Outcome",
       "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome"
     },
-    "iojResult": {
-      "type": "string",
-      "description": "Ioj Result"
-    },
     "decisionReason": {
-      "type": "string",
-      "description": "Decision Reason"
+      "type": "object",
+      "description": "Decision Reason",
+      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.DecisionReason"
     },
     "decisionDate": {
       "type": "string",
@@ -51,30 +48,34 @@
       "description": "Crown court overview",
       "$ref": "common/apiCrownCourtOverview.json"
     },
-    "IOJAppeal": {
+    "iojAppeal": {
       "type": "object",
       "description": "IOJ Appeal",
       "$ref": "common/apiIOJAppeal.json"
     },
-    "FinancialAssessment": {
+    "financialAssessment": {
       "type": "object",
       "description": "Finanicial assessment",
       "$ref": "common/apiFinancialAssessment.json"
+    },
+    "passportAssessment": {
+      "type": "object",
+      "description": "passport assessment",
+      "$ref": "common/apiPassportAssessment.json"
     }
   },
   "additionalProperties": false,
   "required": [
-    "laaTransactionId",
     "repId",
     "caseType",
     "magCourtOutcome",
-    "iojResult",
     "decisionReason",
     "decisionDate",
     "committalDate",
     "dateReceived",
     "crownCourtOverview",
-    "IOJAppeal",
-    "FinancialAssessment"
+    "iojAppeal",
+    "financialAssessment",
+    "passportAssessment"
   ]
 }

@@ -5,14 +5,19 @@
   "description": "Hardship overview",
   "properties": {
     "reviewResult": {
-      "type": "string",
-      "title": "Review Result"
+      "type": "object",
+      "title": "Review Result",
+      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.ReviewResult"
     },
-    "asessmentStatus": {
-      "type": "string",
-      "title": "Assessment Status"
+    "assessmentStatus": {
+      "type": "object",
+      "title": "Assessment Status",
+      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CurrentStatus"
     }
   },
   "additionalProperties": false,
-  "required": ["reviewResult", "asessmentStatus"]
+  "required": [
+    "reviewResult",
+    "assessmentStatus"
+  ]
 }

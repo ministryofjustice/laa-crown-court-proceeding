@@ -4,10 +4,6 @@
   "type": "object",
   "description": "Crown Court Overview",
   "properties": {
-    "available": {
-      "type": "boolean",
-      "title": "check if the crown court overview object is enable "
-    },
     "crownCourtSummary": {
       "type": "object",
       "description": "Crown court summary details ",
@@ -15,5 +11,7 @@
     }
   },
   "additionalProperties": false,
-  "required": ["available"]
+  "required": [
+    "crownCourtSummary"
+  ]
 }

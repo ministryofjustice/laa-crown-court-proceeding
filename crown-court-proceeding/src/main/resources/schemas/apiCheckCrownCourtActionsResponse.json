@@ -9,11 +9,11 @@
       "type": "string",
       "title": "Rep Order decision"
     },
-    "ccRepType": {
+    "repType": {
       "type": "string",
       "title": "crown court rep type"
     },
-    "ccRepOrderDate": {
+    "repOrderDate": {
       "type": "string",
       "title": "crown court withdrawal date",
       "format": "date-time"
