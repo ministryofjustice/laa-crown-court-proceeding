@@ -19,14 +19,14 @@ public enum ReviewResult {
 
     @NotNull
     @JsonPropertyDescription("Determines review result")
-    private String reviewResult;
+    private String result;
 
 
     public static ReviewResult getFrom(String result) {
         if (StringUtils.isBlank(result)) return null;
 
         return Stream.of(ReviewResult.values())
-                .filter(rr -> rr.reviewResult.equals(result))
+                .filter(rr -> rr.result.equals(result))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Review result with value: %s does not exist.", result)));
     }
