@@ -27,5 +27,8 @@
     }
   },
   "additionalProperties": false,
-  "required": ["initResult", "initStatus"]
+  "required": [
+    "initResult",
+    "initStatus"
+  ]
 }

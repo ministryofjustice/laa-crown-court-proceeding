@@ -25,7 +25,7 @@ public enum MagCourtOutcome {
         if (StringUtils.isBlank(outcome)) return null;
 
         return Stream.of(MagCourtOutcome.values())
-                .filter(mo -> mo.outcome.equals(outcome))
+                .filter(mco -> mco.outcome.equals(outcome))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(String.format("outcome with value: %s does not exist.", outcome)));
     }

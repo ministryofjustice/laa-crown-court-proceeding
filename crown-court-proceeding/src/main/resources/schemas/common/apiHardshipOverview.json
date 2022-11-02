@@ -16,5 +16,8 @@
     }
   },
   "additionalProperties": false,
-  "required": ["reviewResult", "assessmentStatus"]
+  "required": [
+    "reviewResult",
+    "assessmentStatus"
+  ]
 }

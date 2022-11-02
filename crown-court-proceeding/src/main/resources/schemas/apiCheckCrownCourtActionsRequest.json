@@ -43,10 +43,10 @@
       "description": "Date Received",
       "format": "date-time"
     },
-    "crownCourtOverview": {
+    "crownCourtSummary": {
       "type": "object",
       "description": "Crown court overview",
-      "$ref": "common/apiCrownCourtOverview.json"
+      "$ref": "common/apiCrownCourtSummary.json"
     },
     "iojAppeal": {
       "type": "object",
@@ -73,7 +73,7 @@
     "decisionDate",
     "committalDate",
     "dateReceived",
-    "crownCourtOverview",
+    "crownCourtSummary",
     "iojAppeal",
     "financialAssessment",
     "passportAssessment"
