@@ -151,4 +151,14 @@ sonarqube {
     }
 }
 
+jsonSchema2Pojo {
+    source.setFrom files("${project.rootDir}/src/main/resources/schemas")
+    targetPackage = 'uk.gov.justice.laa.crime.crowncourt.model'
+    generateBuilders = true
+    useInnerClassBuilders = true
+    includeJsr303Annotations = true
+    useBigDecimals = true
+    includeDynamicBuilders = true
+    dateTimeType = "java.time.LocalDateTime"
+}
 
