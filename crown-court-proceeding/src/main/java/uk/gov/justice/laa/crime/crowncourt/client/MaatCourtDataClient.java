@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.client;
 
-import exception.APIClientException;
+import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
