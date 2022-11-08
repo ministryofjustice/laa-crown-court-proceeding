@@ -48,7 +48,6 @@ maatApi:
   assessments-domain: /api/internal/v1/assessment
   post-processing-url: ${maatApi.assessments-domain}/post-processing/{repId}
 
-
 means-assessment:
   security:
     issuer-uri: http://localhost:${server.port}
@@ -69,7 +68,7 @@ cloud-platform:
       queue:
         link: link
         unlink: unlink
-        laaStatus:  laaStatus
+        laaStatus: laaStatus
         hearingResulted: hearing
         laaStatusJob: laaStatusJob
         createLinkCpStatusJob: createLinkCpStatusJob
