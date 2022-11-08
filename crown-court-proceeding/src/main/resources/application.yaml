@@ -72,3 +72,7 @@ cloud-platform:
       queue:
         hearingResulted: ${HEARING_RESULTED_QUEUE}
         prosecutionConcluded: ${PROSECUTION_CONCLUDED_QUEUE}
+
+crown-court-proceeding:
+  security:
+    issuer-uri: http://localhost:${server.port}
