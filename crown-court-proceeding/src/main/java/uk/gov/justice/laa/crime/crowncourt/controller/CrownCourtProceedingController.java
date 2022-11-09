@@ -25,7 +25,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/internal/v1/crowncourt/actions")
+@RequestMapping("api/internal/v1/crowncourtproceeding/actions")
 @Tag(name = "Crown Court Proceeding", description = "Rest API for Crown Court Proceeding.")
 public class CrownCourtProceedingController {
 

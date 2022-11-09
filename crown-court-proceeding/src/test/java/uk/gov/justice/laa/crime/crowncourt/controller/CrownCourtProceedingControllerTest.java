@@ -44,7 +44,7 @@ class CrownCourtProceedingControllerTest {
     private static final String CLIENT_CREDENTIALS = "client_credentials";
     private static final String CLIENT_ID = "test-client";
     private static final String SCOPE_READ_WRITE = "READ_WRITE";
-    private static final String MEANS_ASSESSMENT_ENDPOINT_URL = "/api/internal/v1/crowncourt/actions";
+    private static final String CROWN_COURT_ACTIONS_ENDPOINT_URL = "/api/internal/v1/crowncourtproceeding/actions";
 
     private MockMvc mvc;
 
@@ -72,7 +72,7 @@ class CrownCourtProceedingControllerTest {
 
     private MockHttpServletRequestBuilder buildRequestGivenContent(HttpMethod method, String content, boolean withAuth) throws Exception {
         MockHttpServletRequestBuilder requestBuilder =
-                MockMvcRequestBuilders.request(method, MEANS_ASSESSMENT_ENDPOINT_URL)
+                MockMvcRequestBuilders.request(method, CROWN_COURT_ACTIONS_ENDPOINT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content);
         if (withAuth) {
@@ -98,23 +98,23 @@ class CrownCourtProceedingControllerTest {
     }
 
     @Test
-    void createAssessment_success() throws Exception {
-        var initialMeansAssessmentRequest =
+    void checkCrownCourtActions_Success() throws Exception {
+        var apiCheckCrownCourtActionsRequest =
                 TestModelDataBuilder.getApiCheckCrownCourtActionsRequest(IS_VALID);
-        var initialMeansAssessmentRequestJson = objectMapper.writeValueAsString(initialMeansAssessmentRequest);
-        var initialMeansAssessmentResponse =
+        var checkCrownCourtActionsRequestJson = objectMapper.writeValueAsString(apiCheckCrownCourtActionsRequest);
+        var checkCrownCourtActionsResponse =
                 TestModelDataBuilder.getApiCheckCrownCourtActionsResponse(IS_VALID);
 
         when(crownCourtProceedingService.checkCrownCourtActions(any(CrownCourtsActionsRequestDTO.class)))
-                .thenReturn(initialMeansAssessmentResponse);
+                .thenReturn(checkCrownCourtActionsResponse);
 
-        mvc.perform(buildRequestGivenContent(HttpMethod.POST, initialMeansAssessmentRequestJson))
+        mvc.perform(buildRequestGivenContent(HttpMethod.POST, checkCrownCourtActionsRequestJson))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    void createAssessment_RequestObjectFailsValidation() throws Exception {
+    void checkCrownCourtActions_RequestObjectFailsValidation() throws Exception {
         var createAssessmentRequest =
                 TestModelDataBuilder.getApiCheckCrownCourtActionsRequest(!IS_VALID);
         var createAssessmentRequestJson = objectMapper.writeValueAsString(createAssessmentRequest);
