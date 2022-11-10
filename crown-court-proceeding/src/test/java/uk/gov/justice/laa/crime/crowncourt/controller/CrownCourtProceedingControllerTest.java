@@ -138,6 +138,6 @@ class CrownCourtProceedingControllerTest {
     @Test
     void checkCrownCourtActions_Unauthorized_NoAccessToken() throws Exception {
         mvc.perform(buildRequestGivenContent(HttpMethod.POST, "{}", false))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }
