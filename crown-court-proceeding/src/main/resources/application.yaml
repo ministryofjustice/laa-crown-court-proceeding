@@ -50,6 +50,20 @@ spring:
     properties:
       hibernate.temp.use_jdbc_metadata_defaults: false
 
+  security:
+    oauth2:
+      client:
+        provider:
+          maatapi:
+            token-uri: ${MAAT_API_OAUTH_URL}
+        registration:
+          maatapi:
+            client-id: ${MAAT_API_OAUTH_CLIENT_ID}
+            client-secret: ${MAAT_API_OAUTH_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+      resourceserver:
+        jwt:
+          issuer-uri: ${crown-court-proceeding.security.issuer-uri}
 sentry:
   dsn: ${SENTRY_DSN}
   environment: ${SENTRY_ENV}
@@ -72,3 +86,7 @@ cloud-platform:
       queue:
         hearingResulted: ${HEARING_RESULTED_QUEUE}
         prosecutionConcluded: ${PROSECUTION_CONCLUDED_QUEUE}
+
+crown-court-proceeding:
+  security:
+    issuer-uri: http://localhost:${server.port}

@@ -5,3 +5,7 @@ databaseChangeLog:
       file: db/changelog/changeset/02-crown-courts-table-create.sql
   - include:
       file: db/changelog/changeset/03-crown-courts-table-data-insert.sql
+  - include:
+      file: db/changelog/changeset/04-spring-security-oauth2-tables-create.sql
+  - include:
+      file: db/changelog/changeset/05-spring-security-client-credentials-insert.sql
