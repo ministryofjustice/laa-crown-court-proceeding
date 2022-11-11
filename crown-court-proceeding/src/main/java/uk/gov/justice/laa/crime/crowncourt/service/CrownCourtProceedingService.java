@@ -11,10 +11,6 @@ import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsRespon
 @Service
 @RequiredArgsConstructor
 public class CrownCourtProceedingService {
-    public void determineCrownRepDecision() {
-
-    }
-
     public ApiCheckCrownCourtActionsResponse checkCrownCourtActions(CrownCourtsActionsRequestDTO requestDTO) {
         return new ApiCheckCrownCourtActionsResponse();
     }
