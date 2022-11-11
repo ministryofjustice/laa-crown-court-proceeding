@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.client;
 
-import exception.APIClientException;
+import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

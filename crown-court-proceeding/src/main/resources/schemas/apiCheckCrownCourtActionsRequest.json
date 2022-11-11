@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "apiCrownCourtActionsRequest.json",
+  "type": "object",
+  "title": "Crown court Request",
+  "description": "Data contract for crown court action request",
+  "properties": {
+    "laaTransactionId": {
+      "type": "string",
+      "description": "The txn / correlation UUID"
+    },
+    "repId": {
+      "type": "integer",
+      "description": "MAAT / Rep Id"
+    },
+    "caseType": {
+      "type": "object",
+      "description": "The case type",
+      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType"
+    },
+    "magCourtOutcome": {
+      "type": "object",
+      "description": "Magistrate Court Outcome",
+      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome"
+    },
+    "decisionReason": {
+      "type": "object",
+      "description": "Decision Reason",
+      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.DecisionReason"
+    },
+    "decisionDate": {
+      "type": "string",
+      "description": "Decision Date",
+      "format": "date-time"
+    },
+    "committalDate": {
+      "type": "string",
+      "description": "Committal Date",
+      "format": "date-time"
+    },
+    "dateReceived": {
+      "type": "string",
+      "description": "Date Received",
+      "format": "date-time"
+    },
+    "crownCourtSummary": {
+      "type": "object",
+      "description": "Crown court overview",
+      "$ref": "common/apiCrownCourtSummary.json"
+    },
+    "iojAppeal": {
+      "type": "object",
+      "description": "IOJ Appeal",
+      "$ref": "common/apiIOJAppeal.json"
+    },
+    "financialAssessment": {
+      "type": "object",
+      "description": "Finanicial assessment",
+      "$ref": "common/apiFinancialAssessment.json"
+    },
+    "passportAssessment": {
+      "type": "object",
+      "description": "passport assessment",
+      "$ref": "common/apiPassportAssessment.json"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "repId",
+    "caseType",
+    "magCourtOutcome",
+    "decisionReason",
+    "decisionDate",
+    "committalDate",
+    "dateReceived",
+    "crownCourtSummary",
+    "iojAppeal",
+    "financialAssessment",
+    "passportAssessment"
+  ]
+}

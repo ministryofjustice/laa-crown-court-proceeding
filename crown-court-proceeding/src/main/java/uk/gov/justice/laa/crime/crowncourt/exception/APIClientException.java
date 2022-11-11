@@ -1,4 +1,4 @@
-package exception;
+package uk.gov.justice.laa.crime.crowncourt.exception;
 
 public class APIClientException extends RuntimeException {
 
