@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.config;
 
-import exception.APIClientException;
+import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import io.netty.handler.timeout.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

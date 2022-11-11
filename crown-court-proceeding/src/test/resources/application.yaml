@@ -1,0 +1,77 @@
+server:
+  port: 52314
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:crime_means_assessment;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    contexts: tests
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    generate-ddl: false
+
+  security:
+    oauth2:
+      client:
+        provider:
+          maatapi:
+            token-uri: http://dummyserver:9999
+        registration:
+          maatapi:
+            client-id: dummy-client
+            client-secret: dummy-secret
+            authorization-grant-type: client_credentials
+      resourceserver:
+        jwt:
+          issuer-uri: ${crown-court-proceeding.security.issuer-uri}
+
+springdoc:
+  api-docs:
+    path: /crown-court-proceeding
+
+swagger-ui:
+  path: /open-api/docs.html
+
+maatApi:
+  oAuthEnabled: false
+  baseUrl: http://localhost:8090
+  assessments-domain: /api/internal/v1/crowncourtproceeding
+  post-processing-url: ${maatApi.crowncourt-domain}/post-processing/{repId}
+
+retry-config:
+  max-retries: 2
+  min-back-off-period: 3
+  jitter-value: 0.5
+
+crown-court-proceeding:
+  security:
+    issuer-uri: http://localhost:${server.port}
+
+cloud-platform:
+  aws:
+    sqs:
+      region: eu-west-2
+      accesskey: access
+      secretkey: secret
+      queue:
+        link: link
+        unlink: unlink
+        laaStatus: laaStatus
+        hearingResulted: hearing
+        laaStatusJob: laaStatusJob
+        createLinkCpStatusJob: createLinkCpStatusJob
+        prosecutionConcluded: prosecutionConcluded
+        meansAssessmentPostProcessing: meansAssessmentPostProcessing
+        config:
+          messageDelay: 900
+          messageDelayDuration: 120
