@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtsActionsRequestDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtsActionsRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.ErrorDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsRequest;
@@ -32,7 +33,7 @@ public class CrownCourtProceedingController {
     private final CrownCourtProceedingService crownCourtProceedingService;
 
     private CrownCourtsActionsRequestDTO preProcessRequest(ApiCheckCrownCourtActionsRequest crownCourtActionsRequest) {
-        return new CrownCourtsActionsRequestDTO();
+        return new CrownCourtsActionsRequestDTOBuilder().buildRequestDTO(crownCourtActionsRequest);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
