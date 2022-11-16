@@ -103,7 +103,7 @@ class CrownCourtProceedingControllerTest {
                 TestModelDataBuilder.getApiCheckCrownCourtActionsRequest(IS_VALID);
         var checkCrownCourtActionsRequestJson = objectMapper.writeValueAsString(apiCheckCrownCourtActionsRequest);
         var checkCrownCourtActionsResponse =
-                TestModelDataBuilder.getApiCheckCrownCourtActionsResponse(IS_VALID);
+                TestModelDataBuilder.getApiCheckCrownCourtActionsResponse();
 
         when(crownCourtProceedingService.checkCrownCourtActions(any(CrownCourtsActionsRequestDTO.class)))
                 .thenReturn(checkCrownCourtActionsResponse);
