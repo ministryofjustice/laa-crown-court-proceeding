@@ -14,12 +14,19 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 @RequiredArgsConstructor
 public class RepOrderService {
 
+    // Crown Court Rep Decisions
     public static final String GRANTED_FAILED_MEANS_TEST = "Granted - Failed Means Test";
     public static final String FAILED_CF_S_FAILED_MEANS_TEST = "Failed - CfS Failed Means Test";
     public static final String GRANTED_PASSED_MEANS_TEST = "Granted - Passed Means Test";
     public static final String REFUSED_INELIGIBLE = "Refused - Ineligible";
     public static final String GRANTED_PASSPORTED = "Granted - Passported";
     public static final String FAILED_IO_J_APPEAL_FAILURE = "Failed - IoJ Appeal Failure";
+
+    // Crown Court Rep Types
+    public static final String CROWN_COURT_ONLY = "Crown Court Only";
+    public static final String DECLINED_REP_ORDER = "Declined Rep Order";
+    public static final String NOT_ELIGIBLE_FOR_REP_ORDER = "Not eligible for Rep Order";
+    public static final String THROUGH_ORDER = "Through Order";
 
     public ApiCrownCourtSummary getRepDecision(CrownCourtsActionsRequestDTO requestDTO) {
 
@@ -122,4 +129,95 @@ public class RepOrderService {
         return null;
     }
 
+    public ApiCrownCourtSummary determineCrownRepType(CrownCourtsActionsRequestDTO requestDTO) {
+        ApiCrownCourtSummary crownCourtSummary = requestDTO.getCrownCourtSummary();
+        /*
+            PROCEDURE determine_crown_rep_type (p_app_obj    IN OUT    application_type) IS BEGIN -- determine_crown_rep_type
+       if p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_reporder_decision is not null
+       THEN
+       */
+        if (crownCourtSummary.getRepOrderDecision() != null) {
+            /*
+              IF p_app_obj.mags_outcome_object.outcome IN ('SENT FOR TRIAL','COMMITTED FOR TRIAL')
+              THEN
+            */
+            if (requestDTO.getMagCourtOutcome() == MagCourtOutcome.SENT_FOR_TRIAL
+                    || requestDTO.getMagCourtOutcome() == MagCourtOutcome.COMMITTED_FOR_TRIAL) {
+                determineRepTypeByDecisionReason(requestDTO, crownCourtSummary);
+            }
+            determineRepTypeByRepOrderDecision(requestDTO, crownCourtSummary);
+            /*
+              IF p_app_obj.case_type_object.case_type = 'CC ALREADY'
+              THEN
+                 p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REP_TYPE := 'Crown Court Only';
+              END IF;
+            */
+            if (requestDTO.getCaseType() == CaseType.CC_ALREADY) {
+                crownCourtSummary.setRepType(CROWN_COURT_ONLY);
+            }
+            /*
+              IF p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_WITHDRAWAL_DATE is not null
+              THEN
+                 p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REP_TYPE := 'Declined Rep Order';
+              END IF;
+            */
+            if (crownCourtSummary.getWithdrawalDate() != null) {
+                crownCourtSummary.setRepType(DECLINED_REP_ORDER);
+            }
+        }
+        return crownCourtSummary;
+    }
+
+    public void determineRepTypeByRepOrderDecision(CrownCourtsActionsRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
+        /*
+          IF p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_reporder_decision like 'Granted%'
+           THEN
+             IF (p_app_obj.case_type_object.case_type = 'APPEAL CC')
+             OR (p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_reporder_decision like 'Granted%Pass%'
+                AND p_app_obj.case_type_object.case_type = 'COMMITAL')
+             THEN
+            p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REP_TYPE := 'Crown Court Only';
+            END IF;
+          */
+        if ((GRANTED_FAILED_MEANS_TEST.equals(crownCourtSummary.getRepOrderDecision()) && requestDTO.getCaseType() == CaseType.APPEAL_CC) ||
+                ((GRANTED_PASSPORTED.equals(crownCourtSummary.getRepOrderDecision()) || GRANTED_PASSED_MEANS_TEST.equals(crownCourtSummary.getRepOrderDecision()))
+                        && (requestDTO.getCaseType() == CaseType.APPEAL_CC || requestDTO.getCaseType() == CaseType.COMMITAL))) {
+            crownCourtSummary.setRepType(CROWN_COURT_ONLY);
+        }
+        /*
+         ELSIF p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_reporder_decision like 'Failed%' THEN
+         p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REP_TYPE := 'Not eligible for Rep Order';
+         END IF;
+        */
+        else if (FAILED_CF_S_FAILED_MEANS_TEST.equals(crownCourtSummary.getRepOrderDecision()) ||
+                FAILED_IO_J_APPEAL_FAILURE.equals(crownCourtSummary.getRepOrderDecision())) {
+            crownCourtSummary.setRepType(NOT_ELIGIBLE_FOR_REP_ORDER);
+        }
+    }
+
+    public void determineRepTypeByDecisionReason(CrownCourtsActionsRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
+    /*
+     IF p_app_obj.decision_reason_object.code = 'GRANTED'
+     THEN
+     */
+        if (requestDTO.getDecisionReason() == DecisionReason.GRANTED) {
+            /*
+            p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REP_TYPE := 'Through Order';
+            p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REP_ID   := p_app_obj.rep_id;
+            */
+            crownCourtSummary.setRepType(THROUGH_ORDER);
+            crownCourtSummary.setRepId(requestDTO.getRepId());
+        /*
+         ELSIF p_app_obj.decision_reason_object.code like 'FAIL%'
+         THEN
+            p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REP_TYPE := 'Crown Court Only';
+         END IF;
+      END IF;
+         */
+        } else if (requestDTO.getDecisionReason() == DecisionReason.FAILIOJ
+                || requestDTO.getDecisionReason() == DecisionReason.FAILMEANS
+                || requestDTO.getDecisionReason() == DecisionReason.FAILMEIOJ) {
+            crownCourtSummary.setRepType(CROWN_COURT_ONLY);
+        }
+    }
 }

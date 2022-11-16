@@ -311,4 +311,184 @@ class RepOrderServiceTest {
         requestDTO.getFinancialAssessment().getHardshipOverview().setAssessmentStatus(CurrentStatus.IN_PROGRESS);
         assertThat(repOrderService.getDecisionByFinAssessment(requestDTO, null, true)).isNull();
     }
+
+    @Test
+    void givenGrantedDecisionReason_whenDetermineRepTypeByDecisionReasonIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        requestDTO.setDecisionReason(DecisionReason.GRANTED);
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        repOrderService.determineRepTypeByDecisionReason(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepId()).isEqualTo(requestDTO.getRepId());
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.THROUGH_ORDER);
+    }
+
+    @Test
+    void givenDecisionReasonIsFailIoJ_whenDetermineRepTypeByDecisionReasonIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        requestDTO.setDecisionReason(DecisionReason.FAILIOJ);
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        repOrderService.determineRepTypeByDecisionReason(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.CROWN_COURT_ONLY);
+    }
+
+    @Test
+    void givenDecisionReasonIsFailMeans_whenDetermineRepTypeByDecisionReasonIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        requestDTO.setDecisionReason(DecisionReason.FAILMEANS);
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        repOrderService.determineRepTypeByDecisionReason(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.CROWN_COURT_ONLY);
+    }
+
+    @Test
+    void givenDecisionReasonIsFailMEIoJ_whenDetermineRepTypeByDecisionReasonIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        requestDTO.setDecisionReason(DecisionReason.FAILMEIOJ);
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        repOrderService.determineRepTypeByDecisionReason(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.CROWN_COURT_ONLY);
+    }
+
+    @Test
+    void givenFailedCFSMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        apiCrownCourtSummary.setRepOrderDecision(RepOrderService.FAILED_CF_S_FAILED_MEANS_TEST);
+        repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.NOT_ELIGIBLE_FOR_REP_ORDER);
+    }
+
+    @Test
+    void givenFailedIoJAppealFailure_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        apiCrownCourtSummary.setRepOrderDecision(RepOrderService.FAILED_IO_J_APPEAL_FAILURE);
+        repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.NOT_ELIGIBLE_FOR_REP_ORDER);
+    }
+
+    @Test
+    void givenAppealCCCaseTypeWithGrantedFailedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        apiCrownCourtSummary.setRepOrderDecision(RepOrderService.GRANTED_FAILED_MEANS_TEST);
+        requestDTO.setCaseType(CaseType.APPEAL_CC);
+        repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.CROWN_COURT_ONLY);
+    }
+
+    @Test
+    void givenCommittalCaseTypeWithGrantedFailedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_RepTypeIsBlank() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        apiCrownCourtSummary.setRepOrderDecision(RepOrderService.GRANTED_FAILED_MEANS_TEST);
+        requestDTO.setCaseType(CaseType.COMMITAL);
+        repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isBlank();
+    }
+
+    @Test
+    void givenAppealCCCaseTypeWithGrantedPassported_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        apiCrownCourtSummary.setRepOrderDecision(RepOrderService.GRANTED_PASSPORTED);
+        requestDTO.setCaseType(CaseType.APPEAL_CC);
+        repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.CROWN_COURT_ONLY);
+    }
+
+    @Test
+    void givenAppealCCCaseTypeWithGrantedPassedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        apiCrownCourtSummary.setRepOrderDecision(RepOrderService.GRANTED_PASSED_MEANS_TEST);
+        requestDTO.setCaseType(CaseType.APPEAL_CC);
+        repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.CROWN_COURT_ONLY);
+    }
+
+    @Test
+    void givenCommittalCaseTypeWithGrantedPassported_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        apiCrownCourtSummary.setRepOrderDecision(RepOrderService.GRANTED_PASSPORTED);
+        requestDTO.setCaseType(CaseType.COMMITAL);
+        repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.CROWN_COURT_ONLY);
+    }
+
+    @Test
+    void givenCommittalCaseTypeWithGrantedPassedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        apiCrownCourtSummary.setRepOrderDecision(RepOrderService.GRANTED_PASSED_MEANS_TEST);
+        requestDTO.setCaseType(CaseType.COMMITAL);
+        repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.CROWN_COURT_ONLY);
+    }
+
+    @Test
+    void givenIndictableCaseTypeWithGrantedPassported_whenDetermineRepTypeByRepOrderDecisionIsInvoked_RepTypeIsBlank() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        apiCrownCourtSummary.setRepOrderDecision(RepOrderService.GRANTED_PASSPORTED);
+        requestDTO.setCaseType(CaseType.INDICTABLE);
+        repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isBlank();
+    }
+
+    @Test
+    void givenIndictableCaseTypeWithGrantedPassedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_RepTypeIsBlank() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        apiCrownCourtSummary.setRepOrderDecision(RepOrderService.GRANTED_PASSED_MEANS_TEST);
+        requestDTO.setCaseType(CaseType.INDICTABLE);
+        repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isBlank();
+    }
+
+    @Test
+    void givenRepOrderDecisionIsNull_whenDetermineCrownRepTypeIsInvoked_BlankRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        requestDTO.getCrownCourtSummary().setRepOrderDecision(null);
+        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineCrownRepType(requestDTO);
+        assertThat(apiCrownCourtSummary.getRepType()).isBlank();
+    }
+
+    @Test
+    void givenSentForTrailWithGranted_whenDetermineCrownRepTypeIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        requestDTO.setMagCourtOutcome(MagCourtOutcome.SENT_FOR_TRIAL);
+        requestDTO.setDecisionReason(DecisionReason.GRANTED);
+        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineCrownRepType(requestDTO);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.THROUGH_ORDER);
+        assertThat(apiCrownCourtSummary.getRepId()).isEqualTo(requestDTO.getRepId());
+    }
+
+    @Test
+    void givenCommittedForTrailWithGranted_whenDetermineCrownRepTypeIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        requestDTO.setMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL);
+        requestDTO.setDecisionReason(DecisionReason.GRANTED);
+        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineCrownRepType(requestDTO);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.THROUGH_ORDER);
+        assertThat(apiCrownCourtSummary.getRepId()).isEqualTo(requestDTO.getRepId());
+    }
+
+    @Test
+    void givenCCAlreadyCaseType_whenDetermineCrownRepTypeIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        requestDTO.setCaseType(CaseType.CC_ALREADY);
+        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineCrownRepType(requestDTO);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.CROWN_COURT_ONLY);
+    }
+
+    @Test
+    void givenValidWithdrawalDate_whenDetermineCrownRepTypeIsInvoked_ValidRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        requestDTO.getCrownCourtSummary().setWithdrawalDate(TestModelDataBuilder.TEST_WITHDRAWAL_DATE);
+        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineCrownRepType(requestDTO);
+        assertThat(apiCrownCourtSummary.getRepType()).isEqualTo(RepOrderService.DECLINED_REP_ORDER);
+    }
+
 }
