@@ -350,6 +350,15 @@ class RepOrderServiceTest {
     }
 
     @Test
+    void givenDecisionReasonIsAbandoned_whenDetermineRepTypeByDecisionReasonIsInvoked_BlankRepTypeIsReturned() {
+        CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        requestDTO.setDecisionReason(DecisionReason.ABANDONED);
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        repOrderService.determineRepTypeByDecisionReason(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType()).isBlank();
+    }
+
+    @Test
     void givenFailedCFSMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
         CrownCourtsActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
