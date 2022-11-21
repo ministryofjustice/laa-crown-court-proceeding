@@ -37,7 +37,7 @@ public class TestModelDataBuilder {
                 .withCrownCourtSummary(new ApiCrownCourtSummary()
                         .withRepId(isValid ? TEST_REP_ID : null)
                         .withRepOrderDate(TEST_REP_ORDER_DATE)
-                        .withRepType("CROWN")
+                        .withRepType("")
                         .withRepOrderDecision(MOCK_DECISION)
                         .withWithdrawalDate(TEST_WITHDRAWAL_DATE))
                 .withIojAppeal(getIojAppeal())
