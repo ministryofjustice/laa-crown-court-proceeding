@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtsActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RepOrderService {
 
+    private final MaatCourtDataService maatCourtDataService;
     List<String> grantedRepOrderDecisions = List.of(Constants.GRANTED_FAILED_MEANS_TEST,
             Constants.GRANTED_PASSED_MEANS_TEST,
             Constants.GRANTED_PASSPORTED);
@@ -164,5 +166,97 @@ public class RepOrderService {
                 || requestDTO.getDecisionReason() == DecisionReason.FAILMEIOJ) {
             crownCourtSummary.setRepType(Constants.CROWN_COURT_ONLY);
         }
+    }
+
+
+    public ApiCrownCourtSummary determineRepOrderDate(CrownCourtsActionsRequestDTO requestDTO) {
+        /*
+            PROCEDURE determine_crown_reporder_date (p_app_obj    IN OUT    application_type
+         ) IS
+        --see when ioj_result was populated with 'PASS' (not 'Granted' as stated in BFD)
+        BEGIN
+           if p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_reporder_decision is not null
+           and p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REPORDER_DATE is null
+           THEN
+        */
+        ApiCrownCourtSummary crownCourtSummary = requestDTO.getCrownCourtSummary();
+        if (crownCourtSummary.getRepOrderDecision() != null && crownCourtSummary.getRepOrderDate() == null) {
+            /*
+              CASE p_app_obj.case_type_object.case_type
+              */
+            switch (requestDTO.getCaseType()) {
+                /*
+                 WHEN 'INDICTABLE' THEN p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REPORDER_DATE := p_app_obj.decision_date;
+                 */
+                case INDICTABLE:
+                    crownCourtSummary.setRepOrderDate(requestDTO.getDecisionDate());
+                    break;
+                /*
+                 WHEN 'EITHER WAY' THEN
+                    IF p_app_obj.mags_outcome_object.outcome = 'COMMITTED FOR TRIAL' THEN
+                       IF p_app_obj.decision_reason_object.code = 'GRANTED' THEN
+                          p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REPORDER_DATE := p_app_obj.decision_date;
+                       ELSIF p_app_obj.decision_reason_object.code like 'FAIL%' THEN
+                          p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REPORDER_DATE := p_app_obj.committal_date;
+                       END IF;
+                    END IF;
+                */
+                case EITHER_WAY:
+                    if (requestDTO.getMagCourtOutcome() == MagCourtOutcome.COMMITTED_FOR_TRIAL) {
+                        switch (requestDTO.getDecisionReason()) {
+                            case GRANTED -> crownCourtSummary.setRepOrderDate(requestDTO.getDecisionDate());
+                            case FAILIOJ, FAILMEIOJ, FAILMEANS -> crownCourtSummary.setRepOrderDate(requestDTO.getCommittalDate());
+                            default -> crownCourtSummary.setRepOrderDate(null);
+                        }
+                    }
+                    break;
+                /*
+                 WHEN 'SUMMARY ONLY' THEN null;
+                 WHEN 'CC ALREADY' THEN p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REPORDER_DATE := p_app_obj.date_received;
+                 WHEN 'COMMITAL' THEN p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REPORDER_DATE := p_app_obj.date_received;
+                 */
+                case CC_ALREADY, COMMITAL:
+                    crownCourtSummary.setRepOrderDate(requestDTO.getDateReceived());
+                    break;
+                /*
+                 WHEN 'APPEAL CC' THEN
+                    BEGIN
+                       select DECISION_DATE
+                         into p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REPORDER_DATE
+                         from IOJ_APPEALS J
+                        where decision_result = 'PASS'
+                          AND REPLACED = 'N'
+                          and REP_ID = p_app_obj.REP_ID;
+                    exception
+                    WHEN NO_DATA_FOUND
+                    THEN
+                       p_app_obj.crown_court_overview_object.crown_court_summary_object.CC_REPORDER_DATE := p_app_obj.date_received;
+                    end;
+                    */
+                case APPEAL_CC:
+                    try {
+                        IOJAppealDTO iojAppealDTO = maatCourtDataService
+                                .getCurrentPassedIOJAppealFromRepId(requestDTO.getRepId(), requestDTO.getLaaTransactionId());
+                        crownCourtSummary.setRepOrderDate(iojAppealDTO.getDecisionDate());
+                    } catch (Exception ex) {
+                        crownCourtSummary.setRepOrderDate(requestDTO.getDateReceived());
+                    }
+                    break;
+                    /*
+                 ELSE null;
+              END CASE;
+              */
+                default:
+            }
+            /*
+       END IF;
+
+        --apparently the crown court rep order date can be overridden by caseworker- how to handle
+        --if it's already populated then this calculation won't override
+        --
+        END determine_crown_reporder_date;
+       */
+        }
+        return crownCourtSummary;
     }
 }

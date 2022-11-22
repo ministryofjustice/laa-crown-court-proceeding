@@ -19,4 +19,6 @@ public class Constants {
     public static final String DECLINED_REP_ORDER = "Declined Rep Order";
     public static final String NOT_ELIGIBLE_FOR_REP_ORDER = "Not eligible for Rep Order";
     public static final String THROUGH_ORDER = "Through Order";
+
+    public static final String LAA_TRANSACTION_ID = "Laa-Transaction-Id";
 }
