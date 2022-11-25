@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtsActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RepOrderService {
 
+    private final MaatCourtDataService maatCourtDataService;
     List<String> grantedRepOrderDecisions = List.of(Constants.GRANTED_FAILED_MEANS_TEST,
             Constants.GRANTED_PASSED_MEANS_TEST,
             Constants.GRANTED_PASSPORTED);
@@ -164,5 +166,39 @@ public class RepOrderService {
                 || requestDTO.getDecisionReason() == DecisionReason.FAILMEIOJ) {
             crownCourtSummary.setRepType(Constants.CROWN_COURT_ONLY);
         }
+    }
+
+    public ApiCrownCourtSummary determineRepOrderDate(CrownCourtsActionsRequestDTO requestDTO) {
+        ApiCrownCourtSummary crownCourtSummary = requestDTO.getCrownCourtSummary();
+        if (crownCourtSummary.getRepOrderDecision() != null && crownCourtSummary.getRepOrderDate() == null) {
+            switch (requestDTO.getCaseType()) {
+                case INDICTABLE:
+                    crownCourtSummary.setRepOrderDate(requestDTO.getDecisionDate());
+                    break;
+                case EITHER_WAY:
+                    if (requestDTO.getMagCourtOutcome() == MagCourtOutcome.COMMITTED_FOR_TRIAL) {
+                        switch (requestDTO.getDecisionReason()) {
+                            case GRANTED -> crownCourtSummary.setRepOrderDate(requestDTO.getDecisionDate());
+                            case FAILIOJ, FAILMEIOJ, FAILMEANS -> crownCourtSummary.setRepOrderDate(requestDTO.getCommittalDate());
+                            default -> crownCourtSummary.setRepOrderDate(null);
+                        }
+                    }
+                    break;
+                case CC_ALREADY, COMMITAL:
+                    crownCourtSummary.setRepOrderDate(requestDTO.getDateReceived());
+                    break;
+                case APPEAL_CC:
+                    try {
+                        IOJAppealDTO iojAppealDTO = maatCourtDataService
+                                .getCurrentPassedIOJAppealFromRepId(requestDTO.getRepId(), requestDTO.getLaaTransactionId());
+                        crownCourtSummary.setRepOrderDate(iojAppealDTO.getDecisionDate());
+                    } catch (Exception ex) {
+                        crownCourtSummary.setRepOrderDate(requestDTO.getDateReceived());
+                    }
+                    break;
+                default:
+            }
+        }
+        return crownCourtSummary;
     }
 }
