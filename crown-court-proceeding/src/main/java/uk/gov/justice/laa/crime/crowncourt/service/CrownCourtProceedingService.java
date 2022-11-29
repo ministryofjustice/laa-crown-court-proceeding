@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtsActionsRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -14,11 +18,27 @@ import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 public class CrownCourtProceedingService {
 
     private final RepOrderService repOrderService;
+    private final List<CaseType> caseTypes = List.of(CaseType.INDICTABLE,
+            CaseType.CC_ALREADY,
+            CaseType.APPEAL_CC,
+            CaseType.COMMITAL);
+    private final List<MagCourtOutcome> magCourtOutcomes = List.of(MagCourtOutcome.COMMITTED_FOR_TRIAL,
+            MagCourtOutcome.SENT_FOR_TRIAL,
+            MagCourtOutcome.COMMITTED,
+            MagCourtOutcome.APPEAL_TO_CC);
 
     public ApiCheckCrownCourtActionsResponse checkCrownCourtActions(CrownCourtsActionsRequestDTO requestDTO) {
-        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
-        return new ApiCheckCrownCourtActionsResponse()
-                .withRepOrderDecision(apiCrownCourtSummary.getRepOrderDecision())
-                .withRepOrderDate(apiCrownCourtSummary.getRepOrderDate());
+        ApiCheckCrownCourtActionsResponse apiCheckCrownCourtActionsResponse = new ApiCheckCrownCourtActionsResponse();
+        if (caseTypes.contains(requestDTO.getCaseType()) ||
+                (requestDTO.getCaseType() == CaseType.EITHER_WAY && magCourtOutcomes.contains(requestDTO.getMagCourtOutcome()))) {
+            repOrderService.getRepDecision(requestDTO);
+            repOrderService.determineCrownRepType(requestDTO);
+            ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineRepOrderDate(requestDTO);
+            apiCheckCrownCourtActionsResponse
+                    .withRepOrderDecision(apiCrownCourtSummary.getRepOrderDecision())
+                    .withRepOrderDate(apiCrownCourtSummary.getRepOrderDate())
+                    .withRepType(apiCrownCourtSummary.getRepType());
+        }
+        return apiCheckCrownCourtActionsResponse;
     }
 }
