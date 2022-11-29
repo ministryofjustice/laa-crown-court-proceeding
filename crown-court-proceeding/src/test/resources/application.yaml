@@ -45,8 +45,9 @@ swagger-ui:
 maatApi:
   oAuthEnabled: false
   baseUrl: http://localhost:8090
-  assessments-domain: /api/internal/v1/crowncourtproceeding
-  post-processing-url: ${maatApi.crowncourt-domain}/post-processing/{repId}
+  assessments-domain: /api/internal/v1/assessment
+  ioj-appeal-endpoints:
+    find-url: ${maatApi.assessments-domain}/ioj-appeal/repId/{repId}/current-passed
 
 retry-config:
   max-retries: 2

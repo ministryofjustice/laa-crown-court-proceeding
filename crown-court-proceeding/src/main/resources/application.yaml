@@ -90,3 +90,10 @@ cloud-platform:
 crown-court-proceeding:
   security:
     issuer-uri: http://localhost:${server.port}
+
+maatApi:
+  oAuthEnabled: true
+  baseUrl: ${MAAT_API_BASE_URL}
+  assessments-domain: /api/internal/v1/assessment
+  ioj-appeal-endpoints:
+    find-url: ${maatApi.assessments-domain}/ioj-appeal/repId/{repId}/current-passed
