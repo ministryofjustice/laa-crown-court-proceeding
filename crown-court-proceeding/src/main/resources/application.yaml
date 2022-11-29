@@ -64,6 +64,18 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${crown-court-proceeding.security.issuer-uri}
+sentry:
+  dsn: ${SENTRY_DSN}
+  environment: ${SENTRY_ENV}
+  release: 0.0.1
+  servername: aws-eks-container
+  send-default-pii: true
+  attach-stacktrace: true
+
+retry-config:
+  max-retries: 3
+  min-back-off-period: 5
+  jitter-value: 0.75
 
 cloud-platform:
   aws:
