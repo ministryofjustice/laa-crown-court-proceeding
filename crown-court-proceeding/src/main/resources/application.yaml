@@ -65,8 +65,8 @@ spring:
         jwt:
           issuer-uri: ${crown-court-proceeding.security.issuer-uri}
 sentry:
-  dsn: ${SENTRY_DSN}
-  environment:
+  dsn: https://5427f36530934d12bb20f0f31eb98d92@o345774.ingest.sentry.io/4504043349016576
+  environment: ${SENTRY_ENV}
   release: 0.0.1
   servername: aws-eks-container
   send-default-pii: true
