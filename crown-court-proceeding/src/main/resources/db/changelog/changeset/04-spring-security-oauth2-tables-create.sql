@@ -1,7 +1,7 @@
 --liquibase formatted sql
 --changeset vvelpuri:04-spring-security-oauth2-tables-create
 
-CREATE TABLE IF NOT EXISTS oauth2_registered_client (
+CREATE TABLE IF NOT EXISTS crown_court_proceeding.oauth2_registered_client (
     id VARCHAR(100) NOT NULL,
     client_id VARCHAR(100) NOT NULL,
     client_id_issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS oauth2_registered_client (
 );
 
 
-CREATE TABLE IF NOT EXISTS oauth2_authorization_consent (
+CREATE TABLE IF NOT EXISTS crown_court_proceeding.oauth2_authorization_consent (
     registered_client_id VARCHAR(100) NOT NULL,
     principal_name VARCHAR(200) NOT NULL,
     authorities VARCHAR(1000) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS oauth2_authorization_consent (
 );
 
 
-CREATE TABLE IF NOT EXISTS oauth2_authorization (
+CREATE TABLE IF NOT EXISTS crown_court_proceeding.oauth2_authorization (
     id VARCHAR(100) NOT NULL,
     registered_client_id VARCHAR(100) NOT NULL,
     principal_name VARCHAR(200) NOT NULL,
