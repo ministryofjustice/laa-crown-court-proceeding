@@ -7,6 +7,7 @@ import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.MaatApiConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 
 import java.util.Map;
 
@@ -28,6 +29,15 @@ public class MaatCourtDataService {
         );
         log.info(String.format(RESPONSE_STRING, response));
         return response;
+    }
+
+    public void updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO, String laaTransactionId) {
+        maatCourtDataClient.getApiResponseViaPUT(
+                updateRepOrderRequestDTO,
+                Void.class,
+                configuration.getRepOrderEndpoints().getUpdateUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
+        );
     }
 
 }

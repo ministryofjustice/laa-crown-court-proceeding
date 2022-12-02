@@ -1,7 +1,8 @@
 package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtsActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtApplicationRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
@@ -78,8 +79,8 @@ public class TestModelDataBuilder {
                 .withRepType("");
     }
 
-    public static CrownCourtsActionsRequestDTO getCrownCourtActionsRequestDTO() {
-        return CrownCourtsActionsRequestDTO.builder()
+    public static CrownCourtActionsRequestDTO getCrownCourtActionsRequestDTO() {
+        return CrownCourtActionsRequestDTO.builder()
                 .repId(TEST_REP_ID)
                 .caseType(CaseType.SUMMARY_ONLY)
                 .magCourtOutcome(MagCourtOutcome.APPEAL_TO_CC)
@@ -105,4 +106,12 @@ public class TestModelDataBuilder {
                 .decisionDate(TEST_IOJ_APPEAL_DECISION_DATE)
                 .build();
     }
+
+    public static CrownCourtApplicationRequestDTO getCrownCourtApplicationRequestDTO() {
+        return CrownCourtApplicationRequestDTO.builder()
+                .repId(TEST_REP_ID)
+                .crownCourtSummary(getCrownCourtSummary())
+                .build();
+    }
+
 }

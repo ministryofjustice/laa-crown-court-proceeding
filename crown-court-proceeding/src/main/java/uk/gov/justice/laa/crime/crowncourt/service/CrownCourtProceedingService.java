@@ -4,7 +4,8 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtsActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtApplicationRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
@@ -27,7 +28,7 @@ public class CrownCourtProceedingService {
             MagCourtOutcome.COMMITTED,
             MagCourtOutcome.APPEAL_TO_CC);
 
-    public ApiCheckCrownCourtActionsResponse checkCrownCourtActions(CrownCourtsActionsRequestDTO requestDTO) {
+    public ApiCheckCrownCourtActionsResponse checkCrownCourtActions(CrownCourtActionsRequestDTO requestDTO) {
         ApiCheckCrownCourtActionsResponse apiCheckCrownCourtActionsResponse = new ApiCheckCrownCourtActionsResponse();
         if (caseTypes.contains(requestDTO.getCaseType()) ||
                 (requestDTO.getCaseType() == CaseType.EITHER_WAY && magCourtOutcomes.contains(requestDTO.getMagCourtOutcome()))) {
@@ -40,5 +41,9 @@ public class CrownCourtProceedingService {
                     .withRepType(apiCrownCourtSummary.getRepType());
         }
         return apiCheckCrownCourtActionsResponse;
+    }
+
+    public void updateCrownCourtApplication(CrownCourtApplicationRequestDTO crownCourtApplicationRequestDTO) {
+        repOrderService.updateCCSentenceOrderDate(crownCourtApplicationRequestDTO);
     }
 }

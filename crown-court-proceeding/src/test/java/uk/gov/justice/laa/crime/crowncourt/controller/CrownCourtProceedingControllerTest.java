@@ -23,7 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtsActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.service.CrownCourtProceedingService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -105,7 +105,7 @@ class CrownCourtProceedingControllerTest {
         var checkCrownCourtActionsResponse =
                 TestModelDataBuilder.getApiCheckCrownCourtActionsResponse();
 
-        when(crownCourtProceedingService.checkCrownCourtActions(any(CrownCourtsActionsRequestDTO.class)))
+        when(crownCourtProceedingService.checkCrownCourtActions(any(CrownCourtActionsRequestDTO.class)))
                 .thenReturn(checkCrownCourtActionsResponse);
 
         mvc.perform(buildRequestGivenContent(HttpMethod.POST, checkCrownCourtActionsRequestJson))

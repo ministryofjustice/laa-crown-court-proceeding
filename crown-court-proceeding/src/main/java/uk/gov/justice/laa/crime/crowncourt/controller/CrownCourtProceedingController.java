@@ -10,15 +10,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtsActionsRequestDTOBuilder;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtsActionsRequestDTO;
+import org.springframework.web.bind.annotation.*;
+import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtActionsRequestDTOBuilder;
+import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtApplicationRequestDTOBuilder;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.ErrorDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateCrownCourtApplicationRequest;
 import uk.gov.justice.laa.crime.crowncourt.service.CrownCourtProceedingService;
 
 import javax.validation.Valid;
@@ -32,12 +31,12 @@ public class CrownCourtProceedingController {
 
     private final CrownCourtProceedingService crownCourtProceedingService;
 
-    private CrownCourtsActionsRequestDTO preProcessRequest(ApiCheckCrownCourtActionsRequest crownCourtActionsRequest) {
-        return new CrownCourtsActionsRequestDTOBuilder().buildRequestDTO(crownCourtActionsRequest);
+    private CrownCourtActionsRequestDTO preProcessRequest(ApiCheckCrownCourtActionsRequest crownCourtActionsRequest) {
+        return new CrownCourtActionsRequestDTOBuilder().buildRequestDTO(crownCourtActionsRequest);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Create an initial means assessment")
+    @Operation(description = "Check Crown Court Actions data")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiCheckCrownCourtActionsResponse.class)
@@ -61,10 +60,39 @@ public class CrownCourtProceedingController {
             )
     ) @Valid @RequestBody ApiCheckCrownCourtActionsRequest crownCourtActionsRequest) {
 
-        CrownCourtsActionsRequestDTO requestDTO = preProcessRequest(crownCourtActionsRequest);
+        CrownCourtActionsRequestDTO requestDTO = preProcessRequest(crownCourtActionsRequest);
         return ResponseEntity.ok(
                 crownCourtProceedingService.checkCrownCourtActions(requestDTO)
         );
+    }
+
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Update Crown Court Application")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ApiCheckCrownCourtActionsResponse.class)
+            )
+    )
+    @ApiResponse(responseCode = "400",
+            description = "Bad Request.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<Object> updateCrownCourtActions(@Parameter(description = "Update Crown Court Application",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ApiUpdateCrownCourtApplicationRequest.class)
+            )
+    ) @Valid @RequestBody ApiUpdateCrownCourtApplicationRequest crownCourtApplicationRequest) {
+        crownCourtProceedingService.updateCrownCourtApplication(
+                new CrownCourtApplicationRequestDTOBuilder().buildRequestDTO(crownCourtApplicationRequest));
+        return ResponseEntity.ok().build();
     }
 
 }
