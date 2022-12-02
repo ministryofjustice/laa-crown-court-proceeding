@@ -25,9 +25,5 @@
     }
   },
   "additionalProperties": false,
-  "required": [
-    "repId",
-    "userSession",
-    "crownCourtSummary"
-  ]
+  "required": ["repId", "userSession", "crownCourtSummary"]
 }
