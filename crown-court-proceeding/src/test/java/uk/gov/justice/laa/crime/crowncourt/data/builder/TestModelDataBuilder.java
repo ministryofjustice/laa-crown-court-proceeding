@@ -23,10 +23,13 @@ public class TestModelDataBuilder {
             LocalDateTime.of(2022, 9, 19, 15, 1, 25);
     public static final LocalDateTime TEST_IOJ_APPEAL_DECISION_DATE =
             LocalDateTime.of(2022, 1, 19, 15, 1, 25);
+    public static final LocalDateTime TEST_SENTENCE_ORDER_DATE =
+            LocalDateTime.of(2022, 2, 19, 15, 1, 25);
 
     public static final String MEANS_ASSESSMENT_TRANSACTION_ID = "7c49ebfe-fe3a-4f2f-8dad-f7b8f03b8327";
     public static final String MOCK_DECISION = "MOCK_DECISION";
     public static final Integer TEST_REP_ID = 91919;
+    public static final String TEST_USER = "TEST_USER";
 
     public static ApiCheckCrownCourtActionsRequest getApiCheckCrownCourtActionsRequest(boolean isValid) {
         return new ApiCheckCrownCourtActionsRequest()
@@ -113,8 +116,20 @@ public class TestModelDataBuilder {
                 .repId(TEST_REP_ID)
                 .crownCourtSummary(getCrownCourtSummary())
                 .userSession(new ApiUserSession()
-                        .withUserName("TEST_USER"))
+                        .withUserName(TEST_USER))
                 .build();
+    }
+
+    public static ApiUpdateCrownCourtApplicationRequest getApiUpdateCrownCourtApplicationRequest(boolean isValid) {
+        return new ApiUpdateCrownCourtApplicationRequest()
+                .withRepId(isValid ? TEST_REP_ID : null)
+                .withLaaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
+                .withCrownCourtSummary(new ApiCrownCourtSummary()
+                        .withRepId(isValid ? TEST_REP_ID : null)
+                        .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE))
+                .withUserSession(new ApiUserSession()
+                        .withUserName(isValid ? TEST_USER : null)
+                        .withSessionId(""));
     }
 
 }

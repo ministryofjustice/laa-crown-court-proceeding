@@ -68,11 +68,7 @@ public class CrownCourtProceedingController {
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Update Crown Court Application")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ApiCheckCrownCourtActionsResponse.class)
-            )
-    )
+    @ApiResponse(responseCode = "200", content = @Content())
     @ApiResponse(responseCode = "400",
             description = "Bad Request.",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -85,11 +81,7 @@ public class CrownCourtProceedingController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<Object> updateCrownCourtActions(@Parameter(description = "Update Crown Court Application",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ApiUpdateCrownCourtApplicationRequest.class)
-            )
-    ) @Valid @RequestBody ApiUpdateCrownCourtApplicationRequest crownCourtApplicationRequest) {
+    public ResponseEntity<Object> updateCrownCourtActions(@Valid @RequestBody ApiUpdateCrownCourtApplicationRequest crownCourtApplicationRequest) {
         crownCourtProceedingService.updateCrownCourtApplication(
                 new CrownCourtApplicationRequestDTOBuilder().buildRequestDTO(crownCourtApplicationRequest));
         return ResponseEntity.ok().build();
