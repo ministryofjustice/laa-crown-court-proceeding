@@ -8,13 +8,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
-import static org.mockito.Mockito.when;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RepOrderServiceTest {
@@ -598,5 +602,11 @@ class RepOrderServiceTest {
                 .thenReturn(TestModelDataBuilder.getIOJAppealDTO());
         assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_IOJ_APPEAL_DECISION_DATE);
+    }
+
+    @Test
+    void givenUpdateRepOrderRequest_whenUpdateCCSentenceOrderDateIsInvoked_thenUpdateRepOrderIsPerformed() {
+        repOrderService.updateCCSentenceOrderDate(TestModelDataBuilder.getCrownCourtApplicationRequestDTO());
+        verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class), anyString());
     }
 }

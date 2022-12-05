@@ -12,11 +12,8 @@ import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsRespon
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
 
-import java.time.LocalDate;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -138,12 +135,10 @@ class CrownCourtProceedingServiceTest {
     }
 
     @Test
-     void givenCCApplication_whenUpdateCrownCourtApplicationIsInvoked_thenSentenceOrderDateIsPersisted() {
+    void givenCCApplication_whenUpdateCrownCourtApplicationIsInvoked_thenSentenceOrderDateIsPersisted() {
         CrownCourtApplicationRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtApplicationRequestDTO();
         crownCourtProceedingService.updateCrownCourtApplication(requestDTO);
-
-//        assertThat(LocalDate.now()).isEqualTo(assessment.getDateCompleted().toLocalDate());
-//        verify(maatCourtDataService).updateCompletionDate(any(DateCompletionRequestDTO.class), anyString());
+        verify(repOrderService).updateCCSentenceOrderDate(any(CrownCourtApplicationRequestDTO.class));
     }
 
 

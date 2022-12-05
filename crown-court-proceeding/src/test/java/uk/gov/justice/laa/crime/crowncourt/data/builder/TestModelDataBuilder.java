@@ -109,8 +109,11 @@ public class TestModelDataBuilder {
 
     public static CrownCourtApplicationRequestDTO getCrownCourtApplicationRequestDTO() {
         return CrownCourtApplicationRequestDTO.builder()
+                .laaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
                 .repId(TEST_REP_ID)
                 .crownCourtSummary(getCrownCourtSummary())
+                .userSession(new ApiUserSession()
+                        .withUserName("TEST_USER"))
                 .build();
     }
 

@@ -48,6 +48,9 @@ maatApi:
   assessments-domain: /api/internal/v1/assessment
   ioj-appeal-endpoints:
     find-url: ${maatApi.assessments-domain}/ioj-appeal/repId/{repId}/current-passed
+  rep-order-endpoints:
+    find-url: ${maatApi.assessments-domain}/rep-orders/{repId}
+    update-url: ${maatApi.assessments-domain}/rep-orders
 
 retry-config:
   max-retries: 2

@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -45,9 +45,9 @@ class MaatCourtDataServiceTest {
     }
 
     @Test
-    public void givenUpdateRepOrderRequest_whenUpdateRepOrderIsInvoked_thenResponseIsReturned() {
+    void givenUpdateRepOrderRequest_whenUpdateRepOrderIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build(), LAA_TRANSACTION_ID);
-        verify(maatCourtDataClient).getApiResponseViaPOST(
+        verify(maatCourtDataClient).getApiResponseViaPUT(
                 any(UpdateRepOrderRequestDTO.class),
                 any(),
                 anyString(),
