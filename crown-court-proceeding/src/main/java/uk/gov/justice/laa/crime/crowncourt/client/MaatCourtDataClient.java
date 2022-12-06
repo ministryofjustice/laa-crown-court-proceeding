@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.client;
 
-import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +11,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 
 import java.util.Map;
 

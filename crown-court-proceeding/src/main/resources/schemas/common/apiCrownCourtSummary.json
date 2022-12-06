@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "apiCrownCourtOverview.json",
+  "id": "apiCrownCourtSummary.json",
   "type": "object",
-  "description": "Crown Court Overview",
+  "description": "Crown Court Summary",
   "properties": {
     "repOrderDecision": {
       "type": "string",
@@ -24,6 +24,11 @@
     "withdrawalDate": {
       "type": "string",
       "title": "crown court withdrawal date",
+      "format": "date-time"
+    },
+    "sentenceOrderDate": {
+      "type": "string",
+      "title": "crown court sentence order date",
       "format": "date-time"
     }
   },

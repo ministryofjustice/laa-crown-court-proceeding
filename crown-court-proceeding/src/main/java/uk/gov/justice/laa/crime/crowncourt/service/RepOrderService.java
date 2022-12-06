@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtsActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtApplicationRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
@@ -27,7 +29,7 @@ public class RepOrderService {
     List<String> failedRepOrderDecisions = List.of(Constants.FAILED_IO_J_APPEAL_FAILURE,
             Constants.FAILED_CF_S_FAILED_MEANS_TEST);
 
-    public ApiCrownCourtSummary getRepDecision(CrownCourtsActionsRequestDTO requestDTO) {
+    public ApiCrownCourtSummary getRepDecision(CrownCourtActionsRequestDTO requestDTO) {
 
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         String prevRepOrderDecision = apiCrownCourtSummary.getRepOrderDecision();
@@ -52,7 +54,7 @@ public class RepOrderService {
         return apiCrownCourtSummary;
     }
 
-    public String getDecisionByFinAssessment(CrownCourtsActionsRequestDTO requestDTO, ReviewResult reviewResult, boolean isValidCaseType) {
+    public String getDecisionByFinAssessment(CrownCourtActionsRequestDTO requestDTO, ReviewResult reviewResult, boolean isValidCaseType) {
 
         FullAssessmentResult fullAssessmentResult = FullAssessmentResult.getFrom(requestDTO.getFinancialAssessment().getFullResult());
         CurrentStatus fullAssessmentStatus = requestDTO.getFinancialAssessment().getFullStatus();
@@ -128,7 +130,7 @@ public class RepOrderService {
         return null;
     }
 
-    public ApiCrownCourtSummary determineCrownRepType(CrownCourtsActionsRequestDTO requestDTO) {
+    public ApiCrownCourtSummary determineCrownRepType(CrownCourtActionsRequestDTO requestDTO) {
         ApiCrownCourtSummary crownCourtSummary = requestDTO.getCrownCourtSummary();
         if (crownCourtSummary.getRepOrderDecision() != null) {
             if (requestDTO.getMagCourtOutcome() == MagCourtOutcome.SENT_FOR_TRIAL
@@ -148,7 +150,7 @@ public class RepOrderService {
         return crownCourtSummary;
     }
 
-    public void determineRepTypeByRepOrderDecision(CrownCourtsActionsRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
+    public void determineRepTypeByRepOrderDecision(CrownCourtActionsRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
         if ((grantedRepOrderDecisions.contains(crownCourtSummary.getRepOrderDecision()) && requestDTO.getCaseType() == CaseType.APPEAL_CC) ||
                 (grantedPassRepOrderDecisions.contains(crownCourtSummary.getRepOrderDecision()) && requestDTO.getCaseType() == CaseType.COMMITAL)) {
             crownCourtSummary.setRepType(Constants.CROWN_COURT_ONLY);
@@ -157,7 +159,7 @@ public class RepOrderService {
         }
     }
 
-    public void determineRepTypeByDecisionReason(CrownCourtsActionsRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
+    public void determineRepTypeByDecisionReason(CrownCourtActionsRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
         if (requestDTO.getDecisionReason() == DecisionReason.GRANTED) {
             crownCourtSummary.setRepType(Constants.THROUGH_ORDER);
             crownCourtSummary.setRepId(requestDTO.getRepId());
@@ -168,7 +170,7 @@ public class RepOrderService {
         }
     }
 
-    public ApiCrownCourtSummary determineRepOrderDate(CrownCourtsActionsRequestDTO requestDTO) {
+    public ApiCrownCourtSummary determineRepOrderDate(CrownCourtActionsRequestDTO requestDTO) {
         ApiCrownCourtSummary crownCourtSummary = requestDTO.getCrownCourtSummary();
         if (crownCourtSummary.getRepOrderDecision() != null && crownCourtSummary.getRepOrderDate() == null) {
             switch (requestDTO.getCaseType()) {
@@ -200,5 +202,14 @@ public class RepOrderService {
             }
         }
         return crownCourtSummary;
+    }
+
+    public void updateCCSentenceOrderDate(CrownCourtApplicationRequestDTO crownCourtApplicationRequestDTO) {
+        UpdateRepOrderRequestDTO build = UpdateRepOrderRequestDTO.builder()
+                .repId(crownCourtApplicationRequestDTO.getRepId())
+                .sentenceOrderDate(crownCourtApplicationRequestDTO.getCrownCourtSummary().getSentenceOrderDate())
+                .userModified(crownCourtApplicationRequestDTO.getUserSession().getUserName())
+                .build();
+        maatCourtDataService.updateRepOrder(build, crownCourtApplicationRequestDTO.getLaaTransactionId());
     }
 }
