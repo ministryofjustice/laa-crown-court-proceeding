@@ -649,6 +649,11 @@ class RepOrderServiceTest {
         requestDTO.getCrownCourtSummary().setRepOrderDate(null);
         softly.assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isNull();
+
+        requestDTO.getCrownCourtSummary().setRepOrderDecision(Constants.REFUSED_INELIGIBLE);
+        requestDTO.getCrownCourtSummary().setRepOrderDate(null);
+        softly.assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
+                .isEqualTo(requestDTO.getCommittalDate());
     }
 
     @Test
@@ -670,11 +675,11 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenSummaryOnlyCase_whenDetermineRepOrderDateIsInvoked_RepOrderDateIsSetToDateReceived() {
+    void givenSummaryOnlyCase_whenDetermineRepOrderDateIsInvoked_RepOrderDateIsNull() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         requestDTO.getCrownCourtSummary().setRepOrderDate(null);
         assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
-                .isEqualTo(requestDTO.getDateReceived());
+                .isNull();
     }
 
     @Test
