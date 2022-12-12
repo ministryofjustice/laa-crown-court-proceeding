@@ -3,7 +3,6 @@ package uk.gov.justice.laa.crime.crowncourt.client;
 import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -20,7 +19,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MaatCourtDataClient {
 
-    @Qualifier("maatAPIOAuth2WebClient")
     private final WebClient webClient;
 
     public <T> T getApiResponseViaGET(Class<T> responseClass, String url, Map<String, String> headers, Object... urlVariables) {

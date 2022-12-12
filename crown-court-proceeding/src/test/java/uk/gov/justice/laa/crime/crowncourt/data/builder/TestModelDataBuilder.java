@@ -91,6 +91,7 @@ public class TestModelDataBuilder {
                 .crownCourtSummary(getCrownCourtSummary())
                 .passportAssessment(getPassportAssessment())
                 .financialAssessment(getFinancialAssessment())
+                .dateReceived(TEST_DATE_RECEIVED)
                 .iojAppeal(getIojAppeal())
                 .build();
     }

@@ -39,7 +39,7 @@ class MaatCourtDataServiceTest {
                 .thenReturn(expected);
 
         IOJAppealDTO response =
-                maatCourtDataService.getCurrentPassedIOJAppealFromRepId(TestModelDataBuilder.TEST_REP_ID, LAA_TRANSACTION_ID);
+                maatCourtDataService.getIOJAppeal(TestModelDataBuilder.TEST_REP_ID, LAA_TRANSACTION_ID);
 
         assertThat(response).isEqualTo(expected);
     }

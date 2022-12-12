@@ -20,7 +20,7 @@ public class MaatCourtDataService {
     private final MaatCourtDataClient maatCourtDataClient;
     public static final String RESPONSE_STRING = "Response from Court Data API: %s";
 
-    public IOJAppealDTO getCurrentPassedIOJAppealFromRepId(Integer repId, String laaTransactionId) {
+    public IOJAppealDTO getIOJAppeal(Integer repId, String laaTransactionId) {
         IOJAppealDTO response = maatCourtDataClient.getApiResponseViaGET(
                 IOJAppealDTO.class,
                 configuration.getIojAppealEndpoints().getFindUrl(),
