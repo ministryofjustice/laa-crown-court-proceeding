@@ -1,5 +1,8 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,10 +21,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(SoftAssertionsExtension.class)
 class CrownCourtProceedingServiceTest {
+
+    @InjectSoftAssertions
+    private SoftAssertions softly;
 
     @InjectMocks
     private CrownCourtProceedingService crownCourtProceedingService;
+
     @Mock
     private RepOrderService repOrderService;
 
@@ -40,8 +48,12 @@ class CrownCourtProceedingServiceTest {
         requestDTO.setCaseType(CaseType.INDICTABLE);
         setupMockData();
         ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
-        assertThat(response.getRepOrderDecision()).isEqualTo(TestModelDataBuilder.MOCK_DECISION);
-        assertThat(response.getRepOrderDate()).isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertThat(response.getRepOrderDecision())
+                .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
+
+        softly.assertThat(response.getRepOrderDate())
+                .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
     }
 
     @Test
@@ -50,8 +62,12 @@ class CrownCourtProceedingServiceTest {
         requestDTO.setCaseType(CaseType.CC_ALREADY);
         setupMockData();
         ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
-        assertThat(response.getRepOrderDecision()).isEqualTo(TestModelDataBuilder.MOCK_DECISION);
-        assertThat(response.getRepOrderDate()).isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertThat(response.getRepOrderDecision())
+                .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
+
+        softly.assertThat(response.getRepOrderDate())
+                .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
     }
 
     @Test
@@ -60,8 +76,12 @@ class CrownCourtProceedingServiceTest {
         requestDTO.setCaseType(CaseType.APPEAL_CC);
         setupMockData();
         ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
-        assertThat(response.getRepOrderDecision()).isEqualTo(TestModelDataBuilder.MOCK_DECISION);
-        assertThat(response.getRepOrderDate()).isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertThat(response.getRepOrderDecision())
+                .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
+
+        softly.assertThat(response.getRepOrderDate())
+                .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
     }
 
     @Test
@@ -70,8 +90,12 @@ class CrownCourtProceedingServiceTest {
         requestDTO.setCaseType(CaseType.COMMITAL);
         setupMockData();
         ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
-        assertThat(response.getRepOrderDecision()).isEqualTo(TestModelDataBuilder.MOCK_DECISION);
-        assertThat(response.getRepOrderDate()).isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertThat(response.getRepOrderDecision())
+                .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
+
+        softly.assertThat(response.getRepOrderDate())
+                .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
     }
 
     @Test
@@ -81,8 +105,12 @@ class CrownCourtProceedingServiceTest {
         requestDTO.setMagCourtOutcome(MagCourtOutcome.COMMITTED);
         setupMockData();
         ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
-        assertThat(response.getRepOrderDecision()).isEqualTo(TestModelDataBuilder.MOCK_DECISION);
-        assertThat(response.getRepOrderDate()).isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertThat(response.getRepOrderDecision())
+                .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
+
+        softly.assertThat(response.getRepOrderDate())
+                .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
     }
 
     @Test
@@ -92,8 +120,12 @@ class CrownCourtProceedingServiceTest {
         requestDTO.setMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL);
         setupMockData();
         ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
-        assertThat(response.getRepOrderDecision()).isEqualTo(TestModelDataBuilder.MOCK_DECISION);
-        assertThat(response.getRepOrderDate()).isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertThat(response.getRepOrderDecision())
+                .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
+
+        softly.assertThat(response.getRepOrderDate())
+                .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
     }
 
     @Test
@@ -103,8 +135,12 @@ class CrownCourtProceedingServiceTest {
         requestDTO.setMagCourtOutcome(MagCourtOutcome.SENT_FOR_TRIAL);
         setupMockData();
         ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
-        assertThat(response.getRepOrderDecision()).isEqualTo(TestModelDataBuilder.MOCK_DECISION);
-        assertThat(response.getRepOrderDate()).isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertThat(response.getRepOrderDecision())
+                .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
+
+        softly.assertThat(response.getRepOrderDate())
+                .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
     }
 
     @Test
@@ -114,8 +150,12 @@ class CrownCourtProceedingServiceTest {
         requestDTO.setMagCourtOutcome(MagCourtOutcome.APPEAL_TO_CC);
         setupMockData();
         ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
-        assertThat(response.getRepOrderDecision()).isEqualTo(TestModelDataBuilder.MOCK_DECISION);
-        assertThat(response.getRepOrderDate()).isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertThat(response.getRepOrderDecision())
+                .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
+
+        softly.assertThat(response.getRepOrderDate())
+                .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
     }
 
     @Test

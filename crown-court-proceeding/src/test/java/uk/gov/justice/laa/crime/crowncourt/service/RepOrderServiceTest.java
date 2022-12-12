@@ -1,5 +1,8 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +24,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(SoftAssertionsExtension.class)
 class RepOrderServiceTest {
+
+    @InjectSoftAssertions
+    private SoftAssertions softly;
 
     @InjectMocks
     private RepOrderService repOrderService;
@@ -52,21 +59,28 @@ class RepOrderServiceTest {
 
     @Test
     void testCaseTypeConditions() {
-        assertThat(repOrderService.isValidCaseType(CaseType.INDICTABLE, null, null))
+        softly.assertThat(repOrderService.isValidCaseType(CaseType.INDICTABLE, null, null))
                 .isTrue();
-        assertThat(repOrderService.isValidCaseType(CaseType.CC_ALREADY, null, null))
+
+        softly.assertThat(repOrderService.isValidCaseType(CaseType.CC_ALREADY, null, null))
                 .isTrue();
-        assertThat(repOrderService.isValidCaseType(CaseType.COMMITAL, null, null))
+
+        softly.assertThat(repOrderService.isValidCaseType(CaseType.COMMITAL, null, null))
                 .isTrue();
-        assertThat(repOrderService.isValidCaseType(CaseType.EITHER_WAY, MagCourtOutcome.COMMITTED_FOR_TRIAL, null))
+
+        softly.assertThat(repOrderService.isValidCaseType(CaseType.EITHER_WAY, MagCourtOutcome.COMMITTED_FOR_TRIAL, null))
                 .isTrue();
-        assertThat(repOrderService.isValidCaseType(CaseType.EITHER_WAY, null, null))
+
+        softly.assertThat(repOrderService.isValidCaseType(CaseType.EITHER_WAY, null, null))
                 .isFalse();
-        assertThat(repOrderService.isValidCaseType(CaseType.APPEAL_CC, null, ReviewResult.PASS))
+
+        softly.assertThat(repOrderService.isValidCaseType(CaseType.APPEAL_CC, null, ReviewResult.PASS))
                 .isTrue();
-        assertThat(repOrderService.isValidCaseType(CaseType.APPEAL_CC, null, ReviewResult.FAIL))
+
+        softly.assertThat(repOrderService.isValidCaseType(CaseType.APPEAL_CC, null, ReviewResult.FAIL))
                 .isFalse();
-        assertThat(repOrderService.isValidCaseType(null, null, null))
+
+        softly.assertThat(repOrderService.isValidCaseType(null, null, null))
                 .isFalse();
     }
 
@@ -134,21 +148,28 @@ class RepOrderServiceTest {
 
     @Test
     void testDecisionReasonsByCaseType() {
-        assertThat(repOrderService.getDecisionByCaseType(null, CaseType.SUMMARY_ONLY, null))
+        softly.assertThat(repOrderService.getDecisionByCaseType(null, CaseType.SUMMARY_ONLY, null))
                 .isNull();
-        assertThat(repOrderService.getDecisionByCaseType(null, CaseType.COMMITAL, null))
+
+        softly.assertThat(repOrderService.getDecisionByCaseType(null, CaseType.COMMITAL, null))
                 .isEqualTo(Constants.FAILED_CF_S_FAILED_MEANS_TEST);
-        assertThat(repOrderService.getDecisionByCaseType(null, CaseType.INDICTABLE, null))
+
+        softly.assertThat(repOrderService.getDecisionByCaseType(null, CaseType.INDICTABLE, null))
                 .isEqualTo(Constants.GRANTED_FAILED_MEANS_TEST);
-        assertThat(repOrderService.getDecisionByCaseType(null, CaseType.CC_ALREADY, null))
+
+        softly.assertThat(repOrderService.getDecisionByCaseType(null, CaseType.CC_ALREADY, null))
                 .isEqualTo(Constants.GRANTED_FAILED_MEANS_TEST);
-        assertThat(repOrderService.getDecisionByCaseType(null, CaseType.EITHER_WAY, null))
+
+        softly.assertThat(repOrderService.getDecisionByCaseType(null, CaseType.EITHER_WAY, null))
                 .isNull();
-        assertThat(repOrderService.getDecisionByCaseType(null, CaseType.EITHER_WAY, MagCourtOutcome.COMMITTED_FOR_TRIAL))
+
+        softly.assertThat(repOrderService.getDecisionByCaseType(null, CaseType.EITHER_WAY, MagCourtOutcome.COMMITTED_FOR_TRIAL))
                 .isEqualTo(Constants.GRANTED_FAILED_MEANS_TEST);
-        assertThat(repOrderService.getDecisionByCaseType(ReviewResult.FAIL, CaseType.APPEAL_CC, null))
+
+        softly.assertThat(repOrderService.getDecisionByCaseType(ReviewResult.FAIL, CaseType.APPEAL_CC, null))
                 .isNull();
-        assertThat(repOrderService.getDecisionByCaseType(ReviewResult.PASS, CaseType.APPEAL_CC, null))
+
+        softly.assertThat(repOrderService.getDecisionByCaseType(ReviewResult.PASS, CaseType.APPEAL_CC, null))
                 .isEqualTo(Constants.GRANTED_FAILED_MEANS_TEST);
     }
 
@@ -169,8 +190,11 @@ class RepOrderServiceTest {
         requestDTO.getIojAppeal().setDecisionResult(ReviewResult.FAIL.getResult());
         requestDTO.getCrownCourtSummary().setRepOrderDecision(Constants.FAILED_IO_J_APPEAL_FAILURE);
         ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
-        assertThat(apiCrownCourtSummary.getRepOrderDecision()).isEqualTo(Constants.FAILED_IO_J_APPEAL_FAILURE);
-        assertThat(apiCrownCourtSummary.getRepOrderDate())
+
+        softly.assertThat(apiCrownCourtSummary.getRepOrderDecision())
+                .isEqualTo(Constants.FAILED_IO_J_APPEAL_FAILURE);
+
+        softly.assertThat(apiCrownCourtSummary.getRepOrderDate())
                 .isEqualTo(requestDTO.getCrownCourtSummary().getRepOrderDate());
     }
 
@@ -354,8 +378,11 @@ class RepOrderServiceTest {
         requestDTO.setDecisionReason(DecisionReason.GRANTED);
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         repOrderService.determineRepTypeByDecisionReason(requestDTO, apiCrownCourtSummary);
-        assertThat(apiCrownCourtSummary.getRepId()).isEqualTo(requestDTO.getRepId());
-        assertThat(apiCrownCourtSummary.getRepType())
+
+        softly.assertThat(apiCrownCourtSummary.getRepId())
+                .isEqualTo(requestDTO.getRepId());
+
+        softly.assertThat(apiCrownCourtSummary.getRepType())
                 .isEqualTo(Constants.THROUGH_ORDER);
     }
 
@@ -521,9 +548,11 @@ class RepOrderServiceTest {
         requestDTO.setMagCourtOutcome(MagCourtOutcome.SENT_FOR_TRIAL);
         requestDTO.setDecisionReason(DecisionReason.GRANTED);
         ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineCrownRepType(requestDTO);
-        assertThat(apiCrownCourtSummary.getRepType())
+
+        softly.assertThat(apiCrownCourtSummary.getRepType())
                 .isEqualTo(Constants.THROUGH_ORDER);
-        assertThat(apiCrownCourtSummary.getRepId())
+
+        softly.assertThat(apiCrownCourtSummary.getRepId())
                 .isEqualTo(requestDTO.getRepId());
     }
 
@@ -533,9 +562,11 @@ class RepOrderServiceTest {
         requestDTO.setDecisionReason(DecisionReason.GRANTED);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL);
         ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineCrownRepType(requestDTO);
-        assertThat(apiCrownCourtSummary.getRepType())
+
+        softly.assertThat(apiCrownCourtSummary.getRepType())
                 .isEqualTo(Constants.THROUGH_ORDER);
-        assertThat(apiCrownCourtSummary.getRepId())
+
+        softly. assertThat(apiCrownCourtSummary.getRepId())
                 .isEqualTo(requestDTO.getRepId());
     }
 
@@ -588,36 +619,35 @@ class RepOrderServiceTest {
         assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isNull();
     }
-
     @Test
-    void testEitherWayCase_CommittedForTrail() {
+    void givenEitherWayCase_whenDetermineRepOrderDateIsInvoked_thenRepOrderDateIsCorrect() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         requestDTO.setCaseType(CaseType.EITHER_WAY);
         requestDTO.getCrownCourtSummary().setRepOrderDate(null);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL);
 
         requestDTO.setDecisionReason(DecisionReason.GRANTED);
-        assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
+        softly.assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isEqualTo(requestDTO.getDecisionDate());
 
         requestDTO.setDecisionReason(DecisionReason.FAILIOJ);
         requestDTO.getCrownCourtSummary().setRepOrderDate(null);
-        assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
+        softly.assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isEqualTo(requestDTO.getCommittalDate());
 
         requestDTO.setDecisionReason(DecisionReason.FAILMEIOJ);
         requestDTO.getCrownCourtSummary().setRepOrderDate(null);
-        assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
+        softly.assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isEqualTo(requestDTO.getCommittalDate());
 
         requestDTO.setDecisionReason(DecisionReason.FAILMEANS);
         requestDTO.getCrownCourtSummary().setRepOrderDate(null);
-        assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
+        softly.assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isEqualTo(requestDTO.getCommittalDate());
 
         requestDTO.setDecisionReason(DecisionReason.ABANDONED);
         requestDTO.getCrownCourtSummary().setRepOrderDate(null);
-        assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
+        softly.assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isNull();
     }
 
