@@ -37,21 +37,21 @@ class RepOrderServiceTest {
     private MaatCourtDataService maatCourtDataService;
 
     @Test
-    void givenValidIoJResult_whenGetReviewResultIsInvoked_ReviewResultIsReturned() {
+    void givenValidIoJResult_whenGetReviewResultIsInvoked_reviewResultIsReturned() {
         ApiIOJAppeal apiIOJAppeal = new ApiIOJAppeal().withIojResult(ReviewResult.PASS.getResult());
         assertThat(repOrderService.getReviewResult(apiIOJAppeal))
                 .isEqualTo(ReviewResult.PASS);
     }
 
     @Test
-    void givenNullIoJResultAndValidDecisionResult_whenGetReviewResultIsInvoked_ReviewResultIsReturned() {
+    void givenNullIoJResultAndValidDecisionResult_whenGetReviewResultIsInvoked_reviewResultIsReturned() {
         ApiIOJAppeal apiIOJAppeal = new ApiIOJAppeal().withDecisionResult(ReviewResult.FAIL.getResult());
         assertThat(repOrderService.getReviewResult(apiIOJAppeal))
                 .isEqualTo(ReviewResult.FAIL);
     }
 
     @Test
-    void givenNullIoJResultAndNullDecisionResult_whenGetReviewResultIsInvoked_NullIsReturned() {
+    void givenNullIoJResultAndNullDecisionResult_whenGetReviewResultIsInvoked_nullIsReturned() {
         ApiIOJAppeal apiIOJAppeal = new ApiIOJAppeal();
         assertThat(repOrderService.getReviewResult(apiIOJAppeal))
                 .isNull();
@@ -85,7 +85,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenPassportAssessmentIsFail_whenGetDecisionByPassportAssessmentIsInvoked_NullIsReturned() {
+    void givenPassportAssessmentIsFail_whenGetDecisionByPassportAssessmentIsInvoked_nullIsReturned() {
         ApiPassportAssessment apiPassportAssessment = new ApiPassportAssessment()
                 .withResult(PassportAssessmentResult.FAIL.getResult());
         assertThat(repOrderService.getDecisionByPassportAssessment(apiPassportAssessment, true))
@@ -93,7 +93,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenPassportAssessmentIsPassAndStatusIsInProgress_whenGetDecisionByPassportAssessmentIsInvoked_NullIsReturned() {
+    void givenPassportAssessmentIsPassAndStatusIsInProgress_whenGetDecisionByPassportAssessmentIsInvoked_nullIsReturned() {
         ApiPassportAssessment apiPassportAssessment = new ApiPassportAssessment()
                 .withResult(PassportAssessmentResult.PASS.getResult())
                 .withStatus(CurrentStatus.IN_PROGRESS);
@@ -102,7 +102,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenPassportAssessmentIsPassAndStatusIsCompleteAndCheckCaseTypeIsFalse_whenGetDecisionByPassportAssessmentIsInvoked_NullIsReturned() {
+    void givenPassportAssessmentIsPassAndStatusIsCompleteAndCheckCaseTypeIsFalse_whenGetDecisionByPassportAssessmentIsInvoked_nullIsReturned() {
         ApiPassportAssessment apiPassportAssessment = new ApiPassportAssessment()
                 .withResult(PassportAssessmentResult.PASS.getResult())
                 .withStatus(CurrentStatus.COMPLETE);
@@ -111,7 +111,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenPassportAssessmentIsPassAndStatusIsCompleteAndCheckCaseTypeIsTrue_whenGetDecisionByPassportAssessmentIsInvoked_DecisionIsReturned() {
+    void givenPassportAssessmentIsPassAndStatusIsCompleteAndCheckCaseTypeIsTrue_whenGetDecisionByPassportAssessmentIsInvoked_decisionIsReturned() {
         ApiPassportAssessment apiPassportAssessment = new ApiPassportAssessment()
                 .withResult(PassportAssessmentResult.PASS.getResult())
                 .withStatus(CurrentStatus.COMPLETE);
@@ -120,7 +120,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenPassportAssessmentIsTempAndStatusIsInProgress_whenGetDecisionByPassportAssessmentIsInvoked_NullIsReturned() {
+    void givenPassportAssessmentIsTempAndStatusIsInProgress_whenGetDecisionByPassportAssessmentIsInvoked_nullIsReturned() {
         ApiPassportAssessment apiPassportAssessment = new ApiPassportAssessment()
                 .withResult(PassportAssessmentResult.TEMP.getResult())
                 .withStatus(CurrentStatus.IN_PROGRESS);
@@ -129,7 +129,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenPassportAssessmentIsTempAndStatusIsCompleteAndCheckCaseTypeIsFalse_whenGetDecisionByPassportAssessmentIsInvoked_NullIsReturned() {
+    void givenPassportAssessmentIsTempAndStatusIsCompleteAndCheckCaseTypeIsFalse_whenGetDecisionByPassportAssessmentIsInvoked_nullIsReturned() {
         ApiPassportAssessment apiPassportAssessment = new ApiPassportAssessment()
                 .withResult(PassportAssessmentResult.TEMP.getResult())
                 .withStatus(CurrentStatus.COMPLETE);
@@ -138,7 +138,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenPassportAssessmentIsTempAndStatusIsCompleteAndCheckCaseTypeIsTrue_whenGetDecisionByPassportAssessmentIsInvoked_DecisionIsReturned() {
+    void givenPassportAssessmentIsTempAndStatusIsCompleteAndCheckCaseTypeIsTrue_whenGetDecisionByPassportAssessmentIsInvoked_decisionIsReturned() {
         ApiPassportAssessment apiPassportAssessment = new ApiPassportAssessment()
                 .withResult(PassportAssessmentResult.TEMP.getResult())
                 .withStatus(CurrentStatus.COMPLETE);
@@ -184,7 +184,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenPrevDecisionMatchesNewDecision_whenGetRepDecisionIsInvoked_RepDateIsMatched() {
+    void givenPrevDecisionMatchesNewDecision_whenGetRepDecisionIsInvoked_repDateIsMatched() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         requestDTO.setCaseType(CaseType.APPEAL_CC);
         requestDTO.getIojAppeal().setDecisionResult(ReviewResult.FAIL.getResult());
@@ -199,7 +199,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenIndictableCaseWithPassportAssessmentIsTempAndStatusIsComplete_whenGetRepDecisionIsInvoked_DecisionIsReturned() {
+    void givenIndictableCaseWithPassportAssessmentIsTempAndStatusIsComplete_whenGetRepDecisionIsInvoked_decisionIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         requestDTO.setCaseType(CaseType.INDICTABLE);
         requestDTO.getIojAppeal().setDecisionResult(ReviewResult.FAIL.getResult());
@@ -210,7 +210,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenIneligibleFullAssessmentAndSentForTrail_whenGetRepDecisionIsInvoked_RefusedIneligibleIsReturned() {
+    void givenIneligibleFullAssessmentAndSentForTrail_whenGetRepDecisionIsInvoked_refusedIneligibleIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
                 InitAssessmentResult.PASS.getResult(), FullAssessmentResult.INEL.getResult(), ReviewResult.PASS);
@@ -221,7 +221,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenIneligibleFullAssessmentAndCommittedForTrail_whenGetRepDecisionIsInvoked_RefusedIneligibleIsReturned() {
+    void givenIneligibleFullAssessmentAndCommittedForTrail_whenGetRepDecisionIsInvoked_refusedIneligibleIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
                 InitAssessmentResult.PASS.getResult(), FullAssessmentResult.INEL.getResult(), ReviewResult.PASS);
@@ -232,7 +232,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenAppealCCIneligibleInProgressFullAssessment_whenGetRepDecisionIsInvoked_GrantedPassedMeansTestIsReturned() {
+    void givenAppealCCIneligibleInProgressFullAssessment_whenGetRepDecisionIsInvoked_grantedPassedMeansTestIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.IN_PROGRESS,
                 InitAssessmentResult.PASS.getResult(), FullAssessmentResult.INEL.getResult(), ReviewResult.PASS);
@@ -244,7 +244,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenIndictableCaseWithPassedHardshipOverview_whenGetRepDecisionIsInvoked_GrantedPassedMeansTestIsReturned() {
+    void givenIndictableCaseWithPassedHardshipOverview_whenGetRepDecisionIsInvoked_grantedPassedMeansTestIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
                 InitAssessmentResult.FAIL.getResult(), FullAssessmentResult.FAIL.getResult(), ReviewResult.PASS);
@@ -255,7 +255,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenIndictableCaseWithFailedInitialAssessment_whenGetRepDecisionIsInvoked_GrantedFailedMeansTestIsReturned() {
+    void givenIndictableCaseWithFailedInitialAssessment_whenGetRepDecisionIsInvoked_grantedFailedMeansTestIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
                 InitAssessmentResult.FAIL.getResult(), FullAssessmentResult.FAIL.getResult(), ReviewResult.FAIL);
@@ -266,7 +266,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenIndictableCaseWithFailedFullAssessment_whenGetRepDecisionIsInvoked_GrantedFailedMeansTestIsReturned() {
+    void givenIndictableCaseWithFailedFullAssessment_whenGetRepDecisionIsInvoked_grantedFailedMeansTestIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
                 InitAssessmentResult.FAIL.getResult(), FullAssessmentResult.FAIL.getResult(), ReviewResult.FAIL);
@@ -277,7 +277,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenInProgressFullAssessment_whenGetRepDecisionIsInvoked_NullDecisionIsReturned() {
+    void givenInProgressFullAssessment_whenGetRepDecisionIsInvoked_nullDecisionIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.IN_PROGRESS,
                 InitAssessmentResult.FAIL.getResult(), FullAssessmentResult.FAIL.getResult(), ReviewResult.FAIL);
@@ -335,7 +335,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenCommittalCaseWithFullAssessmentResultFail_whenGetDecisionByFinAssessmentIsInvoked_FailedCFSFailedMeansTestIsReturned() {
+    void givenCommittalCaseWithFullAssessmentResultFail_whenGetDecisionByFinAssessmentIsInvoked_failedCFSFailedMeansTestIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         setUpFinAssessment(requestDTO, CurrentStatus.IN_PROGRESS, CurrentStatus.COMPLETE,
                 InitAssessmentResult.FAIL.getResult(), FullAssessmentResult.FAIL.getResult(), ReviewResult.FAIL);
@@ -345,7 +345,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenHardshipOverviewResultPassWithValidCaseType_whenGetDecisionByFinAssessmentIsInvoked_GrantedPassedMeansTestIsReturned() {
+    void givenHardshipOverviewResultPassWithValidCaseType_whenGetDecisionByFinAssessmentIsInvoked_grantedPassedMeansTestIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         setUpFinAssessment(requestDTO, CurrentStatus.IN_PROGRESS, CurrentStatus.COMPLETE,
                 InitAssessmentResult.PASS.getResult(), FullAssessmentResult.FAIL.getResult(), ReviewResult.PASS);
@@ -354,7 +354,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenHardshipOverviewResultPassWithFullAssessmentInProgress_whenGetDecisionByFinAssessmentIsInvoked_GrantedPassedMeansTestIsReturned() {
+    void givenHardshipOverviewResultPassWithFullAssessmentInProgress_whenGetDecisionByFinAssessmentIsInvoked_grantedPassedMeansTestIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.IN_PROGRESS,
                 InitAssessmentResult.FULL.getResult(), FullAssessmentResult.PASS.getResult(), ReviewResult.PASS);
@@ -363,7 +363,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenHardshipOverviewInProgress_whenGetDecisionByFinAssessmentIsInvoked_NullIsReturned() {
+    void givenHardshipOverviewInProgress_whenGetDecisionByFinAssessmentIsInvoked_nullIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.IN_PROGRESS,
                 InitAssessmentResult.FULL.getResult(), FullAssessmentResult.PASS.getResult(), ReviewResult.PASS);
@@ -373,7 +373,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenGrantedDecisionReason_whenDetermineRepTypeByDecisionReasonIsInvoked_ValidRepTypeIsReturned() {
+    void givenGrantedDecisionReason_whenDetermineRepTypeByDecisionReasonIsInvoked_validRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         requestDTO.setDecisionReason(DecisionReason.GRANTED);
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
@@ -387,7 +387,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenDecisionReasonIsFailIoJ_whenDetermineRepTypeByDecisionReasonIsInvoked_ValidRepTypeIsReturned() {
+    void givenDecisionReasonIsFailIoJ_whenDetermineRepTypeByDecisionReasonIsInvoked_validRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         requestDTO.setDecisionReason(DecisionReason.FAILIOJ);
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
@@ -397,7 +397,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenDecisionReasonIsFailMeans_whenDetermineRepTypeByDecisionReasonIsInvoked_ValidRepTypeIsReturned() {
+    void givenDecisionReasonIsFailMeans_whenDetermineRepTypeByDecisionReasonIsInvoked_validRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         requestDTO.setDecisionReason(DecisionReason.FAILMEANS);
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
@@ -407,7 +407,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenDecisionReasonIsFailMEIoJ_whenDetermineRepTypeByDecisionReasonIsInvoked_ValidRepTypeIsReturned() {
+    void givenDecisionReasonIsFailMEIoJ_whenDetermineRepTypeByDecisionReasonIsInvoked_validRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         requestDTO.setDecisionReason(DecisionReason.FAILMEIOJ);
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
@@ -417,7 +417,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenDecisionReasonIsAbandoned_whenDetermineRepTypeByDecisionReasonIsInvoked_BlankRepTypeIsReturned() {
+    void givenDecisionReasonIsAbandoned_whenDetermineRepTypeByDecisionReasonIsInvoked_blankRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         requestDTO.setDecisionReason(DecisionReason.ABANDONED);
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
@@ -427,7 +427,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenFailedCFSMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+    void givenFailedCFSMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_validRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         apiCrownCourtSummary.setRepOrderDecision(Constants.FAILED_CF_S_FAILED_MEANS_TEST);
@@ -437,7 +437,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenFailedIoJAppealFailure_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+    void givenFailedIoJAppealFailure_whenDetermineRepTypeByRepOrderDecisionIsInvoked_validRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         apiCrownCourtSummary.setRepOrderDecision(Constants.FAILED_IO_J_APPEAL_FAILURE);
@@ -447,7 +447,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenAppealCCCaseTypeWithGrantedFailedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+    void givenAppealCCCaseTypeWithGrantedFailedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_validRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         apiCrownCourtSummary.setRepOrderDecision(Constants.GRANTED_FAILED_MEANS_TEST);
@@ -458,7 +458,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenCommittalCaseTypeWithGrantedFailedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_RepTypeIsBlank() {
+    void givenCommittalCaseTypeWithGrantedFailedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_repTypeIsBlank() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         apiCrownCourtSummary.setRepOrderDecision(Constants.GRANTED_FAILED_MEANS_TEST);
@@ -469,7 +469,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenAppealCCCaseTypeWithGrantedPassported_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+    void givenAppealCCCaseTypeWithGrantedPassported_whenDetermineRepTypeByRepOrderDecisionIsInvoked_validRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         apiCrownCourtSummary.setRepOrderDecision(Constants.GRANTED_PASSPORTED);
@@ -480,7 +480,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenAppealCCCaseTypeWithGrantedPassedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+    void givenAppealCCCaseTypeWithGrantedPassedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_validRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         apiCrownCourtSummary.setRepOrderDecision(Constants.GRANTED_PASSED_MEANS_TEST);
@@ -491,7 +491,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenCommittalCaseTypeWithGrantedPassported_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+    void givenCommittalCaseTypeWithGrantedPassported_whenDetermineRepTypeByRepOrderDecisionIsInvoked_validRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         apiCrownCourtSummary.setRepOrderDecision(Constants.GRANTED_PASSPORTED);
@@ -502,7 +502,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenCommittalCaseTypeWithGrantedPassedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_ValidRepTypeIsReturned() {
+    void givenCommittalCaseTypeWithGrantedPassedMeansTest_whenDetermineRepTypeByRepOrderDecisionIsInvoked_validRepTypeIsReturned() {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         apiCrownCourtSummary.setRepOrderDecision(Constants.GRANTED_PASSED_MEANS_TEST);
@@ -532,6 +532,17 @@ class RepOrderServiceTest {
         repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
         assertThat(apiCrownCourtSummary.getRepType())
                 .isBlank();
+    }
+
+    @Test
+    void givenRepOrderDecisionIsInel_whenDetermineRepTypeByRepOrderDecisionIsInvoked_validRepTypeIsReturned() {
+        CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
+        apiCrownCourtSummary.setRepOrderDecision(Constants.REFUSED_INELIGIBLE);
+        requestDTO.setCaseType(CaseType.EITHER_WAY);
+        repOrderService.determineRepTypeByRepOrderDecision(requestDTO, apiCrownCourtSummary);
+        assertThat(apiCrownCourtSummary.getRepType())
+                .isEqualTo(Constants.CROWN_COURT_ONLY);
     }
 
     @Test

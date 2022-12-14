@@ -155,10 +155,13 @@ public class RepOrderService {
     }
 
     public void determineRepTypeByRepOrderDecision(CrownCourtActionsRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
-        if ((grantedRepOrderDecisions.contains(crownCourtSummary.getRepOrderDecision()) && requestDTO.getCaseType() == CaseType.APPEAL_CC) ||
-                (grantedPassRepOrderDecisions.contains(crownCourtSummary.getRepOrderDecision()) && requestDTO.getCaseType() == CaseType.COMMITAL)) {
+        CaseType caseType = requestDTO.getCaseType();
+        String repOrderDecision = crownCourtSummary.getRepOrderDecision();
+        if ((grantedRepOrderDecisions.contains(repOrderDecision) && caseType == CaseType.APPEAL_CC) ||
+                (grantedPassRepOrderDecisions.contains(repOrderDecision) && caseType == CaseType.COMMITAL) ||
+                Constants.REFUSED_INELIGIBLE.equals(repOrderDecision)) {
             crownCourtSummary.setRepType(Constants.CROWN_COURT_ONLY);
-        } else if (failedRepOrderDecisions.contains(crownCourtSummary.getRepOrderDecision())) {
+        } else if (failedRepOrderDecisions.contains(repOrderDecision)) {
             crownCourtSummary.setRepType(Constants.NOT_ELIGIBLE_FOR_REP_ORDER);
         }
     }
