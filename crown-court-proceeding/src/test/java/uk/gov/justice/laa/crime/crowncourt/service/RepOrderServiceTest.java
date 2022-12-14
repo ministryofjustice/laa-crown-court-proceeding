@@ -687,7 +687,7 @@ class RepOrderServiceTest {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         requestDTO.setCaseType(CaseType.APPEAL_CC);
         requestDTO.getCrownCourtSummary().setRepOrderDate(null);
-        when(maatCourtDataService.getIOJAppeal(requestDTO.getRepId(), requestDTO.getLaaTransactionId()))
+        when(maatCourtDataService.getCurrentPassedIOJAppealFromRepId(requestDTO.getRepId(), requestDTO.getLaaTransactionId()))
                 .thenReturn(TestModelDataBuilder.getIOJAppealDTO());
         assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_IOJ_APPEAL_DECISION_DATE);
@@ -698,7 +698,7 @@ class RepOrderServiceTest {
         CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
         requestDTO.setCaseType(CaseType.APPEAL_CC);
         requestDTO.getCrownCourtSummary().setRepOrderDate(null);
-        when(maatCourtDataService.getIOJAppeal(requestDTO.getRepId(), requestDTO.getLaaTransactionId()))
+        when(maatCourtDataService.getCurrentPassedIOJAppealFromRepId(requestDTO.getRepId(), requestDTO.getLaaTransactionId()))
                 .thenReturn(null);
         assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_DATE_RECEIVED);

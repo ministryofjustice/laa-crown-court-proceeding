@@ -186,7 +186,7 @@ public class RepOrderService {
                 case CC_ALREADY, COMMITAL -> crownCourtSummary.setRepOrderDate(requestDTO.getDateReceived());
                 case APPEAL_CC -> {
                     IOJAppealDTO iojAppealDTO = maatCourtDataService
-                            .getIOJAppeal(requestDTO.getRepId(), requestDTO.getLaaTransactionId());
+                            .getCurrentPassedIOJAppealFromRepId(requestDTO.getRepId(), requestDTO.getLaaTransactionId());
                     if (iojAppealDTO != null) {
                         crownCourtSummary.setRepOrderDate(iojAppealDTO.getDecisionDate());
                     } else {
