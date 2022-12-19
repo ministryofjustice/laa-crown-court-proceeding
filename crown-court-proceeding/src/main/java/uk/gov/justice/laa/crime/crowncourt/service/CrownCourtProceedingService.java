@@ -19,14 +19,18 @@ import java.util.List;
 public class CrownCourtProceedingService {
 
     private final RepOrderService repOrderService;
-    private final List<CaseType> caseTypes = List.of(CaseType.INDICTABLE,
+    private final List<CaseType> caseTypes = List.of(
+            CaseType.INDICTABLE,
             CaseType.CC_ALREADY,
             CaseType.APPEAL_CC,
-            CaseType.COMMITAL);
-    private final List<MagCourtOutcome> magCourtOutcomes = List.of(MagCourtOutcome.COMMITTED_FOR_TRIAL,
+            CaseType.COMMITAL
+    );
+    private final List<MagCourtOutcome> magCourtOutcomes = List.of(
+            MagCourtOutcome.COMMITTED_FOR_TRIAL,
             MagCourtOutcome.SENT_FOR_TRIAL,
             MagCourtOutcome.COMMITTED,
-            MagCourtOutcome.APPEAL_TO_CC);
+            MagCourtOutcome.APPEAL_TO_CC
+    );
 
     public ApiCheckCrownCourtActionsResponse checkCrownCourtActions(CrownCourtActionsRequestDTO requestDTO) {
         ApiCheckCrownCourtActionsResponse apiCheckCrownCourtActionsResponse = new ApiCheckCrownCourtActionsResponse();
