@@ -16,8 +16,8 @@ public class MockMaatApiConfiguration {
                 new MaatApiConfiguration.PassportAssessmentEndpoints("/passport-assessments/{repId}");
         MaatApiConfiguration.RepOrderEndpoints repOrderEndpoints =
                 new MaatApiConfiguration.RepOrderEndpoints(
-                        "/rep-orders",
-                        "/rep-orders/update-date-completed"
+                        "/rep-orders/{repId}",
+                        "/rep-orders"
                 );
         MaatApiConfiguration.ValidationEndpoints validationEndpoints = new MaatApiConfiguration.ValidationEndpoints(
                 "/authorization/users/{username}/actions/{action}",
