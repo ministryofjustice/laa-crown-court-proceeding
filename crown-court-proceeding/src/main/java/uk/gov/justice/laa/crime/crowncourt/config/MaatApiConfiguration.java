@@ -78,7 +78,7 @@ public class MaatApiConfiguration {
         private String findUrl;
 
         @NotNull
-        private String dateCompletionUrl;
+        private String updateUrl;
     }
 
     @Getter

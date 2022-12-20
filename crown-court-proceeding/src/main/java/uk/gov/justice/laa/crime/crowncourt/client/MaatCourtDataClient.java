@@ -1,10 +1,8 @@
 package uk.gov.justice.laa.crime.crowncourt.client;
 
-import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -12,6 +10,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 
 import java.util.Map;
 
@@ -20,7 +19,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MaatCourtDataClient {
 
-    @Qualifier("maatAPIOAuth2WebClient")
     private final WebClient webClient;
 
     public <T> T getApiResponseViaGET(Class<T> responseClass, String url, Map<String, String> headers, Object... urlVariables) {

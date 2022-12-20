@@ -4,13 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtsActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtApplicationRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -27,7 +30,7 @@ public class RepOrderService {
     List<String> failedRepOrderDecisions = List.of(Constants.FAILED_IO_J_APPEAL_FAILURE,
             Constants.FAILED_CF_S_FAILED_MEANS_TEST);
 
-    public ApiCrownCourtSummary getRepDecision(CrownCourtsActionsRequestDTO requestDTO) {
+    public ApiCrownCourtSummary getRepDecision(CrownCourtActionsRequestDTO requestDTO) {
 
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         String prevRepOrderDecision = apiCrownCourtSummary.getRepOrderDecision();
@@ -52,7 +55,7 @@ public class RepOrderService {
         return apiCrownCourtSummary;
     }
 
-    public String getDecisionByFinAssessment(CrownCourtsActionsRequestDTO requestDTO, ReviewResult reviewResult, boolean isValidCaseType) {
+    public String getDecisionByFinAssessment(CrownCourtActionsRequestDTO requestDTO, ReviewResult reviewResult, boolean isValidCaseType) {
 
         FullAssessmentResult fullAssessmentResult = FullAssessmentResult.getFrom(requestDTO.getFinancialAssessment().getFullResult());
         CurrentStatus fullAssessmentStatus = requestDTO.getFinancialAssessment().getFullStatus();
@@ -82,22 +85,25 @@ public class RepOrderService {
 
     public String getDecisionByCaseType(ReviewResult reviewResult, CaseType caseType, MagCourtOutcome magCourtOutcome) {
         switch (caseType) {
-            case COMMITAL:
+            case COMMITAL -> {
                 return Constants.FAILED_CF_S_FAILED_MEANS_TEST;
-            case INDICTABLE, CC_ALREADY:
+            }
+            case INDICTABLE, CC_ALREADY -> {
                 return Constants.GRANTED_FAILED_MEANS_TEST;
-            case EITHER_WAY:
+            }
+            case EITHER_WAY -> {
                 if (magCourtOutcome == MagCourtOutcome.COMMITTED_FOR_TRIAL) {
                     return Constants.GRANTED_FAILED_MEANS_TEST;
                 }
-                break;
-            case APPEAL_CC:
+            }
+            case APPEAL_CC -> {
                 if (reviewResult == ReviewResult.PASS) {
                     return Constants.GRANTED_FAILED_MEANS_TEST;
                 }
-                break;
-            default:
+            }
+            default -> {
                 return null;
+            }
         }
         return null;
     }
@@ -128,7 +134,7 @@ public class RepOrderService {
         return null;
     }
 
-    public ApiCrownCourtSummary determineCrownRepType(CrownCourtsActionsRequestDTO requestDTO) {
+    public ApiCrownCourtSummary determineCrownRepType(CrownCourtActionsRequestDTO requestDTO) {
         ApiCrownCourtSummary crownCourtSummary = requestDTO.getCrownCourtSummary();
         if (crownCourtSummary.getRepOrderDecision() != null) {
             if (requestDTO.getMagCourtOutcome() == MagCourtOutcome.SENT_FOR_TRIAL
@@ -148,16 +154,19 @@ public class RepOrderService {
         return crownCourtSummary;
     }
 
-    public void determineRepTypeByRepOrderDecision(CrownCourtsActionsRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
-        if ((grantedRepOrderDecisions.contains(crownCourtSummary.getRepOrderDecision()) && requestDTO.getCaseType() == CaseType.APPEAL_CC) ||
-                (grantedPassRepOrderDecisions.contains(crownCourtSummary.getRepOrderDecision()) && requestDTO.getCaseType() == CaseType.COMMITAL)) {
+    public void determineRepTypeByRepOrderDecision(CrownCourtActionsRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
+        CaseType caseType = requestDTO.getCaseType();
+        String repOrderDecision = crownCourtSummary.getRepOrderDecision();
+        if ((grantedRepOrderDecisions.contains(repOrderDecision) && caseType == CaseType.APPEAL_CC) ||
+                (grantedPassRepOrderDecisions.contains(repOrderDecision) && caseType == CaseType.COMMITAL) ||
+                Constants.REFUSED_INELIGIBLE.equals(repOrderDecision)) {
             crownCourtSummary.setRepType(Constants.CROWN_COURT_ONLY);
-        } else if (failedRepOrderDecisions.contains(crownCourtSummary.getRepOrderDecision())) {
+        } else if (failedRepOrderDecisions.contains(repOrderDecision)) {
             crownCourtSummary.setRepType(Constants.NOT_ELIGIBLE_FOR_REP_ORDER);
         }
     }
 
-    public void determineRepTypeByDecisionReason(CrownCourtsActionsRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
+    public void determineRepTypeByDecisionReason(CrownCourtActionsRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
         if (requestDTO.getDecisionReason() == DecisionReason.GRANTED) {
             crownCourtSummary.setRepType(Constants.THROUGH_ORDER);
             crownCourtSummary.setRepId(requestDTO.getRepId());
@@ -168,37 +177,53 @@ public class RepOrderService {
         }
     }
 
-    public ApiCrownCourtSummary determineRepOrderDate(CrownCourtsActionsRequestDTO requestDTO) {
+    public ApiCrownCourtSummary determineRepOrderDate(CrownCourtActionsRequestDTO requestDTO) {
         ApiCrownCourtSummary crownCourtSummary = requestDTO.getCrownCourtSummary();
-        if (crownCourtSummary.getRepOrderDecision() != null && crownCourtSummary.getRepOrderDate() == null) {
+        String repOrderDecision = crownCourtSummary.getRepOrderDecision();
+        if (repOrderDecision != null && crownCourtSummary.getRepOrderDate() == null) {
             switch (requestDTO.getCaseType()) {
-                case INDICTABLE:
-                    crownCourtSummary.setRepOrderDate(requestDTO.getDecisionDate());
-                    break;
-                case EITHER_WAY:
-                    if (requestDTO.getMagCourtOutcome() == MagCourtOutcome.COMMITTED_FOR_TRIAL) {
-                        switch (requestDTO.getDecisionReason()) {
-                            case GRANTED -> crownCourtSummary.setRepOrderDate(requestDTO.getDecisionDate());
-                            case FAILIOJ, FAILMEIOJ, FAILMEANS -> crownCourtSummary.setRepOrderDate(requestDTO.getCommittalDate());
-                            default -> crownCourtSummary.setRepOrderDate(null);
-                        }
-                    }
-                    break;
-                case CC_ALREADY, COMMITAL:
-                    crownCourtSummary.setRepOrderDate(requestDTO.getDateReceived());
-                    break;
-                case APPEAL_CC:
-                    try {
-                        IOJAppealDTO iojAppealDTO = maatCourtDataService
-                                .getCurrentPassedIOJAppealFromRepId(requestDTO.getRepId(), requestDTO.getLaaTransactionId());
+                case INDICTABLE -> crownCourtSummary.setRepOrderDate(requestDTO.getDecisionDate());
+                case EITHER_WAY -> crownCourtSummary.setRepOrderDate(
+                        determineMagsRepOrderDate(requestDTO, repOrderDecision)
+                );
+                case CC_ALREADY, COMMITAL -> crownCourtSummary.setRepOrderDate(requestDTO.getDateReceived());
+                case APPEAL_CC -> {
+                    IOJAppealDTO iojAppealDTO = maatCourtDataService
+                            .getCurrentPassedIOJAppealFromRepId(requestDTO.getRepId(), requestDTO.getLaaTransactionId());
+                    if (iojAppealDTO != null) {
                         crownCourtSummary.setRepOrderDate(iojAppealDTO.getDecisionDate());
-                    } catch (Exception ex) {
+                    } else {
                         crownCourtSummary.setRepOrderDate(requestDTO.getDateReceived());
                     }
-                    break;
-                default:
+                }
+                default -> crownCourtSummary.setRepOrderDate(null);
             }
         }
         return crownCourtSummary;
+    }
+
+    private LocalDateTime determineMagsRepOrderDate(CrownCourtActionsRequestDTO requestDTO, String repOrderDecision) {
+        DecisionReason decisionReason = requestDTO.getDecisionReason();
+        List<DecisionReason> failedDecisionReasons =
+                List.of(DecisionReason.FAILIOJ, DecisionReason.FAILMEANS, DecisionReason.FAILMEIOJ);
+
+        if (MagCourtOutcome.COMMITTED_FOR_TRIAL.equals(requestDTO.getMagCourtOutcome())) {
+            if (DecisionReason.GRANTED.equals(decisionReason)) {
+                return requestDTO.getDecisionDate();
+            } else if (failedDecisionReasons.contains(decisionReason) ||
+                    Constants.REFUSED_INELIGIBLE.equals(repOrderDecision)) {
+                return requestDTO.getCommittalDate();
+            }
+        }
+        return null;
+    }
+
+    public void updateCCSentenceOrderDate(CrownCourtApplicationRequestDTO crownCourtApplicationRequestDTO) {
+        UpdateRepOrderRequestDTO build = UpdateRepOrderRequestDTO.builder()
+                .repId(crownCourtApplicationRequestDTO.getRepId())
+                .sentenceOrderDate(crownCourtApplicationRequestDTO.getCrownCourtSummary().getSentenceOrderDate())
+                .userModified(crownCourtApplicationRequestDTO.getUserSession().getUserName())
+                .build();
+        maatCourtDataService.updateRepOrder(build, crownCourtApplicationRequestDTO.getLaaTransactionId());
     }
 }

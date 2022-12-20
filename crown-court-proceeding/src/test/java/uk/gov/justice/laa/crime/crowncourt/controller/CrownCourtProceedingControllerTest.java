@@ -23,10 +23,12 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtsActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtApplicationRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.service.CrownCourtProceedingService;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -105,7 +107,7 @@ class CrownCourtProceedingControllerTest {
         var checkCrownCourtActionsResponse =
                 TestModelDataBuilder.getApiCheckCrownCourtActionsResponse();
 
-        when(crownCourtProceedingService.checkCrownCourtActions(any(CrownCourtsActionsRequestDTO.class)))
+        when(crownCourtProceedingService.checkCrownCourtActions(any(CrownCourtActionsRequestDTO.class)))
                 .thenReturn(checkCrownCourtActionsResponse);
 
         mvc.perform(buildRequestGivenContent(HttpMethod.POST, checkCrownCourtActionsRequestJson))
@@ -115,11 +117,11 @@ class CrownCourtProceedingControllerTest {
 
     @Test
     void checkCrownCourtActions_RequestObjectFailsValidation() throws Exception {
-        var createAssessmentRequest =
+        var checkCrownCourtActionsRequest =
                 TestModelDataBuilder.getApiCheckCrownCourtActionsRequest(!IS_VALID);
-        var createAssessmentRequestJson = objectMapper.writeValueAsString(createAssessmentRequest);
+        var checkCrownCourtActionsRequestJson = objectMapper.writeValueAsString(checkCrownCourtActionsRequest);
 
-        mvc.perform(buildRequestGivenContent(HttpMethod.POST, createAssessmentRequestJson))
+        mvc.perform(buildRequestGivenContent(HttpMethod.POST, checkCrownCourtActionsRequestJson))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -138,6 +140,45 @@ class CrownCourtProceedingControllerTest {
     @Test
     void checkCrownCourtActions_Unauthorized_NoAccessToken() throws Exception {
         mvc.perform(buildRequestGivenContent(HttpMethod.POST, "{}", false))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void updateCrownCourtActions_Success() throws Exception {
+        var apiUpdateCrownCourtApplicationRequest =
+                TestModelDataBuilder.getApiUpdateCrownCourtApplicationRequest(IS_VALID);
+        var updateCCApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateCrownCourtApplicationRequest);
+        doNothing().when(crownCourtProceedingService).updateCrownCourtApplication(any(CrownCourtApplicationRequestDTO.class));
+
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, updateCCApplicationRequestJson))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateCrownCourtActions_RequestObjectFailsValidation() throws Exception {
+        var apiUpdateCCApplicationRequest =
+                TestModelDataBuilder.getApiUpdateCrownCourtApplicationRequest(!IS_VALID);
+        var updateCCApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateCCApplicationRequest);
+
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, updateCCApplicationRequestJson))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void updateCrownCourtActions_ServerError_RequestBodyIsMissing() throws Exception {
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, ""))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void updateCrownCourtActions_BadRequest_RequestEmptyBody() throws Exception {
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, "{}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateCrownCourtActions_Unauthorized_NoAccessToken() throws Exception {
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, "{}", false))
                 .andExpect(status().isForbidden());
     }
 }
