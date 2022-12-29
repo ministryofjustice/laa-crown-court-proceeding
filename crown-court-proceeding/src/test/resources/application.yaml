@@ -79,3 +79,7 @@ cloud-platform:
         config:
           messageDelay: 900
           messageDelayDuration: 120
+
+feature:
+  postMvp:
+    enabled: false
