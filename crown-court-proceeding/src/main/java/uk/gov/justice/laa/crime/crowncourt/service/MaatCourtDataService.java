@@ -2,13 +2,17 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.MaatApiConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -38,6 +42,36 @@ public class MaatCourtDataService {
                 configuration.getRepOrderEndpoints().getUpdateUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
         );
+    }
+
+    public Object getRepOrderByFilter(String repId, String sentenceOrdDate) throws IOException {
+        Map<String, Object> graphQLBody = getGraphQLRequestBody(repId, sentenceOrdDate);
+        Object response = maatCourtDataClient.getGraphQLApiResponse(
+                new Object(),
+                Object.class,
+                //configuration.getGraphQLEndpoints().getGraphqlQueryUrl(),
+                "http://court-data-api:8090/api/internal/v1/assessment/graphql",
+                new HashMap<String, String>(),
+                HttpMethod.POST,
+                graphQLBody
+        );
+        log.info(String.format(RESPONSE_STRING, response));
+        return response;
+    }
+
+
+    private static Map<String, Object> getGraphQLRequestBody(String repId, String sentenceOrdDate) throws IOException {
+        final String query = GraphqlSchemaReaderUtil.getSchemaFromFileName("repOrderFilter");
+        final String variables = GraphqlSchemaReaderUtil.getSchemaFromFileName("repOrderFilterVariables");
+
+        Map<String, Object> variablesMap = new HashMap<>();
+        variablesMap.put("repId", repId);
+        variablesMap.put("sentenceOrdDate", sentenceOrdDate);
+
+        Map<String, Object> graphQLBody = new HashMap<>();
+        graphQLBody.put("query", query);
+        graphQLBody.put("variables", variablesMap);
+        return graphQLBody;
     }
 
 }

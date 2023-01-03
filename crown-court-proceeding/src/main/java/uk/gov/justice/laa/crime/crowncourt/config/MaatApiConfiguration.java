@@ -38,6 +38,9 @@ public class MaatApiConfiguration {
     @NotNull
     private IOJAppealEndpoints iojAppealEndpoints;
 
+    @NotNull
+    private GraphQLEndpoints graphQLEndpoints;
+
     @Getter
     @AllArgsConstructor
     @Setter
@@ -109,5 +112,15 @@ public class MaatApiConfiguration {
 
         @NotNull
         private String findUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class GraphQLEndpoints {
+
+        @NotNull
+        private String graphqlQueryUrl;
     }
 }
