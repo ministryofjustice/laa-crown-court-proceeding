@@ -60,7 +60,6 @@ public class MaatCourtDataService {
 
     private static Map<String, Object> getGraphQLRequestBody(String repId, String sentenceOrdDate) throws IOException {
         final String query = GraphqlSchemaReaderUtil.getSchemaFromFileName("repOrderFilter");
-        final String variables = GraphqlSchemaReaderUtil.getSchemaFromFileName("repOrderFilterVariables");
 
         Map<String, Object> variablesMap = new HashMap<>();
         variablesMap.put("repId", repId);
