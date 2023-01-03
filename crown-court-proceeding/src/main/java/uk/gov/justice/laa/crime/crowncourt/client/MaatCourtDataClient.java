@@ -1,23 +1,18 @@
 package uk.gov.justice.laa.crime.crowncourt.client;
 
-import com.amazonaws.util.StringUtils;
 import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
-import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
 
 import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j

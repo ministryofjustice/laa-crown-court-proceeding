@@ -49,8 +49,7 @@ public class MaatCourtDataService {
         Object response = maatCourtDataClient.getGraphQLApiResponse(
                 new Object(),
                 Object.class,
-                //configuration.getGraphQLEndpoints().getGraphqlQueryUrl(),
-                "http://court-data-api:8090/api/internal/v1/assessment/graphql",
+                configuration.getGraphQLEndpoints().getGraphqlQueryUrl(),
                 new HashMap<String, String>(),
                 HttpMethod.POST,
                 graphQLBody
@@ -58,7 +57,6 @@ public class MaatCourtDataService {
         log.info(String.format(RESPONSE_STRING, response));
         return response;
     }
-
 
     private static Map<String, Object> getGraphQLRequestBody(String repId, String sentenceOrdDate) throws IOException {
         final String query = GraphqlSchemaReaderUtil.getSchemaFromFileName("repOrderFilter");
