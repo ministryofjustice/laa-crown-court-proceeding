@@ -68,4 +68,19 @@ public class MaatCourtDataClient {
         }
         return new APIClientException("Call to Court Data API failed, invalid response.", error);
     }
+
+    public <R> R getGraphQLApiResponse(Class<R> responseClass,
+                                          String url,
+                                          Map<String, Object> graphQLBody) {
+        return webClient
+                .post()
+                .uri(url)
+                .bodyValue(graphQLBody)
+                .retrieve()
+                .bodyToMono(responseClass)
+                .onErrorMap(this::handleError)
+                .doOnError(Sentry::captureException)
+                .block();
+    }
+
 }

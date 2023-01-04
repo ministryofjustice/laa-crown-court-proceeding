@@ -1,0 +1,21 @@
+query ($repId : Int, $sentenceOrdDate: String!) {
+    findByRepOrderFilter(filter: {
+        id: $repId,
+        sentenceOrderDate: $sentenceOrdDate
+    }) {
+        id,
+        caseId,
+        dateModified,
+        sentenceOrderDate,
+        passportAssessments {
+            id
+        },
+        financialAssessments {
+            id,
+            assessmentType,
+            repOrder {
+                id
+            }
+        }
+    }
+}

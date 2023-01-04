@@ -10,8 +10,13 @@ import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsRespon
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -19,6 +24,8 @@ import java.util.List;
 public class CrownCourtProceedingService {
 
     private final RepOrderService repOrderService;
+    private final MaatCourtDataService maatCourtDataService;
+
     private final List<CaseType> caseTypes = List.of(
             CaseType.INDICTABLE,
             CaseType.CC_ALREADY,
@@ -50,4 +57,12 @@ public class CrownCourtProceedingService {
     public void updateCrownCourtApplication(CrownCourtApplicationRequestDTO crownCourtApplicationRequestDTO) {
         repOrderService.updateCCSentenceOrderDate(crownCourtApplicationRequestDTO);
     }
+
+    public Object graphQLQuery() throws URISyntaxException, IOException {
+        log.info("Start");
+        Object obj = maatCourtDataService.getRepOrderByFilter("5639461", "false");
+        log.info("Response :" + obj.toString() );
+        return obj;
+    }
+
 }
