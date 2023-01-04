@@ -74,8 +74,7 @@ public class MaatCourtDataClient {
                                           Class<R> responseClass,
                                           String url,
                                           Map<String, String> headers,
-                                          HttpMethod requestMethod,
-                                          Map<String, Object> graphQLBody) throws IOException {
+                                          Map<String, Object> graphQLBody) {
         return webClient
                 .post()
                 .uri(url)

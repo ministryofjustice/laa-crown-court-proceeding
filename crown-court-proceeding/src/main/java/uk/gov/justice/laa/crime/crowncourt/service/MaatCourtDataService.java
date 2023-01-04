@@ -51,7 +51,6 @@ public class MaatCourtDataService {
                 Object.class,
                 configuration.getGraphQLEndpoints().getGraphqlQueryUrl(),
                 new HashMap<String, String>(),
-                HttpMethod.POST,
                 graphQLBody
         );
         log.info(String.format(RESPONSE_STRING, response));
