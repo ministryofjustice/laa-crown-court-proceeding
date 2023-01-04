@@ -2,7 +2,6 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
@@ -20,9 +19,22 @@ import java.util.Map;
 @Slf4j
 public class MaatCourtDataService {
 
+    public static final String RESPONSE_STRING = "Response from Court Data API: %s";
     private final MaatApiConfiguration configuration;
     private final MaatCourtDataClient maatCourtDataClient;
-    public static final String RESPONSE_STRING = "Response from Court Data API: %s";
+
+    private static Map<String, Object> getGraphQLRequestBody(String repId, String sentenceOrdDate) throws IOException {
+        final String query = GraphqlSchemaReaderUtil.getSchemaFromFileName("repOrderFilter");
+
+        Map<String, Object> variablesMap = new HashMap<>();
+        variablesMap.put("repId", repId);
+        variablesMap.put("sentenceOrdDate", sentenceOrdDate);
+
+        Map<String, Object> graphQLBody = new HashMap<>();
+        graphQLBody.put("query", query);
+        graphQLBody.put("variables", variablesMap);
+        return graphQLBody;
+    }
 
     public IOJAppealDTO getCurrentPassedIOJAppealFromRepId(Integer repId, String laaTransactionId) {
         IOJAppealDTO response = maatCourtDataClient.getApiResponseViaGET(
@@ -47,27 +59,12 @@ public class MaatCourtDataService {
     public Object getRepOrderByFilter(String repId, String sentenceOrdDate) throws IOException {
         Map<String, Object> graphQLBody = getGraphQLRequestBody(repId, sentenceOrdDate);
         Object response = maatCourtDataClient.getGraphQLApiResponse(
-                new Object(),
                 Object.class,
                 configuration.getGraphQLEndpoints().getGraphqlQueryUrl(),
-                new HashMap<String, String>(),
                 graphQLBody
         );
         log.info(String.format(RESPONSE_STRING, response));
         return response;
-    }
-
-    private static Map<String, Object> getGraphQLRequestBody(String repId, String sentenceOrdDate) throws IOException {
-        final String query = GraphqlSchemaReaderUtil.getSchemaFromFileName("repOrderFilter");
-
-        Map<String, Object> variablesMap = new HashMap<>();
-        variablesMap.put("repId", repId);
-        variablesMap.put("sentenceOrdDate", sentenceOrdDate);
-
-        Map<String, Object> graphQLBody = new HashMap<>();
-        graphQLBody.put("query", query);
-        graphQLBody.put("variables", variablesMap);
-        return graphQLBody;
     }
 
 }

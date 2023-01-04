@@ -12,7 +12,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Slf4j
@@ -70,10 +69,8 @@ public class MaatCourtDataClient {
         return new APIClientException("Call to Court Data API failed, invalid response.", error);
     }
 
-    public <T, R> R getGraphQLApiResponse(T requestBody,
-                                          Class<R> responseClass,
+    public <T, R> R getGraphQLApiResponse(Class<R> responseClass,
                                           String url,
-                                          Map<String, String> headers,
                                           Map<String, Object> graphQLBody) {
         return webClient
                 .post()
