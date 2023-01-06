@@ -4,19 +4,16 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.ProcessCrownRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtApplicationRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessCrownRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
-import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -39,19 +36,19 @@ public class CrownCourtProceedingService {
             MagCourtOutcome.APPEAL_TO_CC
     );
 
-    public ApiCheckCrownCourtActionsResponse checkCrownCourtActions(CrownCourtActionsRequestDTO requestDTO) {
-        ApiCheckCrownCourtActionsResponse apiCheckCrownCourtActionsResponse = new ApiCheckCrownCourtActionsResponse();
+    public ApiProcessCrownRepOrderResponse processCrownRepOrder(ProcessCrownRepOrderRequestDTO requestDTO) {
+        ApiProcessCrownRepOrderResponse apiProcessCrownRepOrderResponse = new ApiProcessCrownRepOrderResponse();
         if (caseTypes.contains(requestDTO.getCaseType()) ||
                 (requestDTO.getCaseType() == CaseType.EITHER_WAY && magCourtOutcomes.contains(requestDTO.getMagCourtOutcome()))) {
             repOrderService.getRepDecision(requestDTO);
             repOrderService.determineCrownRepType(requestDTO);
             ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineRepOrderDate(requestDTO);
-            apiCheckCrownCourtActionsResponse
+            apiProcessCrownRepOrderResponse
                     .withRepOrderDecision(apiCrownCourtSummary.getRepOrderDecision())
                     .withRepOrderDate(apiCrownCourtSummary.getRepOrderDate())
                     .withRepType(apiCrownCourtSummary.getRepType());
         }
-        return apiCheckCrownCourtActionsResponse;
+        return apiProcessCrownRepOrderResponse;
     }
 
     public void updateCrownCourtApplication(CrownCourtApplicationRequestDTO crownCourtApplicationRequestDTO) {

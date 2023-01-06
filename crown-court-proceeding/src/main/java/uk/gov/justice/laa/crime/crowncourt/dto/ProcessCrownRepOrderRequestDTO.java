@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class CrownCourtActionsRequestDTO {
+public class ProcessCrownRepOrderRequestDTO {
     private String laaTransactionId;
     private Integer repId;
     private CaseType caseType;
