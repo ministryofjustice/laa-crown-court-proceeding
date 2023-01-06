@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.ProcessCrownRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtApplicationRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
@@ -31,8 +31,8 @@ public class TestModelDataBuilder {
     public static final Integer TEST_REP_ID = 91919;
     public static final String TEST_USER = "TEST_USER";
 
-    public static ApiCheckCrownCourtActionsRequest getApiCheckCrownCourtActionsRequest(boolean isValid) {
-        return new ApiCheckCrownCourtActionsRequest()
+    public static ApiProcessCrownRepOrderRequest getApiProcessCrownRepOrderRequest(boolean isValid) {
+        return new ApiProcessCrownRepOrderRequest()
                 .withRepId(isValid ? TEST_REP_ID : null)
                 .withCaseType(CaseType.EITHER_WAY)
                 .withMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL)
@@ -75,15 +75,15 @@ public class TestModelDataBuilder {
                 .withStatus(CurrentStatus.COMPLETE);
     }
 
-    public static ApiCheckCrownCourtActionsResponse getApiCheckCrownCourtActionsResponse() {
-        return new ApiCheckCrownCourtActionsResponse()
+    public static ApiProcessCrownRepOrderResponse getApiProcessCrownRepOrderResponse() {
+        return new ApiProcessCrownRepOrderResponse()
                 .withRepOrderDecision(MOCK_DECISION)
                 .withRepOrderDate(TEST_REP_ORDER_DATE)
                 .withRepType("");
     }
 
-    public static CrownCourtActionsRequestDTO getCrownCourtActionsRequestDTO() {
-        return CrownCourtActionsRequestDTO.builder()
+    public static ProcessCrownRepOrderRequestDTO getProcessCrownRepOrderRequestDTO() {
+        return ProcessCrownRepOrderRequestDTO.builder()
                 .repId(TEST_REP_ID)
                 .caseType(CaseType.SUMMARY_ONLY)
                 .magCourtOutcome(MagCourtOutcome.APPEAL_TO_CC)

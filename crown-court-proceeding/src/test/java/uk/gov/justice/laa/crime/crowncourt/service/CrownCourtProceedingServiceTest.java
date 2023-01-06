@@ -9,9 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.ProcessCrownRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtApplicationRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessCrownRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
 
@@ -34,20 +34,20 @@ class CrownCourtProceedingServiceTest {
     private RepOrderService repOrderService;
 
     private void setupMockData() {
-        when(repOrderService.getRepDecision(any(CrownCourtActionsRequestDTO.class)))
+        when(repOrderService.getRepDecision(any(ProcessCrownRepOrderRequestDTO.class)))
                 .thenReturn(TestModelDataBuilder.getCrownCourtSummary());
-        when(repOrderService.determineCrownRepType(any(CrownCourtActionsRequestDTO.class)))
+        when(repOrderService.determineCrownRepType(any(ProcessCrownRepOrderRequestDTO.class)))
                 .thenReturn(TestModelDataBuilder.getCrownCourtSummary());
-        when(repOrderService.determineRepOrderDate(any(CrownCourtActionsRequestDTO.class)))
+        when(repOrderService.determineRepOrderDate(any(ProcessCrownRepOrderRequestDTO.class)))
                 .thenReturn(TestModelDataBuilder.getCrownCourtSummary());
     }
 
     @Test
-    void givenValidIndictableCase_whenCheckCrownCourtActionsIsInvoked_validResponseIsReturned() {
-        CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+    void givenValidIndictableCase_whenProcessCrownRepOrderIsInvoked_validResponseIsReturned() {
+        ProcessCrownRepOrderRequestDTO requestDTO = TestModelDataBuilder.getProcessCrownRepOrderRequestDTO();
         requestDTO.setCaseType(CaseType.INDICTABLE);
         setupMockData();
-        ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
+        ApiProcessCrownRepOrderResponse response = crownCourtProceedingService.processCrownRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -57,11 +57,11 @@ class CrownCourtProceedingServiceTest {
     }
 
     @Test
-    void givenValidCCAlreadyCase_whenCheckCrownCourtActionsIsInvoked_validResponseIsReturned() {
-        CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+    void givenValidCCAlreadyCase_whenProcessCrownRepOrderIsInvoked_validResponseIsReturned() {
+        ProcessCrownRepOrderRequestDTO requestDTO = TestModelDataBuilder.getProcessCrownRepOrderRequestDTO();
         requestDTO.setCaseType(CaseType.CC_ALREADY);
         setupMockData();
-        ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
+        ApiProcessCrownRepOrderResponse response = crownCourtProceedingService.processCrownRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -71,11 +71,11 @@ class CrownCourtProceedingServiceTest {
     }
 
     @Test
-    void givenValidAppealCCCase_whenCheckCrownCourtActionsIsInvoked_validResponseIsReturned() {
-        CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+    void givenValidAppealCCCase_whenProcessCrownRepOrderIsInvoked_validResponseIsReturned() {
+        ProcessCrownRepOrderRequestDTO requestDTO = TestModelDataBuilder.getProcessCrownRepOrderRequestDTO();
         requestDTO.setCaseType(CaseType.APPEAL_CC);
         setupMockData();
-        ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
+        ApiProcessCrownRepOrderResponse response = crownCourtProceedingService.processCrownRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -85,11 +85,11 @@ class CrownCourtProceedingServiceTest {
     }
 
     @Test
-    void givenValidCommittalCase_whenCheckCrownCourtActionsIsInvoked_validResponseIsReturned() {
-        CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+    void givenValidCommittalCase_whenProcessCrownRepOrderIsInvoked_validResponseIsReturned() {
+        ProcessCrownRepOrderRequestDTO requestDTO = TestModelDataBuilder.getProcessCrownRepOrderRequestDTO();
         requestDTO.setCaseType(CaseType.COMMITAL);
         setupMockData();
-        ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
+        ApiProcessCrownRepOrderResponse response = crownCourtProceedingService.processCrownRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -99,12 +99,12 @@ class CrownCourtProceedingServiceTest {
     }
 
     @Test
-    void givenValidEitherWayCaseWithCommittedMagOutcome_whenCheckCrownCourtActionsIsInvoked_validResponseIsReturned() {
-        CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+    void givenValidEitherWayCaseWithCommittedMagOutcome_whenProcessCrownRepOrderIsInvoked_validResponseIsReturned() {
+        ProcessCrownRepOrderRequestDTO requestDTO = TestModelDataBuilder.getProcessCrownRepOrderRequestDTO();
         requestDTO.setCaseType(CaseType.EITHER_WAY);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.COMMITTED);
         setupMockData();
-        ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
+        ApiProcessCrownRepOrderResponse response = crownCourtProceedingService.processCrownRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -114,12 +114,12 @@ class CrownCourtProceedingServiceTest {
     }
 
     @Test
-    void givenValidEitherWayCaseWithCommittedForTrailMagOutcome_whenCheckCrownCourtActionsIsInvoked_validResponseIsReturned() {
-        CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+    void givenValidEitherWayCaseWithCommittedForTrailMagOutcome_whenProcessCrownRepOrderIsInvoked_validResponseIsReturned() {
+        ProcessCrownRepOrderRequestDTO requestDTO = TestModelDataBuilder.getProcessCrownRepOrderRequestDTO();
         requestDTO.setCaseType(CaseType.EITHER_WAY);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL);
         setupMockData();
-        ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
+        ApiProcessCrownRepOrderResponse response = crownCourtProceedingService.processCrownRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -129,12 +129,12 @@ class CrownCourtProceedingServiceTest {
     }
 
     @Test
-    void givenValidEitherWayCaseWithSentForTrailMagOutcome_whenCheckCrownCourtActionsIsInvoked_validResponseIsReturned() {
-        CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+    void givenValidEitherWayCaseWithSentForTrailMagOutcome_whenProcessCrownRepOrderIsInvoked_validResponseIsReturned() {
+        ProcessCrownRepOrderRequestDTO requestDTO = TestModelDataBuilder.getProcessCrownRepOrderRequestDTO();
         requestDTO.setCaseType(CaseType.EITHER_WAY);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.SENT_FOR_TRIAL);
         setupMockData();
-        ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
+        ApiProcessCrownRepOrderResponse response = crownCourtProceedingService.processCrownRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -145,11 +145,11 @@ class CrownCourtProceedingServiceTest {
 
     @Test
     void givenValidEitherWayCaseWithAppealToCCMagOutcome_whenCheckCrownCourtActionsIsInvoked_validResponseIsReturned() {
-        CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+        ProcessCrownRepOrderRequestDTO requestDTO = TestModelDataBuilder.getProcessCrownRepOrderRequestDTO();
         requestDTO.setCaseType(CaseType.EITHER_WAY);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.APPEAL_TO_CC);
         setupMockData();
-        ApiCheckCrownCourtActionsResponse response = crownCourtProceedingService.checkCrownCourtActions(requestDTO);
+        ApiProcessCrownRepOrderResponse response = crownCourtProceedingService.processCrownRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -159,19 +159,19 @@ class CrownCourtProceedingServiceTest {
     }
 
     @Test
-    void givenSummaryOnlyCase_whenCheckCrownCourtActionsIsInvoked_emptyResponseIsReturned() {
-        CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
-        assertThat(crownCourtProceedingService.checkCrownCourtActions(requestDTO))
-                .isEqualTo(new ApiCheckCrownCourtActionsResponse());
+    void givenSummaryOnlyCase_whenProcessCrownRepOrderIsInvoked_emptyResponseIsReturned() {
+        ProcessCrownRepOrderRequestDTO requestDTO = TestModelDataBuilder.getProcessCrownRepOrderRequestDTO();
+        assertThat(crownCourtProceedingService.processCrownRepOrder(requestDTO))
+                .isEqualTo(new ApiProcessCrownRepOrderResponse());
     }
 
     @Test
-    void givenEitherWayCaseWithResolvedMagOutcome_whenCheckCrownCourtActionsIsInvoked_emptyResponseIsReturned() {
-        CrownCourtActionsRequestDTO requestDTO = TestModelDataBuilder.getCrownCourtActionsRequestDTO();
+    void givenEitherWayCaseWithResolvedMagOutcome_whenProcessCrownRepOrderIsInvoked_emptyResponseIsReturned() {
+        ProcessCrownRepOrderRequestDTO requestDTO = TestModelDataBuilder.getProcessCrownRepOrderRequestDTO();
         requestDTO.setCaseType(CaseType.EITHER_WAY);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.RESOLVED_IN_MAGS);
-        assertThat(crownCourtProceedingService.checkCrownCourtActions(requestDTO))
-                .isEqualTo(new ApiCheckCrownCourtActionsResponse());
+        assertThat(crownCourtProceedingService.processCrownRepOrder(requestDTO))
+                .isEqualTo(new ApiProcessCrownRepOrderResponse());
     }
 
     @Test
