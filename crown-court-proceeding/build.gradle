@@ -32,7 +32,8 @@ def versions = [
         commonsCollections4Version         : '4.4',
         commonsLang3Version                : '3.10',
         lombokVersion                      : '1.18.24',
-        amazonSQSVersion                   : '1.0.8'
+        amazonSQSVersion                   : '1.0.8',
+        xRayVersion                        : '2.11.2'
 ]
 dependencyManagement {
     dependencies {
@@ -97,6 +98,9 @@ dependencies {
 
     // AWS
     implementation group: 'com.amazonaws', name: 'amazon-sqs-java-messaging-lib', version: versions.amazonSQSVersion
+    implementation group: 'com.amazonaws', name: 'aws-xray-recorder-sdk-sql', version: versions.xRayVersion
+    implementation group: 'com.amazonaws', name: 'aws-xray-recorder-sdk-slf4j', version: versions.xRayVersion
+    implementation group: 'com.amazonaws', name: 'aws-xray-recorder-sdk-spring', version: versions.xRayVersion
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
