@@ -101,6 +101,8 @@ maatApi:
   rep-order-endpoints:
     find-url: ${maatApi.assessments-domain}/rep-orders/{repId}
     update-url: ${maatApi.assessments-domain}/rep-orders
+  graphql-endpoints:
+    graphql-query-url: ${maatApi.assessments-domain}/graphQL
 
 feature:
   postMvp:
