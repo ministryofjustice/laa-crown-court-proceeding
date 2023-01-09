@@ -106,4 +106,4 @@ maatApi:
 
 feature:
   postMvp:
-    enabled: true
+    enabled: false
