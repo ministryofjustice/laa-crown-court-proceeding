@@ -29,12 +29,6 @@ public class QueueMessageLogService {
 
         JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
 
-        JsonElement maatId = messageType.equals(LAA_STATUS_UPDATE) ?
-                msgObject.get("data")
-                        .getAsJsonObject().get("attributes")
-                        .getAsJsonObject().get("maat_reference")
-                : msgObject.get("maatId");
-
         JsonElement laaTransactionUUID = msgObject.has("metadata") ?
                 msgObject.get("metadata").getAsJsonObject().get("laaTransactionId") :
                 msgObject.get("laaTransactionId");
@@ -44,10 +38,7 @@ public class QueueMessageLogService {
                         .transactionUUID(UUID.randomUUID().toString())
                         .laaTransactionId(Optional.ofNullable(laaTransactionUUID).map(JsonElement::getAsString)
                                 .orElse(null))
-                        .maatId(Optional
-                                .ofNullable(maatId)
-                                .map(JsonElement::getAsInt)
-                                .orElse(-1))
+                        .maatId(-1)
                         .type(prepareMessageType(messageType, msgObject))
                         .message(convertAsByte(message))
                         .createdTime(LocalDateTime.now())

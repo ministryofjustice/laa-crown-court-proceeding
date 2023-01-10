@@ -14,19 +14,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class QueueMessageLogServiceTest {
+class QueueMessageLogServiceTest {
 
     @InjectMocks
-    public QueueMessageLogService queueMessageLogService;
+    private QueueMessageLogService queueMessageLogService;
     @Spy
-    public QueueMessageLogRepository queueMessageLogRepository;
+    private QueueMessageLogRepository queueMessageLogRepository;
     @Captor
     private ArgumentCaptor<QueueMessageLogEntity> queueMessageCaptor;
 
 
 
     @Test
-    public void testWhenProsecutionConcluded_thenCheckLogEntryCreated() {
+    void testWhenProsecutionConcluded_thenCheckLogEntryCreated() {
 
         final Integer maatId = 1000;
         queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, getQueueMessage(maatId, JurisdictionType.CROWN));
