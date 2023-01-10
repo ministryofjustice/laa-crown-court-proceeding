@@ -34,7 +34,7 @@ class QueueMessageLogServiceTest {
         verify(queueMessageLogRepository, times(1)).save(queueMessageCaptor.capture());
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
-        assertAll("linkMessage",
+        assertAll("ProsecutionMessage",
                 () -> assertNotNull(savedQueueMsg),
                 () -> assertNotNull(savedQueueMsg.getMaatId()),
                 () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
@@ -45,6 +45,35 @@ class QueueMessageLogServiceTest {
                 () -> assertEquals("8720c683-39ef-4168-a8cc-058668a2dcca", savedQueueMsg.getLaaTransactionId()),
                 () -> assertEquals(savedQueueMsg.getMaatId(), maatId)
         );
+    }
+
+    @Test
+    void testWhenMetadataIsNull_thenProcessAsExpected() {
+
+        final Integer maatId = 1000;
+
+        queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, newQueueMessageWithoutMetaData(maatId));
+
+        verify(queueMessageLogRepository).save(queueMessageCaptor.capture());
+
+        QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
+
+        assertAll("SQSMessage",
+                () -> assertNotNull(savedQueueMsg),
+                () -> assertNotNull(savedQueueMsg.getMaatId()),
+                () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
+                () -> assertNull(savedQueueMsg.getLaaTransactionId()),
+                () -> assertNotNull(savedQueueMsg.getType()),
+                () -> assertNotNull(savedQueueMsg.getMessage()),
+                () -> assertEquals(savedQueueMsg.getMaatId(), maatId)
+        );
+    }
+
+    private String newQueueMessageWithoutMetaData(Integer maatId) {
+
+        return  "{" +
+                "    \"maatId\": " + maatId + "\n" +
+                "}";
     }
 
     private String getQueueMessage(Integer maatId, JurisdictionType jurisdictionType) {

@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static uk.gov.justice.laa.crime.crowncourt.enums.MessageType.LAA_STATUS_UPDATE;
-
 @Service
 @Slf4j
 @XRayEnabled
@@ -28,6 +26,7 @@ public class QueueMessageLogService {
     public void createLog(final MessageType messageType, final String message) {
 
         JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
+        JsonElement maatId = msgObject.get("maatId");
 
         JsonElement laaTransactionUUID = msgObject.has("metadata") ?
                 msgObject.get("metadata").getAsJsonObject().get("laaTransactionId") :
@@ -38,7 +37,10 @@ public class QueueMessageLogService {
                         .transactionUUID(UUID.randomUUID().toString())
                         .laaTransactionId(Optional.ofNullable(laaTransactionUUID).map(JsonElement::getAsString)
                                 .orElse(null))
-                        .maatId(-1)
+                        .maatId(Optional
+                                .ofNullable(maatId)
+                                .map(JsonElement::getAsInt)
+                                .orElse(-1))
                         .type(prepareMessageType(messageType, msgObject))
                         .message(convertAsByte(message))
                         .createdTime(LocalDateTime.now())
