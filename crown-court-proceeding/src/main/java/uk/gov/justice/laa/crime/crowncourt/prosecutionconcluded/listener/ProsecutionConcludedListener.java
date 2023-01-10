@@ -18,7 +18,7 @@ public class ProsecutionConcludedListener {
 
     @JmsListener(destination = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}", concurrency = "1")
     public void receive(@Payload final String message) {
-        queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
         log.info("Prosecution Inbound Message : {} ", message);
+        queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
     }
 }
