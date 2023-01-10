@@ -3,27 +3,35 @@
   "id": "apiUpdateCrownCourtApplicationRequest.json",
   "type": "object",
   "title": "Update Crown Court application Request",
-  "description": "Data contract for crown court action request",
+  "description": "Data contract for update crown court application request",
   "properties": {
-    "laaTransactionId": {
-      "type": "string",
-      "description": "The txn / correlation UUID"
-    },
-    "repId": {
+    "applicantHistoryId": {
       "type": "integer",
-      "description": "MAAT / Rep Id"
+      "description": "The applicant history Id"
+    },
+    "isImprisoned": {
+      "type": "boolean",
+      "description": "Indicate whether the applicant is imprisoned"
     },
     "userSession": {
       "type": "object",
       "description": "The current users session",
       "$ref": "common/apiUserSession.json"
     },
-    "crownCourtSummary": {
+    "paymentDetails": {
       "type": "object",
-      "description": "Crown court overview",
-      "$ref": "common/apiCrownCourtSummary.json"
+      "description": "The applications payment details",
+      "$ref": "common/apiPaymentDetails.json"
     }
   },
+  "extends": {
+    "$ref": "apiProcessCrownRepOrderRequest.json"
+  },
   "additionalProperties": false,
-  "required": ["repId", "userSession", "crownCourtSummary"]
+  "required": [
+    "userSession",
+    "isImprisoned",
+    "paymentDetails",
+    "applicantHistoryId"
+  ]
 }

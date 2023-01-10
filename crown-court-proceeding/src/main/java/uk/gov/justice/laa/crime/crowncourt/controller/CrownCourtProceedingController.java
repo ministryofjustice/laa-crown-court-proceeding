@@ -56,11 +56,12 @@ public class CrownCourtProceedingController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<ApiProcessCrownRepOrderResponse> processCrownRepOrder(@Parameter(description = "Process Crown Rep Order",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ApiProcessCrownRepOrderRequest.class)
-            )
-    ) @Valid @RequestBody ApiProcessCrownRepOrderRequest processCrownRepOrderRequest) {
+    public ResponseEntity<ApiProcessCrownRepOrderResponse> processCrownRepOrder(
+            @Parameter(description = "Process Crown Rep Order",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ApiProcessCrownRepOrderRequest.class)
+                    )
+            ) @Valid @RequestBody ApiProcessCrownRepOrderRequest processCrownRepOrderRequest) {
 
         ProcessCrownRepOrderRequestDTO requestDTO = preProcessRequest(processCrownRepOrderRequest);
         return ResponseEntity.ok(
