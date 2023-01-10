@@ -30,8 +30,18 @@
       "type": "string",
       "title": "crown court sentence order date",
       "format": "date-time"
+    },
+    "evidenceFeeLevel": {
+      "type": "string",
+      "description": "The evidence fee level"
     }
   },
   "additionalProperties": false,
-  "required": ["repOrderDecision", "repId", "repType", "repOrderDate", "withdrawalDate"]
+  "required": [
+    "repOrderDecision",
+    "repId",
+    "repType",
+    "repOrderDate",
+    "withdrawalDate"
+  ]
 }
