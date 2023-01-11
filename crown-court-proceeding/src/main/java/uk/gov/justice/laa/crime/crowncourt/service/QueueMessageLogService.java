@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.entity.QueueMessageLogEntity;
 import uk.gov.justice.laa.crime.crowncourt.enums.MessageType;
@@ -25,28 +26,33 @@ public class QueueMessageLogService {
 
     public void createLog(final MessageType messageType, final String message) {
 
-        JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
-        JsonElement maatId = msgObject.get("maatId");
+        if (StringUtils.isNotEmpty(message)) {
+            JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
+            JsonElement maatId = msgObject.get("maatId");
 
-        JsonElement laaTransactionUUID = msgObject.has("metadata") ?
-                msgObject.get("metadata").getAsJsonObject().get("laaTransactionId") :
-                msgObject.get("laaTransactionId");
+            JsonElement laaTransactionUUID = msgObject.has("metadata") ?
+                    msgObject.get("metadata").getAsJsonObject().get("laaTransactionId") :
+                    msgObject.get("laaTransactionId");
 
-        QueueMessageLogEntity queueMessageLogEntity =
-                QueueMessageLogEntity.builder()
-                        .transactionUUID(UUID.randomUUID().toString())
-                        .laaTransactionId(Optional.ofNullable(laaTransactionUUID).map(JsonElement::getAsString)
-                                .orElse(null))
-                        .maatId(Optional
-                                .ofNullable(maatId)
-                                .map(JsonElement::getAsInt)
-                                .orElse(-1))
-                        .type(prepareMessageType(messageType, msgObject))
-                        .message(convertAsByte(message))
-                        .createdTime(LocalDateTime.now())
-                        .build();
+            QueueMessageLogEntity queueMessageLogEntity =
+                    QueueMessageLogEntity.builder()
+                            .transactionUUID(UUID.randomUUID().toString())
+                            .laaTransactionId(Optional.ofNullable(laaTransactionUUID).map(JsonElement::getAsString)
+                                    .orElse(null))
+                            .maatId(Optional
+                                    .ofNullable(maatId)
+                                    .map(JsonElement::getAsInt)
+                                    .orElse(-1))
+                            .type(prepareMessageType(messageType, msgObject))
+                            .message(convertAsByte(message))
+                            .createdTime(LocalDateTime.now())
+                            .build();
 
-        queueMessageLogRepository.save(queueMessageLogEntity);
+            queueMessageLogRepository.save(queueMessageLogEntity);
+        } else {
+            log.error("Log Message is Empty");
+        }
+
     }
 
 
@@ -68,8 +74,6 @@ public class QueueMessageLogService {
 
 
     private byte[] convertAsByte(final String message) {
-
-        return Optional.ofNullable(message).isPresent() ?
-                message.getBytes() : null;
+        return message.getBytes();
     }
 }

@@ -2,7 +2,10 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.entity.QueueMessageLogEntity;
 import uk.gov.justice.laa.crime.crowncourt.enums.JurisdictionType;
@@ -22,7 +25,6 @@ class QueueMessageLogServiceTest {
     private QueueMessageLogRepository queueMessageLogRepository;
     @Captor
     private ArgumentCaptor<QueueMessageLogEntity> queueMessageCaptor;
-
 
 
     @Test
@@ -46,6 +48,14 @@ class QueueMessageLogServiceTest {
                 () -> assertEquals(savedQueueMsg.getMaatId(), maatId)
         );
     }
+
+
+    @Test
+    void testWhenProsecutionConcludedMessageIsNull_thenCheckLogEntryNotCreated() {
+        queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, "");
+        verify(queueMessageLogRepository, times(0)).save(queueMessageCaptor.capture());
+    }
+
 
     @Test
     void testWhenMetadataIsNull_thenProcessAsExpected() {
@@ -71,14 +81,14 @@ class QueueMessageLogServiceTest {
 
     private String newQueueMessageWithoutMetaData(Integer maatId) {
 
-        return  "{" +
+        return "{" +
                 "    \"maatId\": " + maatId + "\n" +
                 "}";
     }
 
     private String getQueueMessage(Integer maatId, JurisdictionType jurisdictionType) {
 
-        return  "{" +
+        return "{" +
                 "    \"maatId\": " + maatId + ",\n" +
                 "    \"jurisdictionType\": " + jurisdictionType.name() + ",\n" +
                 "    \"metadata\": {\n" +
