@@ -1,13 +1,17 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.listener;
 
 
-
+import com.google.gson.Gson;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.crime.crowncourt.enums.MessageType;
+import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -16,9 +20,16 @@ class ProsecutionConcludedListenerTest {
     @InjectMocks
     private ProsecutionConcludedListener prosecutionConcludedListener;
 
+    @Mock
+    private Gson gson;
+    @Mock
+    private QueueMessageLogService queueMessageLogService;
+
     @Test
     void givenJSONMessageIsReceived_whenProsecutionConcludedListenerIsInvoked_thenReceiveIsCalled() {
-        prosecutionConcludedListener.receive(getSqsMessagePayload());
+        String message = getSqsMessagePayload();
+        prosecutionConcludedListener.receive(message);
+        verify(queueMessageLogService).createLog(MessageType.PROSECUTION_CONCLUDED, message);
         assertThat(Boolean.TRUE).isTrue();
     }
 
