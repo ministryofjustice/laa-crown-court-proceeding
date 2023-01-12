@@ -51,8 +51,10 @@ public class ProceedingService {
         return apiProcessCrownRepOrderResponse;
     }
 
-    public void updateCrownCourtApplication(CrownCourtApplicationRequestDTO crownCourtApplicationRequestDTO) {
-        repOrderService.updateCCSentenceOrderDate(crownCourtApplicationRequestDTO);
+    public void updateApplication(CrownCourtDTO dto) {
+        processRepOrder(dto);
+        repOrderService.updateCCSentenceOrderDate(dto);
+        maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto), dto.getLaaTransactionId());
     }
 
     public Object graphQLQuery() throws URISyntaxException, IOException {
