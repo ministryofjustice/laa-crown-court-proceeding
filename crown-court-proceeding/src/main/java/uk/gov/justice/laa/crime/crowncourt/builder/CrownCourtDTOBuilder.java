@@ -28,6 +28,7 @@ public class CrownCourtDTOBuilder {
 
         if (request instanceof ApiUpdateApplicationRequest updateRequest) {
             return builder.userSession(updateRequest.getUserSession())
+                    .crownRepId(updateRequest.getCrownRepId())
                     .applicantHistoryId(updateRequest.getApplicantHistoryId())
                     .isImprisoned(updateRequest.getIsImprisoned())
                     .paymentDetails(updateRequest.getPaymentDetails())

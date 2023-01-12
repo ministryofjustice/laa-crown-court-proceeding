@@ -21,6 +21,7 @@ public class CrownCourtDTO {
     private ApiPaymentDetails paymentDetails;
     private CaseType caseType;
     private MagCourtOutcome magCourtOutcome;
+    private Integer crownRepId;
     private DecisionReason decisionReason;
     private LocalDateTime decisionDate;
     private LocalDateTime committalDate;
