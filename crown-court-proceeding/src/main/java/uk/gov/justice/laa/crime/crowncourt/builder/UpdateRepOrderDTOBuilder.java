@@ -21,6 +21,7 @@ public class UpdateRepOrderDTOBuilder {
         ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
         return UpdateRepOrderRequestDTO.builder()
                 .repId(crownCourtDTO.getRepId())
+                .crownRepId(crownCourtDTO.getCrownRepId())
                 .crownRepOrderDecision(crownCourtSummary.getRepOrderDecision())
                 .crownRepOrderType(crownCourtSummary.getRepType())
                 .crownWithdrawalDate(

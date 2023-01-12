@@ -9,6 +9,10 @@
       "type": "integer",
       "description": "The applicant history Id"
     },
+    "crownRepId": {
+      "type": "integer",
+      "description": "The Crown Rep ID"
+    },
     "isImprisoned": {
       "type": "boolean",
       "description": "Indicate whether the applicant is imprisoned"
