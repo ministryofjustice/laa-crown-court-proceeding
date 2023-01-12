@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
-import uk.gov.justice.laa.crime.crowncourt.dto.ProcessCrownRepOrderRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtApplicationRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
@@ -30,7 +29,7 @@ public class RepOrderService {
     List<String> failedRepOrderDecisions = List.of(Constants.FAILED_IO_J_APPEAL_FAILURE,
             Constants.FAILED_CF_S_FAILED_MEANS_TEST);
 
-    public ApiCrownCourtSummary getRepDecision(ProcessCrownRepOrderRequestDTO requestDTO) {
+    public ApiCrownCourtSummary getRepDecision(CrownCourtDTO requestDTO) {
 
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         String prevRepOrderDecision = apiCrownCourtSummary.getRepOrderDecision();
@@ -55,7 +54,7 @@ public class RepOrderService {
         return apiCrownCourtSummary;
     }
 
-    public String getDecisionByFinAssessment(ProcessCrownRepOrderRequestDTO requestDTO, ReviewResult reviewResult, boolean isValidCaseType) {
+    public String getDecisionByFinAssessment(CrownCourtDTO requestDTO, ReviewResult reviewResult, boolean isValidCaseType) {
 
         FullAssessmentResult fullAssessmentResult = FullAssessmentResult.getFrom(requestDTO.getFinancialAssessment().getFullResult());
         CurrentStatus fullAssessmentStatus = requestDTO.getFinancialAssessment().getFullStatus();
@@ -134,7 +133,7 @@ public class RepOrderService {
         return null;
     }
 
-    public ApiCrownCourtSummary determineCrownRepType(ProcessCrownRepOrderRequestDTO requestDTO) {
+    public ApiCrownCourtSummary determineCrownRepType(CrownCourtDTO requestDTO) {
         ApiCrownCourtSummary crownCourtSummary = requestDTO.getCrownCourtSummary();
         if (crownCourtSummary.getRepOrderDecision() != null) {
             if (requestDTO.getMagCourtOutcome() == MagCourtOutcome.SENT_FOR_TRIAL
@@ -154,7 +153,7 @@ public class RepOrderService {
         return crownCourtSummary;
     }
 
-    public void determineRepTypeByRepOrderDecision(ProcessCrownRepOrderRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
+    public void determineRepTypeByRepOrderDecision(CrownCourtDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
         CaseType caseType = requestDTO.getCaseType();
         String repOrderDecision = crownCourtSummary.getRepOrderDecision();
         if ((grantedRepOrderDecisions.contains(repOrderDecision) && caseType == CaseType.APPEAL_CC) ||
@@ -166,7 +165,7 @@ public class RepOrderService {
         }
     }
 
-    public void determineRepTypeByDecisionReason(ProcessCrownRepOrderRequestDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
+    public void determineRepTypeByDecisionReason(CrownCourtDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
         if (requestDTO.getDecisionReason() == DecisionReason.GRANTED) {
             crownCourtSummary.setRepType(Constants.THROUGH_ORDER);
             crownCourtSummary.setRepId(requestDTO.getRepId());
@@ -177,7 +176,7 @@ public class RepOrderService {
         }
     }
 
-    public ApiCrownCourtSummary determineRepOrderDate(ProcessCrownRepOrderRequestDTO requestDTO) {
+    public ApiCrownCourtSummary determineRepOrderDate(CrownCourtDTO requestDTO) {
         ApiCrownCourtSummary crownCourtSummary = requestDTO.getCrownCourtSummary();
         String repOrderDecision = crownCourtSummary.getRepOrderDecision();
         if (repOrderDecision != null && crownCourtSummary.getRepOrderDate() == null) {
@@ -202,7 +201,7 @@ public class RepOrderService {
         return crownCourtSummary;
     }
 
-    private LocalDateTime determineMagsRepOrderDate(ProcessCrownRepOrderRequestDTO requestDTO, String repOrderDecision) {
+    private LocalDateTime determineMagsRepOrderDate(CrownCourtDTO requestDTO, String repOrderDecision) {
         DecisionReason decisionReason = requestDTO.getDecisionReason();
         List<DecisionReason> failedDecisionReasons =
                 List.of(DecisionReason.FAILIOJ, DecisionReason.FAILMEANS, DecisionReason.FAILMEIOJ);
@@ -218,12 +217,12 @@ public class RepOrderService {
         return null;
     }
 
-    public void updateCCSentenceOrderDate(CrownCourtApplicationRequestDTO crownCourtApplicationRequestDTO) {
+    public void updateCCSentenceOrderDate(CrownCourtDTO crownCourtDTO) {
         UpdateRepOrderRequestDTO build = UpdateRepOrderRequestDTO.builder()
-                .repId(crownCourtApplicationRequestDTO.getRepId())
-                .sentenceOrderDate(crownCourtApplicationRequestDTO.getCrownCourtSummary().getSentenceOrderDate())
-                .userModified(crownCourtApplicationRequestDTO.getUserSession().getUserName())
+                .repId(crownCourtDTO.getRepId())
+                .sentenceOrderDate(crownCourtDTO.getCrownCourtSummary().getSentenceOrderDate())
+                .userModified(crownCourtDTO.getUserSession().getUserName())
                 .build();
-        maatCourtDataService.updateRepOrder(build, crownCourtApplicationRequestDTO.getLaaTransactionId());
+        maatCourtDataService.updateRepOrder(build, crownCourtDTO.getLaaTransactionId());
     }
 }

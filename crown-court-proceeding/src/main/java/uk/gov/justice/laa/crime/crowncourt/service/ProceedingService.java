@@ -4,10 +4,10 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.crowncourt.dto.ProcessCrownRepOrderRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtApplicationRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessCrownRepOrderResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
 
@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CrownCourtProceedingService {
+public class ProceedingService {
 
     private final RepOrderService repOrderService;
     private final MaatCourtDataService maatCourtDataService;
@@ -36,13 +36,13 @@ public class CrownCourtProceedingService {
             MagCourtOutcome.APPEAL_TO_CC
     );
 
-    public ApiProcessCrownRepOrderResponse processCrownRepOrder(ProcessCrownRepOrderRequestDTO requestDTO) {
-        ApiProcessCrownRepOrderResponse apiProcessCrownRepOrderResponse = new ApiProcessCrownRepOrderResponse();
-        if (caseTypes.contains(requestDTO.getCaseType()) ||
-                (requestDTO.getCaseType() == CaseType.EITHER_WAY && magCourtOutcomes.contains(requestDTO.getMagCourtOutcome()))) {
-            repOrderService.getRepDecision(requestDTO);
-            repOrderService.determineCrownRepType(requestDTO);
-            ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineRepOrderDate(requestDTO);
+    public ApiProcessRepOrderResponse processRepOrder(CrownCourtDTO dto) {
+        ApiProcessRepOrderResponse apiProcessCrownRepOrderResponse = new ApiProcessRepOrderResponse();
+        if (caseTypes.contains(dto.getCaseType()) ||
+                (dto.getCaseType() == CaseType.EITHER_WAY && magCourtOutcomes.contains(dto.getMagCourtOutcome()))) {
+            repOrderService.getRepDecision(dto);
+            repOrderService.determineCrownRepType(dto);
+            ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineRepOrderDate(dto);
             apiProcessCrownRepOrderResponse
                     .withRepOrderDecision(apiCrownCourtSummary.getRepOrderDecision())
                     .withRepOrderDate(apiCrownCourtSummary.getRepOrderDate())
