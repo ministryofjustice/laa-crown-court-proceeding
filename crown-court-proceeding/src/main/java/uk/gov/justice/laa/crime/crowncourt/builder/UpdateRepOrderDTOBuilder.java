@@ -29,6 +29,7 @@ public class UpdateRepOrderDTOBuilder {
                                 .map(LocalDateTime::toLocalDate)
                                 .orElse(null)
                 )
+                .sentenceOrderDate(crownCourtSummary.getSentenceOrderDate())
                 .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel())
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
                 .bankAccountName(paymentDetails.getBankAccountName())
