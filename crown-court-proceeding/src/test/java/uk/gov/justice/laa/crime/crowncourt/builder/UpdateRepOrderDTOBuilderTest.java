@@ -46,5 +46,7 @@ class UpdateRepOrderDTOBuilderTest {
                 .isEqualTo(dto.getPaymentDetails().getSortCode());
         softly.assertThat(updateRequest.getUserModified())
                 .isEqualTo(dto.getUserSession().getUserName());
+        softly.assertThat(updateRequest.getSentenceOrderDate())
+                .isEqualTo(dto.getCrownCourtSummary().getSentenceOrderDate());
     }
 }

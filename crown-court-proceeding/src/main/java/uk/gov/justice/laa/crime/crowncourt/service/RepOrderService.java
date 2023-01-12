@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
@@ -215,14 +214,5 @@ public class RepOrderService {
             }
         }
         return null;
-    }
-
-    public void updateCCSentenceOrderDate(CrownCourtDTO crownCourtDTO) {
-        UpdateRepOrderRequestDTO build = UpdateRepOrderRequestDTO.builder()
-                .repId(crownCourtDTO.getRepId())
-                .sentenceOrderDate(crownCourtDTO.getCrownCourtSummary().getSentenceOrderDate())
-                .userModified(crownCourtDTO.getUserSession().getUserName())
-                .build();
-        maatCourtDataService.updateRepOrder(build, crownCourtDTO.getLaaTransactionId());
     }
 }

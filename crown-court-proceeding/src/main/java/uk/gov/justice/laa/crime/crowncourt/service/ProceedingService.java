@@ -12,7 +12,6 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Set;
 
 @Slf4j
@@ -45,11 +44,10 @@ public class ProceedingService {
 
     public void updateApplication(CrownCourtDTO dto) {
         processRepOrder(dto);
-        repOrderService.updateCCSentenceOrderDate(dto);
         maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto), dto.getLaaTransactionId());
     }
 
-    public Object graphQLQuery() throws URISyntaxException, IOException {
+    public Object graphQLQuery() throws IOException {
         log.info("Start");
         Object obj = maatCourtDataService.getRepOrderByFilter("5639461", "false");
         log.info("Response :" + obj.toString());

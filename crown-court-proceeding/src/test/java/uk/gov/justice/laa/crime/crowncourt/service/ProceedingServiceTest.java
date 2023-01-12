@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
-class CrownCourtProceedingServiceTest {
+class ProceedingServiceTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -181,7 +181,6 @@ class CrownCourtProceedingServiceTest {
     void givenCCApplication_whenUpdateApplicationIsInvoked_thenSentenceOrderDateIsPersisted() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         proceedingService.updateApplication(requestDTO);
-        verify(repOrderService).updateCCSentenceOrderDate(any(CrownCourtDTO.class));
         verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class), anyString());
     }
 
