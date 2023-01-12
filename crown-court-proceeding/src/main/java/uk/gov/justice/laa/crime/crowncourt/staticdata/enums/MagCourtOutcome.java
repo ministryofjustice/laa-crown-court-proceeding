@@ -18,8 +18,8 @@ public enum MagCourtOutcome {
     APPEAL_TO_CC("APPEAL TO CC", "Appeal to Crown Court");
 
     @JsonPropertyDescription("This will have magistrate court outcome")
-    private String outcome;
-    private String description;
+    private final String outcome;
+    private final String description;
 
     public static MagCourtOutcome getFrom(String outcome) {
         if (StringUtils.isBlank(outcome)) return null;
