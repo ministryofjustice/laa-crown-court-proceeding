@@ -30,6 +30,10 @@
       "type": "string",
       "title": "crown court sentence order date",
       "format": "date-time"
+    },
+    "evidenceFeeLevel": {
+      "type": "string",
+      "description": "The evidence fee level"
     }
   },
   "additionalProperties": false,

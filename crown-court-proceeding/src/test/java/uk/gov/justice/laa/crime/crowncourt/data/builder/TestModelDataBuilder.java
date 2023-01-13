@@ -1,8 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtApplicationRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
@@ -30,9 +29,10 @@ public class TestModelDataBuilder {
     public static final String MOCK_DECISION = "MOCK_DECISION";
     public static final Integer TEST_REP_ID = 91919;
     public static final String TEST_USER = "TEST_USER";
+    public static final Integer TEST_APPLICANT_HISTORY_ID = 12449721;
 
-    public static ApiCheckCrownCourtActionsRequest getApiCheckCrownCourtActionsRequest(boolean isValid) {
-        return new ApiCheckCrownCourtActionsRequest()
+    public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
+        return new ApiProcessRepOrderRequest()
                 .withRepId(isValid ? TEST_REP_ID : null)
                 .withCaseType(CaseType.EITHER_WAY)
                 .withMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL)
@@ -75,16 +75,17 @@ public class TestModelDataBuilder {
                 .withStatus(CurrentStatus.COMPLETE);
     }
 
-    public static ApiCheckCrownCourtActionsResponse getApiCheckCrownCourtActionsResponse() {
-        return new ApiCheckCrownCourtActionsResponse()
+    public static ApiProcessRepOrderResponse getApiProcessRepOrderResponse() {
+        return new ApiProcessRepOrderResponse()
                 .withRepOrderDecision(MOCK_DECISION)
                 .withRepOrderDate(TEST_REP_ORDER_DATE)
                 .withRepType("");
     }
 
-    public static CrownCourtActionsRequestDTO getCrownCourtActionsRequestDTO() {
-        return CrownCourtActionsRequestDTO.builder()
+    public static CrownCourtDTO getCrownCourtDTO() {
+        return CrownCourtDTO.builder()
                 .repId(TEST_REP_ID)
+                .laaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
                 .caseType(CaseType.SUMMARY_ONLY)
                 .magCourtOutcome(MagCourtOutcome.APPEAL_TO_CC)
                 .decisionDate(TEST_DECISION_DATE)
@@ -93,6 +94,10 @@ public class TestModelDataBuilder {
                 .financialAssessment(getFinancialAssessment())
                 .dateReceived(TEST_DATE_RECEIVED)
                 .iojAppeal(getIojAppeal())
+                .isImprisoned(false)
+                .userSession(getApiUserSession(true))
+                .paymentDetails(getApiPaymentDetails())
+                .applicantHistoryId(TEST_APPLICANT_HISTORY_ID)
                 .build();
     }
 
@@ -111,20 +116,26 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static CrownCourtApplicationRequestDTO getCrownCourtApplicationRequestDTO() {
-        return CrownCourtApplicationRequestDTO.builder()
-                .laaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
-                .repId(TEST_REP_ID)
-                .crownCourtSummary(getCrownCourtSummary())
-                .userSession(new ApiUserSession()
-                        .withUserName(TEST_USER))
-                .build();
+    public static ApiPaymentDetails getApiPaymentDetails() {
+        return new ApiPaymentDetails()
+                .withPaymentMethod("STANDING ORDER")
+                .withBankAccountNo(11101011)
+                .withBankAccountName(TEST_USER)
+                .withSortCode("121314");
     }
 
-    public static ApiUpdateCrownCourtApplicationRequest getApiUpdateCrownCourtApplicationRequest(boolean isValid) {
-        return new ApiUpdateCrownCourtApplicationRequest()
+    public static ApiUserSession getApiUserSession(boolean isValid) {
+        return new ApiUserSession()
+                .withUserName(isValid ? TEST_USER : null)
+                .withSessionId("");
+    }
+
+
+    public static ApiUpdateApplicationRequest getApiUpdateApplicationRequest(boolean isValid) {
+        return new ApiUpdateApplicationRequest()
                 .withRepId(isValid ? TEST_REP_ID : null)
                 .withLaaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
+                .withApplicantHistoryId(TEST_APPLICANT_HISTORY_ID)
                 .withCrownCourtSummary(new ApiCrownCourtSummary()
                         .withRepId(isValid ? TEST_REP_ID : null)
                         .withRepOrderDate(TEST_REP_ORDER_DATE)
@@ -132,9 +143,18 @@ public class TestModelDataBuilder {
                         .withRepOrderDecision(MOCK_DECISION)
                         .withWithdrawalDate(TEST_WITHDRAWAL_DATE)
                         .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE))
-                .withUserSession(new ApiUserSession()
-                        .withUserName(isValid ? TEST_USER : null)
-                        .withSessionId(""));
+                .withUserSession(getApiUserSession(isValid))
+                .withCaseType(CaseType.EITHER_WAY)
+                .withMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL)
+                .withDecisionReason(DecisionReason.GRANTED)
+                .withCommittalDate(TEST_COMMITTAL_DATE)
+                .withDecisionDate(TEST_DECISION_DATE)
+                .withDateReceived(TEST_DATE_RECEIVED)
+                .withIojAppeal(getIojAppeal())
+                .withIsImprisoned(false)
+                .withPaymentDetails(getApiPaymentDetails())
+                .withFinancialAssessment(getFinancialAssessment())
+                .withPassportAssessment(getPassportAssessment());
     }
 
 }

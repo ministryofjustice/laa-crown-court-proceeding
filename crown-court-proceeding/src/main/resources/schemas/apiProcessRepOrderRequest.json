@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "apiCrownCourtActionsRequest.json",
+  "id": "apiProcessCrownRepOrderRequest.json",
   "type": "object",
   "title": "Crown court Request",
   "description": "Data contract for crown court action request",
@@ -55,7 +55,7 @@
     },
     "financialAssessment": {
       "type": "object",
-      "description": "Finanicial assessment",
+      "description": "Financial assessment",
       "$ref": "common/apiFinancialAssessment.json"
     },
     "passportAssessment": {

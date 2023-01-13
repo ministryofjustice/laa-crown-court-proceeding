@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "apiCrownCourtActionsResponse.json",
+  "id": "apiProcessCrownRepOrderResponse.json",
   "type": "object",
   "title": "Crown court Request",
   "description": "Data contract for crown court action response",
