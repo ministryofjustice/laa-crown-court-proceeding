@@ -21,7 +21,6 @@ import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 @Slf4j
 @RestController
@@ -37,7 +36,7 @@ public class CrownCourtProceedingController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Process Crown Rep Order Data")
+    @Operation(description = "Process Rep Order Data")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiProcessRepOrderRequest.class)
@@ -55,7 +54,7 @@ public class CrownCourtProceedingController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<ApiProcessRepOrderResponse> processCrownRepOrder(
+    public ResponseEntity<ApiProcessRepOrderResponse> processRepOrder(
             @Parameter(description = "Process Crown Rep Order",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ApiProcessRepOrderRequest.class)
@@ -93,7 +92,7 @@ public class CrownCourtProceedingController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Object.class)))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Object> graphQLQuery() throws URISyntaxException, IOException {
+    public ResponseEntity<Object> graphQLQuery() throws IOException {
         log.info("Make GraphQL Query Request");
         return ResponseEntity.ok(proceedingService.graphQLQuery());
     }
