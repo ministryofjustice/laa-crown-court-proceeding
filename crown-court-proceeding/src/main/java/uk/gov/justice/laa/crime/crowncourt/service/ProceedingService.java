@@ -27,19 +27,19 @@ public class ProceedingService {
     );
 
     public ApiProcessRepOrderResponse processRepOrder(CrownCourtDTO dto) {
-        ApiProcessRepOrderResponse apiProcessCrownRepOrderResponse = new ApiProcessRepOrderResponse();
+        ApiProcessRepOrderResponse apiProcessRepOrderResponse = new ApiProcessRepOrderResponse();
         if (caseTypes.contains(dto.getCaseType()) ||
                 (dto.getCaseType() == CaseType.EITHER_WAY &&
                         !dto.getMagCourtOutcome().equals(MagCourtOutcome.RESOLVED_IN_MAGS))) {
             repOrderService.getRepDecision(dto);
             repOrderService.determineCrownRepType(dto);
             ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineRepOrderDate(dto);
-            apiProcessCrownRepOrderResponse
+            apiProcessRepOrderResponse
                     .withRepOrderDecision(apiCrownCourtSummary.getRepOrderDecision())
                     .withRepOrderDate(apiCrownCourtSummary.getRepOrderDate())
                     .withRepType(apiCrownCourtSummary.getRepType());
         }
-        return apiProcessCrownRepOrderResponse;
+        return apiProcessRepOrderResponse;
     }
 
     public void updateApplication(CrownCourtDTO dto) {
