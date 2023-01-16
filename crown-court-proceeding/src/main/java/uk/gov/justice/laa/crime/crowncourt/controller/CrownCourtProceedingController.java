@@ -11,37 +11,35 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtActionsRequestDTOBuilder;
-import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtApplicationRequestDTOBuilder;
-import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtActionsRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtDTOBuilder;
+import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.ErrorDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCheckCrownCourtActionsResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateCrownCourtApplicationRequest;
-import uk.gov.justice.laa.crime.crowncourt.service.CrownCourtProceedingService;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/internal/v1/crowncourtproceeding/actions")
+@RequestMapping("api/internal/v1/proceedings")
 @Tag(name = "Crown Court Proceeding", description = "Rest API for Crown Court Proceeding.")
 public class CrownCourtProceedingController {
 
-    private final CrownCourtProceedingService crownCourtProceedingService;
+    private final ProceedingService proceedingService;
 
-    private CrownCourtActionsRequestDTO preProcessRequest(ApiCheckCrownCourtActionsRequest crownCourtActionsRequest) {
-        return new CrownCourtActionsRequestDTOBuilder().buildRequestDTO(crownCourtActionsRequest);
+    private CrownCourtDTO preProcessRequest(ApiProcessRepOrderRequest request) {
+        return CrownCourtDTOBuilder.build(request);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Check Crown Court Actions data")
+    @Operation(description = "Process Rep Order Data")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ApiCheckCrownCourtActionsResponse.class)
+                    schema = @Schema(implementation = ApiProcessRepOrderRequest.class)
             )
     )
     @ApiResponse(responseCode = "400",
@@ -56,15 +54,16 @@ public class CrownCourtProceedingController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<ApiCheckCrownCourtActionsResponse> checkCrownCourtActions(@Parameter(description = "Check Crown Court Actions data",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ApiCheckCrownCourtActionsRequest.class)
-            )
-    ) @Valid @RequestBody ApiCheckCrownCourtActionsRequest crownCourtActionsRequest) {
+    public ResponseEntity<ApiProcessRepOrderResponse> processRepOrder(
+            @Parameter(description = "Process Crown Rep Order",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ApiProcessRepOrderRequest.class)
+                    )
+            ) @Valid @RequestBody ApiProcessRepOrderRequest request) {
 
-        CrownCourtActionsRequestDTO requestDTO = preProcessRequest(crownCourtActionsRequest);
+        CrownCourtDTO requestDTO = preProcessRequest(request);
         return ResponseEntity.ok(
-                crownCourtProceedingService.checkCrownCourtActions(requestDTO)
+                proceedingService.processRepOrder(requestDTO)
         );
     }
 
@@ -83,9 +82,8 @@ public class CrownCourtProceedingController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<Object> updateCrownCourtActions(@Valid @RequestBody ApiUpdateCrownCourtApplicationRequest crownCourtApplicationRequest) {
-        crownCourtProceedingService.updateCrownCourtApplication(
-                new CrownCourtApplicationRequestDTOBuilder().buildRequestDTO(crownCourtApplicationRequest));
+    public ResponseEntity<Object> updateApplication(@Valid @RequestBody ApiUpdateApplicationRequest request) {
+        proceedingService.updateApplication(preProcessRequest(request));
         return ResponseEntity.ok().build();
     }
 
@@ -94,9 +92,9 @@ public class CrownCourtProceedingController {
     @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Object.class)))
     @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Object> graphQLQuery() throws URISyntaxException, IOException {
+    public ResponseEntity<Object> graphQLQuery() throws IOException {
         log.info("Make GraphQL Query Request");
-        return ResponseEntity.ok(crownCourtProceedingService.graphQLQuery());
+        return ResponseEntity.ok(proceedingService.graphQLQuery());
     }
 
 }

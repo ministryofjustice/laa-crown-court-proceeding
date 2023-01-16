@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateRepOrderRequestDTO {
+
     private Integer repId;
     private String caseId;
     private String catyCaseType;
@@ -23,9 +24,21 @@ public class UpdateRepOrderRequestDTO {
     private String magsOutcomeDate;
     private LocalDate magsOutcomeDateSet;
     private LocalDate committalDate;
-    private String repOrderDecisionReasonCode;
+    private String decisionReasonCode;
+    private Integer crownRepId;
     private String crownRepOrderDecision;
     private String crownRepOrderType;
+    private LocalDate crownRepOrderDate;
+    private LocalDate crownWithdrawalDate;
+    private Boolean isImprisoned;
     private LocalDateTime assessmentDateCompleted;
     private LocalDateTime sentenceOrderDate;
+    private Integer applicantHistoryId;
+    private String evidenceFeeLevel;
+    private Integer bankAccountNo;
+    private String bankAccountName;
+    private String paymentMethod;
+    private Integer preferredPaymentDay;
+    private String sortCode;
+
 }
