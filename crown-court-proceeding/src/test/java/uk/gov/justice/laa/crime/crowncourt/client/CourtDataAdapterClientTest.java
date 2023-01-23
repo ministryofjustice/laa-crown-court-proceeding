@@ -60,7 +60,7 @@ class CourtDataAdapterClientTest {
     }
 
     @Test
-    public void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_thenTheRequestIsSentCorrectly() {
+    void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_thenTheRequestIsSentCorrectly() {
         when(shortCircuitExchangeFunction.exchange(requestCaptor.capture())).thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK).build()));
         String laaStatusUrl = "cda-test/laaStatus";
         when(courtDataAdapterClientConfig.getLaaStatusUrl()).thenReturn(laaStatusUrl);
@@ -73,12 +73,12 @@ class CourtDataAdapterClientTest {
                 .createLog(MessageType.LAA_STATUS_UPDATE, jsonBody);
 
         Map<String, String> expectedFinalHeaders = Map.of(
-                "test-header", "test-header-value","Content-Type", "application/json");
+                "test-header", "test-header-value", "Content-Type", "application/json");
         validateRequest(requestCaptor.getValue(), laaStatusUrl, expectedFinalHeaders, HttpMethod.POST);
     }
 
     @Test
-    public void givenAValidHearingId_whenTriggerHearingProcessingIsInvoked_thenTheRequestIsSentCorrectly() {
+    void givenAValidHearingId_whenTriggerHearingProcessingIsInvoked_thenTheRequestIsSentCorrectly() {
         when(shortCircuitExchangeFunction.exchange(requestCaptor.capture()))
                 .thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK).build()));
         when(courtDataAdapterClientConfig.getHearingUrl()).thenReturn(hearingUrl);
@@ -91,7 +91,7 @@ class CourtDataAdapterClientTest {
     }
 
     @Test
-    public void givenAValidHearingId_whenTriggerHearingProcessingIsInvokedAndTheCallFails_thenFailureIsHandled() {
+    void givenAValidHearingId_whenTriggerHearingProcessingIsInvokedAndTheCallFails_thenFailureIsHandled() {
         when(shortCircuitExchangeFunction.exchange(requestCaptor.capture()))
                 .thenReturn(Mono.just(ClientResponse.create(HttpStatus.INTERNAL_SERVER_ERROR).build()));
 
