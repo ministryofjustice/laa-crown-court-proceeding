@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.config;
 
+import org.springframework.context.annotation.Primary;
 import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import io.netty.handler.timeout.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ public class MaatApiOAuth2Client {
     }
 
     @Bean(name = "maatAPIOAuth2WebClient")
+    @Primary
     public WebClient webClient(ClientRegistrationRepository clientRegistrations, OAuth2AuthorizedClientRepository authorizedClients) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction oauth =
                 new ServletOAuth2AuthorizedClientExchangeFilterFunction(

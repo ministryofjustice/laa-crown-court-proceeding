@@ -26,8 +26,14 @@ spring:
         provider:
           maatapi:
             token-uri: http://dummyserver:9999
+          cda:
+            token-uri: http://dummyserver:9999
         registration:
           maatapi:
+            client-id: dummy-client
+            client-secret: dummy-secret
+            authorization-grant-type: client_credentials
+          cda:
             client-id: dummy-client
             client-secret: dummy-secret
             authorization-grant-type: client_credentials
@@ -83,3 +89,14 @@ cloud-platform:
 feature:
   postMvp:
     enabled: false
+
+cda:
+  url: "http://localhost:1234/"
+  oauth:
+    url: cdaAuthUrl
+    clientId: cdaClient
+    clientSecret: cdaPass
+  laastatus:
+    url: "update"
+  hearing:
+    url: "hearing_results/{hearingId}"
