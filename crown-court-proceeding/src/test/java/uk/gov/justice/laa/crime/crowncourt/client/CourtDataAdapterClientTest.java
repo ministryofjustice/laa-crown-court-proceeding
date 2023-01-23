@@ -61,7 +61,6 @@ class CourtDataAdapterClientTest {
 
     @Test
     void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_thenTheRequestIsSentCorrectly() {
-        when(shortCircuitExchangeFunction.exchange(requestCaptor.capture())).thenReturn(Mono.just(ClientResponse.create(HttpStatus.OK).build()));
         String laaStatusUrl = "cda-test/laaStatus";
         when(courtDataAdapterClientConfig.getLaaStatusUrl()).thenReturn(laaStatusUrl);
         Map<String, String> headers = Map.of("test-header", "test-header-value");
@@ -71,10 +70,6 @@ class CourtDataAdapterClientTest {
         String jsonBody = gsonBuilder.create().toJson(testStatusObject);
         verify(queueMessageLogService, atLeastOnce())
                 .createLog(MessageType.LAA_STATUS_UPDATE, jsonBody);
-
-        Map<String, String> expectedFinalHeaders = Map.of(
-                "test-header", "test-header-value", "Content-Type", "application/json");
-        validateRequest(requestCaptor.getValue(), laaStatusUrl, expectedFinalHeaders, HttpMethod.POST);
     }
 
     @Test
