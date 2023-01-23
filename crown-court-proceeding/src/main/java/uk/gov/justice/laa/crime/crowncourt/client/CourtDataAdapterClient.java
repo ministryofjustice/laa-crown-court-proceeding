@@ -17,7 +17,6 @@ import uk.gov.justice.laa.crime.crowncourt.model.laastatus.LaaStatusUpdate;
 import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -38,21 +37,20 @@ public class CourtDataAdapterClient {
     /**
      * @param laaStatusUpdate laa status value
      */
-    public void postLaaStatus(LaaStatusUpdate laaStatusUpdate, Map<String,String> headers) {
+    public void postLaaStatus(LaaStatusUpdate laaStatusUpdate, Map<String, String> headers) {
 
 
         final String laaStatusUpdateJson = gsonBuilder.create().toJson(laaStatusUpdate);
-        queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE,laaStatusUpdateJson);
+        queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE, laaStatusUpdateJson);
 
         log.info("Post Laa status to CDA.");
-        WebClient.ResponseSpec clientResponse =
-                webClient
-                        .post()
-                        .uri(uriBuilder -> uriBuilder.path(courtDataAdapterClientConfig.getLaaStatusUrl()).build())
-                        .headers(httpHeaders -> httpHeaders.setAll(headers))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(laaStatusUpdateJson))
-                        .retrieve();
+        webClient
+                .post()
+                .uri(uriBuilder -> uriBuilder.path(courtDataAdapterClientConfig.getLaaStatusUrl()).build())
+                .headers(httpHeaders -> httpHeaders.setAll(headers))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(laaStatusUpdateJson))
+                .retrieve();
     }
 
     public void triggerHearingProcessing(UUID hearingId, String laaTransactionId) {
