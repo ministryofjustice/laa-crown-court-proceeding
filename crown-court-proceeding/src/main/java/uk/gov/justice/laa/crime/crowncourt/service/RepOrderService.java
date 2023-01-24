@@ -107,12 +107,13 @@ public class RepOrderService {
     }
 
     public String getDecisionByPassportAssessment(ApiPassportAssessment apiPassportAssessment, boolean isValidCaseType) {
-        PassportAssessmentResult passportResult = PassportAssessmentResult.getFrom(apiPassportAssessment.getResult());
-
-        if ((passportResult == PassportAssessmentResult.PASS || passportResult == PassportAssessmentResult.TEMP)
-                && apiPassportAssessment.getStatus() == CurrentStatus.COMPLETE
-                && isValidCaseType) {
-            return Constants.GRANTED_PASSPORTED;
+        if (apiPassportAssessment != null) {
+            PassportAssessmentResult passportResult = PassportAssessmentResult.getFrom(apiPassportAssessment.getResult());
+            if ((passportResult == PassportAssessmentResult.PASS || passportResult == PassportAssessmentResult.TEMP)
+                    && apiPassportAssessment.getStatus() == CurrentStatus.COMPLETE
+                    && isValidCaseType) {
+                return Constants.GRANTED_PASSPORTED;
+            }
         }
         return null;
     }
