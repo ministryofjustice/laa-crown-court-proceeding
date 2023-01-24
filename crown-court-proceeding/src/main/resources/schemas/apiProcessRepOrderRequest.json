@@ -75,7 +75,6 @@
     "dateReceived",
     "crownCourtSummary",
     "iojAppeal",
-    "financialAssessment",
-    "passportAssessment"
+    "financialAssessment"
   ]
 }
