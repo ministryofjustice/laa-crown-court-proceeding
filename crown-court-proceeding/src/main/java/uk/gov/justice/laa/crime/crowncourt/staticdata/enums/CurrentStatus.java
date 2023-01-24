@@ -23,8 +23,7 @@ public enum CurrentStatus {
     private final String description;
 
     public static CurrentStatus getFrom(String status)  {
-        if (StringUtils.isBlank(status))
-            throw new IllegalArgumentException(String.format("Status with value: %s does not exist.", status));
+        if (StringUtils.isBlank(status)) return null;
 
         return Stream.of(CurrentStatus.values())
                 .filter(f -> f.status.equals(status))
