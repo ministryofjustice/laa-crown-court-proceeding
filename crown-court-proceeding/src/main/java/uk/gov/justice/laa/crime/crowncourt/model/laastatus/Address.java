@@ -1,8 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.model.laastatus;
 
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,24 +12,20 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Address {
 
-    @SerializedName("address1")
-    @Expose
+    @JsonProperty("address1")
     private String address1;
-    @SerializedName("address2")
+    @JsonProperty("address2")
     private String address2;
-    @SerializedName("address3")
-    @Expose
+    @JsonProperty("address3")
     private String address3;
-    @SerializedName("address4")
-    @Expose
+    @JsonProperty("address4")
     private String address4;
-    @SerializedName("address5")
-    @Expose
+    @JsonProperty("address5")
     private String address5;
-    @SerializedName("postcode")
-    @Expose
+    @JsonProperty("postcode")
     private String postcode;
 
 }

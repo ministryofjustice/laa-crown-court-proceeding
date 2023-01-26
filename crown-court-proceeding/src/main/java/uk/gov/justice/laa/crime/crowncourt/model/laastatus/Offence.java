@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.model.laastatus;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,21 +12,17 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Offence {
 
-    @SerializedName("offence_id")
-    @Expose
-    public String offenceId;
-    @SerializedName("status_code")
-    @Expose
-    public String statusCode;
-    @SerializedName("status_date")
-    @Expose
-    public String statusDate;
-    @SerializedName("effective_start_date")
-    @Expose
-    public String effectiveStartDate;
-    @SerializedName("effective_end_date")
-    @Expose
-    public String effectiveEndDate;
+    @JsonProperty("offence_id")
+    private String offenceId;
+    @JsonProperty("status_code")
+    private String statusCode;
+    @JsonProperty("status_date")
+    private String statusDate;
+    @JsonProperty("effective_start_date")
+    private String effectiveStartDate;
+    @JsonProperty("effective_end_date")
+    private String effectiveEndDate;
 }

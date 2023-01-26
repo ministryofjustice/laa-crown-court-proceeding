@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.model.laastatus;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,15 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RepOrderData {
 
-    @SerializedName("type")
-    @Expose
+    @JsonProperty("type")
     private String type;
-    @SerializedName("attributes")
-    @Expose
+    @JsonProperty("attributes")
     private Attributes attributes;
-    @SerializedName("relationships")
-    @Expose
+    @JsonProperty("relationships")
     private Relationships relationships;
 }
