@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.client;
 
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,8 +44,9 @@ class CourtDataAdapterClientTest {
     @Captor
     ArgumentCaptor<ClientRequest> requestCaptor;
 
-    private GsonBuilder gsonBuilder;
     private CourtDataAdapterClient courtDataAdapterClient;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     public void setup() {
@@ -54,20 +56,18 @@ class CourtDataAdapterClientTest {
                 .exchangeFunction(shortCircuitExchangeFunction)
                 .build();
 
-        gsonBuilder = new GsonBuilder();
-
-        courtDataAdapterClient = new CourtDataAdapterClient(testWebClient, gsonBuilder, queueMessageLogService, courtDataAdapterClientConfig);
+        courtDataAdapterClient = new CourtDataAdapterClient(testWebClient, queueMessageLogService, courtDataAdapterClientConfig);
     }
 
     @Test
-    void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_thenTheRequestIsSentCorrectly() {
+    void givenAValidLaaStatusObject_whenPostLaaStatusIsInvoked_thenTheRequestIsSentCorrectly() throws JsonProcessingException {
         String laaStatusUrl = "cda-test/laaStatus";
         when(courtDataAdapterClientConfig.getLaaStatusUrl()).thenReturn(laaStatusUrl);
         Map<String, String> headers = Map.of("test-header", "test-header-value");
         LaaStatusUpdate testStatusObject = getTestLaaStatusObject();
 
         courtDataAdapterClient.postLaaStatus(testStatusObject, headers);
-        String jsonBody = gsonBuilder.create().toJson(testStatusObject);
+        String jsonBody = objectMapper.writeValueAsString(testStatusObject);
         verify(queueMessageLogService, atLeastOnce())
                 .createLog(MessageType.LAA_STATUS_UPDATE, jsonBody);
     }

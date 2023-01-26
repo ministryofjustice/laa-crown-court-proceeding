@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.client;
 
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ public class CourtDataAdapterClient {
     @Qualifier("cdaOAuth2WebClient")
     private final WebClient webClient;
 
-    private final GsonBuilder gsonBuilder;
+    ObjectMapper objectMapper = new ObjectMapper();
 
     private final QueueMessageLogService queueMessageLogService;
 
@@ -37,10 +38,10 @@ public class CourtDataAdapterClient {
     /**
      * @param laaStatusUpdate laa status value
      */
-    public void postLaaStatus(LaaStatusUpdate laaStatusUpdate, Map<String, String> headers) {
+    public void postLaaStatus(LaaStatusUpdate laaStatusUpdate, Map<String, String> headers) throws JsonProcessingException {
 
 
-        final String laaStatusUpdateJson = gsonBuilder.create().toJson(laaStatusUpdate);
+        final String laaStatusUpdateJson = objectMapper.writeValueAsString(laaStatusUpdate);
         queueMessageLogService.createLog(MessageType.LAA_STATUS_UPDATE, laaStatusUpdateJson);
 
         log.info("Post Laa status to CDA.");
