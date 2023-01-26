@@ -18,6 +18,14 @@ env:
     value: {{ .Values.maatApi.clientId }}
   - name: MAAT_API_OAUTH_CLIENT_SECRET
     value: {{ .Values.maatApi.clientSecret }}
+  - name: CDA_BASE_URL
+    value: {{ .Values.cdaApi.baseUrl }}
+  - name: CDA_OAUTH_URL
+    value: {{ .Values.cdaApi.oauthUrl }}
+  - name: CDA_OAUTH_CLIENT_ID
+    value: {{ .Values.cdaApi.clientId }}
+  - name: CDA_OAUTH_CLIENT_SECRET
+    value: {{ .Values.cdaApi.clientSecret }}
   - name: CLOUD_PLATFORM_QUEUE_REGION
     value: {{ .Values.cloudplatform.aws.sqs.region }}
   - name: CLOUD_PLATFORM_QUEUE_ACCESS_KEY
