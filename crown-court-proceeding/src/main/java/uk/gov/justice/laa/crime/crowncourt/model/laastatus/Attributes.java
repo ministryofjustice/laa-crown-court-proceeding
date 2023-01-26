@@ -1,8 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.model.laastatus;
 
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,21 +10,18 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Attributes {
 
-    @SerializedName("maat_reference")
-    @Expose
+    @JsonProperty("maat_reference")
     private Integer maatReference;
-    @SerializedName("defence_organisation")
-    @Expose
+    @JsonProperty("defence_organisation")
     private DefenceOrganisation defenceOrganisation;
-    @SerializedName("offences")
-    @Expose
+    @JsonProperty("offences")
     private List<Offence> offences;
 
 }

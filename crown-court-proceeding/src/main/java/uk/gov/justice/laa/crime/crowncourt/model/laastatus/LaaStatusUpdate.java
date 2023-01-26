@@ -1,20 +1,18 @@
 package uk.gov.justice.laa.crime.crowncourt.model.laastatus;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 
 @Builder
-@NoArgsConstructor (force = true)
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
-@Value
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LaaStatusUpdate {
 
-    @SerializedName("data")
-    @Expose
-    RepOrderData data;
+    @JsonProperty("data")
+    private RepOrderData data;
 }
