@@ -7,6 +7,7 @@ import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiHardshipOverview;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
@@ -64,14 +65,16 @@ public class RepOrderService {
             return Constants.REFUSED_INELIGIBLE;
         }
 
-        InitAssessmentResult initAssessmentResult = InitAssessmentResult.getFrom(requestDTO.getFinancialAssessment().getInitResult());
+        InitAssessmentResult initAssessmentResult = InitAssessmentResult.getFrom(
+                requestDTO.getFinancialAssessment().getInitResult()
+        );
         CurrentStatus initAssessmentStatus = requestDTO.getFinancialAssessment().getInitStatus();
-        ReviewResult hardshipOverviewResult = requestDTO.getFinancialAssessment().getHardshipOverview().getReviewResult();
-        CurrentStatus hardshipOverviewStatus = requestDTO.getFinancialAssessment().getHardshipOverview().getAssessmentStatus();
+        ApiHardshipOverview hardshipOverview = requestDTO.getFinancialAssessment().getHardshipOverview();
 
         if (((initAssessmentResult == InitAssessmentResult.PASS && initAssessmentStatus == CurrentStatus.COMPLETE)
                 || (fullAssessmentResult == FullAssessmentResult.PASS && fullAssessmentStatus == CurrentStatus.COMPLETE)
-                || (hardshipOverviewResult == ReviewResult.PASS && hardshipOverviewStatus == CurrentStatus.COMPLETE))
+                || (hardshipOverview != null && (hardshipOverview.getReviewResult() == ReviewResult.PASS
+                && hardshipOverview.getAssessmentStatus() == CurrentStatus.COMPLETE)))
                 && isValidCaseType) {
             return Constants.GRANTED_PASSED_MEANS_TEST;
         } else if ((initAssessmentResult == InitAssessmentResult.FAIL && initAssessmentStatus == CurrentStatus.COMPLETE)
