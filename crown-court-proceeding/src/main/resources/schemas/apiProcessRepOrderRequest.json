@@ -69,8 +69,6 @@
     "repId",
     "caseType",
     "magCourtOutcome",
-    "decisionReason",
-    "decisionDate",
     "committalDate",
     "dateReceived",
     "crownCourtSummary",

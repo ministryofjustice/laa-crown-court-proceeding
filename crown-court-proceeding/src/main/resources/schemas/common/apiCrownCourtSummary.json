@@ -37,5 +37,5 @@
     }
   },
   "additionalProperties": false,
-  "required": ["repOrderDecision", "repId", "repType", "repOrderDate", "withdrawalDate"]
+  "required": ["repOrderDecision", "repType"]
 }
