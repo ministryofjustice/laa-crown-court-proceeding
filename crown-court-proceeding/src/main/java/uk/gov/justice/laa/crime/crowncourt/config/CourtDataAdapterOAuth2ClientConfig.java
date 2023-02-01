@@ -1,51 +1,104 @@
 package uk.gov.justice.laa.crime.crowncourt.config;
 
-import org.springframework.context.annotation.Primary;
-import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import io.netty.handler.timeout.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.security.oauth2.client.*;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.*;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 import reactor.util.retry.Retry;
+import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 
 import java.time.Duration;
 
 /**
- * <code>MaatApiOAuth2Client.java</code>
+ * <code>CourtDataAdapterOAuth2ClientConfig</code>
  */
 @Configuration
 @Slf4j
-public class MaatApiOAuth2Client {
+public class CourtDataAdapterOAuth2ClientConfig {
 
-    private static final String REGISTERED_ID = "maatapi";
+    private static final String REGISTERED_ID = "cda";
+
     private final MaatApiConfiguration config;
+
     private final RetryConfiguration retryConfiguration;
 
-    public MaatApiOAuth2Client(MaatApiConfiguration config, RetryConfiguration retryConfiguration) {
+    public CourtDataAdapterOAuth2ClientConfig (MaatApiConfiguration config, RetryConfiguration retryConfiguration) {
         this.config = config;
         this.retryConfiguration = retryConfiguration;
     }
 
-    @Bean(name = "maatAPIOAuth2WebClient")
-    @Primary
-    public WebClient webClient(ClientRegistrationRepository clientRegistrations, OAuth2AuthorizedClientRepository authorizedClients) {
-        ServletOAuth2AuthorizedClientExchangeFilterFunction oauth =
-                new ServletOAuth2AuthorizedClientExchangeFilterFunction(
-                        clientRegistrations, authorizedClients
-                );
+    /**
+     * @param tokenUri
+     * @param clientId
+     * @param clientSecret
+     * @return
+     */
+    @Bean
+    ClientRegistrationRepository getRegistration(
+            @Value("${spring.security.oauth2.client.provider.cda.token-uri}") String tokenUri,
+            @Value("${spring.security.oauth2.client.registration.cda.client-id}") String clientId,
+            @Value("${spring.security.oauth2.client.registration.cda.client-secret}") String clientSecret
+    ) {
+        ClientRegistration registration = ClientRegistration
+                .withRegistrationId(REGISTERED_ID)
+                .tokenUri(tokenUri)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .build();
+        return new InMemoryClientRegistrationRepository(registration);
+    }
 
+
+    /**
+     * @param clientRegistrationRepository
+     * @return
+     */
+    @Bean
+    public OAuth2AuthorizedClientManager authorizedClientManager(
+            ClientRegistrationRepository clientRegistrationRepository) {
+
+        // grant_type = client_credentials flow.
+        OAuth2AuthorizedClientProvider authorizedClientProvider =
+                OAuth2AuthorizedClientProviderBuilder.builder()
+                        .clientCredentials()
+                        .build();
+
+        // Machine to machine service.
+        AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientManager =
+                new AuthorizedClientServiceOAuth2AuthorizedClientManager(
+                        clientRegistrationRepository, new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository));
+        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        return authorizedClientManager;
+    }
+
+
+    /**
+     * @param authorizedClientManager
+     * @return
+     */
+    @Bean(name = "cdaOAuth2WebClient")
+    public WebClient webClient(@Value("${cda.url}") String baseUrl, OAuth2AuthorizedClientManager authorizedClientManager) {
+        ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
+                new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
+        oauth2Client.setDefaultClientRegistrationId(REGISTERED_ID);
         ConnectionProvider provider =
                 ConnectionProvider.builder("custom")
                         .maxConnections(500)
@@ -55,7 +108,7 @@ public class MaatApiOAuth2Client {
                         .evictInBackground(Duration.ofSeconds(120))
                         .build();
 
-        oauth.setDefaultClientRegistrationId(REGISTERED_ID);
+        oauth2Client.setDefaultClientRegistrationId(REGISTERED_ID);
         WebClient.Builder client = WebClient.builder()
                 .baseUrl(config.getBaseUrl())
                 .filter(retryFilter())
@@ -72,11 +125,15 @@ public class MaatApiOAuth2Client {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
         if (config.isOAuthEnabled()) {
-            client.filter(oauth);
+            client.filter(oauth2Client);
         }
         return client.build();
     }
 
+    /**
+     *
+     * @return
+     */
     private ExchangeFilterFunction loggingRequest() {
         return (clientRequest, next) -> {
             log.info("Request: {} {}", clientRequest.method(), clientRequest.url());
@@ -86,9 +143,13 @@ public class MaatApiOAuth2Client {
         };
     }
 
+    /**
+     *
+     * @return
+     */
     private ExchangeFilterFunction loggingResponse() {
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
-            log.info("Response status: {}", clientResponse.statusCode());
+            log.info("Response status: {}",clientResponse.statusCode());
             return Mono.just(clientResponse);
         });
     }
@@ -144,4 +205,5 @@ public class MaatApiOAuth2Client {
                                         )
                         );
     }
+
 }
