@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.MaatApiConfiguration;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
-import uk.gov.justice.laa.crime.crowncourt.entity.WQHearingEntity;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
 
@@ -86,5 +83,40 @@ public class MaatCourtDataService {
             wqHearingDTO = wqHearingList.get(0);
         }
         return wqHearingDTO;
+    }
+
+    public int findWQLinkRegisterByMaatId(int maatId) {
+        int caseId = 0;
+        List<WQLinkRegisterDTO> wqLinkRegisterList = maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getWqLinkRegisterEndpoints().getFindUrl(),
+                emptyMap(),
+                maatId
+        );
+        if (wqLinkRegisterList != null & !wqLinkRegisterList.isEmpty()) {
+            caseId = wqLinkRegisterList.get(0).getCaseId();
+        }
+        return caseId;
+    }
+
+    public List<OffenceDTO> findOffenceByCaseId(int caseId) {
+        return maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getWqLinkRegisterEndpoints().getFindUrl(),
+                emptyMap(),
+                caseId
+        );
+    }
+
+    public int getNewOffenceCount(int caseId, String offenceId) {
+        maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getWqLinkRegisterEndpoints().getFindUrl(),
+                emptyMap(),
+                caseId,
+                offenceId
+        );
+        //TODO Return length of responseHeaders
+        return 0;
     }
 }

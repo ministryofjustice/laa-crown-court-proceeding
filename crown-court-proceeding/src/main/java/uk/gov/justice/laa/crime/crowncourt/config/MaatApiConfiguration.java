@@ -42,6 +42,9 @@ public class MaatApiConfiguration {
     private GraphQLEndpoints graphQLEndpoints;
 
     @NotNull
+    private OffenceEndpoints offenceEndpoints;
+
+    @NotNull
     private WqHearingEndpoints wqHearingEndpoints;
 
     @NotNull
@@ -134,6 +137,18 @@ public class MaatApiConfiguration {
 
         @NotNull
         private String graphqlQueryUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class OffenceEndpoints {
+
+        @NotNull
+        private String findUrl;
+        @NotNull
+        private String getOffenceCountUrl;
     }
 
     @Getter

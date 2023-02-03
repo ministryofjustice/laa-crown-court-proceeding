@@ -109,12 +109,15 @@ maatApi:
     update-url: ${maatApi.assessments-domain}/rep-orders
   graphql-endpoints:
     graphql-query-url: ${maatApi.assessments-domain}/graphQL
+  offence:
+    find-url: ${maatApi.assessments-domain}/offence/case/{caseId}
+    get-offence-count-url: ${maatApi.assessments-domain}/offence/{offenceId}/case/{caseId}
   wq-hearing-endpoints:
-    find-url: ${maatApi.assessments-domain}/{hearingUUID}/maatId/{maatId}
+    find-url: ${maatApi.assessments-domain}/wq-hearing/{hearingUUID}/maatId/{maatId}
   wq-link-register-endpoints:
-    find-url: ${maatApi.assessments-domain}/{maatId}
+    find-url: ${maatApi.assessments-domain}/wq-link-register/{maatId}
   wq-offence:
-    find-url: ${maatApi.assessments-domain}/{offenceId}/case/{caseId}
+    find-url: ${maatApi.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
   xlat-result:
     get-result-codes-for-cc-imprisonment-url: ${maatApi.assessments-domain}/cc-imprisonment
     get-result-codes-for-cc-bench-warrant-url: ${maatApi.assessments-domain}/cc-bench-warrant

@@ -27,19 +27,12 @@ import java.util.List;
 public class ProsecutionConcludedService {
 
     private final CalculateOutcomeHelper calculateOutcomeHelper;
-
     private final ProsecutionConcludedValidator prosecutionConcludedValidator;
-
     private final ProsecutionConcludedImpl prosecutionConcludedImpl;
-
     private final ReservationsRepositoryHelper reservationsRepositoryHelper;
-
     private final CaseConclusionDTOBuilder caseConclusionDTOBuilder;
-
     private final OffenceHelper offenceHelper;
-
     private final ProsecutionConcludedDataService prosecutionConcludedDataService;
-
     private final MaatCourtDataService maatCourtDataService;
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
