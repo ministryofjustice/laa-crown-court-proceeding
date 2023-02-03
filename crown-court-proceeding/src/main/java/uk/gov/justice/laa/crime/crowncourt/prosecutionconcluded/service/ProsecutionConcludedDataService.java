@@ -30,7 +30,7 @@ public class ProsecutionConcludedDataService {
         Integer maatId = prosecutionConcluded.getMaatId();
         log.info("Scheduling MAAT -ID {} for later processing", maatId);
 
-        //List<ProsecutionConcludedEntity> prosecutionConcludedEntityList = prosecutionConcludedRepository.getByMaatId(maatId);
+        List<ProsecutionConcludedEntity> prosecutionConcludedEntityList = prosecutionConcludedRepository.getByMaatId(maatId);
         //TODO
         if (prosecutionConcludedEntityList.isEmpty()) {
             ProsecutionConcludedEntity prosecutionConcludedEntity = build(prosecutionConcluded, maatId);

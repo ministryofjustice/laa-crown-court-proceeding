@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.builder;
 
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.WQHearingEntity;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.dto.ConcludedDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.OffenceSummary;
@@ -15,16 +16,16 @@ import java.util.stream.Collectors;
 @Component
 public class CaseConclusionDTOBuilder {
 
-    public ConcludedDTO build(ProsecutionConcluded prosecutionConcluded, WQHearingEntity wqHearingEntity, String calculatedOutcome) {
+    public ConcludedDTO build(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, String calculatedOutcome) {
         return ConcludedDTO.
                 builder()
                 .prosecutionConcluded(prosecutionConcluded)
                 .calculatedOutcome(calculatedOutcome)
-                .ouCourtLocation(wqHearingEntity.getOuCourtLocation())
-                .wqJurisdictionType(wqHearingEntity.getWqJurisdictionType())
+                .ouCourtLocation(wqHearingDTO.getOuCourtLocation())
+                .wqJurisdictionType(wqHearingDTO.getWqJurisdictionType())
                 .caseEndDate(getMostRecentCaseEndDate(prosecutionConcluded.getOffenceSummary()))
-                .caseUrn(wqHearingEntity.getCaseUrn())
-                .hearingResultCodeList(buildResultCodeList(wqHearingEntity))
+                .caseUrn(wqHearingDTO.getCaseUrn())
+                .hearingResultCodeList(buildResultCodeList(wqHearingDTO))
                 .build();
     }
 
@@ -42,8 +43,8 @@ public class CaseConclusionDTOBuilder {
                 .collect(Collectors.toList()).get(0).toString();
     }
 
-    private List<String> buildResultCodeList(WQHearingEntity wqHearingEntity) {
-        String results = wqHearingEntity.getResultCodes() != null ? wqHearingEntity.getResultCodes() : "";
+    private List<String> buildResultCodeList(WQHearingDTO wqHearingDTO) {
+        String results = wqHearingDTO.getResultCodes() != null ? wqHearingDTO.getResultCodes() : "";
         return Arrays.stream(results.split(","))
                 .distinct()
                 .collect(Collectors.toList());

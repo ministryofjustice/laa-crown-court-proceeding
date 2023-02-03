@@ -4,6 +4,7 @@ import com.amazonaws.xray.spring.aop.XRayEnabled;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.WQHearingEntity;
 import uk.gov.justice.laa.crime.crowncourt.enums.JurisdictionType;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
@@ -39,8 +40,6 @@ public class ProsecutionConcludedService {
 
     private final ProsecutionConcludedDataService prosecutionConcludedDataService;
 
-    private final HearingsService hearingsService;
-
     private final MaatCourtDataService maatCourtDataService;
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
@@ -48,42 +47,40 @@ public class ProsecutionConcludedService {
         log.info("CC Outcome process is kicked off for  maat-id {}", prosecutionConcluded.getMaatId());
         prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
 
-        WQHearingEntity wqHearingEntity = maatCourtDataService.retrieveHearingForCaseConclusion(prosecutionConcluded);
-        //WQHearingEntity wqHearingEntity = hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded);
-        //TODO
+        WQHearingDTO wqHearingDTO = maatCourtDataService.retrieveHearingForCaseConclusion(prosecutionConcluded);
         if (prosecutionConcluded.isConcluded()
-                && wqHearingEntity != null
-                && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType())) {
+                && wqHearingDTO != null
+                && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
 
             if (reservationsRepositoryHelper.isMaatRecordLocked(prosecutionConcluded.getMaatId())) {
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
             } else {
-                executeCCOutCome(prosecutionConcluded, wqHearingEntity);
+                executeCCOutCome(prosecutionConcluded, wqHearingDTO);
             }
         }
 
     }
 
-    public void executeCCOutCome(ProsecutionConcluded prosecutionConcluded, WQHearingEntity wqHearingEntity) {
+    public void executeCCOutCome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO) {
         List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
         List<OffenceSummary> trialOffences = offenceHelper
                 .getTrialOffences(offenceSummaryList, prosecutionConcluded.getMaatId());
 
         if (!trialOffences.isEmpty()) {
             log.info("Number of Valid offences for CC Outcome Calculations : {}", trialOffences.size());
-            processOutcome(prosecutionConcluded, wqHearingEntity, trialOffences);
+            processOutcome(prosecutionConcluded, wqHearingDTO, trialOffences);
         }
         prosecutionConcludedDataService.updateConclusion(prosecutionConcluded.getMaatId());
         log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
     }
 
-    private void processOutcome(ProsecutionConcluded prosecutionConcluded, WQHearingEntity wqHearingEntity, List<OffenceSummary> trialOffences) {
+    private void processOutcome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, List<OffenceSummary> trialOffences) {
 
-        prosecutionConcludedValidator.validateOuCode(wqHearingEntity.getOuCourtLocation());
+        prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
         String calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences);
         log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
 
-        ConcludedDTO concludedDTO = caseConclusionDTOBuilder.build(prosecutionConcluded, wqHearingEntity, calculatedOutcome);
+        ConcludedDTO concludedDTO = caseConclusionDTOBuilder.build(prosecutionConcluded, wqHearingDTO, calculatedOutcome);
 
         prosecutionConcludedImpl.execute(concludedDTO);
     }

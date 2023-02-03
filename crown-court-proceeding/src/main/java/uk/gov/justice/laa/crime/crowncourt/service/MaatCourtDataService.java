@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.emptyMap;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -71,12 +73,18 @@ public class MaatCourtDataService {
         return response;
     }
 
-    public List<WQHearingDTO> retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded, String laaTransactionId) {
-        maatCourtDataClient.getApiResponseViaGET(
-                Object.class,
-                Void.class,
-                configuration.getWQHearingEndpoints().getWqHearingFindUrl(),
-                Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
+    public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
+
+        WQHearingDTO wqHearingDTO = null;
+        List<WQHearingDTO> wqHearingList = maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getWqHearingEndpoints().getFindUrl(),
+                emptyMap(),
+                prosecutionConcluded
         );
+        if (wqHearingList != null & !wqHearingList.isEmpty()) {
+            wqHearingDTO = wqHearingList.get(0);
+        }
+        return wqHearingDTO;
     }
 }

@@ -28,10 +28,10 @@ public class OffenceHelper {
 
     public List<OffenceSummary> getTrialOffences(List<OffenceSummary> offenceList, int maatId) {
 
-        //int caseId = wqLinkRegisterRepository.findBymaatId(maatId).get(0).getCaseId();
+        int caseId = wqLinkRegisterRepository.findBymaatId(maatId).get(0).getCaseId();
         //TODO
 
-        //List<OffenceEntity> offenceEntities = offenceRepository.findByCaseId(caseId);
+        List<OffenceEntity> offenceEntities = offenceRepository.findByCaseId(caseId);
         //TODO
         List<Integer> committalForTrialRefResults = xlatResultRepository.findResultsByWQType(WQType.COMMITTAL_QUEUE.value(),
                 COMMITTAL_FOR_TRIAL_SUB_TYPE);
@@ -50,8 +50,8 @@ public class OffenceHelper {
     private boolean isNewCCOffence(OffenceSummary offence, List<OffenceEntity> offenceEntities, List<Integer> committalForSentenceRefResults, int caseId) {
         boolean isNewCCOffence = false;
 
-        /*int newOffenceCount = offenceRepository.getNewOffenceCount(caseId, offence.getOffenceId().toString())
-                + wqOffenceRepository.getNewOffenceCount(caseId, offence.getOffenceId().toString());*/
+        int newOffenceCount = offenceRepository.getNewOffenceCount(caseId, offence.getOffenceId().toString())
+                + wqOffenceRepository.getNewOffenceCount(caseId, offence.getOffenceId().toString());
         //TODO
 
         if (newOffenceCount > 0 &&
@@ -77,11 +77,11 @@ public class OffenceHelper {
         boolean isCommittal = false;
         if (offenceEntity != null) {
             String asnSeq = getAsnSeq(offenceEntity);
-            /*List<Integer> resultList = resultRepository
-                    .findResultCodeByCaseIdAndAsnSeq(offenceEntity.getCaseId(), asnSeq);*/
+            List<Integer> resultList = resultRepository
+                    .findResultCodeByCaseIdAndAsnSeq(offenceEntity.getCaseId(), asnSeq);
             //TODO
-            /*List<Integer> wqResultList = wqResultRepository
-                    .findResultCodeByCaseIdAndAsnSeq(offenceEntity.getCaseId(), asnSeq);*/
+            List<Integer> wqResultList = wqResultRepository
+                    .findResultCodeByCaseIdAndAsnSeq(offenceEntity.getCaseId(), asnSeq);
             //TODO
 
             isCommittal = Stream.concat(resultList.stream(), wqResultList.stream())
@@ -98,10 +98,10 @@ public class OffenceHelper {
 
     public boolean isNewOffence(Integer caseId, String asaSeq) {
 
-        /*Integer offenceCount =
+        Integer offenceCount =
                 offenceRepository.getOffenceCountForAsnSeq(
                         caseId,
-                        String.format(LEADING_ZERO_3, Integer.parseInt(asaSeq)));*/
+                        String.format(LEADING_ZERO_3, Integer.parseInt(asaSeq)));
         //TODO
 
         return offenceCount == 0;

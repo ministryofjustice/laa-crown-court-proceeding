@@ -36,7 +36,7 @@ public class ProsecutionConcludedImpl {
     public void execute(ConcludedDTO concludedDTO) {
 
         Integer maatId = concludedDTO.getProsecutionConcluded().getMaatId();
-        //final Optional<RepOrderEntity> optionalRepEntity = repOrderRepository.findById(maatId);
+        final Optional<RepOrderEntity> optionalRepEntity = repOrderRepository.findById(maatId);
         //TODO
         if (optionalRepEntity.isPresent()) {
 

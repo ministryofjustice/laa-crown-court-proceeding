@@ -41,6 +41,9 @@ public class MaatApiConfiguration {
     @NotNull
     private GraphQLEndpoints graphQLEndpoints;
 
+    @NotNull
+    private WqHearingEndpoints wqHearingEndpoints;
+
     @Getter
     @AllArgsConstructor
     @Setter
@@ -128,10 +131,10 @@ public class MaatApiConfiguration {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class WQHearingEndpoints {
+    public static class WqHearingEndpoints {
 
         @NotNull
-        private String wqHearingFindUrl;
+        private String findUrl;
     }
 
 }

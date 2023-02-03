@@ -110,7 +110,7 @@ maatApi:
   graphql-endpoints:
     graphql-query-url: ${maatApi.assessments-domain}/graphQL
   wq-hearing-endpoints:
-    wq-hearing-find-url: ${maatApi.assessments-domain}/{hearingUUID}/maatId/{maatId}
+    find-url: ${maatApi.assessments-domain}/{hearingUUID}/maatId/{maatId}
 
 cda:
   url: ${CDA_BASE_URL}

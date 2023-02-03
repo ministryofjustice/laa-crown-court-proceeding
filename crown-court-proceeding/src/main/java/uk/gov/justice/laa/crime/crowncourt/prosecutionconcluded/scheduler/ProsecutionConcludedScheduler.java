@@ -8,14 +8,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.entity.WQHearingEntity;
 import uk.gov.justice.laa.crime.crowncourt.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.crowncourt.enums.JurisdictionType;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.ProsecutionConcluded;
-import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.service.HearingsService;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.service.ProsecutionConcludedService;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
+import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 
 import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +34,7 @@ public class ProsecutionConcludedScheduler {
 
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;
     private final ProsecutionConcludedService prosecutionConcludedService;
-    private final HearingsService hearingsService;
+    private final MaatCourtDataService maatCourtDataService;
     private final Gson gson;
 
     @Scheduled(cron = "${queue.message.log.cron.expression}")
@@ -56,10 +57,10 @@ public class ProsecutionConcludedScheduler {
 
     private void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
         try {
-            WQHearingEntity hearingEntity = hearingsService.retrieveHearingForCaseConclusion(prosecutionConcluded);
-            if (hearingEntity != null) {
-                if (isCCConclusion(hearingEntity)) {
-                    prosecutionConcludedService.executeCCOutCome(prosecutionConcluded, hearingEntity);
+            WQHearingDTO wqHearingDTO = maatCourtDataService.retrieveHearingForCaseConclusion(prosecutionConcluded);
+            if (wqHearingDTO != null) {
+                if (isCCConclusion(wqHearingDTO)) {
+                    prosecutionConcludedService.executeCCOutCome(prosecutionConcluded, wqHearingDTO);
                 } else {
                     updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.PROCESSED);
                 }
@@ -71,9 +72,9 @@ public class ProsecutionConcludedScheduler {
         }
     }
 
-    private boolean isCCConclusion(WQHearingEntity wqHearingEntity) {
+    private boolean isCCConclusion(WQHearingDTO wqHearingDTO) {
 
-        return JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingEntity.getWqJurisdictionType());
+        return JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType());
     }
 
     private ProsecutionConcluded convertToObject(byte[] caseDate) {
