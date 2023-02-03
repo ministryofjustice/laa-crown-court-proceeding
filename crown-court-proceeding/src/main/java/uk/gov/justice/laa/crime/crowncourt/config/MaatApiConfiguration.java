@@ -123,4 +123,15 @@ public class MaatApiConfiguration {
         @NotNull
         private String graphqlQueryUrl;
     }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class WQHearingEndpoints {
+
+        @NotNull
+        private String wqHearingFindUrl;
+    }
+
 }

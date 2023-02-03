@@ -8,10 +8,14 @@ import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.MaatApiConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
+import uk.gov.justice.laa.crime.crowncourt.entity.WQHearingEntity;
+import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -67,4 +71,12 @@ public class MaatCourtDataService {
         return response;
     }
 
+    public List<WQHearingDTO> retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded, String laaTransactionId) {
+        maatCourtDataClient.getApiResponseViaGET(
+                Object.class,
+                Void.class,
+                configuration.getWQHearingEndpoints().getWqHearingFindUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
+        );
+    }
 }
