@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "XXMLA_PROSECUTION_CONCLUDED", schema = "MLA")
+@Table(name = "PROSECUTION_CONCLUDED", schema = "MLA")
 public class ProsecutionConcludedEntity {
 
 

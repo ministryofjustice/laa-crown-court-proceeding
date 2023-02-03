@@ -63,6 +63,7 @@ public class ProsecutionConcludedService {
 
     public void executeCCOutCome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO) {
         List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
+
         List<OffenceSummary> trialOffences = offenceHelper
                 .getTrialOffences(offenceSummaryList, prosecutionConcluded.getMaatId());
 

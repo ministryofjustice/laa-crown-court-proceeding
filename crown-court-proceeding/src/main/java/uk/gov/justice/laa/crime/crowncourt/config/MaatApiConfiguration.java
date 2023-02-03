@@ -44,6 +44,15 @@ public class MaatApiConfiguration {
     @NotNull
     private WqHearingEndpoints wqHearingEndpoints;
 
+    @NotNull
+    private WqOffenceEndpoints wqOffenceEndpoints;
+
+    @NotNull
+    private WqLinkRegisterEndpoints wqLinkRegisterEndpoints;
+
+    @NotNull
+    private XlatResultEndpoints xlatResultEndpoints;
+
     @Getter
     @AllArgsConstructor
     @Setter
@@ -135,6 +144,40 @@ public class MaatApiConfiguration {
 
         @NotNull
         private String findUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class WqLinkRegisterEndpoints {
+
+        @NotNull
+        private String findUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class WqOffenceEndpoints {
+
+        @NotNull
+        private String findUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class XlatResultEndpoints {
+
+        @NotNull
+        private String getResultCodesForCCImprisonmentUrl;
+        @NotNull
+        private String getResultCodesForCCBenchWarrantUrl;
+        @NotNull
+        private String getResultCodesForWQTypeSubTypeUrl;
     }
 
 }

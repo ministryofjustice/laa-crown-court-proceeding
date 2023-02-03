@@ -111,6 +111,14 @@ maatApi:
     graphql-query-url: ${maatApi.assessments-domain}/graphQL
   wq-hearing-endpoints:
     find-url: ${maatApi.assessments-domain}/{hearingUUID}/maatId/{maatId}
+  wq-link-register-endpoints:
+    find-url: ${maatApi.assessments-domain}/{maatId}
+  wq-offence:
+    find-url: ${maatApi.assessments-domain}/{offenceId}/case/{caseId}
+  xlat-result:
+    get-result-codes-for-cc-imprisonment-url: ${maatApi.assessments-domain}/cc-imprisonment
+    get-result-codes-for-cc-bench-warrant-url: ${maatApi.assessments-domain}/cc-bench-warrant
+    get-result-codes-for-wqtype-subtype-url: ${maatApi.assessments-domain}/wqType/{wqType}/subType/{subType}
 
 cda:
   url: ${CDA_BASE_URL}

@@ -31,7 +31,6 @@ public class ProsecutionConcludedDataService {
         log.info("Scheduling MAAT -ID {} for later processing", maatId);
 
         List<ProsecutionConcludedEntity> prosecutionConcludedEntityList = prosecutionConcludedRepository.getByMaatId(maatId);
-        //TODO
         if (prosecutionConcludedEntityList.isEmpty()) {
             ProsecutionConcludedEntity prosecutionConcludedEntity = build(prosecutionConcluded, maatId);
             prosecutionConcludedRepository.save(prosecutionConcludedEntity);
@@ -40,8 +39,7 @@ public class ProsecutionConcludedDataService {
                 entity.setRetryCount(entity.getRetryCount() + 1);
                 entity.setUpdatedTime(LocalDateTime.now());
             });
-            //prosecutionConcludedRepository.saveAll(prosecutionConcludedEntityList);
-            //TODO
+            prosecutionConcludedRepository.saveAll(prosecutionConcludedEntityList);
         }
         log.info("MAAT -ID {} scheduling is complete", maatId);
     }
