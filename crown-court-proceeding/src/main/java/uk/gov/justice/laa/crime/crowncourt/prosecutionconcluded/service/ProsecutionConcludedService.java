@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
-import uk.gov.justice.laa.crime.crowncourt.entity.WQHearingEntity;
 import uk.gov.justice.laa.crime.crowncourt.enums.JurisdictionType;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.builder.CaseConclusionDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.dto.ConcludedDTO;

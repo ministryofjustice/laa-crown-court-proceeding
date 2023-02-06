@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
-import uk.gov.justice.laa.crime.crowncourt.entity.WQHearingEntity;
 import uk.gov.justice.laa.crime.crowncourt.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.crowncourt.enums.JurisdictionType;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.ProsecutionConcluded;

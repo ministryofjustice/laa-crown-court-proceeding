@@ -128,7 +128,9 @@ maatApi:
     result-codes-by-caseid-asnseq-url: ${maatApi.assessments-domain}/wq-result/caseId/{caseId}/asnSeq/{asnSeq}
   crown-court-stored-procedure:
     update-crown-court-outcome-url: ${maatApi.assessments-domain}/crown-court/updateCCOutcome
-
+  crown-court-processing:
+    update-appeal-cc-sentence-url: ${maatApi.assessments-domain}/crown-court/update-appeal-cc-sentence
+    update-cc-sentence-url: ${maatApi.assessments-domain}/crown-court/update-cc-sentence
 
 cda:
   url: ${CDA_BASE_URL}

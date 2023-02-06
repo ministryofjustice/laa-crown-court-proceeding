@@ -2,7 +2,6 @@ package uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.builder;
 
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
-import uk.gov.justice.laa.crime.crowncourt.entity.WQHearingEntity;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.dto.ConcludedDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.OffenceSummary;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.ProsecutionConcluded;

@@ -8,6 +8,7 @@ import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.MaatApiConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
+import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
 
@@ -80,7 +81,7 @@ public class MaatCourtDataService {
                 emptyMap(),
                 prosecutionConcluded
         );
-        if (wqHearingList != null & !wqHearingList.isEmpty()) {
+        if (wqHearingList != null && !wqHearingList.isEmpty()) {
             wqHearingDTO = wqHearingList.get(0);
         }
         return wqHearingDTO;
@@ -94,7 +95,7 @@ public class MaatCourtDataService {
                 emptyMap(),
                 maatId
         );
-        if (wqLinkRegisterList != null & !wqLinkRegisterList.isEmpty()) {
+        if (wqLinkRegisterList != null && !wqLinkRegisterList.isEmpty()) {
             caseId = wqLinkRegisterList.get(0).getCaseId();
         }
         return caseId;
@@ -118,7 +119,7 @@ public class MaatCourtDataService {
                 caseId,
                 offenceId
         );
-        if (offenceCount != null & !offenceCount.isEmpty()) {
+        if (offenceCount != null && !offenceCount.isEmpty()) {
             count = offenceCount.get(0);
         }
         return count;
@@ -134,7 +135,7 @@ public class MaatCourtDataService {
                 caseId,
                 offenceId
         );
-        if (offenceCount != null & !offenceCount.isEmpty()) {
+        if (offenceCount != null && !offenceCount.isEmpty()) {
             count = offenceCount.get(0);
         }
         return count;
@@ -203,6 +204,24 @@ public class MaatCourtDataService {
                 configuration.getCrownCourtStoredProcedureEndpoints().getUpdateCrownCourtOutcomeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, null),
                 updateCCOutcome
+        );
+    }
+
+    public void invokeUpdateAppealSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
+        maatCourtDataClient.getApiResponseViaGET(
+                RepOrderDTO.class,
+                configuration.getCrownCourtProcessingEndpoints().getUpdateAppealCcSentenceUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, null),
+                updateSentenceOrder
+        );
+    }
+
+    public void invokeUpdateSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
+        maatCourtDataClient.getApiResponseViaGET(
+                RepOrderDTO.class,
+                configuration.getCrownCourtProcessingEndpoints().getUpdateCcSentenceUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, null),
+                updateSentenceOrder
         );
     }
 }

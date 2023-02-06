@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Data
 @ConfigurationProperties(prefix = "maat-api")
@@ -61,10 +60,13 @@ public class MaatApiConfiguration {
     private ResultEndpoints resultEndpoints;
 
     @NotNull
-    private WqResultEndpoints WqResultEndpoints;
+    private WqResultEndpoints wqResultEndpoints;
 
     @NotNull
     private CrownCourtStoredProcedureEndpoints crownCourtStoredProcedureEndpoints;
+
+    @NotNull
+    private CrownCourtProcessingEndpoints crownCourtProcessingEndpoints;
 
     @Getter
     @AllArgsConstructor
@@ -214,7 +216,6 @@ public class MaatApiConfiguration {
         private String resultCodeByCaseIdAndAsnSeqUrl;
     }
 
-
     @Getter
     @Setter
     @AllArgsConstructor
@@ -231,6 +232,17 @@ public class MaatApiConfiguration {
     public static class CrownCourtStoredProcedureEndpoints {
         @NotNull
         private String updateCrownCourtOutcomeUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CrownCourtProcessingEndpoints {
+        @NotNull
+        private String updateAppealCcSentenceUrl;
+        @NotNull
+        private String updateCcSentenceUrl;
     }
 
 }

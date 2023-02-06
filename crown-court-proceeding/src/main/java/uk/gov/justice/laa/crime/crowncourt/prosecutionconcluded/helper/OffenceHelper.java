@@ -7,13 +7,12 @@ import uk.gov.justice.laa.crime.crowncourt.enums.WQType;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.OffenceSummary;
 import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static uk.gov.justice.laa.crime.crowncourt.constants.CourtDataConstants.COMMITTAL_FOR_SENTENCE_SUB_TYPE;
 import static uk.gov.justice.laa.crime.crowncourt.constants.CourtDataConstants.COMMITTAL_FOR_TRIAL_SUB_TYPE;
-
 
 @RequiredArgsConstructor
 @Component
@@ -29,14 +28,16 @@ public class OffenceHelper {
         List<Integer> committalForSentenceRefResults = maatCourtDataService.findResultsByWQTypeSubType(WQType.COMMITTAL_QUEUE.value(),
                 COMMITTAL_FOR_SENTENCE_SUB_TYPE);
 
-        return offenceList
-                .stream()
-                .filter(offence -> (hasCommittalResults(offence, offenceDTO, committalForTrialRefResults))
-                        || isNewCCOffence(offence, offenceDTO, committalForSentenceRefResults, caseId))
-                .collect(Collectors.toList());
+        List<OffenceSummary> list = new ArrayList<>();
+        for (OffenceSummary offence : offenceList) {
+            if ((hasCommittalResults(offence, offenceDTO, committalForTrialRefResults))
+                    || isNewCCOffence(offence, offenceDTO, committalForSentenceRefResults, caseId)) {
+                list.add(offence);
+            }
+        }
+        return list;
 
     }
-
 
     private boolean isNewCCOffence(OffenceSummary offence, List<OffenceDTO> offenceDTO, List<Integer> committalForSentenceRefResults, int caseId) {
         boolean isNewCCOffence = false;
@@ -51,7 +52,6 @@ public class OffenceHelper {
         return isNewCCOffence;
     }
 
-
     private boolean hasCommittalResults(OffenceSummary offence, List<OffenceDTO> offenceEntities, List<Integer> committalRefResults) {
         OffenceDTO offenceDTO = offenceEntities
                 .stream()
@@ -61,7 +61,6 @@ public class OffenceHelper {
 
         return hasResults(offenceDTO, committalRefResults);
     }
-
 
     private boolean hasResults(OffenceDTO offenceDTO, List<Integer> committalRefResults) {
         boolean isCommittal = false;
