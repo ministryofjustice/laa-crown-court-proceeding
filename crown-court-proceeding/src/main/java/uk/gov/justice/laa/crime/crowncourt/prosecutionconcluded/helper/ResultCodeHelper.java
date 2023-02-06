@@ -3,8 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.helper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.crowncourt.entity.XLATResultEntity;
-import uk.gov.justice.laa.crime.crowncourt.repository.XLATResultRepository;
+import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 
 import java.util.List;
 
@@ -19,12 +18,12 @@ import static uk.gov.justice.laa.crime.crowncourt.enums.CrownCourtTrialOutcome.i
 @RequiredArgsConstructor
 public class ResultCodeHelper {
 
-    private final XLATResultRepository xlatResultRepository;
+    private final MaatCourtDataService maatCourtDataService;
 
     public String isBenchWarrantIssued(final String caseLevelOutcome, List<String> hearingResultCodes) {
 
         if (isTrial(caseLevelOutcome)) {
-            return anyResultCodeMatch(xlatResultRepository.findByCjsResultCodeIn(), hearingResultCodes) ? YES : null;
+            return anyResultCodeMatch(maatCourtDataService.findByCjsResultCodeIn(), hearingResultCodes) ? YES : null;
         }
         return null;
     }
@@ -32,15 +31,14 @@ public class ResultCodeHelper {
     public String isImprisoned(final String caseLevelOutcome, List<String> hearingResultCodes) {
 
         if (isConvicted(caseLevelOutcome)) {
-            return anyResultCodeMatch(xlatResultRepository.fetchResultCodesForCCImprisonment(), hearingResultCodes) ? YES : NO;
+            return anyResultCodeMatch(maatCourtDataService.fetchResultCodesForCCImprisonment(), hearingResultCodes) ? YES : NO;
         }
         return null;
     }
 
-    private boolean anyResultCodeMatch(final List<XLATResultEntity> resultCodes, final List<String> hearingResultCodes) {
+    private boolean anyResultCodeMatch(final List<Integer> resultCodes, final List<String> hearingResultCodes) {
         return resultCodes
                 .stream()
-                .map(XLATResultEntity::getCjsResultCode)
                 .map(String::valueOf)
                 .anyMatch(hearingResultCodes::contains);
     }

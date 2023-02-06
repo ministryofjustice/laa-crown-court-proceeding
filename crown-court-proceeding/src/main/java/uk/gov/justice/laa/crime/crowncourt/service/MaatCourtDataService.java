@@ -7,6 +7,7 @@ import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.MaatApiConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
+import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
 
@@ -108,15 +109,100 @@ public class MaatCourtDataService {
         );
     }
 
-    public int getNewOffenceCount(int caseId, String offenceId) {
-        maatCourtDataClient.getApiResponseViaGET(
+    public int getOffenceNewOffenceCount(int caseId, String offenceId) {
+        int count = 0;
+        List<Integer> offenceCount = maatCourtDataClient.getApiResponseViaGET(
                 List.class,
-                configuration.getWqLinkRegisterEndpoints().getFindUrl(),
+                configuration.getOffenceEndpoints().getOffenceCountUrl(),
                 emptyMap(),
                 caseId,
                 offenceId
         );
-        //TODO Return length of responseHeaders
-        return 0;
+        if (offenceCount != null & !offenceCount.isEmpty()) {
+            count = offenceCount.get(0);
+        }
+        return count;
+    }
+
+
+    public int getWQOffenceNewOffenceCount(int caseId, String offenceId) {
+        int count = 0;
+        List<Integer> offenceCount = maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getWqOffenceEndpoints().getWqOffenceCountUrl(),
+                emptyMap(),
+                caseId,
+                offenceId
+        );
+        if (offenceCount != null & !offenceCount.isEmpty()) {
+            count = offenceCount.get(0);
+        }
+        return count;
+    }
+
+    public List<Integer> findResultsByWQTypeSubType(int wqType, int subTypeCode) {
+        return maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getXlatResultEndpoints().getResultCodesForWQTypeSubTypeUrl(),
+                emptyMap(),
+                wqType,
+                subTypeCode
+        );
+    }
+
+    public List<Integer> getResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
+        return maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
+                emptyMap(),
+                caseId,
+                offenceId
+        );
+    }
+
+    public List<Integer> getWqResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
+        return maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getWqResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
+                emptyMap(),
+                caseId,
+                offenceId
+        );
+    }
+
+    public List<Integer> fetchResultCodesForCCImprisonment() {
+        return maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getXlatResultEndpoints().getResultCodesForCCImprisonmentUrl(),
+                emptyMap()
+        );
+    }
+
+    public List<Integer> findByCjsResultCodeIn() {
+        return maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getXlatResultEndpoints().getResultCodesForCCBenchWarrantUrl(),
+                emptyMap()
+        );
+    }
+
+    public RepOrderDTO getRepOrder(Integer repId, String laaTransactionId) {
+        RepOrderDTO response = maatCourtDataClient.getApiResponseViaGET(
+                RepOrderDTO.class,
+                configuration.getRepOrderEndpoints().getFindUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
+                repId
+        );
+        log.info(String.format(RESPONSE_STRING, response));
+        return response;
+    }
+
+    public void updateCrownCourtOutcome(UpdateCCOutcome updateCCOutcome) {
+        maatCourtDataClient.getApiResponseViaGET(
+                RepOrderDTO.class,
+                configuration.getCrownCourtStoredProcedureEndpoints().getUpdateCrownCourtOutcomeUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, null),
+                updateCCOutcome
+        );
     }
 }

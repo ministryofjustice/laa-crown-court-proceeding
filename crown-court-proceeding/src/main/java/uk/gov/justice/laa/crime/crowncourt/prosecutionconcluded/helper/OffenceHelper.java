@@ -5,58 +5,47 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.OffenceDTO;
 import uk.gov.justice.laa.crime.crowncourt.enums.WQType;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.OffenceSummary;
-import uk.gov.justice.laa.crime.crowncourt.repository.*;
 import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static uk.gov.justice.laa.crime.crowncourt.constants.CourtDataConstants.*;
+import static uk.gov.justice.laa.crime.crowncourt.constants.CourtDataConstants.COMMITTAL_FOR_SENTENCE_SUB_TYPE;
+import static uk.gov.justice.laa.crime.crowncourt.constants.CourtDataConstants.COMMITTAL_FOR_TRIAL_SUB_TYPE;
 
 
 @RequiredArgsConstructor
 @Component
 public class OffenceHelper {
-
-    private final WQResultRepository wqResultRepository;
-    private final ResultRepository resultRepository;
-    private final XLATResultRepository xlatResultRepository;
-    private final WQOffenceRepository wqOffenceRepository;
     private final MaatCourtDataService maatCourtDataService;
 
     public List<OffenceSummary> getTrialOffences(List<OffenceSummary> offenceList, int maatId) {
 
-        List<OffenceSummary> list = new ArrayList<>();
         int caseId = maatCourtDataService.findWQLinkRegisterByMaatId(maatId);
+        List<OffenceDTO> offenceDTO = maatCourtDataService.findOffenceByCaseId(caseId);
+        List<Integer> committalForTrialRefResults = maatCourtDataService.findResultsByWQTypeSubType(WQType.COMMITTAL_QUEUE.value(),
+                COMMITTAL_FOR_TRIAL_SUB_TYPE);
+        List<Integer> committalForSentenceRefResults = maatCourtDataService.findResultsByWQTypeSubType(WQType.COMMITTAL_QUEUE.value(),
+                COMMITTAL_FOR_SENTENCE_SUB_TYPE);
 
-        if (caseId != 0) {
-            List<OffenceDTO> offenceEntities = maatCourtDataService.findOffenceByCaseId(caseId);
-            List<Integer> committalForTrialRefResults = xlatResultRepository.findResultsByWQType(WQType.COMMITTAL_QUEUE.value(),
-                    COMMITTAL_FOR_TRIAL_SUB_TYPE);
-            List<Integer> committalForSentenceRefResults = xlatResultRepository.findResultsByWQType(WQType.COMMITTAL_QUEUE.value(),
-                    COMMITTAL_FOR_SENTENCE_SUB_TYPE);
+        return offenceList
+                .stream()
+                .filter(offence -> (hasCommittalResults(offence, offenceDTO, committalForTrialRefResults))
+                        || isNewCCOffence(offence, offenceDTO, committalForSentenceRefResults, caseId))
+                .collect(Collectors.toList());
 
-            for (OffenceSummary offence : offenceList) {
-                if ((hasCommittalResults(offence, offenceEntities, committalForTrialRefResults))
-                        || isNewCCOffence(offence, offenceEntities, committalForSentenceRefResults, caseId)) {
-                    list.add(offence);
-                }
-            }
-        }
-        return list;
     }
 
 
-    private boolean isNewCCOffence(OffenceSummary offence, List<OffenceDTO> offenceEntities, List<Integer> committalForSentenceRefResults, int caseId) {
+    private boolean isNewCCOffence(OffenceSummary offence, List<OffenceDTO> offenceDTO, List<Integer> committalForSentenceRefResults, int caseId) {
         boolean isNewCCOffence = false;
 
-        int newOffenceCount = maatCourtDataService.getNewOffenceCount(caseId, offence.getOffenceId().toString())
-                + wqOffenceRepository.getNewOffenceCount(caseId, offence.getOffenceId().toString());
-        //TODO
+        int newOffenceCount = maatCourtDataService.getOffenceNewOffenceCount(caseId, offence.getOffenceId().toString())
+                + maatCourtDataService.getWQOffenceNewOffenceCount(caseId, offence.getOffenceId().toString());
 
         if (newOffenceCount > 0 &&
-                !hasCommittalResults(offence, offenceEntities, committalForSentenceRefResults)) {
+                !hasCommittalResults(offence, offenceDTO, committalForSentenceRefResults)) {
             isNewCCOffence = true;
         }
         return isNewCCOffence;
@@ -64,26 +53,24 @@ public class OffenceHelper {
 
 
     private boolean hasCommittalResults(OffenceSummary offence, List<OffenceDTO> offenceEntities, List<Integer> committalRefResults) {
-        OffenceDTO offenceEntity = offenceEntities
+        OffenceDTO offenceDTO = offenceEntities
                 .stream()
                 .filter(o -> o.getOffenceId() != null
                         && o.getOffenceId().equalsIgnoreCase(offence.getOffenceId().toString()))
                 .findFirst().orElse(null);
 
-        return hasResults(offenceEntity, committalRefResults);
+        return hasResults(offenceDTO, committalRefResults);
     }
 
 
-    private boolean hasResults(OffenceDTO offenceEntity, List<Integer> committalRefResults) {
+    private boolean hasResults(OffenceDTO offenceDTO, List<Integer> committalRefResults) {
         boolean isCommittal = false;
-        if (offenceEntity != null) {
-            String asnSeq = getAsnSeq(offenceEntity);
-            List<Integer> resultList = resultRepository
-                    .findResultCodeByCaseIdAndAsnSeq(offenceEntity.getCaseId(), asnSeq);
-            //TODO
-            List<Integer> wqResultList = wqResultRepository
-                    .findResultCodeByCaseIdAndAsnSeq(offenceEntity.getCaseId(), asnSeq);
-            //TODO
+        if (offenceDTO != null) {
+            String asnSeq = getAsnSeq(offenceDTO);
+            List<Integer> resultList = maatCourtDataService
+                    .getResultCodeByCaseIdAndAsnSeq(offenceDTO.getCaseId(), asnSeq);
+            List<Integer> wqResultList = maatCourtDataService
+                    .getWqResultCodeByCaseIdAndAsnSeq(offenceDTO.getCaseId(), asnSeq);
 
             isCommittal = Stream.concat(resultList.stream(), wqResultList.stream())
                     .anyMatch(committalRefResults::contains);
@@ -91,19 +78,9 @@ public class OffenceHelper {
         return isCommittal;
     }
 
-    private String getAsnSeq(OffenceDTO offenceEntity) {
-        int asnSeq = Integer.parseInt(offenceEntity.getAsnSeq());
-        return asnSeq < 9 ? offenceEntity.getAsnSeq().substring(2) : offenceEntity.getAsnSeq().substring(1);
+    private String getAsnSeq(OffenceDTO offenceDTO) {
+        int asnSeq = Integer.parseInt(offenceDTO.getAsnSeq());
+        return asnSeq < 9 ? offenceDTO.getAsnSeq().substring(2) : offenceDTO.getAsnSeq().substring(1);
     }
 
-
-    public boolean isNewOffence(Integer caseId, String asaSeq) {
-        List<OffenceDTO> offenceEntities = maatCourtDataService.findOffenceByCaseId(caseId);
-        for (OffenceDTO offenceDTO : offenceEntities) {
-            if (asaSeq.equals(offenceDTO.getAsnSeq())) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

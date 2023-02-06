@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @ConfigurationProperties(prefix = "maat-api")
@@ -55,6 +56,15 @@ public class MaatApiConfiguration {
 
     @NotNull
     private XlatResultEndpoints xlatResultEndpoints;
+
+    @NotNull
+    private ResultEndpoints resultEndpoints;
+
+    @NotNull
+    private WqResultEndpoints WqResultEndpoints;
+
+    @NotNull
+    private CrownCourtStoredProcedureEndpoints crownCourtStoredProcedureEndpoints;
 
     @Getter
     @AllArgsConstructor
@@ -148,7 +158,7 @@ public class MaatApiConfiguration {
         @NotNull
         private String findUrl;
         @NotNull
-        private String getOffenceCountUrl;
+        private String offenceCountUrl;
     }
 
     @Getter
@@ -178,7 +188,7 @@ public class MaatApiConfiguration {
     public static class WqOffenceEndpoints {
 
         @NotNull
-        private String findUrl;
+        private String wqOffenceCountUrl;
     }
 
     @Getter
@@ -188,11 +198,39 @@ public class MaatApiConfiguration {
     public static class XlatResultEndpoints {
 
         @NotNull
-        private String getResultCodesForCCImprisonmentUrl;
+        private String resultCodesForCCImprisonmentUrl;
         @NotNull
-        private String getResultCodesForCCBenchWarrantUrl;
+        private String resultCodesForCCBenchWarrantUrl;
         @NotNull
-        private String getResultCodesForWQTypeSubTypeUrl;
+        private String resultCodesForWQTypeSubTypeUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ResultEndpoints {
+        @NotNull
+        private String resultCodeByCaseIdAndAsnSeqUrl;
+    }
+
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class WqResultEndpoints {
+        @NotNull
+        private String resultCodeByCaseIdAndAsnSeqUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CrownCourtStoredProcedureEndpoints {
+        @NotNull
+        private String updateCrownCourtOutcomeUrl;
     }
 
 }

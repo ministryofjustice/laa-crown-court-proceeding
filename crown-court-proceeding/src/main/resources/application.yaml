@@ -111,17 +111,24 @@ maatApi:
     graphql-query-url: ${maatApi.assessments-domain}/graphQL
   offence:
     find-url: ${maatApi.assessments-domain}/offence/case/{caseId}
-    get-offence-count-url: ${maatApi.assessments-domain}/offence/{offenceId}/case/{caseId}
+    offence-count-url: ${maatApi.assessments-domain}/offence/{offenceId}/case/{caseId}
   wq-hearing-endpoints:
     find-url: ${maatApi.assessments-domain}/wq-hearing/{hearingUUID}/maatId/{maatId}
   wq-link-register-endpoints:
     find-url: ${maatApi.assessments-domain}/wq-link-register/{maatId}
   wq-offence:
-    find-url: ${maatApi.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
+    offence-count-url: ${maatApi.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
   xlat-result:
-    get-result-codes-for-cc-imprisonment-url: ${maatApi.assessments-domain}/cc-imprisonment
-    get-result-codes-for-cc-bench-warrant-url: ${maatApi.assessments-domain}/cc-bench-warrant
-    get-result-codes-for-wqtype-subtype-url: ${maatApi.assessments-domain}/wqType/{wqType}/subType/{subType}
+    result-codes-for-cc-imprisonment-url: ${maatApi.assessments-domain}/xlat-result/cc-imprisonment
+    result-codes-for-cc-bench-warrant-url: ${maatApi.assessments-domain}/xlat-result/cc-bench-warrant
+    result-codes-for-wqtype-subtype-url: ${maatApi.assessments-domain}/xlat-result/wqType/{wqType}/subType/{subType}
+  result:
+    result-codes-by-caseid-asnseq-url: ${maatApi.assessments-domain}/result/caseId/{caseId}/asnSeq/{asnSeq}
+  wq-result:
+    result-codes-by-caseid-asnseq-url: ${maatApi.assessments-domain}/wq-result/caseId/{caseId}/asnSeq/{asnSeq}
+  crown-court-stored-procedure:
+    update-crown-court-outcome-url: ${maatApi.assessments-domain}/crown-court/updateCCOutcome
+
 
 cda:
   url: ${CDA_BASE_URL}
