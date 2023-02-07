@@ -10,7 +10,7 @@ public enum WQType {
     CONCLUSION_QUEUE(7),
     USER_INTERVENTIONS_QUEUE(8);
 
-    private int value;
+    private final int value;
 
     /**
      * @param value enum value.
@@ -24,11 +24,7 @@ public enum WQType {
     }
 
     public static boolean isActionableQueue(int wqNumber) {
-        boolean isActionable = false;
-        if (INDICTABLE_QUEUE.value == wqNumber
-                || CONCLUSION_QUEUE.value == wqNumber) {
-            isActionable = true;
-        }
-        return isActionable;
+        return INDICTABLE_QUEUE.value == wqNumber
+                || CONCLUSION_QUEUE.value == wqNumber;
     }
 }

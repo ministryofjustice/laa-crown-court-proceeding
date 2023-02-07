@@ -7,9 +7,8 @@ import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 
 import java.util.List;
 
-
-import static uk.gov.justice.laa.crime.crowncourt.constants.CourtDataConstants.NO;
-import static uk.gov.justice.laa.crime.crowncourt.constants.CourtDataConstants.YES;
+import static uk.gov.justice.laa.crime.crowncourt.common.Constants.NO;
+import static uk.gov.justice.laa.crime.crowncourt.common.Constants.YES;
 import static uk.gov.justice.laa.crime.crowncourt.enums.CrownCourtTrialOutcome.isConvicted;
 import static uk.gov.justice.laa.crime.crowncourt.enums.CrownCourtTrialOutcome.isTrial;
 

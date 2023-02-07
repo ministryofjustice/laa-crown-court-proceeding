@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +13,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PROSECUTION_CONCLUDED", schema = "MLA")
+@Table(name = "PROSECUTION_CONCLUDED", schema = "crown_court_proceeding")
 public class ProsecutionConcludedEntity {
-
 
     @Id
     @SequenceGenerator(name = "case_con_seq", sequenceName = "CASE_CONCLUSION", allocationSize = 1)
@@ -38,6 +36,5 @@ public class ProsecutionConcludedEntity {
     private LocalDateTime updatedTime;
     @Column(name = "RETRY_COUNT")
     private Integer retryCount;
-
 
 }

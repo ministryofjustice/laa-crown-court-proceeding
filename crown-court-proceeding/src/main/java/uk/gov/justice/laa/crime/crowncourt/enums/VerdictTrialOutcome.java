@@ -14,7 +14,7 @@ public enum VerdictTrialOutcome {
     GUILTY_BY_JURY_CONVICTED(CrownCourtTrialOutcome.CONVICTED),
     GUILTY_CONVICTED(CrownCourtTrialOutcome.CONVICTED);
 
-    private CrownCourtTrialOutcome crownCourtTrialOutcome;
+    private final CrownCourtTrialOutcome crownCourtTrialOutcome;
 
     public static boolean isConvicted(String verdictValue) {
         return

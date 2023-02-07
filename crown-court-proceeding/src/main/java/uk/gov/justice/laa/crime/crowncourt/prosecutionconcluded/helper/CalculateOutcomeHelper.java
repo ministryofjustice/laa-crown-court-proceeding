@@ -9,8 +9,9 @@ import uk.gov.justice.laa.crime.crowncourt.enums.VerdictTrialOutcome;
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.OffenceSummary;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -50,7 +51,14 @@ public class CalculateOutcomeHelper {
                     }
                 });
 
-        return offenceOutcomeList.stream().distinct().collect(Collectors.toList());
+        List<String> list = new ArrayList<>();
+        Set<String> uniqueValues = new HashSet<>();
+        for (String s : offenceOutcomeList) {
+            if (uniqueValues.add(s)) {
+                list.add(s);
+            }
+        }
+        return list;
 
     }
 

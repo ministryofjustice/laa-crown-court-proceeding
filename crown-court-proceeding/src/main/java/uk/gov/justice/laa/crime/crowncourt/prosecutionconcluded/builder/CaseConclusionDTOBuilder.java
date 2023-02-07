@@ -7,10 +7,7 @@ import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.OffenceSum
 import uk.gov.justice.laa.crime.crowncourt.prosecutionconcluded.model.ProsecutionConcluded;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Component
 public class CaseConclusionDTOBuilder {
@@ -35,17 +32,21 @@ public class CaseConclusionDTOBuilder {
         }
         return offenceSummaryList.stream()
                 .map(offenceSummary -> LocalDate.parse(offenceSummary.getProceedingsConcludedChangedDate()))
-                .distinct()
-                .collect(Collectors.toList())
+                .distinct().toList()
                 .stream()
                 .sorted(Comparator.reverseOrder())
-                .collect(Collectors.toList()).get(0).toString();
+                .toList().get(0).toString();
     }
 
     private List<String> buildResultCodeList(WQHearingDTO wqHearingDTO) {
         String results = wqHearingDTO.getResultCodes() != null ? wqHearingDTO.getResultCodes() : "";
-        return Arrays.stream(results.split(","))
-                .distinct()
-                .collect(Collectors.toList());
+        List<String> list = new ArrayList<>();
+        Set<String> uniqueValues = new HashSet<>();
+        for (String s : results.split(",")) {
+            if (uniqueValues.add(s)) {
+                list.add(s);
+            }
+        }
+        return list;
     }
 }

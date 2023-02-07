@@ -17,7 +17,7 @@ public enum CrownCourtCaseType {
     EITHER_WAY("EITHER WAY"),
     APPEAL_CC("APPEAL CC");
 
-    private String value;
+    private final String value;
 
 
     public static boolean caseTypeForTrial(final String caseType) {

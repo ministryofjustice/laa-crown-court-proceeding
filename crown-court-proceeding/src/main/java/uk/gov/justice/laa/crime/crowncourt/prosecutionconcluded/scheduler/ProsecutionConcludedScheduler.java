@@ -67,20 +67,16 @@ public class ProsecutionConcludedScheduler {
         } catch (Exception exception) {
             log.error("Prosecution Conclusion failed for MAAT ID :" + prosecutionConcluded.getMaatId());
             updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.ERROR);
-
         }
     }
 
     private boolean isCCConclusion(WQHearingDTO wqHearingDTO) {
-
         return JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType());
     }
 
     private ProsecutionConcluded convertToObject(byte[] caseDate) {
-
         return gson.fromJson(new String(caseDate, StandardCharsets.UTF_8), ProsecutionConcluded.class);
     }
-
 
     @Transactional
     public void updateConclusion(String hearingId, CaseConclusionStatus caseConclusionStatus) {
@@ -91,6 +87,5 @@ public class ProsecutionConcludedScheduler {
         });
         prosecutionConcludedRepository.saveAll(processedCases);
     }
-
 
 }

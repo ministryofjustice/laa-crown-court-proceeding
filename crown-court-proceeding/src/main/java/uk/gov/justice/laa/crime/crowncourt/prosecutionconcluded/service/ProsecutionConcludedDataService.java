@@ -73,5 +73,4 @@ public class ProsecutionConcludedDataService {
         prosecutionConcludedRepository.saveAll(processedCases);
     }
 
-
 }

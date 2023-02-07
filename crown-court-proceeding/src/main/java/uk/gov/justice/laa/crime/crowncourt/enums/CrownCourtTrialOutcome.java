@@ -16,7 +16,7 @@ public enum CrownCourtTrialOutcome {
     PART_CONVICTED("PART CONVICTED"),
     AQUITTED("AQUITTED");
 
-    private String value;
+    private final String value;
 
     public static boolean isConvicted(String outcome) {
 

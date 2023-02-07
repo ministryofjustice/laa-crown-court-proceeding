@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static uk.gov.justice.laa.crime.crowncourt.constants.CourtDataConstants.COMMITTAL_FOR_SENTENCE_SUB_TYPE;
-import static uk.gov.justice.laa.crime.crowncourt.constants.CourtDataConstants.COMMITTAL_FOR_TRIAL_SUB_TYPE;
+import static uk.gov.justice.laa.crime.crowncourt.common.Constants.COMMITTAL_FOR_SENTENCE_SUB_TYPE;
+import static uk.gov.justice.laa.crime.crowncourt.common.Constants.COMMITTAL_FOR_TRIAL_SUB_TYPE;
 
 @RequiredArgsConstructor
 @Component
