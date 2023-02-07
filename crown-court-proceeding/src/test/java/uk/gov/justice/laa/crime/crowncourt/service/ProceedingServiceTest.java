@@ -196,7 +196,7 @@ class ProceedingServiceTest {
     void givenAValidRepIdAndNoOutcomeRecord_whenGetCCOutcome_thenReturnEmpty() {
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(Collections.emptyList());
         List<CCOutcomeDTO> ccOutcomeDTOS = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
-        assertThat(ccOutcomeDTOS.isEmpty()).isTrue();
+        assertThat(ccOutcomeDTOS.size()).isEqualTo(0);
     }
 
     @Test
@@ -227,6 +227,7 @@ class ProceedingServiceTest {
         softly.assertThat(ccOutcomeDTOS.get(2).getDescription()).isEqualTo(CrownCourtOutcome.CONVICTED.getDescription());
         softly.assertThat(ccOutcomeDTOS.get(2).getOutcomeDate())
                 .isEqualTo(LocalDateTime.of(2023, 2, 07, 15, 1, 25));
+        softly.assertAll();
 
     }
 
@@ -248,6 +249,8 @@ class ProceedingServiceTest {
         softly.assertThat(ccOutcomeDTOS.get(0).getDescription()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getDescription());
         softly.assertThat(ccOutcomeDTOS.get(0).getOutcomeDate())
                 .isEqualTo(LocalDateTime.of(2022, 2, 07, 9, 1, 25));
+
+        softly.assertAll();
 
     }
 

@@ -57,6 +57,8 @@ maatApi:
   rep-order-endpoints:
     find-url: ${maatApi.assessments-domain}/rep-orders/{repId}
     update-url: ${maatApi.assessments-domain}/rep-orders
+  rep-order-CCOutcome-endpoints:
+    find-url: ${maatApi.assessments-domain}/rep-orders/cc-outcome/reporder/{repId}
 
 retry-config:
   max-retries: 2
