@@ -196,7 +196,7 @@ class ProceedingServiceTest {
     void givenAValidRepIdAndNoOutcomeRecord_whenGetCCOutcome_thenReturnEmpty() {
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(Collections.emptyList());
         List<CCOutcomeDTO> ccOutcomeDTOS = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
-        assertThat(ccOutcomeDTOS.size()).isEqualTo(0);
+        assertThat(ccOutcomeDTOS.size()).isZero();
     }
 
     @Test
