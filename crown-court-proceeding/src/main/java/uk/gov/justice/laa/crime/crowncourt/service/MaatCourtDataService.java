@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.MaatApiConfiguration;
+import uk.gov.justice.laa.crime.crowncourt.dto.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -66,5 +68,17 @@ public class MaatCourtDataService {
         log.info(String.format(RESPONSE_STRING, response));
         return response;
     }
+
+    public List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(Integer repId, String laaTransactionId) {
+        List<RepOrderCCOutcomeDTO> response = maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getRepOrderEndpoints().getFindUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
+                repId
+        );
+        log.info(String.format(RESPONSE_STRING, response));
+        return response;
+    }
+
 
 }
