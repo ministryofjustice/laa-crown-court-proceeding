@@ -16,6 +16,7 @@ public class RepOrderCCOutcomeDTO {
     private int id;
     private int repId;
     private String outcome;
+    private String description;
     private LocalDateTime outcomeDate;
     private String userCreated;
     private LocalDateTime dateCreated;

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
-import uk.gov.justice.laa.crime.crowncourt.dto.CCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
@@ -18,6 +17,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -59,20 +59,19 @@ public class ProceedingService {
         return obj;
     }
 
-    public List<CCOutcomeDTO> getCCOutcome(Integer repId, String laaTransactionId) {
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOS = maatCourtDataService.getRepOrderCCOutcomeByRepId(repId, laaTransactionId);
-        List<CCOutcomeDTO> outcomeDTOS = new ArrayList<>();
-        if (!repOrderCCOutcomeDTOS.isEmpty()) {
-            SortUtils.sortListWithComparing(repOrderCCOutcomeDTOS, RepOrderCCOutcomeDTO::getOutcomeDate,
+    public List<RepOrderCCOutcomeDTO> getCCOutcome(Integer repId, String laaTransactionId) {
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = maatCourtDataService.getRepOrderCCOutcomeByRepId(repId, laaTransactionId);
+        if (!repOrderCCOutcomeList.isEmpty()) {
+            repOrderCCOutcomeList = repOrderCCOutcomeList.stream().filter(outcome ->
+                    isNotBlank(outcome.getOutcome())).collect(Collectors.toList());
+            SortUtils.sortListWithComparing(repOrderCCOutcomeList, RepOrderCCOutcomeDTO::getOutcomeDate,
                     RepOrderCCOutcomeDTO::getId, SortUtils.getComparator());
-            repOrderCCOutcomeDTOS.stream().forEach(outCome -> {
-                if (isNotBlank(outCome.getOutcome())) {
-                    CrownCourtOutcome crownCourtOutcome = CrownCourtOutcome.getFrom(outCome.getOutcome());
-                    outcomeDTOS.add(new CCOutcomeDTO(outCome.getOutcome(), crownCourtOutcome.getDescription(), outCome.getOutcomeDate()));
-                }
+            repOrderCCOutcomeList.stream().forEach(outCome -> {
+                CrownCourtOutcome crownCourtOutcome = CrownCourtOutcome.getFrom(outCome.getOutcome());
+                outCome.setDescription(crownCourtOutcome.getDescription());
             });
         }
-        return outcomeDTOS;
+        return repOrderCCOutcomeList;
     }
 
 }

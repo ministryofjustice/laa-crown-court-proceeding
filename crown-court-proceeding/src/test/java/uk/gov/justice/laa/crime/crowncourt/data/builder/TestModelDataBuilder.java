@@ -158,10 +158,10 @@ public class TestModelDataBuilder {
                 .withPassportAssessment(getPassportAssessment());
     }
 
-    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId, String outCome, LocalDateTime outcomeDate) {
+    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId, String outcome, LocalDateTime outcomeDate) {
 
         return RepOrderCCOutcomeDTO.builder()
-                .outcome(outCome)
+                .outcome(outcome)
                 .outcomeDate(outcomeDate)
                 .build();
     }

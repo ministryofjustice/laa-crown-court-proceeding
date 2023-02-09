@@ -65,7 +65,7 @@ class MaatCourtDataServiceTest {
     }
 
     @Test
-    void givenAValidRepId_whenGetRepOrderCCOutcomeByRepIdIsInvoked_thenReturnOutcome1() {
+    void givenAInvalidParameter_whenGetRepOrderCCOutcomeByRepIdIsInvoked_thenReturnError() {
         when(maatCourtDataClient.getApiResponseViaGET(any(), anyString(), anyMap(), any())).thenThrow(new APIClientException());
         assertThatThrownBy(() -> {
             maatCourtDataService.getRepOrderCCOutcomeByRepId(TestModelDataBuilder.TEST_REP_ID, LAA_TRANSACTION_ID);
