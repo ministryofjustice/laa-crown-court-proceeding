@@ -195,8 +195,15 @@ class ProceedingServiceTest {
     @Test
     void givenAValidRepIdAndNoOutcomeRecord_whenGetCCOutcome_thenReturnEmpty() {
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(Collections.emptyList());
-        List<RepOrderCCOutcomeDTO> ccOutcomeDTOS = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
-        assertThat(0).isEqualTo(ccOutcomeDTOS.size());
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        assertThat(0).isEqualTo(repOrderCCOutcomeDTOList.size());
+    }
+
+    @Test
+    void givenAInvalidRepId_whenGetCCOutcome_thenReturnNull() {
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(null);
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        assertThat(repOrderCCOutcomeDTOList).isNull();
     }
 
     @Test
@@ -210,22 +217,22 @@ class ProceedingServiceTest {
                 LocalDateTime.of(2022, 3, 07, 10, 1, 25)));
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(outcomeList);
 
-        List<RepOrderCCOutcomeDTO> ccOutcomeDTOS = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
-        softly.assertThat(ccOutcomeDTOS.size()).isEqualTo(3);
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        softly.assertThat(repOrderCCOutcomeDTOList.size()).isEqualTo(3);
 
-        softly.assertThat(ccOutcomeDTOS.get(0).getOutcome()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getCode());
-        softly.assertThat(ccOutcomeDTOS.get(0).getDescription()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getDescription());
-        softly.assertThat(ccOutcomeDTOS.get(0).getOutcomeDate())
+        softly.assertThat(repOrderCCOutcomeDTOList.get(0).getOutcome()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getCode());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(0).getDescription()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getDescription());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(0).getOutcomeDate())
                 .isEqualTo(LocalDateTime.of(2022, 2, 07, 9, 1, 25));
 
-        softly.assertThat(ccOutcomeDTOS.get(1).getOutcome()).isEqualTo(CrownCourtOutcome.SUCCESSFUL.getCode());
-        softly.assertThat(ccOutcomeDTOS.get(1).getDescription()).isEqualTo(CrownCourtOutcome.SUCCESSFUL.getDescription());
-        softly.assertThat(ccOutcomeDTOS.get(1).getOutcomeDate())
+        softly.assertThat(repOrderCCOutcomeDTOList.get(1).getOutcome()).isEqualTo(CrownCourtOutcome.SUCCESSFUL.getCode());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(1).getDescription()).isEqualTo(CrownCourtOutcome.SUCCESSFUL.getDescription());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(1).getOutcomeDate())
                 .isEqualTo(LocalDateTime.of(2022, 3, 07, 10, 1, 25));
 
-        softly.assertThat(ccOutcomeDTOS.get(2).getOutcome()).isEqualTo(CrownCourtOutcome.CONVICTED.getCode());
-        softly.assertThat(ccOutcomeDTOS.get(2).getDescription()).isEqualTo(CrownCourtOutcome.CONVICTED.getDescription());
-        softly.assertThat(ccOutcomeDTOS.get(2).getOutcomeDate())
+        softly.assertThat(repOrderCCOutcomeDTOList.get(2).getOutcome()).isEqualTo(CrownCourtOutcome.CONVICTED.getCode());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(2).getDescription()).isEqualTo(CrownCourtOutcome.CONVICTED.getDescription());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(2).getOutcomeDate())
                 .isEqualTo(LocalDateTime.of(2023, 2, 07, 15, 1, 25));
         softly.assertAll();
 
@@ -241,13 +248,13 @@ class ProceedingServiceTest {
                 LocalDateTime.of(2022, 2, 07, 9, 1, 25)));
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(outcomeList);
 
-        List<RepOrderCCOutcomeDTO> ccOutcomeDTOS = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
 
-        softly.assertThat(ccOutcomeDTOS.size()).isEqualTo(1);
+        softly.assertThat(repOrderCCOutcomeDTOList.size()).isEqualTo(1);
 
-        softly.assertThat(ccOutcomeDTOS.get(0).getOutcome()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getCode());
-        softly.assertThat(ccOutcomeDTOS.get(0).getDescription()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getDescription());
-        softly.assertThat(ccOutcomeDTOS.get(0).getOutcomeDate())
+        softly.assertThat(repOrderCCOutcomeDTOList.get(0).getOutcome()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getCode());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(0).getDescription()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getDescription());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(0).getOutcomeDate())
                 .isEqualTo(LocalDateTime.of(2022, 2, 07, 9, 1, 25));
 
         softly.assertAll();
