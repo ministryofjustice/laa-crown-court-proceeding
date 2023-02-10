@@ -61,7 +61,7 @@ public class ProceedingService {
 
     public List<RepOrderCCOutcomeDTO> getCCOutcome(Integer repId, String laaTransactionId) {
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = maatCourtDataService.getRepOrderCCOutcomeByRepId(repId, laaTransactionId);
-        if (!repOrderCCOutcomeList.isEmpty()) {
+        if (null !=repOrderCCOutcomeList && !repOrderCCOutcomeList.isEmpty()) {
             repOrderCCOutcomeList = repOrderCCOutcomeList.stream().filter(outcome ->
                     isNotBlank(outcome.getOutcome())).collect(Collectors.toCollection(ArrayList::new));
             SortUtils.sortListWithComparing(repOrderCCOutcomeList, RepOrderCCOutcomeDTO::getOutcomeDate,
