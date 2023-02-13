@@ -81,6 +81,12 @@ class RepOrderServiceTest {
     }
 
     @Test
+    void givenPassportAssessmentIsNull_whenGetDecisionByPassportAssessmentIsInvoked_nullIsReturned() {
+        assertThat(repOrderService.getDecisionByPassportAssessment(null, true))
+                .isNull();
+    }
+
+    @Test
     void givenPassportAssessmentIsFail_whenGetDecisionByPassportAssessmentIsInvoked_nullIsReturned() {
         ApiPassportAssessment apiPassportAssessment = new ApiPassportAssessment()
                 .withResult(PassportAssessmentResult.FAIL.getResult());
@@ -296,7 +302,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenInvalidCaseType_whenGetDecisionByFinAssessmentIsInvoked_nullIsReturned() {
+    void givenInvalidCaseType_whenGetDecisionByFinAssessmentIsInvoked_ThenNullIsReturned() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         assertThat(repOrderService.getDecisionByFinAssessment(requestDTO, null, false))
                 .isNull();
@@ -338,6 +344,18 @@ class RepOrderServiceTest {
         requestDTO.setCaseType(CaseType.COMMITAL);
         assertThat(repOrderService.getDecisionByFinAssessment(requestDTO, null, false))
                 .isEqualTo(Constants.FAILED_CF_S_FAILED_MEANS_TEST);
+    }
+
+    @Test
+    void givenHardshipOverviewResultIsNull_whenGetDecisionByFinAssessmentIsInvoked_thenNullIsReturned() {
+        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
+        setUpFinAssessment(
+                requestDTO, CurrentStatus.COMPLETE, null,
+                InitAssessmentResult.FULL.getResult(), null, null
+        );
+        requestDTO.getFinancialAssessment().setHardshipOverview(null);
+        assertThat(repOrderService.getDecisionByFinAssessment(requestDTO, null, true))
+                .isNull();
     }
 
     @Test
@@ -573,7 +591,7 @@ class RepOrderServiceTest {
         softly.assertThat(apiCrownCourtSummary.getRepType())
                 .isEqualTo(Constants.THROUGH_ORDER);
 
-        softly. assertThat(apiCrownCourtSummary.getRepId())
+        softly.assertThat(apiCrownCourtSummary.getRepId())
                 .isEqualTo(requestDTO.getRepId());
     }
 
@@ -626,6 +644,7 @@ class RepOrderServiceTest {
         assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isNull();
     }
+
     @Test
     void givenEitherWayCase_whenDetermineRepOrderDateIsInvoked_thenRepOrderDateIsCorrect() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
