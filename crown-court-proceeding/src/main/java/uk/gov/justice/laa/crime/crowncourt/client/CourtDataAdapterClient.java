@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import uk.gov.justice.laa.crime.crowncourt.config.CourtDataAdapterClientConfig;
-import uk.gov.justice.laa.crime.crowncourt.enums.MessageType;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.crowncourt.exception.CCPDataException;
 import uk.gov.justice.laa.crime.crowncourt.model.laastatus.LaaStatusUpdate;
 import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;

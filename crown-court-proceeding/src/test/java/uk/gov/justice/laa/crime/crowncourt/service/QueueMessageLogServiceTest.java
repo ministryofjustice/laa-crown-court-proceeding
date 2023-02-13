@@ -8,8 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.entity.QueueMessageLogEntity;
-import uk.gov.justice.laa.crime.crowncourt.enums.JurisdictionType;
-import uk.gov.justice.laa.crime.crowncourt.enums.MessageType;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.crowncourt.repository.QueueMessageLogRepository;
 
 import static org.junit.jupiter.api.Assertions.*;

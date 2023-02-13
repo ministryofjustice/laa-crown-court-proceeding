@@ -17,7 +17,7 @@ import org.springframework.web.reactive.function.client.ExchangeFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.crime.crowncourt.config.CourtDataAdapterClientConfig;
-import uk.gov.justice.laa.crime.crowncourt.enums.MessageType;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.crowncourt.exception.CCPDataException;
 import uk.gov.justice.laa.crime.crowncourt.model.laastatus.LaaStatusUpdate;
 import uk.gov.justice.laa.crime.crowncourt.model.laastatus.RepOrderData;
