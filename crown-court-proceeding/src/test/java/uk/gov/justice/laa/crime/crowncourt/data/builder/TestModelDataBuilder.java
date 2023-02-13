@@ -7,6 +7,8 @@ import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class TestModelDataBuilder {
@@ -106,6 +108,23 @@ public class TestModelDataBuilder {
                 .withRepOrderDecision(MOCK_DECISION)
                 .withRepOrderDate(TEST_REP_ORDER_DATE)
                 .withRepId(TEST_REP_ID);
+    }
+
+    public static ApiCrownCourtSummary getCrownCourtSummaryWithOutcome(Boolean isImprisoned, List<ApiCrownCourtOutcome> crownCourtOutcomes) {
+        return new ApiCrownCourtSummary()
+                .withRepOrderDecision(MOCK_DECISION)
+                .withRepOrderDate(TEST_REP_ORDER_DATE)
+                .withRepId(TEST_REP_ID)
+                .withCrownCourtOutcome(crownCourtOutcomes)
+                .withIsImprisoned(isImprisoned);
+    }
+
+    public static ApiCrownCourtOutcome getApiCrownCourtOutcome(CrownCourtOutcome crownCourtOutcome, LocalDateTime dateSet) {
+        return new ApiCrownCourtOutcome()
+                .withOutcome(crownCourtOutcome)
+                .withDateSet(dateSet)
+                .withDescription(crownCourtOutcome.getDescription())
+                .withOutComeType(crownCourtOutcome.getType());
     }
 
     public static IOJAppealDTO getIOJAppealDTO() {
