@@ -30,14 +30,12 @@ public class CrownCourtDetailsValidator {
                 .filter(outcome -> outcome.getDateSet() == null)
                 .findFirst();
 
-        if (apiCrownCourtOutcome.isPresent()) {
+        if (apiCrownCourtOutcome.isPresent() && apiCrownCourtOutcome.get().getOutcome() != null) {
             final CrownCourtOutcome crownCourtOutcome = apiCrownCourtOutcome.get().getOutcome();
             log.info("Validating crown court outcome " + crownCourtOutcome);
-            if (crownCourtOutcome != null) {
-                if ((crownCourtOutcome.getCode() == CONVICTED.getCode() || crownCourtOutcome.getCode() == PART_CONVICTED.getCode())
-                        && crownCourtSummary.getIsImprisoned() == null) {
-                    throw new ValidationException(MSG_INVALID_CC_OUTCOME);
-                }
+            if ((crownCourtOutcome.getCode() == CONVICTED.getCode() || crownCourtOutcome.getCode() == PART_CONVICTED.getCode())
+                    && crownCourtSummary.getIsImprisoned() == null) {
+                throw new ValidationException(MSG_INVALID_CC_OUTCOME);
             }
         }
         return Optional.empty();
