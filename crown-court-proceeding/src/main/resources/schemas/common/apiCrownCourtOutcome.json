@@ -22,5 +22,6 @@
       "format": "date-time"
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "required": ["outcome"]
 }

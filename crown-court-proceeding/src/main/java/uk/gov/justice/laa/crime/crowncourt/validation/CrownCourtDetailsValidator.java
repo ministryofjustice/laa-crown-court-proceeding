@@ -30,7 +30,7 @@ public class CrownCourtDetailsValidator {
                 .filter(outcome -> outcome.getDateSet() == null)
                 .findFirst();
 
-        if (apiCrownCourtOutcome.isPresent() && apiCrownCourtOutcome.get().getOutcome() != null) {
+        if (apiCrownCourtOutcome.isPresent()) {
             final CrownCourtOutcome crownCourtOutcome = apiCrownCourtOutcome.get().getOutcome();
             log.info("Validating crown court outcome " + crownCourtOutcome);
             if ((crownCourtOutcome.getCode() == CONVICTED.getCode() || crownCourtOutcome.getCode() == PART_CONVICTED.getCode())
