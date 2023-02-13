@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
 public class CCOutcomeDTOBuilder {
 
     public static List<RepOrderCCOutcomeDTO> build(CrownCourtDTO crownCourtDTO) {
-        List<ApiCrownCourtOutcome> outcomes =  crownCourtDTO.getCrownCourtSummary().getOutcomes();
+        List<ApiCrownCourtOutcome> outcomes =  crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = null;
         if (null != outcomes && !outcomes.isEmpty()) {
             repOrderCCOutcomeList = outcomes.stream().map(outcome -> {
                 return RepOrderCCOutcomeDTO.builder()
                         .repId(crownCourtDTO.getRepId())
-                        .outcome(outcome.getOutcome())
-                        .outcomeDate( null != outcome.getOutcomeDate() ? outcome.getOutcomeDate() : LocalDateTime.now())
+                        .outcome(outcome.getOutcome().getCode())
+                        .outcomeDate( null != outcome.getDateSet() ? outcome.getDateSet() : LocalDateTime.now())
                         .userCreated(crownCourtDTO.getUserSession().getUserName())
                         .build();
             }).collect(Collectors.toCollection(ArrayList::new));

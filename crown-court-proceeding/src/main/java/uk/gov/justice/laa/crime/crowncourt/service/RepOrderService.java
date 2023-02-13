@@ -9,6 +9,7 @@ import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
@@ -219,8 +220,8 @@ public class RepOrderService {
         return null;
     }
 
-    protected void update(CrownCourtDTO dto) {
-        maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.buildOutcome(dto), dto.getLaaTransactionId());
+    protected RepOrderDTO update(CrownCourtDTO dto) {
+       return  maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.buildOutcome(dto), dto.getLaaTransactionId());
     }
 
     protected void createOutcome(CrownCourtDTO dto) {
