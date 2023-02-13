@@ -3,9 +3,12 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.crowncourt.builder.CCOutcomeDTOBuilder;
+import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
@@ -214,5 +217,18 @@ public class RepOrderService {
             }
         }
         return null;
+    }
+
+    protected void update(CrownCourtDTO dto) {
+        maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.buildOutcome(dto), dto.getLaaTransactionId());
+    }
+
+    protected void createOutcome(CrownCourtDTO dto) {
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = CCOutcomeDTOBuilder.build(dto);
+        if (null != repOrderCCOutcomeDTOList && !repOrderCCOutcomeDTOList.isEmpty()) {
+            repOrderCCOutcomeDTOList.stream().forEach(repOrderCCOutcomeDTO -> {
+                maatCourtDataService.createOutcome(repOrderCCOutcomeDTO, dto.getLaaTransactionId());
+            });
+        }
     }
 }

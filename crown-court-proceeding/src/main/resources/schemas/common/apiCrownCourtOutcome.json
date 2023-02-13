@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "apiCrownCourtOutcome.json",
+  "type": "object",
+  "description": "Crown Court Outcome",
+  "properties": {
+    "outcome": {
+      "type": "string",
+      "title": "crown court Outcome"
+    },
+    "outcomeDate": {
+      "type": "string",
+      "title": "crown court outcome dates",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

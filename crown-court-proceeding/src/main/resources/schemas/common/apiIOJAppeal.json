@@ -11,6 +11,15 @@
     "iojResult": {
       "type": "string",
       "description": "Ioj Result"
+    },
+    "appealTypeCode": {
+      "type": "string",
+      "description": "Appeal type code"
+    },
+    "appealTypeDate": {
+      "type": "string",
+      "description": "Appeal type date",
+      "format": "date-time"
     }
   },
   "additionalProperties": false,

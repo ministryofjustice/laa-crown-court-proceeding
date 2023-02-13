@@ -34,6 +34,13 @@
     "evidenceFeeLevel": {
       "type": "string",
       "description": "The evidence fee level"
+    },
+    "outcomes": {
+      "type": "array",
+      "description": "crown court outcome",
+      "items": {
+        "$ref": "apiCrownCourtOutcome.json"
+      }
     }
   },
   "additionalProperties": false,
