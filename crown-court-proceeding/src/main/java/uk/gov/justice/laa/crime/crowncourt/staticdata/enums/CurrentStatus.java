@@ -18,7 +18,7 @@ public enum CurrentStatus {
     COMPLETE("COMPLETE", "Complete");
 
     @NotNull
-    @JsonPropertyDescription("This will have the frequency code of the selection")
+    @JsonPropertyDescription("This will have the current status")
     private final String status;
     private final String description;
 
