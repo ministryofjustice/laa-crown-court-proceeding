@@ -11,7 +11,6 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.builder.CaseCon
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CalculateOutcomeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.OffenceHelper;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.ReservationsRepositoryHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.impl.ProsecutionConcludedImpl;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Plea;
@@ -43,9 +42,6 @@ class ProsecutionConcludedServiceTest {
     private ProsecutionConcludedImpl prosecutionConcludedImpl;
 
     @Mock
-    private ReservationsRepositoryHelper reservationsRepositoryHelper;
-
-    @Mock
     private CaseConclusionDTOBuilder caseConclusionDTOBuilder;
 
     @Mock
@@ -61,7 +57,7 @@ class ProsecutionConcludedServiceTest {
 
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity());
 
-        when(reservationsRepositoryHelper.isMaatRecordLocked(any())).thenReturn(true);
+        when(maatCourtDataService.isMaatRecordLocked(any())).thenReturn(true);
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
 
@@ -69,7 +65,7 @@ class ProsecutionConcludedServiceTest {
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(maatCourtDataService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(prosecutionConcludedDataService, atLeast(1)).execute(any());
-        verify(reservationsRepositoryHelper, atLeast(1)).isMaatRecordLocked(anyInt());
+        verify(maatCourtDataService, atLeast(1)).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, never()).execute(any());
         verify(calculateOutcomeHelper, never()).calculate(any());
 
@@ -83,7 +79,7 @@ class ProsecutionConcludedServiceTest {
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity());
 
 
-        when(reservationsRepositoryHelper.isMaatRecordLocked(any())).thenReturn(false);
+        when(maatCourtDataService.isMaatRecordLocked(any())).thenReturn(false);
         when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(List.of(getOffenceSummary("123")));
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
@@ -91,7 +87,7 @@ class ProsecutionConcludedServiceTest {
         //then
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(maatCourtDataService, atLeast(1)).retrieveHearingForCaseConclusion(any());
-        verify(reservationsRepositoryHelper, atLeast(1)).isMaatRecordLocked(anyInt());
+        verify(maatCourtDataService, atLeast(1)).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, atLeast(1)).execute(any());
         verify(calculateOutcomeHelper, atLeast(1)).calculate(any());
         verify(caseConclusionDTOBuilder, atLeast(1)).build(any(), any(), any());
@@ -104,14 +100,14 @@ class ProsecutionConcludedServiceTest {
 
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity());
 
-        when(reservationsRepositoryHelper.isMaatRecordLocked(any())).thenReturn(false);
+        when(maatCourtDataService.isMaatRecordLocked(any())).thenReturn(false);
         when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(List.of(getOffenceSummary("123")));
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
 
         //then
         verify(prosecutionConcludedValidator).validateRequestObject(any());
-        verify(reservationsRepositoryHelper).isMaatRecordLocked(anyInt());
+        verify(maatCourtDataService).isMaatRecordLocked(anyInt());
         verify(calculateOutcomeHelper).calculate(any());
     }
 
@@ -125,7 +121,7 @@ class ProsecutionConcludedServiceTest {
         //when
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity());
 
-        when(reservationsRepositoryHelper.isMaatRecordLocked(any())).thenReturn(false);
+        when(maatCourtDataService.isMaatRecordLocked(any())).thenReturn(false);
         when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(List.of(getOffenceSummary("123")));
 
         prosecutionConcludedService.execute(prosecutionConcludedRequest);
@@ -133,7 +129,7 @@ class ProsecutionConcludedServiceTest {
         //then
         verify(maatCourtDataService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(prosecutionConcludedValidator).validateRequestObject(any());
-        verify(reservationsRepositoryHelper).isMaatRecordLocked(anyInt());
+        verify(maatCourtDataService).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl).execute(any());
         verify(calculateOutcomeHelper).calculate(any());
     }
@@ -153,7 +149,7 @@ class ProsecutionConcludedServiceTest {
         //then
         verify(maatCourtDataService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(prosecutionConcludedValidator).validateRequestObject(any(ProsecutionConcluded.class));
-        verify(reservationsRepositoryHelper, never()).isMaatRecordLocked(anyInt());
+        verify(maatCourtDataService, never()).isMaatRecordLocked(anyInt());
 
         verify(prosecutionConcludedImpl, never()).execute(any(ConcludedDTO.class));
     }
@@ -167,7 +163,7 @@ class ProsecutionConcludedServiceTest {
 
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(maatCourtDataService, atLeast(1)).retrieveHearingForCaseConclusion(any());
-        verify(reservationsRepositoryHelper, never()).isMaatRecordLocked(anyInt());
+        verify(maatCourtDataService, never()).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, never()).execute(any());
         verify(calculateOutcomeHelper, never()).calculate(any());
         verify(caseConclusionDTOBuilder, never()).build(any(), any(), any());

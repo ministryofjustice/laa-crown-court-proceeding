@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class ProsecutionConcludedEntity {
     @Column(name = "HEARING_ID")
     private String hearingId;
     @Lob
+    @Type(type="org.hibernate.type.BinaryType")
     @Column(name = "CASE_DATA")
     private byte[] caseData;
     @Column(name = "STATUS")

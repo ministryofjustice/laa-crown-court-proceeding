@@ -68,6 +68,9 @@ public class MaatApiConfiguration {
     @NotNull
     private CrownCourtProcessingEndpoints crownCourtProcessingEndpoints;
 
+    @NotNull
+    private ReservationsEndpoints reservationsEndpoints;
+    
     @Getter
     @AllArgsConstructor
     @Setter
@@ -245,4 +248,12 @@ public class MaatApiConfiguration {
         private String updateCcSentenceUrl;
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ReservationsEndpoints {
+        @NotNull
+        private String isMaatRecordLockedUrl;
+    }
 }

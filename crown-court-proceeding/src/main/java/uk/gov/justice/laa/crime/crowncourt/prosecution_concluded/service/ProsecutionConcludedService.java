@@ -10,7 +10,6 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.builder.CaseCon
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CalculateOutcomeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.OffenceHelper;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.ReservationsRepositoryHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.impl.ProsecutionConcludedImpl;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
@@ -28,7 +27,6 @@ public class ProsecutionConcludedService {
     private final CalculateOutcomeHelper calculateOutcomeHelper;
     private final ProsecutionConcludedValidator prosecutionConcludedValidator;
     private final ProsecutionConcludedImpl prosecutionConcludedImpl;
-    private final ReservationsRepositoryHelper reservationsRepositoryHelper;
     private final CaseConclusionDTOBuilder caseConclusionDTOBuilder;
     private final OffenceHelper offenceHelper;
     private final ProsecutionConcludedDataService prosecutionConcludedDataService;
@@ -44,7 +42,8 @@ public class ProsecutionConcludedService {
                 && wqHearingDTO != null
                 && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
 
-            if (reservationsRepositoryHelper.isMaatRecordLocked(prosecutionConcluded.getMaatId())) {
+
+            if (maatCourtDataService.isMaatRecordLocked(prosecutionConcluded.getMaatId())) {
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
             } else {
                 executeCCOutCome(prosecutionConcluded, wqHearingDTO);

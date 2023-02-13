@@ -224,4 +224,14 @@ public class MaatCourtDataService {
                 updateSentenceOrder
         );
     }
+
+    public Boolean isMaatRecordLocked(Integer maatId) {
+        return maatCourtDataClient.getApiResponseViaGET(
+                Boolean.class,
+                configuration.getReservationsEndpoints().getIsMaatRecordLockedUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, null),
+                maatId
+        );
+    }
+
 }
