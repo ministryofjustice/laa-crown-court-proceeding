@@ -75,7 +75,7 @@ public class MaatCourtDataService {
         RepOrderCCOutcomeDTO response = maatCourtDataClient.getApiResponseViaPUT(
                 outcomeDTO,
                 RepOrderCCOutcomeDTO.class,
-                configuration.getRepOrderEndpoints().getUpdateUrl(),
+                configuration.getRepOrderEndpoints().getCreateOutcomeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
         );
         log.info(String.format(RESPONSE_STRING, response));
