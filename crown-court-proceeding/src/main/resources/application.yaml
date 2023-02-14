@@ -110,7 +110,7 @@ maatApi:
   graphql-endpoints:
     graphql-query-url: ${maatApi.assessments-domain}/graphQL
   rep-order-outcome-endpoints:
-    find-url: ${maatApi.assessments-domain}/rep-orders/cc-outcome/rep-orders/{repId}
+    find-url: ${maatApi.assessments-domain}/rep-orders/cc-outcome/reporder/{repId}
 
 cda:
   url: ${CDA_BASE_URL}
