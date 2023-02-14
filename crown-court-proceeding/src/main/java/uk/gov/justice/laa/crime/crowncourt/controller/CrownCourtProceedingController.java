@@ -17,7 +17,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.ErrorDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
-import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
+import uk.gov.justice.laa.crime.crowncourt.service.CrownCourtProceedingService;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -29,7 +29,7 @@ import java.io.IOException;
 @Tag(name = "Crown Court Proceeding", description = "Rest API for Crown Court Proceeding.")
 public class CrownCourtProceedingController {
 
-    private final ProceedingService proceedingService;
+    private final CrownCourtProceedingService crownCourtProceedingService;
 
     private CrownCourtDTO preProcessRequest(ApiProcessRepOrderRequest request) {
         return CrownCourtDTOBuilder.build(request);
@@ -63,7 +63,7 @@ public class CrownCourtProceedingController {
 
         CrownCourtDTO requestDTO = preProcessRequest(request);
         return ResponseEntity.ok(
-                proceedingService.processRepOrder(requestDTO)
+                crownCourtProceedingService.processRepOrder(requestDTO)
         );
     }
 
@@ -83,7 +83,7 @@ public class CrownCourtProceedingController {
             )
     )
     public ResponseEntity<Object> updateApplication(@Valid @RequestBody ApiUpdateApplicationRequest request) {
-        proceedingService.updateApplication(preProcessRequest(request));
+        crownCourtProceedingService.updateApplication(preProcessRequest(request));
         return ResponseEntity.ok().build();
     }
 
@@ -94,7 +94,7 @@ public class CrownCourtProceedingController {
     @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
     public ResponseEntity<Object> graphQLQuery() throws IOException {
         log.info("Make GraphQL Query Request");
-        return ResponseEntity.ok(proceedingService.graphQLQuery());
+        return ResponseEntity.ok(crownCourtProceedingService.graphQLQuery());
     }
 
 }

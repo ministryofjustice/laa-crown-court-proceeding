@@ -24,7 +24,7 @@ import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
+import uk.gov.justice.laa.crime.crowncourt.service.CrownCourtProceedingService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -59,7 +59,7 @@ class CrownCourtProceedingControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ProceedingService proceedingService;
+    private CrownCourtProceedingService crownCourtProceedingService;
 
     @BeforeEach
     public void setup() {
@@ -106,7 +106,7 @@ class CrownCourtProceedingControllerTest {
         var processRepOrderResponse =
                 TestModelDataBuilder.getApiProcessRepOrderResponse();
 
-        when(proceedingService.processRepOrder(any(CrownCourtDTO.class)))
+        when(crownCourtProceedingService.processRepOrder(any(CrownCourtDTO.class)))
                 .thenReturn(processRepOrderResponse);
 
         mvc.perform(buildRequestGivenContent(HttpMethod.POST, processRepOrderRequestJson))
@@ -147,7 +147,7 @@ class CrownCourtProceedingControllerTest {
         var apiUpdateApplicationRequest =
                 TestModelDataBuilder.getApiUpdateApplicationRequest(IS_VALID);
         var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
-        doNothing().when(proceedingService).updateApplication(any(CrownCourtDTO.class));
+        doNothing().when(crownCourtProceedingService).updateApplication(any(CrownCourtDTO.class));
 
         mvc.perform(buildRequestGivenContent(HttpMethod.PUT, updateApplicationRequestJson))
                 .andExpect(status().isOk());

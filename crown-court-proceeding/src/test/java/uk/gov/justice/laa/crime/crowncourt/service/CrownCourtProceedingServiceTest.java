@@ -30,13 +30,13 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
-class ProceedingServiceTest {
+class CrownCourtProceedingServiceTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
 
     @InjectMocks
-    private ProceedingService proceedingService;
+    private CrownCourtProceedingService crownCourtProceedingService;
 
     @Mock
     private RepOrderService repOrderService;
@@ -58,7 +58,7 @@ class ProceedingServiceTest {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         requestDTO.setCaseType(CaseType.INDICTABLE);
         setupMockData();
-        ApiProcessRepOrderResponse response = proceedingService.processRepOrder(requestDTO);
+        ApiProcessRepOrderResponse response = crownCourtProceedingService.processRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -72,7 +72,7 @@ class ProceedingServiceTest {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         requestDTO.setCaseType(CaseType.CC_ALREADY);
         setupMockData();
-        ApiProcessRepOrderResponse response = proceedingService.processRepOrder(requestDTO);
+        ApiProcessRepOrderResponse response = crownCourtProceedingService.processRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -86,7 +86,7 @@ class ProceedingServiceTest {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         requestDTO.setCaseType(CaseType.APPEAL_CC);
         setupMockData();
-        ApiProcessRepOrderResponse response = proceedingService.processRepOrder(requestDTO);
+        ApiProcessRepOrderResponse response = crownCourtProceedingService.processRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -100,7 +100,7 @@ class ProceedingServiceTest {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         requestDTO.setCaseType(CaseType.COMMITAL);
         setupMockData();
-        ApiProcessRepOrderResponse response = proceedingService.processRepOrder(requestDTO);
+        ApiProcessRepOrderResponse response = crownCourtProceedingService.processRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -115,7 +115,7 @@ class ProceedingServiceTest {
         requestDTO.setCaseType(CaseType.EITHER_WAY);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.COMMITTED);
         setupMockData();
-        ApiProcessRepOrderResponse response = proceedingService.processRepOrder(requestDTO);
+        ApiProcessRepOrderResponse response = crownCourtProceedingService.processRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -130,7 +130,7 @@ class ProceedingServiceTest {
         requestDTO.setCaseType(CaseType.EITHER_WAY);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL);
         setupMockData();
-        ApiProcessRepOrderResponse response = proceedingService.processRepOrder(requestDTO);
+        ApiProcessRepOrderResponse response = crownCourtProceedingService.processRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -145,7 +145,7 @@ class ProceedingServiceTest {
         requestDTO.setCaseType(CaseType.EITHER_WAY);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.SENT_FOR_TRIAL);
         setupMockData();
-        ApiProcessRepOrderResponse response = proceedingService.processRepOrder(requestDTO);
+        ApiProcessRepOrderResponse response = crownCourtProceedingService.processRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -160,7 +160,7 @@ class ProceedingServiceTest {
         requestDTO.setCaseType(CaseType.EITHER_WAY);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.APPEAL_TO_CC);
         setupMockData();
-        ApiProcessRepOrderResponse response = proceedingService.processRepOrder(requestDTO);
+        ApiProcessRepOrderResponse response = crownCourtProceedingService.processRepOrder(requestDTO);
 
         softly.assertThat(response.getRepOrderDecision())
                 .isEqualTo(TestModelDataBuilder.MOCK_DECISION);
@@ -172,7 +172,7 @@ class ProceedingServiceTest {
     @Test
     void givenSummaryOnlyCase_whenProcessRepOrderIsInvoked_emptyResponseIsReturned() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
-        assertThat(proceedingService.processRepOrder(requestDTO))
+        assertThat(crownCourtProceedingService.processRepOrder(requestDTO))
                 .isEqualTo(new ApiProcessRepOrderResponse());
     }
 
@@ -181,28 +181,28 @@ class ProceedingServiceTest {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         requestDTO.setCaseType(CaseType.EITHER_WAY);
         requestDTO.setMagCourtOutcome(MagCourtOutcome.RESOLVED_IN_MAGS);
-        assertThat(proceedingService.processRepOrder(requestDTO))
+        assertThat(crownCourtProceedingService.processRepOrder(requestDTO))
                 .isEqualTo(new ApiProcessRepOrderResponse());
     }
 
     @Test
     void givenCCApplication_whenUpdateApplicationIsInvoked_thenSentenceOrderDateIsPersisted() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
-        proceedingService.updateApplication(requestDTO);
+        crownCourtProceedingService.updateApplication(requestDTO);
         verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class), anyString());
     }
 
     @Test
     void givenAValidRepIdAndNoOutcomeRecord_whenGetCCOutcome_thenReturnEmpty() {
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(Collections.emptyList());
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = crownCourtProceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
         assertThat(0).isEqualTo(repOrderCCOutcomeDTOList.size());
     }
 
     @Test
     void givenAInvalidRepId_whenGetCCOutcome_thenReturnNull() {
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(null);
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = crownCourtProceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
         assertThat(repOrderCCOutcomeDTOList).isNull();
     }
 
@@ -217,7 +217,7 @@ class ProceedingServiceTest {
                 LocalDateTime.of(2022, 3, 07, 10, 1, 25)));
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(outcomeList);
 
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = crownCourtProceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
         softly.assertThat(repOrderCCOutcomeDTOList.size()).isEqualTo(3);
 
         softly.assertThat(repOrderCCOutcomeDTOList.get(0).getOutcome()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getCode());
@@ -248,7 +248,7 @@ class ProceedingServiceTest {
                 LocalDateTime.of(2022, 2, 07, 9, 1, 25)));
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(outcomeList);
 
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = crownCourtProceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
 
         softly.assertThat(repOrderCCOutcomeDTOList.size()).isEqualTo(1);
 
