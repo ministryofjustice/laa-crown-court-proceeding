@@ -65,6 +65,8 @@ class CrownCourtProceedingServiceTest {
 
         softly.assertThat(response.getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+        softly.assertAll();
+
     }
 
     @Test
@@ -79,6 +81,8 @@ class CrownCourtProceedingServiceTest {
 
         softly.assertThat(response.getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertAll();
     }
 
     @Test
@@ -93,6 +97,8 @@ class CrownCourtProceedingServiceTest {
 
         softly.assertThat(response.getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertAll();
     }
 
     @Test
@@ -107,6 +113,8 @@ class CrownCourtProceedingServiceTest {
 
         softly.assertThat(response.getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertAll();
     }
 
     @Test
@@ -122,6 +130,8 @@ class CrownCourtProceedingServiceTest {
 
         softly.assertThat(response.getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertAll();
     }
 
     @Test
@@ -137,6 +147,8 @@ class CrownCourtProceedingServiceTest {
 
         softly.assertThat(response.getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertAll();
     }
 
     @Test
@@ -152,6 +164,8 @@ class CrownCourtProceedingServiceTest {
 
         softly.assertThat(response.getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertAll();
     }
 
     @Test
@@ -167,6 +181,8 @@ class CrownCourtProceedingServiceTest {
 
         softly.assertThat(response.getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_REP_ORDER_DATE);
+
+        softly.assertAll();
     }
 
     @Test
