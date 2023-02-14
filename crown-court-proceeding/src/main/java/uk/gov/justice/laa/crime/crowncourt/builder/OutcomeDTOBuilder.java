@@ -24,7 +24,7 @@ public class OutcomeDTOBuilder {
                 return RepOrderCCOutcomeDTO.builder()
                         .repId(crownCourtDTO.getRepId())
                         .outcome(outcome.getOutcome().getCode())
-                        .outcomeDate( null != outcome.getDateSet() ? outcome.getDateSet() : LocalDateTime.now())
+                        .outcomeDate(null != outcome.getDateSet() ? outcome.getDateSet() : LocalDateTime.now())
                         .userCreated(crownCourtDTO.getUserSession().getUserName())
                         .build();
             }).collect(Collectors.toCollection(ArrayList::new));

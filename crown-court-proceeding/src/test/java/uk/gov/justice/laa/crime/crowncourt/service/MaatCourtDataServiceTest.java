@@ -6,10 +6,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.crime.crowncourt.builder.OutcomeDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataClient;
 import uk.gov.justice.laa.crime.crowncourt.config.MaatApiConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.util.MockMaatApiConfiguration;
 
@@ -60,6 +62,16 @@ class MaatCourtDataServiceTest {
         maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build(), LAA_TRANSACTION_ID);
         verify(maatCourtDataClient).getApiResponseViaPUT(
                 any(UpdateRepOrderRequestDTO.class),
+                any(),
+                anyString(),
+                anyMap()
+        );
+    }
+    @Test
+    void givenAValidRequest_whenCreateOutcomeIsInvoked_thenResponseIsReturned() {
+        maatCourtDataService.createOutcome(RepOrderCCOutcomeDTO.builder().build(), LAA_TRANSACTION_ID);
+        verify(maatCourtDataClient).getApiResponseViaPUT(
+                any(RepOrderCCOutcomeDTO.class),
                 any(),
                 anyString(),
                 anyMap()
