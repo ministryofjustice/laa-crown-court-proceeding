@@ -1,14 +1,15 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ import java.util.Optional;
 public class ProsecutionConcludedDataService {
 
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;
-    private final Gson gson;
+    private final ObjectMapper objectMapper;
 
     @Transactional
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
@@ -32,8 +33,12 @@ public class ProsecutionConcludedDataService {
 
         List<ProsecutionConcludedEntity> prosecutionConcludedEntityList = prosecutionConcludedRepository.getByMaatId(maatId);
         if (prosecutionConcludedEntityList.isEmpty()) {
-            ProsecutionConcludedEntity prosecutionConcludedEntity = build(prosecutionConcluded, maatId);
-            prosecutionConcludedRepository.save(prosecutionConcludedEntity);
+            try {
+                ProsecutionConcludedEntity prosecutionConcludedEntity = build(prosecutionConcluded, maatId);
+                prosecutionConcludedRepository.save(prosecutionConcludedEntity);
+            } catch (JsonProcessingException exception) {
+                log.error(exception.toString());
+            }
         } else {
             prosecutionConcludedEntityList.forEach(entity -> {
                 entity.setRetryCount(entity.getRetryCount() + 1);
@@ -44,7 +49,7 @@ public class ProsecutionConcludedDataService {
         log.info("MAAT -ID {} scheduling is complete", maatId);
     }
 
-    private ProsecutionConcludedEntity build(ProsecutionConcluded prosecutionConcluded, Integer maatId) {
+    private ProsecutionConcludedEntity build(ProsecutionConcluded prosecutionConcluded, Integer maatId) throws JsonProcessingException {
         return ProsecutionConcludedEntity
                 .builder()
                 .maatId(maatId)
@@ -57,10 +62,8 @@ public class ProsecutionConcludedDataService {
                 .build();
     }
 
-    private byte[] convertAsByte(final ProsecutionConcluded message) {
-
-        return Optional.ofNullable(message).isPresent() && gson.toJson(message) != null ?
-                gson.toJson(message).getBytes() : null;
+    private byte[] convertAsByte(final ProsecutionConcluded message) throws JsonProcessingException {
+        return Optional.ofNullable(message).isPresent() ? objectMapper.writeValueAsBytes(message) : null;
     }
 
     @Transactional

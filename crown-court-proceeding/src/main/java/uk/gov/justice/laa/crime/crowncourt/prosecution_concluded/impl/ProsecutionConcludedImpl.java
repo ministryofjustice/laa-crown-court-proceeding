@@ -32,7 +32,7 @@ public class ProsecutionConcludedImpl {
     public void execute(ConcludedDTO concludedDTO) {
 
         Integer maatId = concludedDTO.getProsecutionConcluded().getMaatId();
-        final RepOrderDTO repOrderDTO = maatCourtDataService.getRepOrder(maatId, null);
+        final RepOrderDTO repOrderDTO = maatCourtDataService.getRepOrder(maatId);
         if (repOrderDTO != null) {
 
             verifyCaseTypeValidator(repOrderDTO, concludedDTO.getCalculatedOutcome());

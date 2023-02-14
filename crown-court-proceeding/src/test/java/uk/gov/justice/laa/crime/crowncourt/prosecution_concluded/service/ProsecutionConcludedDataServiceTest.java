@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +25,8 @@ class ProsecutionConcludedDataServiceTest {
     private ProsecutionConcludedDataService prosecutionConcludedDataService;
     @Mock
     private ProsecutionConcludedRepository prosecutionConcludedRepository;
+    @Mock
+    private ObjectMapper objectMapper;
 
     @Test
     void givenHearingDataAlreadyExistsWhenExecuteIsCalledThenDataUpdated() {
@@ -34,11 +38,11 @@ class ProsecutionConcludedDataServiceTest {
                 .hearingIdWhereChangeOccurred(UUID.randomUUID())
                 .build());
         //then
-        verify(prosecutionConcludedRepository, atLeast(1)).saveAll(any());
+        verify(prosecutionConcludedRepository).saveAll(any());
     }
 
     @Test
-    void givenHearingDataDoesNotExistWhenExecuteIsCalledThenDataCreated() {
+    void givenHearingDataDoesNotExistWhenExecuteIsCalledThenDataCreated() throws JsonProcessingException {
         when(prosecutionConcludedRepository.getByMaatId(any()))
                 .thenReturn(new ArrayList<>());
         //given
@@ -47,7 +51,8 @@ class ProsecutionConcludedDataServiceTest {
                 .hearingIdWhereChangeOccurred(UUID.randomUUID())
                 .build());
         //then
-        verify(prosecutionConcludedRepository, atLeast(1)).save(any());
+        verify(prosecutionConcludedRepository).save(any());
+        verify(objectMapper).writeValueAsBytes(any());
     }
 
     @Test
@@ -57,6 +62,6 @@ class ProsecutionConcludedDataServiceTest {
         //given
         prosecutionConcludedDataService.updateConclusion(1234);
         //then
-        verify(prosecutionConcludedRepository, atLeast(1)).saveAll(any());
+        verify(prosecutionConcludedRepository).saveAll(any());
     }
 }

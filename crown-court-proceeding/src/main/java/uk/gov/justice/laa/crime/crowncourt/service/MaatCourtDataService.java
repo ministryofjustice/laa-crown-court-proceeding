@@ -187,11 +187,10 @@ public class MaatCourtDataService {
         );
     }
 
-    public RepOrderDTO getRepOrder(Integer repId, String laaTransactionId) {
+    public RepOrderDTO getRepOrder(Integer repId) {
         RepOrderDTO response = maatCourtDataClient.getApiResponseViaGET(
                 RepOrderDTO.class,
                 configuration.getRepOrderEndpoints().getFindUrl(),
-                Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
                 repId
         );
         log.info(String.format(RESPONSE_STRING, response));
@@ -202,7 +201,6 @@ public class MaatCourtDataService {
         maatCourtDataClient.getApiResponseViaGET(
                 RepOrderDTO.class,
                 configuration.getCrownCourtStoredProcedureEndpoints().getUpdateCrownCourtOutcomeUrl(),
-                Map.of(Constants.LAA_TRANSACTION_ID, null),
                 updateCCOutcome
         );
     }
@@ -211,7 +209,6 @@ public class MaatCourtDataService {
         maatCourtDataClient.getApiResponseViaGET(
                 RepOrderDTO.class,
                 configuration.getCrownCourtProcessingEndpoints().getUpdateAppealCcSentenceUrl(),
-                Map.of(Constants.LAA_TRANSACTION_ID, null),
                 updateSentenceOrder
         );
     }
@@ -220,7 +217,6 @@ public class MaatCourtDataService {
         maatCourtDataClient.getApiResponseViaGET(
                 RepOrderDTO.class,
                 configuration.getCrownCourtProcessingEndpoints().getUpdateCcSentenceUrl(),
-                Map.of(Constants.LAA_TRANSACTION_ID, null),
                 updateSentenceOrder
         );
     }
@@ -229,7 +225,6 @@ public class MaatCourtDataService {
         return maatCourtDataClient.getApiResponseViaGET(
                 Boolean.class,
                 configuration.getReservationsEndpoints().getIsMaatRecordLockedUrl(),
-                Map.of(Constants.LAA_TRANSACTION_ID, null),
                 maatId
         );
     }

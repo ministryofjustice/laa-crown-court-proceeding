@@ -35,6 +35,19 @@ public class MaatCourtDataClient {
                 .block();
     }
 
+    public <T> T getApiResponseViaGET(Class<T> responseClass, String url, Object... urlVariables) {
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder.path(url)
+                        .build(urlVariables))
+                .retrieve()
+                .bodyToMono(responseClass)
+                .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Mono.empty())
+                .onErrorMap(this::handleError)
+                .doOnError(Sentry::captureException)
+                .block();
+    }
+
     public <T, R> R getApiResponseViaPOST(T requestBody, Class<R> responseClass, String url, Map<String, String> headers) {
         return getApiResponse(requestBody, responseClass, url, headers, HttpMethod.POST);
     }

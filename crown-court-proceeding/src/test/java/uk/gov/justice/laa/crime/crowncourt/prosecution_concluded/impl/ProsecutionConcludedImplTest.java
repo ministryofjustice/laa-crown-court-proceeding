@@ -53,7 +53,7 @@ class ProsecutionConcludedImplTest {
                 .appealTypeCode("ACV")
                 .id(123)
                 .build();
-        when(maatCourtDataService.getRepOrder(anyInt(), anyString())).thenReturn(repOrderDTO);
+        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderDTO);
 
         String courtCode = "1212";
         when(crownCourtCodeHelper.getCode(anyString())).thenReturn(courtCode);
@@ -90,7 +90,7 @@ class ProsecutionConcludedImplTest {
 
         ConcludedDTO concludedDTO = getConcludedDTO();
 
-        when(maatCourtDataService.getRepOrder(anyInt(), anyString())).thenReturn(null);
+        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(null);
 
         prosecutionConcludedImpl.execute(concludedDTO);
 
@@ -116,7 +116,7 @@ class ProsecutionConcludedImplTest {
                 .appealTypeCode("ACV")
                 .id(123)
                 .build();
-        when(maatCourtDataService.getRepOrder(anyInt(), anyString())).thenReturn(repOrderDTO);
+        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderDTO);
 
         String courtCode = "1212";
         when(crownCourtCodeHelper.getCode(anyString())).thenReturn(courtCode);
@@ -150,7 +150,7 @@ class ProsecutionConcludedImplTest {
                 .catyCaseType(CrownCourtCaseType.INDICTABLE.name())
                 .appealTypeCode("ACV")
                 .id(123).build();
-        when(maatCourtDataService.getRepOrder(anyInt(), anyString())).thenReturn(repOrderEntity);
+        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderEntity);
 
         String courtCode = "1212";
         when(crownCourtCodeHelper.getCode(anyString())).thenReturn(courtCode);

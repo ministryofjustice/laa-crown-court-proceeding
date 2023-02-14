@@ -49,7 +49,6 @@ public class ProsecutionConcludedService {
                 executeCCOutCome(prosecutionConcluded, wqHearingDTO);
             }
         }
-
     }
 
     public void executeCCOutCome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO) {

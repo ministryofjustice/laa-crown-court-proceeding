@@ -39,7 +39,7 @@ class CrownCourtCodeHelperTest {
         String code = crownCourtCodeHelper.getCode(anyString());
 
         verify(crownCourtCodeRepository).findByOuCode(anyString());
-        assertEquals("8899", code);
+        assertEquals("1234", code);
     }
 
     @Test

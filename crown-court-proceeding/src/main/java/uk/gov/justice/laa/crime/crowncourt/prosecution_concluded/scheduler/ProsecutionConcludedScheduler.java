@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.scheduler;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,17 +10,18 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 
 import javax.transaction.Transactional;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -34,7 +35,7 @@ public class ProsecutionConcludedScheduler {
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;
     private final ProsecutionConcludedService prosecutionConcludedService;
     private final MaatCourtDataService maatCourtDataService;
-    private final Gson gson;
+    private final ObjectMapper objectMapper;
 
     @Scheduled(cron = "${queue.message.log.cron.expression}")
     public void process() {
@@ -48,6 +49,7 @@ public class ProsecutionConcludedScheduler {
                 .values()
                 .stream()
                 .map(this::convertToObject)
+                .filter(Objects::isNull)
                 .forEach(this::processCaseConclusion);
 
         log.info("Case conclusions are processed");
@@ -75,7 +77,12 @@ public class ProsecutionConcludedScheduler {
     }
 
     private ProsecutionConcluded convertToObject(byte[] caseDate) {
-        return gson.fromJson(new String(caseDate, StandardCharsets.UTF_8), ProsecutionConcluded.class);
+        try {
+            return objectMapper.readValue(caseDate, ProsecutionConcluded.class);
+        } catch (IOException exception) {
+            log.error(exception.getMessage());
+            return null;
+        }
     }
 
     @Transactional

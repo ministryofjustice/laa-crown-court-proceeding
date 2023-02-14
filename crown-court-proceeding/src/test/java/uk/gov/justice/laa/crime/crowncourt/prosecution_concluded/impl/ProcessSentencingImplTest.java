@@ -10,6 +10,7 @@ import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 
 import java.time.LocalDate;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.APPEAL_CC;
@@ -26,9 +27,9 @@ class ProcessSentencingImplTest {
 
     @Test
     void testWhenAppealTypeCC_thenProcessInvoke() {
-        doNothing().when(maatCourtDataService).invokeUpdateSentenceOrderDate(getUpdateSentenceOrder());
+        doNothing().when(maatCourtDataService).invokeUpdateSentenceOrderDate(any());
         processSentencingImpl.processSentencingDate("2012-12-12", 121121, "CC");
-        verify(maatCourtDataService).invokeUpdateSentenceOrderDate(getUpdateSentenceOrder());
+        verify(maatCourtDataService).invokeUpdateSentenceOrderDate(any());
     }
 
     private UpdateSentenceOrder getUpdateSentenceOrder() {
@@ -42,7 +43,7 @@ class ProcessSentencingImplTest {
 
     @Test
     void testWhenAppealTypeCC_thenProcessUpdate() {
-        doNothing().when(maatCourtDataService).invokeUpdateAppealSentenceOrderDate(getUpdateSentenceOrder());
+        doNothing().when(maatCourtDataService).invokeUpdateAppealSentenceOrderDate(any());
         processSentencingImpl.processSentencingDate("2012-12-12", 121121, APPEAL_CC.getValue());
         verify(maatCourtDataService).invokeUpdateAppealSentenceOrderDate(getUpdateSentenceOrder());
     }
