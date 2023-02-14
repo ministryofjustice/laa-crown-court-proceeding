@@ -78,6 +78,7 @@ public class MaatCourtDataService {
                 configuration.getRepOrderEndpoints().getUpdateUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
         );
+        log.info(String.format(RESPONSE_STRING, response));
         return response;
     }
 

@@ -20,14 +20,14 @@ public class OutcomeDTOBuilder {
         List<ApiCrownCourtOutcome> outcomes =  crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = null;
         if (null != outcomes && !outcomes.isEmpty()) {
-            repOrderCCOutcomeList = outcomes.stream().map(outcome -> {
-                return RepOrderCCOutcomeDTO.builder()
+            repOrderCCOutcomeList = outcomes.stream().map(outcome ->
+                 RepOrderCCOutcomeDTO.builder()
                         .repId(crownCourtDTO.getRepId())
                         .outcome(outcome.getOutcome().getCode())
                         .outcomeDate(null != outcome.getDateSet() ? outcome.getDateSet() : LocalDateTime.now())
                         .userCreated(crownCourtDTO.getUserSession().getUserName())
-                        .build();
-            }).collect(Collectors.toCollection(ArrayList::new));
+                        .build()
+            ).collect(Collectors.toCollection(ArrayList::new));
 
         }
         return repOrderCCOutcomeList;

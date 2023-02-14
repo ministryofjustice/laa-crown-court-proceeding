@@ -226,10 +226,10 @@ public class RepOrderService {
 
     protected void createOutcome(CrownCourtDTO dto) {
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = OutcomeDTOBuilder.build(dto);
-        if (null != repOrderCCOutcomeDTOList && !repOrderCCOutcomeDTOList.isEmpty()) {
-            repOrderCCOutcomeDTOList.stream().forEach(repOrderCCOutcomeDTO -> {
-                maatCourtDataService.createOutcome(repOrderCCOutcomeDTO, dto.getLaaTransactionId());
-            });
+        if (null != repOrderCCOutcomeDTOList) {
+            repOrderCCOutcomeDTOList.stream().forEach(repOrderCCOutcomeDTO ->
+                    maatCourtDataService.createOutcome(repOrderCCOutcomeDTO, dto.getLaaTransactionId())
+            );
         }
     }
 }

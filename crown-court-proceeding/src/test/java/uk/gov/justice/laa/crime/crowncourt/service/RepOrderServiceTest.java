@@ -745,7 +745,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenANullCrownCourtOutcome_whenCreateOutcomeIsInvoked_thenOutcomeIsNotSuccess() {
+    void givenANullCrownCourtOutcome_whenCreateOutcomeIsInvoked_thenNotCallCreateOutcome() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         requestDTO.getCrownCourtSummary().setCrownCourtOutcome(null);
         repOrderService.createOutcome(requestDTO);
@@ -753,7 +753,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenAEmptyCrownCourtOutcome_whenCreateOutcomeIsInvoked_thenOutcomeIsNotSuccess() {
+    void givenAEmptyCrownCourtOutcome_whenCreateOutcomeIsInvoked_thenNotCallCreateOutcome() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         requestDTO.getCrownCourtSummary().setCrownCourtOutcome(List.of());
         repOrderService.createOutcome(requestDTO);
