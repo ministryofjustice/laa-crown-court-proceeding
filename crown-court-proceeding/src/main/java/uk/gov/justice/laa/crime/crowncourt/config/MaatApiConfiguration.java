@@ -41,9 +41,6 @@ public class MaatApiConfiguration {
     @NotNull
     private GraphQLEndpoints graphQLEndpoints;
 
-    @NotNull
-    private RepOrderOutcomeEndpoints repOrderCCOutcome;
-
     @Getter
     @AllArgsConstructor
     @Setter
@@ -85,6 +82,9 @@ public class MaatApiConfiguration {
 
         @NotNull
         private String updateUrl;
+
+        @NotNull
+        private String findOutcomeUrl;
     }
 
     @Getter
@@ -127,12 +127,4 @@ public class MaatApiConfiguration {
         private String graphqlQueryUrl;
     }
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class RepOrderOutcomeEndpoints {
-        @NotNull
-        private String findUrl;
-    }
 }

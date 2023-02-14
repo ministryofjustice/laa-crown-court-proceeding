@@ -72,7 +72,7 @@ public class MaatCourtDataService {
     public List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(Integer repId, String laaTransactionId) {
         List<RepOrderCCOutcomeDTO> response = maatCourtDataClient.getApiResponseViaGET(
                 List.class,
-                configuration.getRepOrderEndpoints().getFindUrl(),
+                configuration.getRepOrderEndpoints().getFindOutcomeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
                 repId
         );
