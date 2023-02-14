@@ -90,6 +90,13 @@ feature:
   postMvp:
     enabled: false
 
+queue:
+  message:
+    log:
+      cron:
+        expression: 0 0 0 * * *
+      expiryInDays: 15
+
 cda:
   url: "http://localhost:1234/"
   oauth:

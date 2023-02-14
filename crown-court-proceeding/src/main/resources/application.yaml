@@ -141,6 +141,13 @@ cda:
   hearing:
     url: "/api/internal/v2/hearing_results/{hearingId}"
 
+queue:
+  message:
+    log:
+      cron:
+        expression: 0 0 0 * * *
+      expiryInDays: 30
+
 feature:
   postMvp:
     enabled: false
