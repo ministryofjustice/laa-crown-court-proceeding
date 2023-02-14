@@ -39,6 +39,10 @@
       "type": "boolean",
       "description": "Indicates whether the applicant is imprisoned"
     },
+    "isWarrantIssued": {
+      "type": "boolean",
+      "description": "Indicates whether the applicant is warrant issued"
+    },
     "crownCourtOutcome": {
       "type": "array",
       "description": "list of crown court outcome",

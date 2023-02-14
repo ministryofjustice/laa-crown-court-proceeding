@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CCOutcomeDTOBuilder {
+public class OutcomeDTOBuilder {
 
     public static List<RepOrderCCOutcomeDTO> build(CrownCourtDTO crownCourtDTO) {
         List<ApiCrownCourtOutcome> outcomes =  crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();

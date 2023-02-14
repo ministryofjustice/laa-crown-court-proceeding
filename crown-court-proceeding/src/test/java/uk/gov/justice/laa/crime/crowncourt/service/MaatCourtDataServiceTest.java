@@ -54,4 +54,15 @@ class MaatCourtDataServiceTest {
                 anyMap()
         );
     }
+
+    @Test
+    void givenAValidRequest_whenUpdateRepOrderIsInvoked_thenResponseIsReturned() {
+        maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build(), LAA_TRANSACTION_ID);
+        verify(maatCourtDataClient).getApiResponseViaPUT(
+                any(UpdateRepOrderRequestDTO.class),
+                any(),
+                anyString(),
+                anyMap()
+        );
+    }
 }

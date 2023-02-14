@@ -3,7 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.crowncourt.builder.CCOutcomeDTOBuilder;
+import uk.gov.justice.laa.crime.crowncourt.builder.OutcomeDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
@@ -225,7 +225,7 @@ public class RepOrderService {
     }
 
     protected void createOutcome(CrownCourtDTO dto) {
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = CCOutcomeDTOBuilder.build(dto);
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = OutcomeDTOBuilder.build(dto);
         if (null != repOrderCCOutcomeDTOList && !repOrderCCOutcomeDTOList.isEmpty()) {
             repOrderCCOutcomeDTOList.stream().forEach(repOrderCCOutcomeDTO -> {
                 maatCourtDataService.createOutcome(repOrderCCOutcomeDTO, dto.getLaaTransactionId());

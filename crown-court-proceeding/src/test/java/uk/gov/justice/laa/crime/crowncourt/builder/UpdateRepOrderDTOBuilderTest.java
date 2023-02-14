@@ -49,4 +49,24 @@ class UpdateRepOrderDTOBuilderTest {
         softly.assertThat(updateRequest.getSentenceOrderDate())
                 .isEqualTo(dto.getCrownCourtSummary().getSentenceOrderDate());
     }
+
+    @Test
+    void givenCrownCourtDTO_whenBuildOutcomeIsInvoked_thenCorrectUpdateRepOrderRequestDTOFieldsArePopulated() {
+        CrownCourtDTO dto = TestModelDataBuilder.getCrownCourtDTO();
+        UpdateRepOrderRequestDTO updateRequest = UpdateRepOrderDTOBuilder.buildOutcome(dto);
+
+        softly.assertThat(updateRequest.getRepId())
+                .isEqualTo(dto.getRepId());
+        softly.assertThat(updateRequest.getIsWarrantIssued())
+                .isEqualTo(dto.getCrownCourtSummary().getIsWarrantIssued());
+        softly.assertThat(updateRequest.getUserModified())
+                .isEqualTo(dto.getUserSession().getUserName());
+        softly.assertThat(updateRequest.getEvidenceFeeLevel())
+                .isEqualTo(dto.getCrownCourtSummary().getEvidenceFeeLevel());
+        softly.assertThat(updateRequest.getAppealTypeCode())
+                .isEqualTo(dto.getIojAppeal().getAppealTypeCode());
+        softly.assertThat(updateRequest.getAppealTypeDate())
+                .isEqualTo(dto.getIojAppeal().getAppealTypeDate());
+
+    }
 }

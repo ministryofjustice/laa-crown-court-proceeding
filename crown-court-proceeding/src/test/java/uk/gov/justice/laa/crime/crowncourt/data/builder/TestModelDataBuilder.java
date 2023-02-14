@@ -56,7 +56,9 @@ public class TestModelDataBuilder {
     public static ApiIOJAppeal getIojAppeal() {
         return new ApiIOJAppeal()
                 .withIojResult(ReviewResult.FAIL.getResult())
-                .withDecisionResult("PASS");
+                .withDecisionResult("PASS")
+                .withAppealTypeCode("Test")
+                .withAppealTypeDate(TEST_IOJ_APPEAL_DECISION_DATE);
     }
 
     private static ApiFinancialAssessment getFinancialAssessment() {
@@ -106,7 +108,8 @@ public class TestModelDataBuilder {
         return new ApiCrownCourtSummary()
                 .withRepOrderDecision(MOCK_DECISION)
                 .withRepOrderDate(TEST_REP_ORDER_DATE)
-                .withRepId(TEST_REP_ID);
+                .withRepId(TEST_REP_ID)
+                .withCrownCourtOutcome(List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED, TEST_SENTENCE_ORDER_DATE)));
     }
 
     public static ApiCrownCourtSummary getCrownCourtSummaryWithOutcome(Boolean isImprisoned, List<ApiCrownCourtOutcome> crownCourtOutcomes) {

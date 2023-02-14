@@ -48,7 +48,7 @@ public class UpdateRepOrderDTOBuilder {
         return UpdateRepOrderRequestDTO.builder()
                 .repId(crownCourtDTO.getRepId())
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
-                .isWarrantIssued(crownCourtDTO.getIsWarrantIssued())
+                .isWarrantIssued(crownCourtSummary.getIsWarrantIssued())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
                 .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel())
                 .appealTypeCode(iojAppeal.getAppealTypeCode())
