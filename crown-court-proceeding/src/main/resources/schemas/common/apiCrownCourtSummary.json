@@ -34,8 +34,19 @@
     "evidenceFeeLevel": {
       "type": "string",
       "description": "The evidence fee level"
+    },
+    "isImprisoned": {
+      "type": "boolean",
+      "description": "Indicates whether the applicant is imprisoned"
+    },
+    "crownCourtOutcome": {
+      "type": "array",
+      "description": "list of crown court outcome",
+      "items": {
+        "$ref": "apiCrownCourtOutcome.json"
+      }
     }
   },
   "additionalProperties": false,
-  "required": ["repOrderDecision", "repId", "repType", "repOrderDate", "withdrawalDate"]
+  "required": ["repOrderDecision", "repType"]
 }
