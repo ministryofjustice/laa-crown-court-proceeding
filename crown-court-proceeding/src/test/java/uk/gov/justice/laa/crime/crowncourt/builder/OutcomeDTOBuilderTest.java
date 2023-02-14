@@ -40,7 +40,6 @@ class OutcomeDTOBuilderTest {
     void givenAValidCrownCourtOutcome_whenBuildIsInvoked_thenReturnOutcome() {
         CrownCourtDTO dto = TestModelDataBuilder.getCrownCourtDTO();
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = OutcomeDTOBuilder.build(dto);
-        assertThat(repOrderCCOutcomeDTOList.isEmpty()).isFalse();
         softly.assertThat(repOrderCCOutcomeDTOList.isEmpty()).isFalse();
         softly.assertThat(repOrderCCOutcomeDTOList.get(0).getRepId())
                 .isEqualTo(TestModelDataBuilder.TEST_REP_ID);
@@ -59,7 +58,6 @@ class OutcomeDTOBuilderTest {
                 TestModelDataBuilder.getApiCrownCourtOutcome(CrownCourtOutcome.ABANDONED, TestModelDataBuilder.TEST_COMMITTAL_DATE),
                 TestModelDataBuilder.getApiCrownCourtOutcome(CrownCourtOutcome.ABANDONED, null)));
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = OutcomeDTOBuilder.build(dto);
-        assertThat(repOrderCCOutcomeDTOList.isEmpty()).isFalse();
         softly.assertThat(repOrderCCOutcomeDTOList.isEmpty()).isFalse();
         softly.assertThat(repOrderCCOutcomeDTOList.get(0).getRepId())
                 .isEqualTo(TestModelDataBuilder.TEST_REP_ID);
