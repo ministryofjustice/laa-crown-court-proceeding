@@ -18,7 +18,8 @@ public class MockMaatApiConfiguration {
                 new MaatApiConfiguration.RepOrderEndpoints(
                         "/rep-orders/{repId}",
                         "/rep-orders",
-                        "rep-orders/cc-outcome"
+                        "rep-orders/cc-outcome",
+                        "/rep-orders/cc-outcome/reporder/{repId}"
                 );
         MaatApiConfiguration.ValidationEndpoints validationEndpoints = new MaatApiConfiguration.ValidationEndpoints(
                 "/authorization/users/{username}/actions/{action}",

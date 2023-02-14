@@ -65,17 +65,5 @@
     }
   },
   "additionalProperties": false,
-  "required": [
-    "repId",
-    "caseType",
-    "magCourtOutcome",
-    "decisionReason",
-    "decisionDate",
-    "committalDate",
-    "dateReceived",
-    "crownCourtSummary",
-    "iojAppeal",
-    "financialAssessment",
-    "passportAssessment"
-  ]
+  "required": ["repId", "caseType", "magCourtOutcome", "committalDate", "dateReceived", "crownCourtSummary", "iojAppeal", "financialAssessment"]
 }

@@ -84,6 +84,9 @@ public class MaatApiConfiguration {
         private String updateUrl;
 
         @NotNull
+        private String findOutcomeUrl;
+
+        @NotNull
         private String createOutcomeUrl;
     }
 
@@ -126,4 +129,5 @@ public class MaatApiConfiguration {
         @NotNull
         private String graphqlQueryUrl;
     }
+
 }

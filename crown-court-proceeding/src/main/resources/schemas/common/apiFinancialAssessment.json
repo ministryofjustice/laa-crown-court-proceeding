@@ -9,6 +9,7 @@
       "description": "Outcome of initial assessment"
     },
     "initStatus": {
+      "type": "object",
       "description": "Assessment Status",
       "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CurrentStatus"
     },
@@ -17,6 +18,7 @@
       "description": "Outcome of full assessment"
     },
     "fullStatus": {
+      "type": "object",
       "description": "Assessment Status",
       "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CurrentStatus"
     },

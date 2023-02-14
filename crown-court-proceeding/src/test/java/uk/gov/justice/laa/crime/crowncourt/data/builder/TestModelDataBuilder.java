@@ -3,6 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.data.builder;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 
@@ -176,6 +177,14 @@ public class TestModelDataBuilder {
                 .withPaymentDetails(getApiPaymentDetails())
                 .withFinancialAssessment(getFinancialAssessment())
                 .withPassportAssessment(getPassportAssessment());
+    }
+
+    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId, String outcome, LocalDateTime outcomeDate) {
+
+        return RepOrderCCOutcomeDTO.builder()
+                .outcome(outcome)
+                .outcomeDate(outcomeDate)
+                .build();
     }
 
 }
