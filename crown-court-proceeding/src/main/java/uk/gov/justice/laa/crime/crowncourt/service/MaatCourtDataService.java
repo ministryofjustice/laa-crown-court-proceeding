@@ -6,10 +6,11 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.MaatApiConfiguration;
-import uk.gov.justice.laa.crime.crowncourt.dto.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -49,13 +50,15 @@ public class MaatCourtDataService {
         return response;
     }
 
-    public void updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO, String laaTransactionId) {
-        maatCourtDataClient.getApiResponseViaPUT(
+    public RepOrderDTO updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO, String laaTransactionId) {
+        RepOrderDTO response =  maatCourtDataClient.getApiResponseViaPUT(
                 updateRepOrderRequestDTO,
-                Void.class,
+                RepOrderDTO.class,
                 configuration.getRepOrderEndpoints().getUpdateUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
         );
+        log.info(String.format(RESPONSE_STRING, response));
+        return response;
     }
 
     public Object getRepOrderByFilter(String repId, String sentenceOrdDate) throws IOException {
@@ -80,5 +83,13 @@ public class MaatCourtDataService {
         return response;
     }
 
-
+    public RepOrderCCOutcomeDTO createOutcome(RepOrderCCOutcomeDTO outcomeDTO, String laaTransactionId) {
+        RepOrderCCOutcomeDTO response = maatCourtDataClient.getApiResponseViaPUT(
+                outcomeDTO,
+                RepOrderCCOutcomeDTO.class,
+                configuration.getRepOrderEndpoints().getCreateOutcomeUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId));
+        log.info(String.format(RESPONSE_STRING, response));
+        return response;
+    }
 }

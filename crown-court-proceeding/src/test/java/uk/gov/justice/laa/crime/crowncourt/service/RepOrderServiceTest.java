@@ -11,13 +11,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
+import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
@@ -25,12 +30,12 @@ class RepOrderServiceTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
-
     @InjectMocks
     private RepOrderService repOrderService;
-
     @Mock
     private MaatCourtDataService maatCourtDataService;
+
+    private static final String ERROR_MSG = "Call to Court Data API failed, invalid response";
 
     @Test
     void givenValidIoJResult_whenGetReviewResultIsInvoked_reviewResultIsReturned() {
@@ -728,5 +733,55 @@ class RepOrderServiceTest {
                 .thenReturn(null);
         assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isEqualTo(TestModelDataBuilder.TEST_DATE_RECEIVED);
+    }
+
+    @Test
+    void givenAInvalidValidCrownCourt_whenUpdateIsInvoked_thenThrowError() {
+        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
+        when(maatCourtDataService.updateRepOrder(any(), any()))
+                .thenThrow(new APIClientException(ERROR_MSG));
+        assertThatThrownBy(() -> repOrderService.update(requestDTO))
+                .isInstanceOf(APIClientException.class)
+                .hasMessageContaining(ERROR_MSG);
+    }
+
+    @Test
+    void givenAValidCrownCourt_whenUpdateIsInvoked_thenReturnRepOrder() {
+        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
+        repOrderService.update(requestDTO);
+        verify(maatCourtDataService).updateRepOrder(any(), any());
+    }
+
+    @Test
+    void givenAInvalidValidCrownCourt_whenCreateOutcomeIsInvoked_thenThrowError() {
+        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
+        when(maatCourtDataService.createOutcome(any(), any()))
+                .thenThrow(new APIClientException(ERROR_MSG));
+        assertThatThrownBy(() -> repOrderService.createOutcome(requestDTO))
+                .isInstanceOf(APIClientException.class)
+                .hasMessageContaining(ERROR_MSG);
+    }
+
+    @Test
+    void givenANullCrownCourtOutcome_whenCreateOutcomeIsInvoked_thenNotCallCreateOutcome() {
+        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
+        requestDTO.getCrownCourtSummary().setCrownCourtOutcome(null);
+        repOrderService.createOutcome(requestDTO);
+        verify(maatCourtDataService, times(0)).createOutcome(any(), any());
+    }
+
+    @Test
+    void givenAEmptyCrownCourtOutcome_whenCreateOutcomeIsInvoked_thenNotCallCreateOutcome() {
+        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
+        requestDTO.getCrownCourtSummary().setCrownCourtOutcome(List.of());
+        repOrderService.createOutcome(requestDTO);
+        verify(maatCourtDataService, times(0)).createOutcome(any(), any());
+    }
+
+    @Test
+    void givenAValidCrownCourtOutcome_whenCreateOutcomeIsInvoked_thenOutcomeIsSuccess() {
+        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
+        repOrderService.createOutcome(requestDTO);
+        verify(maatCourtDataService, atLeast(1)).createOutcome(any(), any());
     }
 }
