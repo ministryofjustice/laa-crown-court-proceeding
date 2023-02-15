@@ -2,11 +2,13 @@ package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 public class TestModelDataBuilder {
@@ -108,6 +110,23 @@ public class TestModelDataBuilder {
                 .withRepId(TEST_REP_ID);
     }
 
+    public static ApiCrownCourtSummary getCrownCourtSummaryWithOutcome(Boolean isImprisoned, List<ApiCrownCourtOutcome> crownCourtOutcomes) {
+        return new ApiCrownCourtSummary()
+                .withRepOrderDecision(MOCK_DECISION)
+                .withRepOrderDate(TEST_REP_ORDER_DATE)
+                .withRepId(TEST_REP_ID)
+                .withCrownCourtOutcome(crownCourtOutcomes)
+                .withIsImprisoned(isImprisoned);
+    }
+
+    public static ApiCrownCourtOutcome getApiCrownCourtOutcome(CrownCourtOutcome crownCourtOutcome, LocalDateTime dateSet) {
+        return new ApiCrownCourtOutcome()
+                .withOutcome(crownCourtOutcome)
+                .withDateSet(dateSet)
+                .withDescription(crownCourtOutcome.getDescription())
+                .withOutComeType(crownCourtOutcome.getType());
+    }
+
     public static IOJAppealDTO getIOJAppealDTO() {
         return IOJAppealDTO.builder()
                 .id(1234)
@@ -155,6 +174,14 @@ public class TestModelDataBuilder {
                 .withPaymentDetails(getApiPaymentDetails())
                 .withFinancialAssessment(getFinancialAssessment())
                 .withPassportAssessment(getPassportAssessment());
+    }
+
+    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId, String outcome, LocalDateTime outcomeDate) {
+        return RepOrderCCOutcomeDTO.builder()
+                .id(outcomeId)
+                .outcome(outcome)
+                .outcomeDate(outcomeDate)
+                .build();
     }
 
 }

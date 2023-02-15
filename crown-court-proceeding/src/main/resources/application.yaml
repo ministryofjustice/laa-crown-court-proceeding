@@ -107,6 +107,7 @@ maatApi:
   rep-order-endpoints:
     find-url: ${maatApi.assessments-domain}/rep-orders/{repId}
     update-url: ${maatApi.assessments-domain}/rep-orders
+    find-outcome-url: ${maatApi.assessments-domain}/rep-orders/cc-outcome/reporder/{repId}
   graphql-endpoints:
     graphql-query-url: ${maatApi.assessments-domain}/graphQL
   offence:

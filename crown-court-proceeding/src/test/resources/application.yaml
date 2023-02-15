@@ -57,6 +57,32 @@ maatApi:
   rep-order-endpoints:
     find-url: ${maatApi.assessments-domain}/rep-orders/{repId}
     update-url: ${maatApi.assessments-domain}/rep-orders
+  rep-order-CCOutcome-endpoints:
+    find-url: ${maatApi.assessments-domain}/rep-orders/cc-outcome/reporder/{repId}
+  offence:
+    find-url: ${maatApi.assessments-domain}/offence/case/{caseId}
+    offence-count-url: ${maatApi.assessments-domain}/offence/{offenceId}/case/{caseId}
+  wq-hearing-endpoints:
+    find-url: ${maatApi.assessments-domain}/wq-hearing/{hearingUUID}/maatId/{maatId}
+  wq-link-register-endpoints:
+    find-url: ${maatApi.assessments-domain}/wq-link-register/{maatId}
+  wq-offence:
+    offence-count-url: ${maatApi.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
+  xlat-result:
+    result-codes-for-cc-imprisonment-url: ${maatApi.assessments-domain}/xlat-result/cc-imprisonment
+    result-codes-for-cc-bench-warrant-url: ${maatApi.assessments-domain}/xlat-result/cc-bench-warrant
+    result-codes-for-wqtype-subtype-url: ${maatApi.assessments-domain}/xlat-result/wqType/{wqType}/subType/{subType}
+  result:
+    result-codes-by-caseid-asnseq-url: ${maatApi.assessments-domain}/result/caseId/{caseId}/asnSeq/{asnSeq}
+  wq-result:
+    result-codes-by-caseid-asnseq-url: ${maatApi.assessments-domain}/wq-result/caseId/{caseId}/asnSeq/{asnSeq}
+  crown-court-stored-procedure:
+    update-crown-court-outcome-url: ${maatApi.assessments-domain}/crown-court/updateCCOutcome
+  crown-court-processing:
+    update-appeal-cc-sentence-url: ${maatApi.assessments-domain}/crown-court/update-appeal-cc-sentence
+    update-cc-sentence-url: ${maatApi.assessments-domain}/crown-court/update-cc-sentence
+  reservations:
+    is-maat-record-locked-url: ${maatApi.assessments-domain}/reservations/{maatId}
 
 retry-config:
   max-retries: 2

@@ -10,6 +10,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.dto.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
 
 import java.io.IOException;
@@ -72,6 +73,17 @@ public class MaatCourtDataService {
         return response;
     }
 
+    public List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(Integer repId, String laaTransactionId) {
+        List<RepOrderCCOutcomeDTO> response = maatCourtDataClient.getApiResponseViaGET(
+                List.class,
+                configuration.getRepOrderEndpoints().getFindOutcomeUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
+                repId
+        );
+        log.info(String.format(RESPONSE_STRING, response));
+        return response;
+    }
+
     public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
 
         WQHearingDTO wqHearingDTO = null;
@@ -124,7 +136,6 @@ public class MaatCourtDataService {
         }
         return count;
     }
-
 
     public int getWQOffenceNewOffenceCount(int caseId, String offenceId) {
         int count = 0;

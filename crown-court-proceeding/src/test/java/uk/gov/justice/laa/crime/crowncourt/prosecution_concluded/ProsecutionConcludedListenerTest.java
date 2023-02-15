@@ -45,7 +45,7 @@ class ProsecutionConcludedListenerTest {
         verify(prosecutionConcludedService).execute(prosecutionConcluded);
         verify(queueMessageLogService).createLog(MessageType.PROSECUTION_CONCLUDED, message);
 
-        assertThat(prosecutionConcluded.getProsecutionCaseId()).isEqualTo("998984a0-ae53-466c-9c13-e0c84c1fd581");
+        assertThat(prosecutionConcluded.getProsecutionCaseId().toString()).isEqualTo("998984a0-ae53-466c-9c13-e0c84c1fd581");
         assertThat(prosecutionConcluded.isConcluded()).isTrue();
         assertEquals("aa07e234-7e80-4be1-a076-5ab8a8f49df5", prosecutionConcluded.getDefendantId().toString());
         assertEquals(originatingHearingId, prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());

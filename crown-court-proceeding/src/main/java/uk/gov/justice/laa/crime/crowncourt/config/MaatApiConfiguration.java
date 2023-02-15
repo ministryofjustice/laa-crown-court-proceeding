@@ -112,6 +112,9 @@ public class MaatApiConfiguration {
 
         @NotNull
         private String updateUrl;
+
+        @NotNull
+        private String findOutcomeUrl;
     }
 
     @Getter

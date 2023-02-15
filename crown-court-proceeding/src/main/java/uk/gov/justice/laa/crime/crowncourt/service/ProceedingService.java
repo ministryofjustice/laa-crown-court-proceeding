@@ -6,13 +6,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.crowncourt.util.SortUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -54,4 +62,18 @@ public class ProceedingService {
         return obj;
     }
 
+    public List<RepOrderCCOutcomeDTO> getCCOutcome(Integer repId, String laaTransactionId) {
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = maatCourtDataService.getRepOrderCCOutcomeByRepId(repId, laaTransactionId);
+        if (null !=repOrderCCOutcomeList && !repOrderCCOutcomeList.isEmpty()) {
+            repOrderCCOutcomeList = repOrderCCOutcomeList.stream().filter(outcome ->
+                    isNotBlank(outcome.getOutcome())).collect(Collectors.toCollection(ArrayList::new));
+            SortUtils.sortListWithComparing(repOrderCCOutcomeList, RepOrderCCOutcomeDTO::getOutcomeDate,
+                    RepOrderCCOutcomeDTO::getId, SortUtils.getComparator());
+            repOrderCCOutcomeList.stream().forEach(outcome -> {
+                CrownCourtOutcome crownCourtOutcome = CrownCourtOutcome.getFrom(outcome.getOutcome());
+                outcome.setDescription(crownCourtOutcome.getDescription());
+            });
+        }
+        return repOrderCCOutcomeList;
+    }
 }
