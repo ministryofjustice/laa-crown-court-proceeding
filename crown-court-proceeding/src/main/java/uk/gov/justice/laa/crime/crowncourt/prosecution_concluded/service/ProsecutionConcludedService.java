@@ -43,7 +43,7 @@ public class ProsecutionConcludedService {
                 && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
 
 
-            if (maatCourtDataService.isMaatRecordLocked(prosecutionConcluded.getMaatId())) {
+            if (Boolean.TRUE.equals(maatCourtDataService.isMaatRecordLocked(prosecutionConcluded.getMaatId()))) {
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
             } else {
                 executeCCOutCome(prosecutionConcluded, wqHearingDTO);

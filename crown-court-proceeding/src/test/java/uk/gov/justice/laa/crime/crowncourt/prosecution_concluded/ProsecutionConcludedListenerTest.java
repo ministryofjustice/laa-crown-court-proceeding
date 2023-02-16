@@ -45,7 +45,7 @@ class ProsecutionConcludedListenerTest {
         verify(prosecutionConcludedService).execute(prosecutionConcluded);
         verify(queueMessageLogService).createLog(MessageType.PROSECUTION_CONCLUDED, message);
 
-        assertThat(prosecutionConcluded.getProsecutionCaseId().toString()).isEqualTo("998984a0-ae53-466c-9c13-e0c84c1fd581");
+        assertThat(prosecutionConcluded.getProsecutionCaseId()).hasToString("998984a0-ae53-466c-9c13-e0c84c1fd581");
         assertThat(prosecutionConcluded.isConcluded()).isTrue();
         assertEquals("aa07e234-7e80-4be1-a076-5ab8a8f49df5", prosecutionConcluded.getDefendantId().toString());
         assertEquals(originatingHearingId, prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
@@ -53,7 +53,7 @@ class ProsecutionConcludedListenerTest {
 
         assertEquals("ed0e9d59-cc1c-4869-8fcd-464caf770744", prosecutionConcluded.getOffenceSummary().get(0).getOffenceId().toString());
         assertEquals("PT00011", prosecutionConcluded.getOffenceSummary().get(0).getOffenceCode());
-        assertEquals(true, prosecutionConcluded.getOffenceSummary().get(0).isProceedingsConcluded());
+        assertThat(prosecutionConcluded.getOffenceSummary().get(0).isProceedingsConcluded()).isTrue();
         assertEquals("2022-02-01", prosecutionConcluded.getOffenceSummary().get(0).getProceedingsConcludedChangedDate());
 
         assertEquals(PleaTrialOutcome.GUILTY.name(), prosecutionConcluded.getOffenceSummary().get(0).getPlea().getValue());

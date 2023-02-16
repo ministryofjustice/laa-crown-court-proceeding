@@ -45,9 +45,7 @@ class CrownCourtCodeHelperTest {
     @Test
     void testWhenOuCodeNotFound_thenThrowMAATCourtDataException() {
         when(crownCourtCodeRepository.findByOuCode(anyString())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> {
-            crownCourtCodeHelper.getCode(anyString());
-        }).isInstanceOf(MAATCourtDataException.class)
+        assertThatThrownBy(() -> crownCourtCodeHelper.getCode("")).isInstanceOf(MAATCourtDataException.class)
                 .hasMessageContaining("Crown Court Code Look Up Failed for");
     }
 }

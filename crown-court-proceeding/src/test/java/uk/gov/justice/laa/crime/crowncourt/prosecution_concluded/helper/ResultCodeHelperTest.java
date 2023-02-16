@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,13 +10,16 @@ import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ResultCodeHelperTest {
+class ResultCodeHelperTest {
 
+    public static final List<String> HEARING_RESULT_CODES = List.of("1002");
     @InjectMocks
     private ResultCodeHelper resultCodeHelper;
 
@@ -29,7 +31,7 @@ public class ResultCodeHelperTest {
         when(maatCourtDataService.fetchResultCodesForCCImprisonment()).thenReturn(imprisonmentResultCodes());
         String isImp = resultCodeHelper.isImprisoned(CONVICTED.getValue(), List.of("0000"));
         assertThat(isImp).isEqualTo("N");
-        verify(maatCourtDataService, atLeastOnce()).fetchResultCodesForCCImprisonment();
+        verify(maatCourtDataService).fetchResultCodesForCCImprisonment();
     }
 
     @Test
@@ -48,7 +50,7 @@ public class ResultCodeHelperTest {
     @Test
     void whenCCOutcomeIsPartConvictedAndResultCodeWithImp_thenFlagIsY() {
         when(maatCourtDataService.fetchResultCodesForCCImprisonment()).thenReturn(imprisonmentResultCodes());
-        String imprisoned = resultCodeHelper.isImprisoned(PART_CONVICTED.getValue(), List.of("1002"));
+        String imprisoned = resultCodeHelper.isImprisoned(PART_CONVICTED.getValue(), HEARING_RESULT_CODES);
         assertThat(imprisoned).isEqualTo("Y");
     }
 
@@ -61,18 +63,15 @@ public class ResultCodeHelperTest {
 
     @Test
     void whenCCOutcomeIsAquittedAndResultCodeWithImp_thenFlagIsNull() {
-        String imprisoned = resultCodeHelper.isImprisoned(AQUITTED.getValue(), List.of("1002"));
+        String imprisoned = resultCodeHelper.isImprisoned(AQUITTED.getValue(), HEARING_RESULT_CODES);
         assertThat(imprisoned).isNull();
     }
 
     @Test
     void whenCCOutcomeIsConvAndResultCodeWithImp_thenBWarFlagIsY() {
         when(maatCourtDataService.fetchResultCodesForCCImprisonment()).thenReturn(null);
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            resultCodeHelper.isImprisoned(CONVICTED.getValue(), List.of("1002"));
-            //then
-            verify(maatCourtDataService).fetchResultCodesForCCImprisonment();
-        });
+        assertThatThrownBy(() -> resultCodeHelper.isImprisoned("CONVICTED", HEARING_RESULT_CODES))
+                .isInstanceOf(NullPointerException.class);
 
     }
 
@@ -81,20 +80,17 @@ public class ResultCodeHelperTest {
         //when
         when(maatCourtDataService.findByCjsResultCodeIn()).thenReturn(null);
 
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            //   thrown.expect(NullPointerException.class);
-            resultCodeHelper.isBenchWarrantIssued(AQUITTED.getValue(), List.of("1002"));
-            //then
-            verify(maatCourtDataService).findByCjsResultCodeIn();
-        });
+        assertThatThrownBy(() -> resultCodeHelper.isBenchWarrantIssued("AQUITTED", HEARING_RESULT_CODES))
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void whenCCOutcomeIsConvictedAndResultCodeWithBW_thenReturnY() {
         when(maatCourtDataService.findByCjsResultCodeIn()).thenReturn(imprisonmentResultCodes());
-        String status = resultCodeHelper.isBenchWarrantIssued(CONVICTED.getValue(), List.of("1002"));
+        String status = resultCodeHelper.isBenchWarrantIssued(CONVICTED.getValue(), HEARING_RESULT_CODES);
 
         //then
+        verify(maatCourtDataService).findByCjsResultCodeIn();
         assertThat(status).isEqualTo("Y");
     }
 
@@ -109,7 +105,7 @@ public class ResultCodeHelperTest {
     @Test
     void whenCCOutcomeIsAquittedAndResultCodeWithBW_thenReturnY() {
         when(maatCourtDataService.findByCjsResultCodeIn()).thenReturn(imprisonmentResultCodes());
-        String status = resultCodeHelper.isBenchWarrantIssued(AQUITTED.getValue(), List.of("1002"));
+        String status = resultCodeHelper.isBenchWarrantIssued(AQUITTED.getValue(), HEARING_RESULT_CODES);
         assertThat(status).isEqualTo("Y");
     }
 

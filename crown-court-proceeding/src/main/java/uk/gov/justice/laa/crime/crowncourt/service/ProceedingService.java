@@ -64,14 +64,16 @@ public class ProceedingService {
 
     public List<RepOrderCCOutcomeDTO> getCCOutcome(Integer repId, String laaTransactionId) {
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = maatCourtDataService.getRepOrderCCOutcomeByRepId(repId, laaTransactionId);
-        if (null !=repOrderCCOutcomeList && !repOrderCCOutcomeList.isEmpty()) {
+        if (null != repOrderCCOutcomeList && !repOrderCCOutcomeList.isEmpty()) {
             repOrderCCOutcomeList = repOrderCCOutcomeList.stream().filter(outcome ->
                     isNotBlank(outcome.getOutcome())).collect(Collectors.toCollection(ArrayList::new));
             SortUtils.sortListWithComparing(repOrderCCOutcomeList, RepOrderCCOutcomeDTO::getOutcomeDate,
                     RepOrderCCOutcomeDTO::getId, SortUtils.getComparator());
-            repOrderCCOutcomeList.stream().forEach(outcome -> {
+            repOrderCCOutcomeList.forEach(outcome -> {
                 CrownCourtOutcome crownCourtOutcome = CrownCourtOutcome.getFrom(outcome.getOutcome());
-                outcome.setDescription(crownCourtOutcome.getDescription());
+                if (crownCourtOutcome != null) {
+                    outcome.setDescription(crownCourtOutcome.getDescription());
+                }
             });
         }
         return repOrderCCOutcomeList;
