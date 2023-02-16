@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPaymentDetails;
 
 import java.time.LocalDateTime;
@@ -38,6 +39,20 @@ public class UpdateRepOrderDTOBuilder {
                 .preferredPaymentDay(paymentDetails.getPreferredPaymentDay())
                 .sortCode(paymentDetails.getSortCode())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
+                .build();
+    }
+
+    public static UpdateRepOrderRequestDTO buildOutcome(CrownCourtDTO crownCourtDTO) {
+        ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
+        ApiIOJAppeal iojAppeal = crownCourtDTO.getIojAppeal();
+        return UpdateRepOrderRequestDTO.builder()
+                .repId(crownCourtDTO.getRepId())
+                .isImprisoned(crownCourtDTO.getIsImprisoned())
+                .isWarrantIssued(crownCourtSummary.getIsWarrantIssued())
+                .userModified(crownCourtDTO.getUserSession().getUserName())
+                .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel())
+                .appealTypeCode(iojAppeal.getAppealTypeCode())
+                .appealTypeDate(iojAppeal.getAppealTypeDate())
                 .build();
     }
 }

@@ -10,8 +10,8 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
-import uk.gov.justice.laa.crime.crowncourt.dto.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -53,13 +53,15 @@ public class MaatCourtDataService {
         return response;
     }
 
-    public void updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO, String laaTransactionId) {
-        maatCourtDataClient.getApiResponseViaPUT(
+    public RepOrderDTO updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO, String laaTransactionId) {
+        RepOrderDTO response =  maatCourtDataClient.getApiResponseViaPUT(
                 updateRepOrderRequestDTO,
-                Void.class,
+                RepOrderDTO.class,
                 configuration.getRepOrderEndpoints().getUpdateUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
         );
+        log.info(String.format(RESPONSE_STRING, response));
+        return response;
     }
 
     public Object getRepOrderByFilter(String repId, String sentenceOrdDate) throws IOException {
@@ -240,4 +242,13 @@ public class MaatCourtDataService {
         );
     }
 
+    public RepOrderCCOutcomeDTO createOutcome(RepOrderCCOutcomeDTO outcomeDTO, String laaTransactionId) {
+        RepOrderCCOutcomeDTO response = maatCourtDataClient.getApiResponseViaPUT(
+                outcomeDTO,
+                RepOrderCCOutcomeDTO.class,
+                configuration.getRepOrderEndpoints().getCreateOutcomeUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId));
+        log.info(String.format(RESPONSE_STRING, response));
+        return response;
+    }
 }

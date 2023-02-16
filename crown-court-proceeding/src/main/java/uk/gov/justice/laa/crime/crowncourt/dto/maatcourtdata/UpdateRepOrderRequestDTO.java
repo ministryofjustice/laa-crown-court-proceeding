@@ -18,6 +18,7 @@ public class UpdateRepOrderRequestDTO {
     private String caseId;
     private String catyCaseType;
     private String appealTypeCode;
+    private LocalDateTime appealTypeDate;
     private String arrestSummonsNo;
     private String userModified;
     private String magsOutcome;
@@ -31,6 +32,7 @@ public class UpdateRepOrderRequestDTO {
     private LocalDate crownRepOrderDate;
     private LocalDate crownWithdrawalDate;
     private Boolean isImprisoned;
+    private Boolean isWarrantIssued;
     private LocalDateTime assessmentDateCompleted;
     private LocalDateTime sentenceOrderDate;
     private Integer applicantHistoryId;
@@ -40,5 +42,6 @@ public class UpdateRepOrderRequestDTO {
     private String paymentMethod;
     private Integer preferredPaymentDay;
     private String sortCode;
+    private LocalDateTime dateModified;
 
 }

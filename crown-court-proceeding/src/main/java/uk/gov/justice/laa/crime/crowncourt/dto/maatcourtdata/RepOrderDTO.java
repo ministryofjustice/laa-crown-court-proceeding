@@ -26,12 +26,13 @@ public class RepOrderDTO {
     private String magsOutcomeDate;
     private LocalDate magsOutcomeDateSet;
     private LocalDate committalDate;
-    private String repOrderDecisionReasonCode;
-    private String crownRepOrderDecision;
-    private String crownRepOrderType;
-    private LocalDateTime assessmentDateCompleted;
     @Builder.Default
     private List<PassportAssessmentDTO> passportAssessments = new ArrayList<>();
     @Builder.Default
     private List<FinancialAssessmentDTO> financialAssessments = new ArrayList<>();
+    private String decisionReasonCode;
+    private String crownRepOrderDecision;
+    private String crownRepOrderType;
+    private LocalDate assessmentDateCompleted;
+    private LocalDate sentenceOrderDate;
 }
