@@ -21,4 +21,9 @@ public class Constants {
     public static final String THROUGH_ORDER = "Through Order";
 
     public static final String LAA_TRANSACTION_ID = "Laa-Transaction-Id";
+
+    public static final Integer COMMITTAL_FOR_TRIAL_SUB_TYPE = 2;
+    public static final Integer COMMITTAL_FOR_SENTENCE_SUB_TYPE = 1;
+    public static final String YES = "Y";
+    public static final String NO = "N";
 }

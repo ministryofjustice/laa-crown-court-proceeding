@@ -83,6 +83,7 @@ class RepOrderServiceTest {
 
         softly.assertThat(repOrderService.isValidCaseType(null, null, null))
                 .isFalse();
+        softly.assertAll();
     }
 
     @Test
@@ -178,6 +179,7 @@ class RepOrderServiceTest {
 
         softly.assertThat(repOrderService.getDecisionByCaseType(ReviewResult.PASS, CaseType.APPEAL_CC, null))
                 .isEqualTo(Constants.GRANTED_FAILED_MEANS_TEST);
+        softly.assertAll();
     }
 
     @Test
@@ -203,6 +205,7 @@ class RepOrderServiceTest {
 
         softly.assertThat(apiCrownCourtSummary.getRepOrderDate())
                 .isEqualTo(requestDTO.getCrownCourtSummary().getRepOrderDate());
+        softly.assertAll();
     }
 
     @Test
@@ -403,6 +406,7 @@ class RepOrderServiceTest {
 
         softly.assertThat(apiCrownCourtSummary.getRepType())
                 .isEqualTo(Constants.THROUGH_ORDER);
+        softly.assertAll();
     }
 
     @Test
@@ -554,7 +558,7 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenRepOrderDecisionIsInel_whenDetermineRepTypeByRepOrderDecisionIsInvoked_validRepTypeIsReturned() {
+    void givenRepOrderDecisionIsINEL_whenDetermineRepTypeByRepOrderDecisionIsInvoked_validRepTypeIsReturned() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         ApiCrownCourtSummary apiCrownCourtSummary = requestDTO.getCrownCourtSummary();
         apiCrownCourtSummary.setRepOrderDecision(Constants.REFUSED_INELIGIBLE);
@@ -584,6 +588,7 @@ class RepOrderServiceTest {
 
         softly.assertThat(apiCrownCourtSummary.getRepId())
                 .isEqualTo(requestDTO.getRepId());
+        softly.assertAll();
     }
 
     @Test
@@ -598,6 +603,7 @@ class RepOrderServiceTest {
 
         softly.assertThat(apiCrownCourtSummary.getRepId())
                 .isEqualTo(requestDTO.getRepId());
+        softly.assertAll();
     }
 
     @Test
@@ -685,6 +691,7 @@ class RepOrderServiceTest {
         requestDTO.getCrownCourtSummary().setRepOrderDate(null);
         softly.assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isEqualTo(requestDTO.getCommittalDate());
+        softly.assertAll();
     }
 
     @Test

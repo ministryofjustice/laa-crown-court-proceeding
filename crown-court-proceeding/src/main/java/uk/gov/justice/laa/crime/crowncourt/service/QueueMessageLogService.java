@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.entity.QueueMessageLogEntity;
-import uk.gov.justice.laa.crime.crowncourt.enums.MessageType;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.crowncourt.repository.QueueMessageLogRepository;
 
 import java.time.LocalDateTime;
@@ -63,11 +63,9 @@ public class QueueMessageLogService {
 
         Optional<String> jurisdiction = Optional.ofNullable(jurType).map(JsonElement::getAsString);
 
-        if (jurisdiction.isPresent()) {
-            msgBuilder
-                    .append("-")
-                    .append(jurisdiction.get());
-        }
+        jurisdiction.ifPresent(s -> msgBuilder
+                .append("-")
+                .append(s));
 
         return msgBuilder.toString();
     }

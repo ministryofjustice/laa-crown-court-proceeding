@@ -41,6 +41,36 @@ public class MaatApiConfiguration {
     @NotNull
     private GraphQLEndpoints graphQLEndpoints;
 
+    @NotNull
+    private OffenceEndpoints offenceEndpoints;
+
+    @NotNull
+    private WqHearingEndpoints wqHearingEndpoints;
+
+    @NotNull
+    private WqOffenceEndpoints wqOffenceEndpoints;
+
+    @NotNull
+    private WqLinkRegisterEndpoints wqLinkRegisterEndpoints;
+
+    @NotNull
+    private XlatResultEndpoints xlatResultEndpoints;
+
+    @NotNull
+    private ResultEndpoints resultEndpoints;
+
+    @NotNull
+    private WqResultEndpoints wqResultEndpoints;
+
+    @NotNull
+    private CrownCourtStoredProcedureEndpoints crownCourtStoredProcedureEndpoints;
+
+    @NotNull
+    private CrownCourtProcessingEndpoints crownCourtProcessingEndpoints;
+
+    @NotNull
+    private ReservationsEndpoints reservationsEndpoints;
+    
     @Getter
     @AllArgsConstructor
     @Setter
@@ -130,4 +160,106 @@ public class MaatApiConfiguration {
         private String graphqlQueryUrl;
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class OffenceEndpoints {
+
+        @NotNull
+        private String findUrl;
+        @NotNull
+        private String offenceCountUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class WqHearingEndpoints {
+
+        @NotNull
+        private String findUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class WqLinkRegisterEndpoints {
+
+        @NotNull
+        private String findUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class WqOffenceEndpoints {
+
+        @NotNull
+        private String wqOffenceCountUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class XlatResultEndpoints {
+
+        @NotNull
+        private String resultCodesForCCImprisonmentUrl;
+        @NotNull
+        private String resultCodesForCCBenchWarrantUrl;
+        @NotNull
+        private String resultCodesForWQTypeSubTypeUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ResultEndpoints {
+        @NotNull
+        private String resultCodeByCaseIdAndAsnSeqUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class WqResultEndpoints {
+        @NotNull
+        private String resultCodeByCaseIdAndAsnSeqUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CrownCourtStoredProcedureEndpoints {
+        @NotNull
+        private String updateCrownCourtOutcomeUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CrownCourtProcessingEndpoints {
+        @NotNull
+        private String updateAppealCcSentenceUrl;
+        @NotNull
+        private String updateCcSentenceUrl;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ReservationsEndpoints {
+        @NotNull
+        private String isMaatRecordLockedUrl;
+    }
 }

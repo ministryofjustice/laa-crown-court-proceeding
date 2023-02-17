@@ -180,8 +180,8 @@ public class TestModelDataBuilder {
     }
 
     public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId, String outcome, LocalDateTime outcomeDate) {
-
         return RepOrderCCOutcomeDTO.builder()
+                .id(outcomeId)
                 .outcome(outcome)
                 .outcomeDate(outcomeDate)
                 .build();
