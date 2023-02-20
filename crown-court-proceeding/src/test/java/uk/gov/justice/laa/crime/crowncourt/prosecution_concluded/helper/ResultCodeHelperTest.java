@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

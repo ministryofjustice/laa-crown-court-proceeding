@@ -12,7 +12,7 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.repository.CrownCourtsRepo
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,7 +39,7 @@ class CrownCourtCodeHelperTest {
         String code = crownCourtCodeHelper.getCode(anyString());
 
         verify(crownCourtCodeRepository).findByOuCode(anyString());
-        assertEquals("1234", code);
+        assertThat(code).isEqualTo("1234");
     }
 
     @Test

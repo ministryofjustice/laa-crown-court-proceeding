@@ -13,7 +13,7 @@ import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -42,8 +42,8 @@ class OffenceHelperTest {
 
         verify(maatCourtDataService).findOffenceByCaseId(anyInt());
         verify(maatCourtDataService, atLeast(2)).findResultsByWQTypeSubType(anyInt(), anyInt());
-        assertEquals(1, offenceSummaryList.size());
-        assertEquals(UUID.fromString("e2540d98-995f-43f2-97e4-f712b8a5d6a6"), offenceSummaryList.get(0).getOffenceId());
+        assertThat(offenceSummaryList).hasSize(1);
+        assertThat(offenceSummaryList.get(0).getOffenceId()).hasToString("e2540d98-995f-43f2-97e4-f712b8a5d6a6");
     }
 
     @Test
@@ -61,7 +61,7 @@ class OffenceHelperTest {
 
         verify(maatCourtDataService).findOffenceByCaseId(anyInt());
         verify(maatCourtDataService, atLeast(2)).findResultsByWQTypeSubType(anyInt(), anyInt());
-        assertEquals(0, offenceSummaryList.size());
+        assertThat(offenceSummaryList).isEmpty();
     }
 
     private List<OffenceDTO> getOffenceEntity() {

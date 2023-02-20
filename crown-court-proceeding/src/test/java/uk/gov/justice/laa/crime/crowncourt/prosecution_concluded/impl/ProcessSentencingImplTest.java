@@ -24,7 +24,6 @@ class ProcessSentencingImplTest {
     @Mock
     private MaatCourtDataService maatCourtDataService;
 
-
     @Test
     void testWhenAppealTypeCC_thenProcessInvoke() {
         doNothing().when(maatCourtDataService).invokeUpdateSentenceOrderDate(any());

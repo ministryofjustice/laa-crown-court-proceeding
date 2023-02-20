@@ -48,5 +48,6 @@ class UpdateRepOrderDTOBuilderTest {
                 .isEqualTo(dto.getUserSession().getUserName());
         softly.assertThat(updateRequest.getSentenceOrderDate())
                 .isEqualTo(dto.getCrownCourtSummary().getSentenceOrderDate());
+        softly.assertAll();
     }
 }

@@ -1,6 +1,9 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded;
 
 import com.google.gson.Gson;
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,14 +16,15 @@ import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.PleaTrialOutcome;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(SoftAssertionsExtension.class)
 class ProsecutionConcludedListenerTest {
 
+    @InjectSoftAssertions
+    private SoftAssertions softly;
     @Mock
     private Gson gson;
     @InjectMocks
@@ -45,27 +49,27 @@ class ProsecutionConcludedListenerTest {
         verify(prosecutionConcludedService).execute(prosecutionConcluded);
         verify(queueMessageLogService).createLog(MessageType.PROSECUTION_CONCLUDED, message);
 
-        assertThat(prosecutionConcluded.getProsecutionCaseId()).hasToString("998984a0-ae53-466c-9c13-e0c84c1fd581");
-        assertThat(prosecutionConcluded.isConcluded()).isTrue();
-        assertEquals("aa07e234-7e80-4be1-a076-5ab8a8f49df5", prosecutionConcluded.getDefendantId().toString());
-        assertEquals(originatingHearingId, prosecutionConcluded.getHearingIdWhereChangeOccurred().toString());
-        assertEquals(1, prosecutionConcluded.getOffenceSummary().size());
+        softly.assertThat(prosecutionConcluded.getProsecutionCaseId()).hasToString("998984a0-ae53-466c-9c13-e0c84c1fd581");
+        softly.assertThat(prosecutionConcluded.isConcluded()).isTrue();
+        softly.assertThat(prosecutionConcluded.getDefendantId()).hasToString("aa07e234-7e80-4be1-a076-5ab8a8f49df5");
+        softly.assertThat(prosecutionConcluded.getHearingIdWhereChangeOccurred()).hasToString(originatingHearingId);
+        softly.assertThat(prosecutionConcluded.getOffenceSummary()).hasSize(1);
 
-        assertEquals("ed0e9d59-cc1c-4869-8fcd-464caf770744", prosecutionConcluded.getOffenceSummary().get(0).getOffenceId().toString());
-        assertEquals("PT00011", prosecutionConcluded.getOffenceSummary().get(0).getOffenceCode());
-        assertThat(prosecutionConcluded.getOffenceSummary().get(0).isProceedingsConcluded()).isTrue();
-        assertEquals("2022-02-01", prosecutionConcluded.getOffenceSummary().get(0).getProceedingsConcludedChangedDate());
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getOffenceId()).hasToString("ed0e9d59-cc1c-4869-8fcd-464caf770744");
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getOffenceCode()).isEqualTo("PT00011");
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).isProceedingsConcluded()).isTrue();
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getProceedingsConcludedChangedDate()).isEqualTo("2022-02-01");
 
-        assertEquals(PleaTrialOutcome.GUILTY.name(), prosecutionConcluded.getOffenceSummary().get(0).getPlea().getValue());
-        assertEquals(originatingHearingId, prosecutionConcluded.getOffenceSummary().get(0).getPlea().getOriginatingHearingId().toString());
-        assertEquals("2022-02-01", prosecutionConcluded.getOffenceSummary().get(0).getPlea().getPleaDate());
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getPlea().getValue()).isEqualTo(PleaTrialOutcome.GUILTY.name());
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getPlea().getOriginatingHearingId()).hasToString(originatingHearingId);
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getPlea().getPleaDate()).isEqualTo("2022-02-01");
 
-        assertEquals(PleaTrialOutcome.GUILTY.name(), prosecutionConcluded.getOffenceSummary().get(0).getVerdict().getVerdictType().getCategoryType());
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getVerdict().getVerdictType().getCategoryType()).isEqualTo(PleaTrialOutcome.GUILTY.name());
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getVerdict().getVerdictType().getCategory()).isEqualTo(PleaTrialOutcome.GUILTY.name());
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getVerdict().getVerdictType().getSequence()).isEqualTo(4126);
 
-        assertEquals(PleaTrialOutcome.GUILTY.name(), prosecutionConcluded.getOffenceSummary().get(0).getVerdict().getVerdictType().getCategory());
-        assertEquals(4126, prosecutionConcluded.getOffenceSummary().get(0).getVerdict().getVerdictType().getSequence());
-
-        assertEquals(originatingHearingId, prosecutionConcluded.getMetadata().getLaaTransactionId());
+        softly.assertThat(prosecutionConcluded.getMetadata().getLaaTransactionId()).isEqualTo(originatingHearingId);
+        softly.assertAll();
     }
 
     private String getSqsMessagePayload() {
