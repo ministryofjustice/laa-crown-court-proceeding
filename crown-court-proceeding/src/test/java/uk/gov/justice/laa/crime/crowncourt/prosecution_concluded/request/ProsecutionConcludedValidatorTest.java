@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.request;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -8,7 +7,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 class ProsecutionConcludedValidatorTest {
@@ -18,36 +18,38 @@ class ProsecutionConcludedValidatorTest {
 
     @Test
     void testWhenProsecutionConcludedRequestIsNull_thenThrowException() {
-        Assertions.assertThrows(ValidationException.class, () ->
-                prosecutionConcludedValidator.validateRequestObject(null));
+        assertThatThrownBy(() -> prosecutionConcludedValidator.validateRequestObject(null))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL);
     }
 
     @Test
     void testWhenProsecutionConcludedListIsEmpty_thenThrowException() {
         ProsecutionConcluded request = ProsecutionConcluded.builder().build();
-        Assertions.assertThrows(ValidationException.class, () ->
-                prosecutionConcludedValidator.validateRequestObject(request));
+        assertThatThrownBy(() -> prosecutionConcludedValidator.validateRequestObject(request))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL);
     }
 
     @Test
     void testWhenProsecutionConcludedListIsNull_thenThrowException() {
-        ProsecutionConcluded request = ProsecutionConcluded.builder().offenceSummary(null)
-                .build();
-        Assertions.assertThrows(ValidationException.class, () -> {
-            prosecutionConcludedValidator.validateRequestObject(request);
-        });
-        assertThat(request);
+        ProsecutionConcluded request = ProsecutionConcluded.builder().offenceSummary(null).build();
+        assertThatThrownBy(() -> prosecutionConcludedValidator.validateRequestObject(request))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL);
     }
 
     @Test
     void testWhenOuCodeIsNull_thenThrowException() {
-        Assertions.assertThrows(ValidationException.class, () -> {
-            prosecutionConcludedValidator.validateOuCode(null);
-        });
+        assertThatThrownBy(() -> prosecutionConcludedValidator.validateOuCode(null))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.OU_CODE_IS_MISSING);
     }
 
     @Test
     void testWhenOuCodeIsEmpty_thenThrowException() {
-        Assertions.assertThrows(ValidationException.class, () -> prosecutionConcludedValidator.validateOuCode(""));
+        assertThatThrownBy(() -> prosecutionConcludedValidator.validateOuCode(""))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.OU_CODE_IS_MISSING);
     }
 }

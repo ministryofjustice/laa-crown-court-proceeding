@@ -13,12 +13,15 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @XRayEnabled
 public class ProsecutionConcludedValidator {
 
+    public static final String PAYLOAD_IS_NOT_AVAILABLE_OR_NULL = "Payload is not available or null.";
+    public static final String OU_CODE_IS_MISSING = "OU Code is missing.";
+
     public void validateRequestObject(ProsecutionConcluded prosecutionConcluded) {
         if (prosecutionConcluded == null
                 || prosecutionConcluded.getOffenceSummary() == null
                 || prosecutionConcluded.getOffenceSummary().isEmpty()
                 || prosecutionConcluded.getMaatId() == null)
-            throw new ValidationException("Payload is not available or null. ");
+            throw new ValidationException(PAYLOAD_IS_NOT_AVAILABLE_OR_NULL);
     }
 
     public Optional<Void> validateOuCode(String ouCode) {
@@ -26,7 +29,7 @@ public class ProsecutionConcludedValidator {
         if (!isBlank(ouCode)) {
             return Optional.empty();
         } else {
-            throw new ValidationException("OU Code is missing.");
+            throw new ValidationException(OU_CODE_IS_MISSING);
         }
     }
 }

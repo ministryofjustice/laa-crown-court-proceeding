@@ -56,7 +56,6 @@ class ProsecutionConcludedServiceTest {
     void test_whenMaatIsLocked_thenPublishMessageToSQS() {
 
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity());
-
         when(maatCourtDataService.isMaatRecordLocked(any())).thenReturn(true);
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
@@ -77,8 +76,6 @@ class ProsecutionConcludedServiceTest {
     void test_whenMultipleProsecutionMessagesAndFlagIsFalseOrTrue_thenProcessingValidOnly() {
 
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity());
-
-
         when(maatCourtDataService.isMaatRecordLocked(any())).thenReturn(false);
         when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(List.of(getOffenceSummary("123")));
 
@@ -94,12 +91,10 @@ class ProsecutionConcludedServiceTest {
         verify(offenceHelper, atLeast(1)).getTrialOffences(any(), anyInt());
     }
 
-
     @Test
     void test_whenOffenceSummaryListIsEmpty_thenProcess() {
 
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity());
-
         when(maatCourtDataService.isMaatRecordLocked(any())).thenReturn(false);
         when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(List.of(getOffenceSummary("123")));
 
@@ -111,7 +106,6 @@ class ProsecutionConcludedServiceTest {
         verify(calculateOutcomeHelper).calculate(any());
     }
 
-
     @Test
     void givenMessageIsReceived_whenProsecutionConcluded_thenProcessingCCOutcome() {
 
@@ -120,7 +114,6 @@ class ProsecutionConcludedServiceTest {
 
         //when
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity());
-
         when(maatCourtDataService.isMaatRecordLocked(any())).thenReturn(false);
         when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(List.of(getOffenceSummary("123")));
 
@@ -150,7 +143,6 @@ class ProsecutionConcludedServiceTest {
         verify(maatCourtDataService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(prosecutionConcludedValidator).validateRequestObject(any(ProsecutionConcluded.class));
         verify(maatCourtDataService, never()).isMaatRecordLocked(anyInt());
-
         verify(prosecutionConcludedImpl, never()).execute(any(ConcludedDTO.class));
     }
 
@@ -182,7 +174,6 @@ class ProsecutionConcludedServiceTest {
     }
 
     private OffenceSummary getOffenceSummary(String offenceCode) {
-
         return OffenceSummary.builder()
                 .offenceCode(offenceCode)
                 .proceedingsConcluded(true)
