@@ -22,12 +22,13 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @ExtendWith(MockitoExtension.class)
-class MaatCourtDataClientTest {
+class RestAPIClientTest {
 
-    public static final String MOCK_URL = "mock-url";
     private final Integer REP_ID = 1234;
+    private RestAPIClient restAPIClient;
+    public static final String MOCK_URL = "mock-url";
     private final String LAA_TRANSACTION_ID = "laaTransactionId";
-    private MaatCourtDataClient maatCourtDataClient;
+
     @Mock
     private ExchangeFunction shortCircuitExchangeFunction;
 
@@ -46,14 +47,14 @@ class MaatCourtDataClientTest {
                 .exchangeFunction(shortCircuitExchangeFunction)
                 .build();
 
-        maatCourtDataClient = Mockito.spy(new MaatCourtDataClient(testWebClient));
+        restAPIClient = Mockito.spy(new MaatAPIClient(testWebClient));
     }
 
     @Test
     void givenAnInvalidResponse_whenGetApiResponseIsInvoked_thenAnAppropriateErrorShouldBeThrown() {
         setupInvalidResponseTest();
         assertThatThrownBy(
-                () -> maatCourtDataClient.getApiResponse(
+                () -> restAPIClient.getApiResponse(
                         new Object(),
                         ClientResponse.class,
                         MOCK_URL,
@@ -66,7 +67,7 @@ class MaatCourtDataClientTest {
     @Test
     void givenANotFoundException_whenGetApiResponseViaGetIsInvoked_thenTheMethodShouldReturnNull() {
         setupNotFoundTest();
-        ClientResponse response = maatCourtDataClient.getApiResponseViaGET(
+        ClientResponse response = restAPIClient.getApiResponseViaGET(
                 ClientResponse.class,
                 MOCK_URL,
                 Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
@@ -79,7 +80,7 @@ class MaatCourtDataClientTest {
     void givenAnInvalidResponse_whenGetApiResponseViaGetIsInvoked_thenAnAppropriateErrorShouldBeThrown() {
         setupInvalidResponseTest();
         assertThatThrownBy(
-                () -> maatCourtDataClient.getApiResponseViaGET(
+                () -> restAPIClient.getApiResponseViaGET(
                         ClientResponse.class,
                         MOCK_URL,
                         Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
