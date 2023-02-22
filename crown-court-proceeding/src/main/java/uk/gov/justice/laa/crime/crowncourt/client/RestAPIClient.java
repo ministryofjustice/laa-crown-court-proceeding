@@ -4,12 +4,13 @@ import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.crime.crowncourt.config.WebClientConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 
 import java.util.Map;
@@ -17,16 +18,23 @@ import java.util.Map;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MaatCourtDataClient {
+public abstract class RestAPIClient {
 
-    private final WebClient webClient;
+    protected abstract WebClient getWebClient();
 
-    public <T> T getApiResponseViaGET(Class<T> responseClass, String url, Map<String, String> headers, Object... urlVariables) {
-        return webClient
+    protected abstract String getRegistrationId();
+
+    public <T> T getApiResponseViaGET(Class<T> responseClass,
+                                      String url, Map<String, String> headers,
+                                      MultiValueMap<String, String> queryParams,
+                                      Object... urlVariables) {
+        return getWebClient()
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(url)
+                        .queryParams(queryParams)
                         .build(urlVariables))
                 .headers(httpHeaders -> httpHeaders.setAll(headers))
+                .attributes(WebClientConfiguration.getExchangeFilterWith(getRegistrationId()))
                 .retrieve()
                 .bodyToMono(responseClass)
                 .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Mono.empty())
@@ -35,17 +43,12 @@ public class MaatCourtDataClient {
                 .block();
     }
 
+    public <T> T getApiResponseViaGET(Class<T> responseClass, String url, Map<String, String> headers, Object... urlVariables) {
+        return getApiResponseViaGET(responseClass, url, headers, null, urlVariables);
+    }
+
     public <T> T getApiResponseViaGET(Class<T> responseClass, String url, Object... urlVariables) {
-        return webClient
-                .get()
-                .uri(uriBuilder -> uriBuilder.path(url)
-                        .build(urlVariables))
-                .retrieve()
-                .bodyToMono(responseClass)
-                .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Mono.empty())
-                .onErrorMap(this::handleError)
-                .doOnError(Sentry::captureException)
-                .block();
+        return getApiResponseViaGET(responseClass, url, null, null, urlVariables);
     }
 
     public <T, R> R getApiResponseViaPOST(T requestBody, Class<R> responseClass, String url, Map<String, String> headers) {
@@ -61,11 +64,11 @@ public class MaatCourtDataClient {
                             String url, Map<String, String> headers,
                             HttpMethod requestMethod) {
 
-        return webClient
+        return getWebClient()
                 .method(requestMethod)
                 .uri(url)
                 .headers(httpHeaders -> httpHeaders.setAll(headers))
-                .contentType(MediaType.APPLICATION_JSON)
+                .attributes(WebClientConfiguration.getExchangeFilterWith(getRegistrationId()))
                 .body(BodyInserters.fromValue(requestBody))
                 .retrieve()
                 .bodyToMono(responseClass)
@@ -79,13 +82,14 @@ public class MaatCourtDataClient {
         if (error instanceof APIClientException) {
             return error;
         }
-        return new APIClientException("Call to Court Data API failed, invalid response.", error);
+        String serviceName = getRegistrationId().toUpperCase();
+        return new APIClientException(String.format("Call to service %s failed.", serviceName), error);
     }
 
     public <R> R getGraphQLApiResponse(Class<R> responseClass,
-                                          String url,
-                                          Map<String, Object> graphQLBody) {
-        return webClient
+                                       String url,
+                                       Map<String, Object> graphQLBody) {
+        return getWebClient()
                 .post()
                 .uri(url)
                 .bodyValue(graphQLBody)
@@ -95,5 +99,4 @@ public class MaatCourtDataClient {
                 .doOnError(Sentry::captureException)
                 .block();
     }
-
 }

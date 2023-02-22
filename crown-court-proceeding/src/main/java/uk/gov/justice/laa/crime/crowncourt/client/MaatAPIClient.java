@@ -9,11 +9,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CourtDataAdapterClient extends RestAPIClient {
+public class MaatAPIClient extends RestAPIClient {
 
-    private static final String REGISTERED_ID = "cda";
+    private static final String REGISTERED_ID = "maat-api";
 
-    @Qualifier("cdaOAuth2WebClient")
+    @Qualifier("maatAPIOAuth2WebClient")
     private final WebClient webClient;
 
     @Override
