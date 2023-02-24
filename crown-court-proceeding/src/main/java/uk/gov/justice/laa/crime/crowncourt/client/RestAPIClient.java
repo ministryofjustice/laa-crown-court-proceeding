@@ -33,7 +33,11 @@ public abstract class RestAPIClient {
                 .uri(uriBuilder -> uriBuilder.path(url)
                         .queryParams(queryParams)
                         .build(urlVariables))
-                .headers(httpHeaders -> httpHeaders.setAll(headers))
+                .headers(httpHeaders -> {
+                    if (headers != null) {
+                        httpHeaders.setAll(headers);
+                    }
+                })
                 .attributes(WebClientConfiguration.getExchangeFilterWith(getRegistrationId()))
                 .retrieve()
                 .bodyToMono(responseClass)
@@ -67,7 +71,11 @@ public abstract class RestAPIClient {
         return getWebClient()
                 .method(requestMethod)
                 .uri(url)
-                .headers(httpHeaders -> httpHeaders.setAll(headers))
+                .headers(httpHeaders -> {
+                    if (headers != null) {
+                        httpHeaders.setAll(headers);
+                    }
+                })
                 .attributes(WebClientConfiguration.getExchangeFilterWith(getRegistrationId()))
                 .body(BodyInserters.fromValue(requestBody))
                 .retrieve()
@@ -78,7 +86,7 @@ public abstract class RestAPIClient {
                 .block();
     }
 
-    private Throwable handleError(Throwable error) {
+    Throwable handleError(Throwable error) {
         if (error instanceof APIClientException) {
             return error;
         }
