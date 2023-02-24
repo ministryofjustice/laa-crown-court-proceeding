@@ -1,0 +1,14 @@
+version: "3.2"
+
+services:
+  app:
+    environment:
+      - MAAT_API_BASE_URL=http://court-data-api:8090/
+
+    networks:
+      default:
+      local-container-network:
+
+networks:
+  local-container-network:
+    external: true
