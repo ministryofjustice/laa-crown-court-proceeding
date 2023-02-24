@@ -61,11 +61,10 @@ public class WebClientConfiguration {
             webClientBuilder.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
             webClientBuilder.filters(filters -> {
+                filters.add(ExchangeFilterUtils.logResponse());
                 filters.add(ExchangeFilterUtils.logRequestHeaders());
                 filters.add(ExchangeFilterUtils.retryFilter(retryConfiguration));
-                filters.add(ExchangeFilterUtils.logRequestHeaders());
                 filters.add(ExchangeFilterUtils.handleErrorResponse());
-                filters.add(ExchangeFilterUtils.logResponse());
 
                 filters.add(0, new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, authorizedClients));
 

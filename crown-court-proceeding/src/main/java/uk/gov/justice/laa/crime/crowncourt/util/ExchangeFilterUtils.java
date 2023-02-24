@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunctions;
@@ -14,8 +15,10 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 import uk.gov.justice.laa.crime.crowncourt.config.RetryConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
+import uk.gov.justice.laa.crime.crowncourt.exception.RetryableWebClientResponseException;
 
 import java.time.Duration;
+import java.util.List;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -43,20 +46,28 @@ public class ExchangeFilterUtils {
     }
 
     public static ExchangeFilterFunction handleErrorResponse() {
+
+        List<HttpStatus> retryableStatuses = List.of(
+                HttpStatus.REQUEST_TIMEOUT, HttpStatus.TOO_EARLY, HttpStatus.TOO_MANY_REQUESTS, HttpStatus.BAD_GATEWAY,
+                HttpStatus.INTERNAL_SERVER_ERROR, HttpStatus.SERVICE_UNAVAILABLE, HttpStatus.GATEWAY_TIMEOUT
+        );
+
         return ExchangeFilterFunctions.statusError(
                 HttpStatus::isError, r -> {
                     String errorMessage =
-                            String.format("Received error %s due to %s", r.statusCode().value(), r.statusCode().getReasonPhrase());
-                    if (r.statusCode().is5xxServerError()) {
-                        return new HttpServerErrorException(
-                                r.statusCode(),
-                                errorMessage
-                        );
+                            String.format("Received error %s due to %s",
+                                    r.statusCode().value(), r.statusCode().getReasonPhrase());
+
+                    if (retryableStatuses.contains(r.statusCode())) {
+                        return new RetryableWebClientResponseException(errorMessage);
+                    } else if (r.statusCode().is5xxServerError()) {
+                        return new HttpServerErrorException(r.statusCode(), errorMessage);
+                    } else if (r.statusCode().is4xxClientError() && !r.statusCode().equals(HttpStatus.NOT_FOUND)) {
+                        return new HttpClientErrorException(r.statusCode(), errorMessage);
                     }
-                    if (r.statusCode().equals(HttpStatus.NOT_FOUND)) {
-                        return WebClientResponseException.create(r.rawStatusCode(), r.statusCode().getReasonPhrase(), null, null, null);
-                    }
-                    return new APIClientException(errorMessage);
+                    return WebClientResponseException.create(
+                            r.rawStatusCode(), r.statusCode().getReasonPhrase(), null, null, null
+                    );
                 });
     }
 
@@ -73,14 +84,15 @@ public class ExchangeFilterUtils {
                                         .jitter(retryConfiguration.getJitterValue())
                                         .filter(
                                                 throwable ->
-                                                        throwable instanceof HttpServerErrorException ||
-                                                                (throwable instanceof WebClientRequestException && throwable.getCause() instanceof TimeoutException)
+                                                        throwable instanceof RetryableWebClientResponseException ||
+                                                                (throwable instanceof WebClientRequestException
+                                                                        && throwable.getCause() instanceof TimeoutException)
                                         ).onRetryExhaustedThrow(
                                                 (retryBackoffSpec, retrySignal) ->
                                                         new APIClientException(
                                                                 String.format(
                                                                         "Call to service failed. Retries exhausted: %d/%d.",
-                                                                        retryConfiguration.getMaxRetries(),
+                                                                        retrySignal.totalRetries(),
                                                                         retryConfiguration.getMaxRetries()
                                                                 ), retrySignal.failure()
                                                         )
