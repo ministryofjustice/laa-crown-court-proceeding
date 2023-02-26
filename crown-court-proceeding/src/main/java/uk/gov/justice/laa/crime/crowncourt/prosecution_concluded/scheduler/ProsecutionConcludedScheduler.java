@@ -56,7 +56,7 @@ public class ProsecutionConcludedScheduler {
 
     }
 
-    private void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
+    public void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
         try {
             WQHearingDTO wqHearingDTO = maatCourtDataService.retrieveHearingForCaseConclusion(prosecutionConcluded);
             if (wqHearingDTO != null) {
@@ -76,7 +76,7 @@ public class ProsecutionConcludedScheduler {
         return JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType());
     }
 
-    private ProsecutionConcluded convertToObject(byte[] caseDate) {
+    protected ProsecutionConcluded convertToObject(byte[] caseDate) {
         try {
             return objectMapper.readValue(caseDate, ProsecutionConcluded.class);
         } catch (IOException exception) {

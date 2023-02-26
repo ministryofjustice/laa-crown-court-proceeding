@@ -6,15 +6,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
+import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.scheduler.ProsecutionConcludedScheduler;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -36,11 +41,7 @@ class ProsecutionConcludedSchedulerTest {
     @Test
     void givenHearingISFound_whenSchedulerIsCalledThenCCtProcessIsTriggered() {
         //given
-        when(prosecutionConcludedRepository.getConcludedCases()).thenReturn(List.of(ProsecutionConcludedEntity
-                .builder()
-                .maatId(1234)
-                .caseData("test".getBytes(StandardCharsets.UTF_8))
-                .build()));
+        when(prosecutionConcludedRepository.getConcludedCases()).thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).
                 thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.CROWN.name()).build());
 
@@ -54,11 +55,7 @@ class ProsecutionConcludedSchedulerTest {
     @Test
     void givenHearingISNOTFound_whenSchedulerIsCalledThenCaseConclusionIsNotProcessIsTriggered() {
         //given
-        when(prosecutionConcludedRepository.getConcludedCases()).thenReturn(List.of(ProsecutionConcludedEntity
-                .builder()
-                .maatId(1234)
-                .caseData("hearingIdWhereChangeOccurred".getBytes(StandardCharsets.UTF_8))
-                .build()));
+        when(prosecutionConcludedRepository.getConcludedCases()).thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
 
         //when
         prosecutionConcludedScheduler.process();
@@ -66,5 +63,43 @@ class ProsecutionConcludedSchedulerTest {
         //then
         verify(prosecutionConcludedService, never()).execute(any());
         verify(prosecutionConcludedRepository, never()).saveAll(any());
+    }
+
+
+    @Test
+    void givenAJurisdictionIsMagistrates_whenProcessCaseConclusionIsInvokes_thenUpdateConclusionIsSuccess() throws Exception {
+
+        when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).
+                thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.MAGISTRATES.name()).build());
+        when(prosecutionConcludedRepository.getByHearingId(any())).thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
+
+        prosecutionConcludedScheduler.processCaseConclusion(ProsecutionConcluded.builder().maatId(1234).hearingIdWhereChangeOccurred(UUID.randomUUID()).build());
+
+        verify(prosecutionConcludedRepository).saveAll(any());
+
+    }
+
+    @Test
+    void givenAInvalidCaseConclusion_whenProcessCaseConclusionIsInvokes_thenUpdateConclusionIsError() throws Exception {
+
+        when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).thenThrow(new APIClientException());
+        when(prosecutionConcludedRepository.getByHearingId(any())).thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
+        prosecutionConcludedScheduler.processCaseConclusion(ProsecutionConcluded.builder().maatId(1234).hearingIdWhereChangeOccurred(UUID.randomUUID()).build());
+        verify(prosecutionConcludedRepository).saveAll(any());
+    }
+
+    @Test
+    void givenAInvalidCaseData_whenProcessIsInvoked_thenExecuteOutcomeIsFailed() throws Exception {
+        //given
+        when(objectMapper.readValue(TestModelDataBuilder.getCaseData().getBytes(), ProsecutionConcluded.class)).thenThrow(new IOException());
+        when(prosecutionConcludedRepository.getConcludedCases()).thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
+        when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).
+                thenReturn(null);
+
+        //when
+        prosecutionConcludedScheduler.process();
+
+        //then
+        verify(prosecutionConcludedService, times(0)).executeCCOutCome(any(), any());
     }
 }

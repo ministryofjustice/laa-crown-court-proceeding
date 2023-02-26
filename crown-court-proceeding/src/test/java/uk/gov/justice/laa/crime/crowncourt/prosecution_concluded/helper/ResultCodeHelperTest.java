@@ -130,6 +130,12 @@ class ResultCodeHelperTest {
         assertThat(status).isNull();
     }
 
+    @Test
+    void givenAEmptyOutcome_whenIsBenchWarrantIssuedIsInvoked_thenReturn() {
+        String isImp = resultCodeHelper.isBenchWarrantIssued("", List.of("0000"));
+        assertThat(isImp).isNull();
+    }
+
     private List<Integer> imprisonmentResultCodes() {
         return List.of(1002, 1024, 1003, 1007, 1016, 1002, 1081);
     }

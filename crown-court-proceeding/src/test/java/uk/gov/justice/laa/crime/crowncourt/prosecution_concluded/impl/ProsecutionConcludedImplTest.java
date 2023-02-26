@@ -7,8 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome;
 import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
@@ -16,9 +14,12 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCou
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.ResultCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome;
 
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtAppealOutcome.isAppeal;
 
@@ -181,6 +182,63 @@ class ProsecutionConcludedImplTest {
         prosecutionConcludedImpl.execute(concludedDTO);
 
         Assertions.assertThrows(ValidationException.class, () -> isAppeal(null));
+    }
+
+    @Test
+    void givenACaseTypeAndOutcomeIsConvicted_whenExecuteIsInvoked_ThenExceptionThrown() {
+
+        ConcludedDTO concludedDTO = ConcludedDTO.builder()
+                .prosecutionConcluded(ProsecutionConcluded.builder().maatId(121111).build())
+                .calculatedOutcome("CONVICTED")
+                .build();
+
+        RepOrderDTO repOrderEntity = RepOrderDTO.builder()
+                .catyCaseType("CONVICTED")
+                .appealTypeCode("ACV")
+                .id(123).build();
+        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderEntity);
+
+        assertThatThrownBy(() -> prosecutionConcludedImpl.execute(concludedDTO))
+                .isInstanceOf(ValidationException.class).hasMessageContaining("Crown Court - Case type not valid for Trial");
+
+    }
+
+    @Test
+    void givenACaseTypeIsUnsuccessful_whenExecuteIsInvoked_ThenExceptionThrown() {
+
+        ConcludedDTO concludedDTO = ConcludedDTO.builder()
+                .prosecutionConcluded(ProsecutionConcluded.builder().maatId(121111).build())
+                .calculatedOutcome("CONVICTED")
+                .build();
+
+        RepOrderDTO repOrderEntity = RepOrderDTO.builder()
+                .catyCaseType("SUCCESSFUL")
+                .appealTypeCode("ACV")
+                .id(123).build();
+        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderEntity);
+
+        assertThatThrownBy(() -> prosecutionConcludedImpl.execute(concludedDTO))
+                .isInstanceOf(ValidationException.class).hasMessageContaining("Crown Court - Case type not valid for Trial");
+
+    }
+
+    @Test
+    void givenAAppealIsCrownCourt_whenExecuteIsInvoked_ThenExceptionThrown() {
+
+        ConcludedDTO concludedDTO = ConcludedDTO.builder()
+                .prosecutionConcluded(ProsecutionConcluded.builder().maatId(121111).build())
+                .calculatedOutcome("UNSUCCESSFUL")
+                .build();
+
+        RepOrderDTO repOrderEntity = RepOrderDTO.builder()
+                .catyCaseType("CONVICTED")
+                .appealTypeCode("ACV")
+                .id(123).build();
+        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderEntity);
+
+        assertThatThrownBy(() -> prosecutionConcludedImpl.execute(concludedDTO))
+                .isInstanceOf(ValidationException.class).hasMessageContaining("Case type not valid for Appeal");
+
     }
 
     private ConcludedDTO getConcludedDTO() {
