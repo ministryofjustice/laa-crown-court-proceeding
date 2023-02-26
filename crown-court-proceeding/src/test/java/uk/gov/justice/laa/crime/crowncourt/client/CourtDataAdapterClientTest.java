@@ -26,7 +26,8 @@ import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -94,9 +95,9 @@ class CourtDataAdapterClientTest {
 
         UUID testHearingId = UUID.randomUUID();
         String testTransactionId = UUID.randomUUID().toString();
-        CCPDataException error = assertThrows(CCPDataException.class, () -> courtDataAdapterClient.triggerHearingProcessing(testHearingId, testTransactionId));
-
-        assertTrue(error.getMessage().contains(String.format("Error triggering CDA processing for hearing '%s'.", testHearingId)));
+        assertThatThrownBy(() -> courtDataAdapterClient.triggerHearingProcessing(testHearingId, testTransactionId))
+                .isInstanceOf(CCPDataException.class)
+                .hasMessageContaining((String.format("Error triggering CDA processing for hearing '%s'.", testHearingId)));
         validateTriggerHearingProcessingScenario(testHearingId, testTransactionId);
     }
 
@@ -104,17 +105,16 @@ class CourtDataAdapterClientTest {
         Map<String, String> expectedFinalHeaders = Map.of("X-Request-ID", laaTransactionId);
         String expectedUrl = String.format("%s?publish_to_queue=true", hearingUrl);
         expectedUrl = expectedUrl.replace("{hearingId}", testHearingId.toString());
-        validateRequest(requestCaptor.getValue(), expectedUrl, expectedFinalHeaders, HttpMethod.GET);
+        validateRequest(requestCaptor.getValue(), expectedUrl, expectedFinalHeaders);
     }
 
-    private void validateRequest(ClientRequest request, String expectedUrl, Map<String, String> expectedHeaders, HttpMethod method) {
-        assertEquals(request.headers().toSingleValueMap(), expectedHeaders);
-        assertEquals(request.url().toString(), String.format("%s%s", baseUrl, expectedUrl));
-        assertEquals(request.method(), method);
+    private void validateRequest(ClientRequest request, String expectedUrl, Map<String, String> expectedHeaders) {
+        assertThat(request.headers().toSingleValueMap()).isEqualTo(expectedHeaders);
+        assertThat(request.url()).hasToString(String.format("%s%s", baseUrl, expectedUrl));
+        assertThat(request.method()).isEqualTo(HttpMethod.GET);
     }
 
     private LaaStatusUpdate getTestLaaStatusObject() {
         return LaaStatusUpdate.builder().data(RepOrderData.builder().type("test-representation_order").build()).build();
     }
-
 }

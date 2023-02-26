@@ -49,6 +49,7 @@ class OutcomeDTOBuilderTest {
                 .isEqualTo(dto.getCrownCourtSummary().getCrownCourtOutcome().get(0).getDateSet());
         softly.assertThat(repOrderCCOutcomeDTOList.get(0).getUserCreated())
                 .isEqualTo(dto.getUserSession().getUserName());
+        softly.assertAll();
     }
 
     @Test
@@ -66,5 +67,6 @@ class OutcomeDTOBuilderTest {
         softly.assertThat(repOrderCCOutcomeDTOList.get(0).getOutcomeDate()).isNotNull();
         softly.assertThat(repOrderCCOutcomeDTOList.get(0).getUserCreated())
                 .isEqualTo(dto.getUserSession().getUserName());
+        softly.assertAll();
     }
 }

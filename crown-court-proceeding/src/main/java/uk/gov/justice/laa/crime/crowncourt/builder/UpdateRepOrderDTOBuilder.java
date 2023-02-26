@@ -25,6 +25,10 @@ public class UpdateRepOrderDTOBuilder {
                 .crownRepId(crownCourtDTO.getCrownRepId())
                 .crownRepOrderDecision(crownCourtSummary.getRepOrderDecision())
                 .crownRepOrderType(crownCourtSummary.getRepType())
+                .crownRepOrderDate(
+                        ofNullable(crownCourtSummary.getRepOrderDate())
+                        .map(LocalDateTime::toLocalDate)
+                        .orElse(null))
                 .crownWithdrawalDate(
                         ofNullable(crownCourtSummary.getWithdrawalDate())
                                 .map(LocalDateTime::toLocalDate)

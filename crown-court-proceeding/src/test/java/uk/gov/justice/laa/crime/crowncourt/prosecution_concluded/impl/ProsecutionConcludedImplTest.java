@@ -105,7 +105,6 @@ class ProsecutionConcludedImplTest {
                         "");
     }
 
-
     @Test
     void givenMessageIsReceived_whenProsecutionConcludedImplTestIsInvoked_thenCrownCourtProcessingRepositoryIsCalled() {
         //given
@@ -139,7 +138,6 @@ class ProsecutionConcludedImplTest {
                 .processSentencingDate(concludedDTO.getCaseEndDate(),
                         concludedDTO.getProsecutionConcluded().getMaatId(),
                         repOrderDTO.getCatyCaseType());
-
     }
 
     @Test

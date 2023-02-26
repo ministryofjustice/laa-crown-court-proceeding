@@ -28,6 +28,8 @@ class UpdateRepOrderDTOBuilderTest {
                 .isEqualTo(dto.getCrownCourtSummary().getRepOrderDecision());
         softly.assertThat(updateRequest.getCrownRepOrderType())
                 .isEqualTo(dto.getCrownCourtSummary().getRepType());
+        softly.assertThat(updateRequest.getCrownRepOrderDate())
+                .isEqualTo(dto.getCrownCourtSummary().getRepOrderDate().toLocalDate());
         softly.assertThat(updateRequest.getCrownWithdrawalDate())
                 .isEqualTo(dto.getCrownCourtSummary().getWithdrawalDate());
         softly.assertThat(updateRequest.getEvidenceFeeLevel())
@@ -48,5 +50,6 @@ class UpdateRepOrderDTOBuilderTest {
                 .isEqualTo(dto.getUserSession().getUserName());
         softly.assertThat(updateRequest.getSentenceOrderDate())
                 .isEqualTo(dto.getCrownCourtSummary().getSentenceOrderDate());
+        softly.assertAll();
     }
 }
