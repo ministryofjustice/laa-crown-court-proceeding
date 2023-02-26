@@ -82,6 +82,6 @@ class ProsecutionConcludedValidatorTest {
 
     @Test
     void givenAValidOuCode_whenValidateOuCodeIsInvoked_thenReturnEmpty() {
-        assertThat(prosecutionConcludedValidator.validateOuCode("Test")).isEqualTo(Optional.empty());
+        assertThat(prosecutionConcludedValidator.validateOuCode("Test")).isEmpty();
     }
 }

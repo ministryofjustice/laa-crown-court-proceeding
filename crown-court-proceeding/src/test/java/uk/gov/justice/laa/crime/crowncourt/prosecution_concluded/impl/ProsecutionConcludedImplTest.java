@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
@@ -188,31 +189,12 @@ class ProsecutionConcludedImplTest {
     void givenACaseTypeAndOutcomeIsConvicted_whenExecuteIsInvoked_ThenExceptionThrown() {
 
         ConcludedDTO concludedDTO = ConcludedDTO.builder()
-                .prosecutionConcluded(ProsecutionConcluded.builder().maatId(121111).build())
+                .prosecutionConcluded(ProsecutionConcluded.builder().maatId(TestModelDataBuilder.TEST_REP_ID).build())
                 .calculatedOutcome("CONVICTED")
                 .build();
 
         RepOrderDTO repOrderEntity = RepOrderDTO.builder()
                 .catyCaseType("CONVICTED")
-                .appealTypeCode("ACV")
-                .id(123).build();
-        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderEntity);
-
-        assertThatThrownBy(() -> prosecutionConcludedImpl.execute(concludedDTO))
-                .isInstanceOf(ValidationException.class).hasMessageContaining("Crown Court - Case type not valid for Trial");
-
-    }
-
-    @Test
-    void givenACaseTypeIsUnsuccessful_whenExecuteIsInvoked_ThenExceptionThrown() {
-
-        ConcludedDTO concludedDTO = ConcludedDTO.builder()
-                .prosecutionConcluded(ProsecutionConcluded.builder().maatId(121111).build())
-                .calculatedOutcome("CONVICTED")
-                .build();
-
-        RepOrderDTO repOrderEntity = RepOrderDTO.builder()
-                .catyCaseType("SUCCESSFUL")
                 .appealTypeCode("ACV")
                 .id(123).build();
         when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderEntity);

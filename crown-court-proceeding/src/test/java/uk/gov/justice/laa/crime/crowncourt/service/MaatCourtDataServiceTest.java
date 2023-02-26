@@ -121,14 +121,14 @@ class MaatCourtDataServiceTest {
         when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(null);
         int caseId = maatCourtDataService.findWQLinkRegisterByMaatId(TestModelDataBuilder.TEST_REP_ID);
         verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
-        assertThat(caseId).isEqualTo(0);
+        assertThat(caseId).isZero();
     }
 
     @Test
     void givenAInvalidParameter_whenFindWQLinkRegisterByMaatIdIsInvoked_thenEmptyIsReturned() {
         when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(List.of());
         int caseId = maatCourtDataService.findWQLinkRegisterByMaatId(TestModelDataBuilder.TEST_REP_ID);
-        assertThat(caseId).isEqualTo(0);
+        assertThat(caseId).isZero();
     }
 
     @Test
@@ -150,7 +150,7 @@ class MaatCourtDataServiceTest {
         when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(null);
         int offenceCount = maatCourtDataService.getOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
         verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
-        assertThat(offenceCount).isEqualTo(0);
+        assertThat(offenceCount).isZero();
     }
 
     @Test
@@ -158,7 +158,7 @@ class MaatCourtDataServiceTest {
         when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(List.of());
         int offenceCount = maatCourtDataService.getOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
         verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
-        assertThat(offenceCount).isEqualTo(0);
+        assertThat(offenceCount).isZero();
     }
 
     @Test
