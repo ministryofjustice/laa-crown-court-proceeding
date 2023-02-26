@@ -84,8 +84,7 @@ public class ProsecutionConcludedScheduler {
             return null;
         }
     }
-
-    @Transactional
+    
     public void updateConclusion(String hearingId, CaseConclusionStatus caseConclusionStatus) {
         List<ProsecutionConcludedEntity> processedCases = prosecutionConcludedRepository.getByHearingId(hearingId);
         processedCases.forEach(concludedCase -> {
