@@ -25,7 +25,7 @@ public class CaseConclusionDTOBuilder {
                 .build();
     }
 
-    private String getMostRecentCaseEndDate(List<OffenceSummary> offenceSummaryList) {
+    protected String getMostRecentCaseEndDate(List<OffenceSummary> offenceSummaryList) {
 
         if (offenceSummaryList == null || offenceSummaryList.isEmpty()) {
             return null;
@@ -38,7 +38,7 @@ public class CaseConclusionDTOBuilder {
                 .toList().get(0).toString();
     }
 
-    private List<String> buildResultCodeList(WQHearingDTO wqHearingDTO) {
+    protected List<String> buildResultCodeList(WQHearingDTO wqHearingDTO) {
         String results = wqHearingDTO.getResultCodes() != null ? wqHearingDTO.getResultCodes() : "";
         List<String> list = new ArrayList<>();
         Set<String> uniqueValues = new HashSet<>();

@@ -25,8 +25,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
@@ -209,21 +208,21 @@ class ProceedingServiceTest {
     }
 
     @Test
-    void givenAValidRepIdAndNoOutcomeRecord_whenGetCCOutcome_thenReturnEmpty() {
+    void givenAValidRepIdAndNoOutcomeRecord_whenGetCCOutcomeIsInvoked_thenReturnEmpty() {
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(Collections.emptyList());
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
         assertThat(0).isEqualTo(repOrderCCOutcomeDTOList.size());
     }
 
     @Test
-    void givenAInvalidRepId_whenGetCCOutcome_thenReturnNull() {
+    void givenAInvalidRepId_whenGetCCOutcomeIsInvoked_thenReturnNull() {
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(null);
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
         assertThat(repOrderCCOutcomeDTOList).isNull();
     }
 
     @Test
-    void givenAValidRepId_whenGetCCOutcome_thenReturnOutcomeInNaturalOrder() {
+    void givenAValidRepId_whenGetCCOutcomeIsInvoked_thenReturnOutcomeInNaturalOrder() {
         List<RepOrderCCOutcomeDTO> outcomeList = new ArrayList<>();
         outcomeList.add(TestModelDataBuilder.getRepOrderCCOutcomeDTO(2, CrownCourtOutcome.CONVICTED.getCode(),
                 LocalDateTime.of(2023, 2, 7, 15, 1, 25)));
@@ -255,7 +254,7 @@ class ProceedingServiceTest {
     }
 
     @Test
-    void givenAValidRepIdAndEmptyOutcome_whenGetCCOutcome_thenReturnOutcome() {
+    void givenAValidRepIdAndEmptyOutcome_whenGetCCOutcomeIsInvoked_thenReturnOutcome() {
         List<RepOrderCCOutcomeDTO> outcomeList = new ArrayList<>();
         outcomeList.add(TestModelDataBuilder.getRepOrderCCOutcomeDTO(2, null,
                 LocalDateTime.of(2023, 2, 7, 15, 1, 25)));
@@ -274,5 +273,12 @@ class ProceedingServiceTest {
                 .isEqualTo(LocalDateTime.of(2022, 2, 7, 9, 1, 25));
 
         softly.assertAll();
+    }
+
+    @Test
+    void givenAValidParameter_whenGraphQLQueryIsInvoked_thenReturnIsSuccess() throws Exception{
+        when(maatCourtDataService.getRepOrderByFilter(any(), any())).thenReturn(new Object());
+        proceedingService.graphQLQuery();
+        verify(maatCourtDataService, atLeastOnce()).getRepOrderByFilter(any(), any());
     }
 }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
@@ -63,5 +64,19 @@ class ProsecutionConcludedDataServiceTest {
         prosecutionConcludedDataService.updateConclusion(1234);
         //then
         verify(prosecutionConcludedRepository).saveAll(any());
+    }
+
+    @Test
+    void givenAInvalidCaseData_whenExecuteIsInvoked_thenSaveIsFailed() throws JsonProcessingException {
+        when(prosecutionConcludedRepository.getByMaatId(any()))
+                .thenReturn(new ArrayList<>());
+        when(objectMapper.writeValueAsBytes(any())).thenThrow(JsonProcessingException.class);
+        //given
+        prosecutionConcludedDataService.execute(ProsecutionConcluded.
+                builder()
+                .hearingIdWhereChangeOccurred(UUID.randomUUID())
+                .build());
+        //then
+        verify(prosecutionConcludedRepository, times(0)).save(any());
     }
 }
