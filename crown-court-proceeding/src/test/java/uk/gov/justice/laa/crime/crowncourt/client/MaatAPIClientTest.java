@@ -13,8 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.*;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiFinancialAssessment;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 
 import java.util.Map;
 
@@ -160,9 +162,7 @@ class MaatAPIClientTest {
     @Test
     void givenCorrectParams_whenGetApiResponseViaPUTIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod() throws JsonProcessingException {
         ApiFinancialAssessment requestBody = TestModelDataBuilder.getFinancialAssessment();
-
         setupValidResponseTest(TestModelDataBuilder.getFinancialAssessment());
-
         maatAPIClient.getApiResponseViaPUT(
                 requestBody,
                 ApiFinancialAssessment.class,
@@ -179,6 +179,59 @@ class MaatAPIClientTest {
                         HttpMethod.PUT
                 );
     }
+
+    @Test
+    void givenAInvalidUrl_whenGetApiResponseViaGetIsInvoked_thenTheMethodShouldReturnNull() {
+        setupNotFoundTest();
+        ClientResponse response = maatAPIClient.getApiResponseViaGET(
+                ClientResponse.class,
+                MOCK_URL,
+                REP_ID
+        );
+        assertThat(response).isNull();
+    }
+
+    @Test
+    void givenAInvalidResponse_whenGetApiResponseViaGetIsInvoked_thenAnAppropriateErrorShouldBeThrown() {
+        setupInvalidResponseTest();
+        assertThatThrownBy(
+                () -> maatAPIClient.getApiResponseViaGET(
+                        ClientResponse.class,
+                        MOCK_URL,
+                        REP_ID
+                )
+        ).isInstanceOf(APIClientException.class).getCause().isInstanceOf(WebClientResponseException.class);
+    }
+
+    @Test
+    void givenCorrectParams_whenGetApiResponseViaGETIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod() throws JsonProcessingException {
+        ApiProcessRepOrderResponse response = new ApiProcessRepOrderResponse();
+        response.setRepOrderDecision("PASS");
+        setupValidResponseTest(response);
+        ApiProcessRepOrderResponse apiResponse = maatAPIClient.getApiResponseViaGET(
+                ApiProcessRepOrderResponse.class,
+                MOCK_URL,
+                Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
+                1234
+        );
+        verify(shortCircuitExchangeFunction, times(1)).exchange(any());
+        assertThat(apiResponse.getRepOrderDecision()).isEqualTo(response.getRepOrderDecision());
+    }
+
+    @Test
+    void givenCorrectParams_whenGetGraphQLApiResponseIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod()
+            throws JsonProcessingException {
+        RepOrderDTO responseBody = new RepOrderDTO();
+        responseBody.setId(1234);
+        setupValidResponseTest(responseBody);
+        RepOrderDTO apiRes = maatAPIClient.getGraphQLApiResponse(
+                RepOrderDTO.class,
+                MOCK_URL,
+                Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID)
+        );
+        assertThat(apiRes.getId()).isEqualTo(responseBody.getId());
+    }
+
 
     private void setupNotFoundTest() {
         when(shortCircuitExchangeFunction.exchange(any()))
