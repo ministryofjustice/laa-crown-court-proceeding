@@ -35,6 +35,47 @@ public class MockServicesConfiguration {
                         "/financial-assessments/check-outstanding/{repId}"
                 );
 
+        ServicesConfiguration.MaatApi.WqHearingEndpoints wqHearingEndpoints =
+                new ServicesConfiguration.MaatApi.WqHearingEndpoints(
+                        "wq-hearing/{hearingUUID}/maatId/{maatId}");
+
+        ServicesConfiguration.MaatApi.WqLinkRegisterEndpoints wqLinkRegisterEndpoints =
+                new ServicesConfiguration.MaatApi.WqLinkRegisterEndpoints("wq-link-register/{maatId}");
+
+        ServicesConfiguration.MaatApi.OffenceEndpoints offenceEndpoints =
+                new ServicesConfiguration.MaatApi.OffenceEndpoints("/offence/case/{caseId}",
+                        "/offence/{offenceId}/case/{caseId}");
+
+        ServicesConfiguration.MaatApi.WqOffenceEndpoints wqOffenceEndpoints =
+                new ServicesConfiguration.MaatApi.WqOffenceEndpoints("/wq-offence/{offenceId}/case/{caseId}");
+
+        ServicesConfiguration.MaatApi.XlatResultEndpoints xlatResultEndpoints =
+                new ServicesConfiguration.MaatApi.XlatResultEndpoints(
+                        "/xlat-result/cc-imprisonment" ,
+                        "xlat-result/cc-bench-warrant",
+                        "/xlat-result/wqType/{wqType}/subType/{subType}");
+
+        ServicesConfiguration.MaatApi.CrownCourtStoredProcedureEndpoints storedProcedureEndpoints =
+                new ServicesConfiguration.MaatApi.CrownCourtStoredProcedureEndpoints("/crown-court/updateCCOutcome");
+
+
+        ServicesConfiguration.MaatApi.CrownCourtProcessingEndpoints processingEndpoints =
+                new ServicesConfiguration.MaatApi.CrownCourtProcessingEndpoints(
+                        "/crown-court/update-appeal-cc-sentence",
+                        "/crown-court/update-cc-sentence");
+
+        ServicesConfiguration.MaatApi.ReservationEndpoints reservationsEndpoints =
+                new ServicesConfiguration.MaatApi.ReservationEndpoints("/reservations/{maatId}");
+
+        ServicesConfiguration.MaatApi.GraphQLEndpoints graphQLEndpoints =
+                new ServicesConfiguration.MaatApi.GraphQLEndpoints("/graphQL");
+
+        ServicesConfiguration.MaatApi.ResultEndpoints resultEndpoints =
+                new ServicesConfiguration.MaatApi.ResultEndpoints("/result/caseId/{caseId}/asnSeq/{asnSeq}");
+
+        ServicesConfiguration.MaatApi.WqResultEndpoints wqResultEndpoints =
+                new ServicesConfiguration.MaatApi.WqResultEndpoints("/wq-result/caseId/{caseId}/asnSeq/{asnSeq}");
+
         maatApiConfiguration.setBaseUrl(host);
         maatApiConfiguration.setOAuthEnabled(false);
         maatApiConfiguration.setIojAppealEndpoints(iojEndpoints);
@@ -42,6 +83,17 @@ public class MockServicesConfiguration {
         maatApiConfiguration.setPassportAssessmentEndpoints(passportEndpoints);
         maatApiConfiguration.setRepOrderEndpoints(repOrderEndpoints);
         maatApiConfiguration.setValidationEndpoints(validationEndpoints);
+        maatApiConfiguration.setWqHearingEndpoints(wqHearingEndpoints);
+        maatApiConfiguration.setWqLinkRegisterEndpoints(wqLinkRegisterEndpoints);
+        maatApiConfiguration.setOffenceEndpoints(offenceEndpoints);
+        maatApiConfiguration.setWqOffenceEndpoints(wqOffenceEndpoints);
+        maatApiConfiguration.setXlatResultEndpoints(xlatResultEndpoints);
+        maatApiConfiguration.setCrownCourtStoredProcedureEndpoints(storedProcedureEndpoints);
+        maatApiConfiguration.setCrownCourtProcessingEndpoints(processingEndpoints);
+        maatApiConfiguration.setReservationEndpoints(reservationsEndpoints);
+        maatApiConfiguration.setGraphQLEndpoints(graphQLEndpoints);
+        maatApiConfiguration.setResultEndpoints(resultEndpoints);
+        maatApiConfiguration.setWqResultEndpoints(wqResultEndpoints);
 
         courtDataAdapterConfig.setBaseUrl(host);
         courtDataAdapterConfig.setHearingUrl("/api/internal/v2/hearing_results/{hearingId}");
