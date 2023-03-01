@@ -4,11 +4,16 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
+import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class TestModelDataBuilder {
@@ -32,6 +37,9 @@ public class TestModelDataBuilder {
     public static final Integer TEST_REP_ID = 91919;
     public static final String TEST_USER = "TEST_USER";
     public static final Integer TEST_APPLICANT_HISTORY_ID = 12449721;
+
+    public static final Integer TEST_CASE_ID = 45673;
+    public static final String TEST_OFFENCE_ID = "324234";
 
     public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
         return new ApiProcessRepOrderRequest()
@@ -185,6 +193,107 @@ public class TestModelDataBuilder {
                 .outcome(outcome)
                 .outcomeDate(outcomeDate)
                 .build();
+    }
+
+    public static OffenceSummary getOffenceSummary(UUID uuid, String changeDate) {
+        return OffenceSummary.builder()
+                .offenceId(uuid)
+                .proceedingsConcludedChangedDate(changeDate)
+                .build();
+    }
+
+    public static Verdict getVerdict(String verdictType, String verdictDate) {
+        return Verdict.builder()
+                .verdictType(VerdictType.builder().categoryType(verdictType).build())
+                .verdictDate(verdictDate)
+                .build();
+    }
+    public static ProsecutionConcluded getProsecutionConcluded() {
+        return ProsecutionConcluded.builder()
+                .isConcluded(true)
+                .maatId(123456)
+                .offenceSummary(List.of(
+                        OffenceSummary.builder()
+                                .offenceCode("1212")
+                                .verdict(getVerdict("GUILTY", "2021-11-12"))
+                                .plea(Plea.builder().value("NOT_GUILTY").pleaDate("2021-11-12").build())
+                                .proceedingsConcludedChangedDate("2021-11-12")
+                                .build()
+                ))
+                .build();
+    }
+
+    public static WQHearingDTO getWQHearingDTO() {
+
+        return WQHearingDTO.builder()
+                .hearingUUID(UUID.randomUUID().toString())
+                .ouCourtLocation("loc1")
+                .wqJurisdictionType("Type")
+                .caseUrn(TEST_CASE_ID.toString())
+                .resultCodes("code1,code2,code3")
+                .build();
+
+    }
+
+    public static ProsecutionConcludedEntity getProsecutionConcludedEntity() {
+        return ProsecutionConcludedEntity
+                .builder()
+                .maatId(TEST_REP_ID)
+                .caseData(getCaseData().getBytes(StandardCharsets.UTF_8))
+                .build();
+    }
+
+    public static String getCaseData() {
+
+        return """
+            {
+               "maatId":5636361,
+               "defendantId":"9c26435c-b262-4318-9927-f40bc4e7f0c7",
+               "prosecutionCaseId":"1d329c30-936c-11ec-b909-0242ac120002",
+               "isConcluded":true,
+               "hearingIdWhereChangeOccurred":"0ffd1c68-9428-11ec-b909-0242ac120002",
+               "offenceSummary":[
+                  {
+                     "offenceId":"40989abc-2d8c-431a-8692-535848b2e918",
+                     "offenceCode":"PT00011",
+                     "proceedingsConcluded":false,
+                     "plea":{
+                        "originatingHearingId":"08c98420-5f6a-4839-b48b-19646e81619a",
+                        "value":"NOT_GUILTY",
+                        "pleaDate":"2022-02-10"
+                     },
+                     "verdict":{
+                        "verdictDate":"2022-02-10",
+                        "originatingHearingId":"08c98420-5f6a-4839-b48b-19646e81619a",
+                        "verdictType":{
+                           "verdictTypeId":"dfd71ee7-039d-3d93-ae37-98ef38aec6e4",
+                           "sequence":10,
+                           "description":"Found guilty",
+                           "category":"Guilty",
+                           "categoryType":"GUILTY_BY_JURY_CONVICTED"
+                        }
+                     },
+                     "proceedingsConcludedChangedDate":"2022-02-10"
+                  },
+                  {
+                     "offenceId":"b72f793a-93ed-11ec-b909-0242ac120002",
+                     "offenceCode":"PT00011",
+                     "proceedingsConcluded":false,
+                     "plea":{
+                        "originatingHearingId":"08c98420-5f6a-4839-b48b-19646e81619a",
+                        "value":"NOT_GUILTY",
+                        "pleaDate":"2022-02-10"
+                     },
+                     "proceedingsConcludedChangedDate":"2022-02-10"
+                  }
+               ],
+               "messageRetryCounter":0,
+               "retryCounterForHearing":0,
+               "metadata":{
+                  "laaTransactionId":"ea0af85c36b17113389bb9aae924e9ad"
+               }
+            }
+                      """;
     }
 
 }
