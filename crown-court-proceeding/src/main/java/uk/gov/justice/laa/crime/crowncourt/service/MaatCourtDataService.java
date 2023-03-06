@@ -3,15 +3,14 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataClient;
+import uk.gov.justice.laa.crime.crowncourt.client.MaatAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
-import uk.gov.justice.laa.crime.crowncourt.config.MaatApiConfiguration;
+import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,9 +24,9 @@ import static java.util.Collections.emptyMap;
 @Slf4j
 public class MaatCourtDataService {
 
+    private final MaatAPIClient maatAPIClient;
+    private final ServicesConfiguration configuration;
     public static final String RESPONSE_STRING = "Response from Court Data API: %s";
-    private final MaatApiConfiguration configuration;
-    private final MaatCourtDataClient maatCourtDataClient;
 
     private static Map<String, Object> getGraphQLRequestBody(String repId, String sentenceOrdDate) throws IOException {
         final String query = GraphqlSchemaReaderUtil.getSchemaFromFileName("repOrderFilter");
@@ -43,9 +42,9 @@ public class MaatCourtDataService {
     }
 
     public IOJAppealDTO getCurrentPassedIOJAppealFromRepId(Integer repId, String laaTransactionId) {
-        IOJAppealDTO response = maatCourtDataClient.getApiResponseViaGET(
+        IOJAppealDTO response = maatAPIClient.getApiResponseViaGET(
                 IOJAppealDTO.class,
-                configuration.getIojAppealEndpoints().getFindUrl(),
+                configuration.getMaatApi().getIojAppealEndpoints().getFindUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
                 repId
         );
@@ -54,10 +53,10 @@ public class MaatCourtDataService {
     }
 
     public RepOrderDTO updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO, String laaTransactionId) {
-        RepOrderDTO response =  maatCourtDataClient.getApiResponseViaPUT(
+        RepOrderDTO response =  maatAPIClient.getApiResponseViaPUT(
                 updateRepOrderRequestDTO,
                 RepOrderDTO.class,
-                configuration.getRepOrderEndpoints().getUpdateUrl(),
+                configuration.getMaatApi().getRepOrderEndpoints().getUpdateUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
         );
         log.info(String.format(RESPONSE_STRING, response));
@@ -66,9 +65,9 @@ public class MaatCourtDataService {
 
     public Object getRepOrderByFilter(String repId, String sentenceOrdDate) throws IOException {
         Map<String, Object> graphQLBody = getGraphQLRequestBody(repId, sentenceOrdDate);
-        Object response = maatCourtDataClient.getGraphQLApiResponse(
+        Object response = maatAPIClient.getGraphQLApiResponse(
                 Object.class,
-                configuration.getGraphQLEndpoints().getGraphqlQueryUrl(),
+                configuration.getMaatApi().getGraphQLEndpoints().getGraphqlQueryUrl(),
                 graphQLBody
         );
         log.info(String.format(RESPONSE_STRING, response));
@@ -76,9 +75,9 @@ public class MaatCourtDataService {
     }
 
     public List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(Integer repId, String laaTransactionId) {
-        List<RepOrderCCOutcomeDTO> response = maatCourtDataClient.getApiResponseViaGET(
+        List<RepOrderCCOutcomeDTO> response = maatAPIClient.getApiResponseViaGET(
                 List.class,
-                configuration.getRepOrderEndpoints().getFindOutcomeUrl(),
+                configuration.getMaatApi().getRepOrderEndpoints().getFindOutcomeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
                 repId
         );
@@ -89,9 +88,9 @@ public class MaatCourtDataService {
     public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
 
         WQHearingDTO wqHearingDTO = null;
-        List<WQHearingDTO> wqHearingList = maatCourtDataClient.getApiResponseViaGET(
+        List<WQHearingDTO> wqHearingList = maatAPIClient.getApiResponseViaGET(
                 List.class,
-                configuration.getWqHearingEndpoints().getFindUrl(),
+                configuration.getMaatApi().getWqHearingEndpoints().getFindUrl(),
                 emptyMap(),
                 prosecutionConcluded
         );
@@ -103,9 +102,9 @@ public class MaatCourtDataService {
 
     public int findWQLinkRegisterByMaatId(int maatId) {
         int caseId = 0;
-        List<WQLinkRegisterDTO> wqLinkRegisterList = maatCourtDataClient.getApiResponseViaGET(
+        List<WQLinkRegisterDTO> wqLinkRegisterList = maatAPIClient.getApiResponseViaGET(
                 List.class,
-                configuration.getWqLinkRegisterEndpoints().getFindUrl(),
+                configuration.getMaatApi().getWqLinkRegisterEndpoints().getFindUrl(),
                 emptyMap(),
                 maatId
         );
@@ -116,9 +115,9 @@ public class MaatCourtDataService {
     }
 
     public List<OffenceDTO> findOffenceByCaseId(int caseId) {
-        return maatCourtDataClient.getApiResponseViaGET(
+        return maatAPIClient.getApiResponseViaGET(
                 List.class,
-                configuration.getWqLinkRegisterEndpoints().getFindUrl(),
+                configuration.getMaatApi().getWqLinkRegisterEndpoints().getFindUrl(),
                 emptyMap(),
                 caseId
         );
@@ -126,9 +125,9 @@ public class MaatCourtDataService {
 
     public int getOffenceNewOffenceCount(int caseId, String offenceId) {
         int count = 0;
-        List<Integer> offenceCount = maatCourtDataClient.getApiResponseViaGET(
+        List<Integer> offenceCount = maatAPIClient.getApiResponseViaGET(
                 List.class,
-                configuration.getOffenceEndpoints().getOffenceCountUrl(),
+                configuration.getMaatApi().getOffenceEndpoints().getOffenceCountUrl(),
                 emptyMap(),
                 caseId,
                 offenceId
@@ -141,9 +140,9 @@ public class MaatCourtDataService {
 
     public int getWQOffenceNewOffenceCount(int caseId, String offenceId) {
         int count = 0;
-        List<Integer> offenceCount = maatCourtDataClient.getApiResponseViaGET(
+        List<Integer> offenceCount = maatAPIClient.getApiResponseViaGET(
                 List.class,
-                configuration.getWqOffenceEndpoints().getWqOffenceCountUrl(),
+                configuration.getMaatApi().getWqOffenceEndpoints().getWqOffenceCountUrl(),
                 emptyMap(),
                 caseId,
                 offenceId
@@ -155,9 +154,9 @@ public class MaatCourtDataService {
     }
 
     public List<Integer> findResultsByWQTypeSubType(int wqType, int subTypeCode) {
-        return maatCourtDataClient.getApiResponseViaGET(
+        return maatAPIClient.getApiResponseViaGET(
                 List.class,
-                configuration.getXlatResultEndpoints().getResultCodesForWQTypeSubTypeUrl(),
+                configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForWQTypeSubTypeUrl(),
                 emptyMap(),
                 wqType,
                 subTypeCode
@@ -165,9 +164,9 @@ public class MaatCourtDataService {
     }
 
     public List<Integer> getResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
-        return maatCourtDataClient.getApiResponseViaGET(
+        return maatAPIClient.getApiResponseViaGET(
                 List.class,
-                configuration.getResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
+                configuration.getMaatApi().getResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
                 emptyMap(),
                 caseId,
                 offenceId
@@ -175,9 +174,9 @@ public class MaatCourtDataService {
     }
 
     public List<Integer> getWqResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
-        return maatCourtDataClient.getApiResponseViaGET(
+        return maatAPIClient.getApiResponseViaGET(
                 List.class,
-                configuration.getWqResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
+                configuration.getMaatApi().getWqResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
                 emptyMap(),
                 caseId,
                 offenceId
@@ -185,25 +184,25 @@ public class MaatCourtDataService {
     }
 
     public List<Integer> fetchResultCodesForCCImprisonment() {
-        return maatCourtDataClient.getApiResponseViaGET(
+        return maatAPIClient.getApiResponseViaGET(
                 List.class,
-                configuration.getXlatResultEndpoints().getResultCodesForCCImprisonmentUrl(),
+                configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForCCImprisonmentUrl(),
                 emptyMap()
         );
     }
 
     public List<Integer> findByCjsResultCodeIn() {
-        return maatCourtDataClient.getApiResponseViaGET(
+        return maatAPIClient.getApiResponseViaGET(
                 List.class,
-                configuration.getXlatResultEndpoints().getResultCodesForCCBenchWarrantUrl(),
+                configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForCCBenchWarrantUrl(),
                 emptyMap()
         );
     }
 
     public RepOrderDTO getRepOrder(Integer repId) {
-        RepOrderDTO response = maatCourtDataClient.getApiResponseViaGET(
+        RepOrderDTO response = maatAPIClient.getApiResponseViaGET(
                 RepOrderDTO.class,
-                configuration.getRepOrderEndpoints().getFindUrl(),
+                configuration.getMaatApi().getRepOrderEndpoints().getFindUrl(),
                 repId
         );
         log.info(String.format(RESPONSE_STRING, response));
@@ -211,42 +210,42 @@ public class MaatCourtDataService {
     }
 
     public void updateCrownCourtOutcome(UpdateCCOutcome updateCCOutcome) {
-        maatCourtDataClient.getApiResponseViaGET(
+        maatAPIClient.getApiResponseViaGET(
                 RepOrderDTO.class,
-                configuration.getCrownCourtStoredProcedureEndpoints().getUpdateCrownCourtOutcomeUrl(),
+                configuration.getMaatApi().getCrownCourtStoredProcedureEndpoints().getUpdateCrownCourtOutcomeUrl(),
                 updateCCOutcome
         );
     }
 
     public void invokeUpdateAppealSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
-        maatCourtDataClient.getApiResponseViaGET(
+        maatAPIClient.getApiResponseViaGET(
                 RepOrderDTO.class,
-                configuration.getCrownCourtProcessingEndpoints().getUpdateAppealCcSentenceUrl(),
+                configuration.getMaatApi().getCrownCourtProcessingEndpoints().getUpdateAppealCcSentenceUrl(),
                 updateSentenceOrder
         );
     }
 
     public void invokeUpdateSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
-        maatCourtDataClient.getApiResponseViaGET(
+        maatAPIClient.getApiResponseViaGET(
                 RepOrderDTO.class,
-                configuration.getCrownCourtProcessingEndpoints().getUpdateCcSentenceUrl(),
+                configuration.getMaatApi().getCrownCourtProcessingEndpoints().getUpdateCcSentenceUrl(),
                 updateSentenceOrder
         );
     }
 
     public Boolean isMaatRecordLocked(Integer maatId) {
-        return maatCourtDataClient.getApiResponseViaGET(
+        return maatAPIClient.getApiResponseViaGET(
                 Boolean.class,
-                configuration.getReservationsEndpoints().getIsMaatRecordLockedUrl(),
+                configuration.getMaatApi().getReservationEndpoints().getIsMaatRecordLockedUrl(),
                 maatId
         );
     }
 
     public RepOrderCCOutcomeDTO createOutcome(RepOrderCCOutcomeDTO outcomeDTO, String laaTransactionId) {
-        RepOrderCCOutcomeDTO response = maatCourtDataClient.getApiResponseViaPUT(
+        RepOrderCCOutcomeDTO response = maatAPIClient.getApiResponseViaPUT(
                 outcomeDTO,
                 RepOrderCCOutcomeDTO.class,
-                configuration.getRepOrderEndpoints().getCreateOutcomeUrl(),
+                configuration.getMaatApi().getRepOrderEndpoints().getCreateOutcomeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId));
         log.info(String.format(RESPONSE_STRING, response));
         return response;

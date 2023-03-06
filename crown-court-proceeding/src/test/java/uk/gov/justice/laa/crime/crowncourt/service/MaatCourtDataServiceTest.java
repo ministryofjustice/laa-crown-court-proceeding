@@ -7,15 +7,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataClient;
-import uk.gov.justice.laa.crime.crowncourt.config.MaatApiConfiguration;
+import uk.gov.justice.laa.crime.crowncourt.client.MaatAPIClient;
+import uk.gov.justice.laa.crime.crowncourt.config.MockServicesConfiguration;
+import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
-import uk.gov.justice.laa.crime.crowncourt.util.MockMaatApiConfiguration;
 
 import java.util.List;
 
@@ -30,11 +30,11 @@ class MaatCourtDataServiceTest {
 
     private static final String LAA_TRANSACTION_ID = "laaTransactionId";
     @Mock
-    MaatCourtDataClient maatCourtDataClient;
+    MaatAPIClient maatCourtDataClient;
     @InjectMocks
     private MaatCourtDataService maatCourtDataService;
     @Spy
-    private MaatApiConfiguration maatApiConfiguration = MockMaatApiConfiguration.getConfiguration(1000);
+    private ServicesConfiguration configuration = MockServicesConfiguration.getConfiguration(1000);
 
     @Test
     void givenRepId_whenGetCurrentPassedIojAppealFromRepIdIsInvoked_thenResponseIsReturned() {
@@ -90,9 +90,9 @@ class MaatCourtDataServiceTest {
     @Test
     void givenAInvalidParameter_whenGetRepOrderCCOutcomeByRepIdIsInvoked_thenReturnError() {
         when(maatCourtDataClient.getApiResponseViaGET(any(), anyString(), anyMap(), any())).thenThrow(new APIClientException());
-        assertThatThrownBy(() -> {
-            maatCourtDataService.getRepOrderCCOutcomeByRepId(TestModelDataBuilder.TEST_REP_ID, LAA_TRANSACTION_ID);
-        }).isInstanceOf(APIClientException.class);
+        assertThatThrownBy(() -> maatCourtDataService.getRepOrderCCOutcomeByRepId(
+                TestModelDataBuilder.TEST_REP_ID, LAA_TRANSACTION_ID)
+        ).isInstanceOf(APIClientException.class);
     }
 
     @Test

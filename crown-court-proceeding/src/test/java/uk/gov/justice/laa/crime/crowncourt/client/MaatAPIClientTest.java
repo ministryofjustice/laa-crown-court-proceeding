@@ -12,9 +12,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.*;
 import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiFinancialAssessment;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 
 import java.util.Map;
@@ -27,19 +28,21 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @ExtendWith(MockitoExtension.class)
-class MaatCourtDataClientTest {
+class MaatAPIClientTest {
 
-    public static final String MOCK_URL = "mock-url";
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private WebClient testWebClient;
     private final Integer REP_ID = 1234;
+    private MaatAPIClient maatAPIClient;
+    public static final String MOCK_URL = "mock-url";
     private final String LAA_TRANSACTION_ID = "laaTransactionId";
-    private MaatCourtDataClient maatCourtDataClient;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     @Mock
     private ExchangeFunction shortCircuitExchangeFunction;
 
     @BeforeEach
     void setup() {
-        WebClient testWebClient = WebClient
+        testWebClient = WebClient
                 .builder()
                 .baseUrl("http://localhost:1234")
                 .filter(ExchangeFilterFunctions.statusError(
@@ -52,14 +55,56 @@ class MaatCourtDataClientTest {
                 .exchangeFunction(shortCircuitExchangeFunction)
                 .build();
 
-        maatCourtDataClient = Mockito.spy(new MaatCourtDataClient(testWebClient));
+        maatAPIClient = Mockito.spy(new MaatAPIClient(testWebClient));
+    }
+
+    @Test
+    void givenMaatAPIClient_whenGetWebClientIsInvoked_thenWebClientIsReturned() {
+        assertThat(maatAPIClient.getWebClient())
+                .isEqualTo(testWebClient);
+    }
+
+    @Test
+    void givenMaatAPIClient_whenGetRegistrationIdIsInvoked_thenRegistrationIdIsReturned() {
+        assertThat(maatAPIClient.getRegistrationId())
+                .isEqualTo("maat-api");
+    }
+
+    @Test
+    void givenApiClientException_whenHandleErrorIsInvoked_thenExistingErrorIsReturned() {
+        String mockResponse = "MOCK ERROR RESPONSE";
+        APIClientException mockException = new APIClientException(mockResponse);
+        assertThat(maatAPIClient.handleError(mockException))
+                .isInstanceOf(APIClientException.class).hasMessage(mockResponse);
+    }
+
+    @Test
+    void givenCorrectParameters_whenOverloadedGetApiResponseViaGetIsInvoked_thenCorrectMethodIsCalled()
+            throws JsonProcessingException {
+
+        setupValidResponseTest(TestModelDataBuilder.getFinancialAssessment());
+
+        maatAPIClient.getApiResponseViaGET(
+                ApiFinancialAssessment.class,
+                MOCK_URL,
+                REP_ID
+        );
+
+        verify(maatAPIClient)
+                .getApiResponseViaGET(
+                        eq(ApiFinancialAssessment.class),
+                        anyString(),
+                        isNull(),
+                        isNull(),
+                        any()
+                );
     }
 
     @Test
     void givenAnInvalidResponse_whenGetApiResponseIsInvoked_thenAnAppropriateErrorShouldBeThrown() {
         setupInvalidResponseTest();
         assertThatThrownBy(
-                () -> maatCourtDataClient.getApiResponse(
+                () -> maatAPIClient.getApiResponse(
                         new Object(),
                         ClientResponse.class,
                         MOCK_URL,
@@ -72,7 +117,7 @@ class MaatCourtDataClientTest {
     @Test
     void givenANotFoundException_whenGetApiResponseViaGetIsInvoked_thenTheMethodShouldReturnNull() {
         setupNotFoundTest();
-        ClientResponse response = maatCourtDataClient.getApiResponseViaGET(
+        ClientResponse response = maatAPIClient.getApiResponseViaGET(
                 ClientResponse.class,
                 MOCK_URL,
                 Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
@@ -85,7 +130,7 @@ class MaatCourtDataClientTest {
     void givenAnInvalidResponse_whenGetApiResponseViaGetIsInvoked_thenAnAppropriateErrorShouldBeThrown() {
         setupInvalidResponseTest();
         assertThatThrownBy(
-                () -> maatCourtDataClient.getApiResponseViaGET(
+                () -> maatAPIClient.getApiResponseViaGET(
                         ClientResponse.class,
                         MOCK_URL,
                         Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
@@ -93,6 +138,100 @@ class MaatCourtDataClientTest {
                 )
         ).isInstanceOf(APIClientException.class).getCause().isInstanceOf(WebClientResponseException.class);
     }
+
+    @Test
+    void givenCorrectParams_whenGetApiResponseViaPOSTIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod() throws JsonProcessingException {
+        ApiFinancialAssessment requestBody = TestModelDataBuilder.getFinancialAssessment();
+        setupValidResponseTest(TestModelDataBuilder.getFinancialAssessment());
+        maatAPIClient.getApiResponseViaPOST(
+                requestBody,
+                ApiFinancialAssessment.class,
+                MOCK_URL,
+                Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID)
+        );
+        verify(maatAPIClient)
+                .getApiResponse(
+                        requestBody,
+                        ApiFinancialAssessment.class,
+                        MOCK_URL,
+                        Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
+                        HttpMethod.POST
+                );
+    }
+
+    @Test
+    void givenCorrectParams_whenGetApiResponseViaPUTIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod() throws JsonProcessingException {
+        ApiFinancialAssessment requestBody = TestModelDataBuilder.getFinancialAssessment();
+        setupValidResponseTest(TestModelDataBuilder.getFinancialAssessment());
+        maatAPIClient.getApiResponseViaPUT(
+                requestBody,
+                ApiFinancialAssessment.class,
+                MOCK_URL,
+                Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID)
+        );
+
+        verify(maatAPIClient)
+                .getApiResponse(
+                        requestBody,
+                        ApiFinancialAssessment.class,
+                        MOCK_URL,
+                        Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
+                        HttpMethod.PUT
+                );
+    }
+
+    @Test
+    void givenAInvalidUrl_whenGetApiResponseViaGetIsInvoked_thenTheMethodShouldReturnNull() {
+        setupNotFoundTest();
+        ClientResponse response = maatAPIClient.getApiResponseViaGET(
+                ClientResponse.class,
+                MOCK_URL,
+                REP_ID
+        );
+        assertThat(response).isNull();
+    }
+
+    @Test
+    void givenAInvalidResponse_whenGetApiResponseViaGetIsInvoked_thenAnAppropriateErrorShouldBeThrown() {
+        setupInvalidResponseTest();
+        assertThatThrownBy(
+                () -> maatAPIClient.getApiResponseViaGET(
+                        ClientResponse.class,
+                        MOCK_URL,
+                        REP_ID
+                )
+        ).isInstanceOf(APIClientException.class).getCause().isInstanceOf(WebClientResponseException.class);
+    }
+
+    @Test
+    void givenCorrectParams_whenGetApiResponseViaGETIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod() throws JsonProcessingException {
+        ApiProcessRepOrderResponse response = new ApiProcessRepOrderResponse();
+        response.setRepOrderDecision("PASS");
+        setupValidResponseTest(response);
+        ApiProcessRepOrderResponse apiResponse = maatAPIClient.getApiResponseViaGET(
+                ApiProcessRepOrderResponse.class,
+                MOCK_URL,
+                Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
+                1234
+        );
+        verify(shortCircuitExchangeFunction, times(1)).exchange(any());
+        assertThat(apiResponse.getRepOrderDecision()).isEqualTo(response.getRepOrderDecision());
+    }
+
+    @Test
+    void givenCorrectParams_whenGetGraphQLApiResponseIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod()
+            throws JsonProcessingException {
+        RepOrderDTO responseBody = new RepOrderDTO();
+        responseBody.setId(1234);
+        setupValidResponseTest(responseBody);
+        RepOrderDTO apiRes = maatAPIClient.getGraphQLApiResponse(
+                RepOrderDTO.class,
+                MOCK_URL,
+                Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID)
+        );
+        assertThat(apiRes.getId()).isEqualTo(responseBody.getId());
+    }
+
 
     private void setupNotFoundTest() {
         when(shortCircuitExchangeFunction.exchange(any()))
@@ -115,98 +254,6 @@ class MaatCourtDataClientTest {
                                 .build()
                         )
                 );
-    }
-
-    @Test
-    void givenAInvalidUrl_whenGetApiResponseViaGetIsInvoked_thenTheMethodShouldReturnNull() {
-        setupNotFoundTest();
-        ClientResponse response = maatCourtDataClient.getApiResponseViaGET(
-                ClientResponse.class,
-                MOCK_URL,
-                REP_ID
-        );
-        assertThat(response).isNull();
-    }
-
-    @Test
-    void givenAInvalidResponse_whenGetApiResponseViaGetIsInvoked_thenAnAppropriateErrorShouldBeThrown() {
-        setupInvalidResponseTest();
-        assertThatThrownBy(
-                () -> maatCourtDataClient.getApiResponseViaGET(
-                        ClientResponse.class,
-                        MOCK_URL,
-                        REP_ID
-                )
-        ).isInstanceOf(APIClientException.class).getCause().isInstanceOf(WebClientResponseException.class);
-    }
-
-    @Test
-    void givenCorrectParams_whenGetApiResponseViaPOSTIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod() throws JsonProcessingException {
-        ApiProcessRepOrderRequest requestBody = new ApiProcessRepOrderRequest();
-        setupValidResponseTest(new ApiProcessRepOrderResponse());
-        maatCourtDataClient.getApiResponseViaPOST(
-                requestBody,
-                ApiProcessRepOrderResponse.class,
-                MOCK_URL,
-                Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID)
-        );
-        verify(maatCourtDataClient)
-                .getApiResponse(
-                        requestBody,
-                        ApiProcessRepOrderResponse.class,
-                        MOCK_URL,
-                        Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
-                        HttpMethod.POST
-                );
-    }
-
-    @Test
-    void givenCorrectParams_whenGetApiResponseViaPUTIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod() throws JsonProcessingException {
-        ApiProcessRepOrderRequest requestBody = new ApiProcessRepOrderRequest();
-        setupValidResponseTest(new ApiProcessRepOrderResponse());
-        maatCourtDataClient.getApiResponseViaPUT(
-                requestBody,
-                ApiProcessRepOrderResponse.class,
-                MOCK_URL,
-                Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID)
-        );
-        verify(maatCourtDataClient)
-                .getApiResponse(
-                        requestBody,
-                        ApiProcessRepOrderResponse.class,
-                        MOCK_URL,
-                        Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
-                        HttpMethod.PUT
-                );
-    }
-
-    @Test
-    void givenCorrectParams_whenGetApiResponseViaGETIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod() throws JsonProcessingException {
-        ApiProcessRepOrderResponse response = new ApiProcessRepOrderResponse();
-        response.setRepOrderDecision("PASS");
-        setupValidResponseTest(response);
-        ApiProcessRepOrderResponse apiResponse = maatCourtDataClient.getApiResponseViaGET(
-                ApiProcessRepOrderResponse.class,
-                MOCK_URL,
-                Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
-                1234
-        );
-        verify(shortCircuitExchangeFunction, times(1)).exchange(any());
-        assertThat(apiResponse.getRepOrderDecision()).isEqualTo(response.getRepOrderDecision());
-    }
-
-    @Test
-    void givenCorrectParams_whenGetGraphQLApiResponseIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod()
-            throws JsonProcessingException {
-        RepOrderDTO responseBody = new RepOrderDTO();
-        responseBody.setId(1234);
-        setupValidResponseTest(responseBody);
-        RepOrderDTO apiRes = maatCourtDataClient.getGraphQLApiResponse(
-                RepOrderDTO.class,
-                MOCK_URL,
-                Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID)
-        );
-        assertThat(apiRes.getId()).isEqualTo(responseBody.getId());
     }
 
     private <T> void setupValidResponseTest(T returnBody) throws JsonProcessingException {

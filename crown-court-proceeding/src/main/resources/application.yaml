@@ -54,12 +54,12 @@ spring:
     oauth2:
       client:
         provider:
-          maatapi:
+          maat-api:
             token-uri: ${MAAT_API_OAUTH_URL}
           cda:
             token-uri: ${CDA_OAUTH_URL}
         registration:
-          maatapi:
+          maat-api:
             client-id: ${MAAT_API_OAUTH_CLIENT_ID}
             client-secret: ${MAAT_API_OAUTH_CLIENT_SECRET}
             authorization-grant-type: client_credentials
@@ -67,9 +67,10 @@ spring:
             clientId: ${CDA_OAUTH_CLIENT_ID}
             clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
             authorizationGrantType: client_credentials
-      resourceserver:
+      resource-server:
         jwt:
           issuer-uri: ${crown-court-proceeding.security.issuer-uri}
+
 sentry:
   dsn: ${SENTRY_DSN}
   environment: ${SENTRY_ENV}
@@ -98,50 +99,48 @@ crown-court-proceeding:
   security:
     issuer-uri: http://localhost:${server.port}
 
-maatApi:
-  oAuthEnabled: true
-  baseUrl: ${MAAT_API_BASE_URL}
-  assessments-domain: /api/internal/v1/assessment
-  ioj-appeal-endpoints:
-    find-url: ${maatApi.assessments-domain}/ioj-appeal/repId/{repId}/current-passed
-  rep-order-endpoints:
-    find-url: ${maatApi.assessments-domain}/rep-orders/{repId}
-    update-url: ${maatApi.assessments-domain}/rep-orders
-    find-outcome-url: ${maatApi.assessments-domain}/rep-orders/cc-outcome/reporder/{repId}
-    create-outcome-url: ${maatApi.assessments-domain}/rep-orders/cc-outcome
-  graphql-endpoints:
-    graphql-query-url: ${maatApi.assessments-domain}/graphQL
-  offence:
-    find-url: ${maatApi.assessments-domain}/offence/case/{caseId}
-    offence-count-url: ${maatApi.assessments-domain}/offence/{offenceId}/case/{caseId}
-  wq-hearing-endpoints:
-    find-url: ${maatApi.assessments-domain}/wq-hearing/{hearingUUID}/maatId/{maatId}
-  wq-link-register-endpoints:
-    find-url: ${maatApi.assessments-domain}/wq-link-register/{maatId}
-  wq-offence:
-    offence-count-url: ${maatApi.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
-  xlat-result:
-    result-codes-for-cc-imprisonment-url: ${maatApi.assessments-domain}/xlat-result/cc-imprisonment
-    result-codes-for-cc-bench-warrant-url: ${maatApi.assessments-domain}/xlat-result/cc-bench-warrant
-    result-codes-for-wqtype-subtype-url: ${maatApi.assessments-domain}/xlat-result/wqType/{wqType}/subType/{subType}
-  result:
-    result-codes-by-caseid-asnseq-url: ${maatApi.assessments-domain}/result/caseId/{caseId}/asnSeq/{asnSeq}
-  wq-result:
-    result-codes-by-caseid-asnseq-url: ${maatApi.assessments-domain}/wq-result/caseId/{caseId}/asnSeq/{asnSeq}
-  crown-court-stored-procedure:
-    update-crown-court-outcome-url: ${maatApi.assessments-domain}/crown-court/updateCCOutcome
-  crown-court-processing:
-    update-appeal-cc-sentence-url: ${maatApi.assessments-domain}/crown-court/update-appeal-cc-sentence
-    update-cc-sentence-url: ${maatApi.assessments-domain}/crown-court/update-cc-sentence
-  reservations:
-    is-maat-record-locked-url: ${maatApi.assessments-domain}/reservations/{maatId}
+services:
+  court-data-adapter:
+    base-url: ${CDA_BASE_URL}
+    hearing-url: "/api/internal/v2/hearing_results/{hearingId}"
 
-cda:
-  url: ${CDA_BASE_URL}
-  laastatus:
-    url: "/api/internal/v1/representation_orders"
-  hearing:
-    url: "/api/internal/v2/hearing_results/{hearingId}"
+  maat-api:
+    oAuthEnabled: true
+    baseUrl: ${MAAT_API_BASE_URL}
+    assessments-domain: /api/internal/v1/assessment
+    ioj-appeal-endpoints:
+      find-url: ${services.maat-api.assessments-domain}/ioj-appeal/repId/{repId}/current-passed
+    rep-order-endpoints:
+      find-url: ${services.maat-api.assessments-domain}/rep-orders/{repId}
+      update-url: ${services.maat-api.assessments-domain}/rep-orders
+      find-outcome-url: ${services.maat-api.assessments-domain}/rep-orders/cc-outcome/reporder/{repId}
+      create-outcome-url: ${services.maat-api.assessments-domain}/rep-orders/cc-outcome
+    graphql-endpoints:
+      graphql-query-url: ${services.maat-api.assessments-domain}/graphQL
+    offence-endpoints:
+      find-url: ${services.maat-api.assessments-domain}/offence/case/{caseId}
+      offence-count-url: ${services.maat-api.assessments-domain}/offence/{offenceId}/case/{caseId}
+    wq-hearing-endpoints:
+      find-url: ${services.maat-api.assessments-domain}/wq-hearing/{hearingUUID}/maatId/{maatId}
+    wq-link-register-endpoints:
+      find-url: ${services.maatApi.assessments-domain}/wq-link-register/{maatId}
+    wq-offence-endpoints:
+      offence-count-url: ${services.maat-api.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
+    xlat-result-endpoints:
+      result-codes-for-cc-imprisonment-url: ${services.maat-api.assessments-domain}/xlat-result/cc-imprisonment
+      result-codes-for-cc-bench-warrant-url: ${services.maat-api.assessments-domain}/xlat-result/cc-bench-warrant
+      result-codes-for-wqtype-subtype-url: ${services.maat-api.assessments-domain}/xlat-result/wqType/{wqType}/subType/{subType}
+    result-endpoints:
+      result-codes-by-caseid-asnseq-url: ${services.maat-api.assessments-domain}/result/caseId/{caseId}/asnSeq/{asnSeq}
+    wq-result-endpoints:
+      result-codes-by-caseid-asnseq-url: ${services.maat-api.assessments-domain}/wq-result/caseId/{caseId}/asnSeq/{asnSeq}
+    crown-court-stored-procedure-endpoints:
+      update-crown-court-outcome-url: ${services.maat-api.assessments-domain}/crown-court/updateCCOutcome
+    crown-court-processing-endpoints:
+      update-appeal-cc-sentence-url: ${services.maat-api.assessments-domain}/crown-court/update-appeal-cc-sentence
+      update-cc-sentence-url: ${services.maat-api.assessments-domain}/crown-court/update-cc-sentence
+    reservation-endpoints:
+      is-maat-record-locked-url: ${services.maat-api.assessments-domain}/reservations/{maatId}
 
 queue:
   message:
