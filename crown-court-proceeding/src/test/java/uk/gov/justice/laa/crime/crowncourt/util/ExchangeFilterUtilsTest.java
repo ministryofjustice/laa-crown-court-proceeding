@@ -107,6 +107,8 @@ class ExchangeFilterUtilsTest {
         softly.assertThat(memoryAppender.contains(
                 "Authorization", Level.INFO)
         ).isFalse();
+
+        softly.assertAll();
     }
 
     @Test
