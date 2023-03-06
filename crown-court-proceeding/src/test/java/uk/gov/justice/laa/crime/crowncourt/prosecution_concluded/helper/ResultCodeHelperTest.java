@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -128,6 +127,12 @@ class ResultCodeHelperTest {
         when(maatCourtDataService.findByCjsResultCodeIn()).thenReturn(imprisonmentResultCodes());
         String status = resultCodeHelper.isBenchWarrantIssued(PART_CONVICTED.getValue(), List.of("4545"));
         assertThat(status).isNull();
+    }
+
+    @Test
+    void givenAEmptyOutcome_whenIsBenchWarrantIssuedIsInvoked_thenReturn() {
+        String isImp = resultCodeHelper.isBenchWarrantIssued("", List.of("0000"));
+        assertThat(isImp).isNull();
     }
 
     private List<Integer> imprisonmentResultCodes() {

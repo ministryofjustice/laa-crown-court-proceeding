@@ -16,7 +16,6 @@ class CrownCourtDTOBuilderTest {
     @InjectSoftAssertions
     private SoftAssertions softly;
 
-
     private void checkCommonFields(ApiProcessRepOrderRequest request, CrownCourtDTO dto) {
         softly.assertThat(dto.getRepId())
                 .isEqualTo(request.getRepId());
@@ -42,6 +41,7 @@ class CrownCourtDTOBuilderTest {
                 .isEqualTo(request.getFinancialAssessment());
         softly.assertThat(dto.getPassportAssessment())
                 .isEqualTo(request.getPassportAssessment());
+        softly.assertAll();
     }
 
     @Test
@@ -68,5 +68,6 @@ class CrownCourtDTOBuilderTest {
                 .isEqualTo(request.getIsImprisoned());
         softly.assertThat(dto.getPaymentDetails())
                 .isEqualTo(request.getPaymentDetails());
+        softly.assertAll();
     }
 }
