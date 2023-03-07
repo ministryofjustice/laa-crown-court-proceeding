@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewWorkReason {
+
+    @JsonCreator
+    public NewWorkReason(String code) {
+        this.code = code;
+    }
 
     @JsonValue
     private String code;
