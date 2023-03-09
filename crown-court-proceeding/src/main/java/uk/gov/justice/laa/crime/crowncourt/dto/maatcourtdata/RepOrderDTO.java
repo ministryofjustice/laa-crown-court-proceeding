@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,8 +27,10 @@ public class RepOrderDTO {
     private String magsOutcomeDate;
     private LocalDate magsOutcomeDateSet;
     private LocalDate committalDate;
+    @JsonIgnore
     @Builder.Default
     private List<PassportAssessmentDTO> passportAssessments = new ArrayList<>();
+    @JsonIgnore
     @Builder.Default
     private List<FinancialAssessmentDTO> financialAssessments = new ArrayList<>();
     private String decisionReasonCode;
