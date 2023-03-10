@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.crime.crowncourt.model.ChildWeightings;
 import uk.gov.justice.laa.crime.crowncourt.model.FinancialAssessmentDetails;
-import uk.gov.justice.laa.crime.crowncourt.model.NewWorkReason;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,7 +22,7 @@ public class FinancialAssessmentDTO {
     private Integer repId;
     private Integer initialAscrId;
     private String assessmentType;
-    private NewWorkReason newWorkReason;
+    private String newWorkReason;
     private LocalDateTime dateCreated;
     private String userCreated;
     private Integer cmuId;
