@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.staticdata.enums;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,7 @@ public enum CaseType {
     EITHER_WAY("EITHER WAY", "Either-Way", Boolean.FALSE);
 
     @NotNull
+    @JsonValue
     @JsonPropertyDescription("Specifies the case type")
     private final String caseTypeString;
     private final String description;

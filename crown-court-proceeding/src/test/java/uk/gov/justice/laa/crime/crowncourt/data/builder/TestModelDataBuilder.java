@@ -70,7 +70,7 @@ public class TestModelDataBuilder {
                 .withAppealTypeDate(TEST_IOJ_APPEAL_DECISION_DATE);
     }
 
-    private static ApiFinancialAssessment getFinancialAssessment() {
+    public static ApiFinancialAssessment getFinancialAssessment() {
         return new ApiFinancialAssessment()
                 .withInitResult(InitAssessmentResult.FULL.getResult())
                 .withInitStatus(CurrentStatus.COMPLETE)
