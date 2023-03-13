@@ -65,5 +65,5 @@
     }
   },
   "additionalProperties": false,
-  "required": ["repId", "caseType", "magCourtOutcome", "dateReceived", "crownCourtSummary", "iojAppeal", "financialAssessment"]
+  "required": ["repId", "caseType", "dateReceived", "crownCourtSummary", "iojAppeal", "financialAssessment"]
 }
