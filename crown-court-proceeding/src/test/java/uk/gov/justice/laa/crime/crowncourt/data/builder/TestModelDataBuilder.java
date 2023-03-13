@@ -2,9 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
@@ -40,6 +38,8 @@ public class TestModelDataBuilder {
 
     public static final Integer TEST_CASE_ID = 45673;
     public static final String TEST_OFFENCE_ID = "324234";
+
+    public static final Integer PASSPORT_ID =23456;
 
     public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
         return new ApiProcessRepOrderRequest()
@@ -89,9 +89,9 @@ public class TestModelDataBuilder {
 
     public static ApiProcessRepOrderResponse getApiProcessRepOrderResponse() {
         return new ApiProcessRepOrderResponse()
-                .withRepOrderDecision(MOCK_DECISION)
-                .withRepOrderDate(TEST_REP_ORDER_DATE)
-                .withRepType("");
+                .withRepOrderDecision("Granted - Passed Means Test")
+                .withRepOrderDate(TEST_DECISION_DATE)
+                .withRepType("Declined Rep Order");
     }
 
     public static CrownCourtDTO getCrownCourtDTO() {
@@ -294,6 +294,25 @@ public class TestModelDataBuilder {
                }
             }
                       """;
+    }
+
+    public static RepOrderDTO getGraphQLRepOrderDTO() {
+
+        return RepOrderDTO.builder()
+                .id(TEST_REP_ID)
+                .caseId(TEST_CASE_ID.toString())
+                .dateModified(TEST_REP_ORDER_DATE)
+                .sentenceOrderDate(TEST_REP_ORDER_DATE.toLocalDate())
+                .passportAssessments(List.of(PassportAssessmentDTO.builder().id(PASSPORT_ID).build()))
+                .financialAssessments(List.of(FinancialAssessmentDTO.builder().build()))
+                .build();
+    }
+
+    public static  FinancialAssessmentDTO getFinancialAssessmentDTO() {
+        return  FinancialAssessmentDTO.builder()
+                .id(1)
+                .assessmentType("Full")
+                .build();
     }
 
 }

@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,11 +25,12 @@ import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
+import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -96,6 +98,19 @@ class CrownCourtProceedingControllerTest {
 
         JacksonJsonParser jsonParser = new JacksonJsonParser();
         return jsonParser.parseMap(resultString).get("access_token").toString();
+    }
+
+    private MockHttpServletRequestBuilder buildRequestGivenContent(HttpMethod method, String endpointUrl, String content,
+                                                                   boolean withAuth) throws Exception {
+        MockHttpServletRequestBuilder requestBuilder =
+                MockMvcRequestBuilders.request(method, endpointUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content);
+        if (withAuth) {
+            final String accessToken = obtainAccessToken();
+            requestBuilder.header("Authorization", "Bearer " + accessToken);
+        }
+        return requestBuilder;
     }
 
     @Test
@@ -179,5 +194,22 @@ class CrownCourtProceedingControllerTest {
     void updateApplication_Unauthorized_NoAccessToken() throws Exception {
         mvc.perform(buildRequestGivenContent(HttpMethod.PUT, "{}", false))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void givenAValidContent_whenGraphQLQueryIsInvoked_thenSuccess() throws Exception {
+        when(proceedingService.graphQLQuery()).thenReturn(TestModelDataBuilder.getGraphQLRepOrderDTO());
+        MvcResult result = mvc.perform(buildRequestGivenContent(HttpMethod.POST, ENDPOINT_URL + "/graphql", "{}", Boolean.TRUE))
+                .andExpect(status().isOk()).andReturn();
+        assertThat(result.getResponse().getContentAsString())
+                .isEqualTo(objectMapper.writeValueAsString(TestModelDataBuilder.getGraphQLRepOrderDTO()));
+    }
+
+    @Test
+    void givenAValidContent_whenApiResponseIsError_thenGraphQLIsFails() throws Exception {
+
+        doThrow(new APIClientException()).when(proceedingService).graphQLQuery();
+        mvc.perform(buildRequestGivenContent(HttpMethod.POST, ENDPOINT_URL + "/graphql", "{}", Boolean.TRUE))
+                .andExpect(status().is5xxServerError());
     }
 }
