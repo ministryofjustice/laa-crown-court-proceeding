@@ -37,8 +37,8 @@ public class ProceedingService {
     public ApiProcessRepOrderResponse processRepOrder(CrownCourtDTO dto) {
         ApiProcessRepOrderResponse apiProcessRepOrderResponse = new ApiProcessRepOrderResponse();
         if (caseTypes.contains(dto.getCaseType()) ||
-                (dto.getCaseType() == CaseType.EITHER_WAY &&
-                        !dto.getMagCourtOutcome().equals(MagCourtOutcome.RESOLVED_IN_MAGS))) {
+                (CaseType.EITHER_WAY == dto.getCaseType() &&
+                        MagCourtOutcome.RESOLVED_IN_MAGS != dto.getMagCourtOutcome())) {
             repOrderService.getRepDecision(dto);
             repOrderService.determineCrownRepType(dto);
             ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineRepOrderDate(dto);
