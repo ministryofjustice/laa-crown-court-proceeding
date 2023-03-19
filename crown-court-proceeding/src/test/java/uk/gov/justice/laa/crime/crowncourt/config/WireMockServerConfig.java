@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.crowncourt.controller;
+package uk.gov.justice.laa.crime.crowncourt.config;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.springframework.boot.test.context.TestConfiguration;
