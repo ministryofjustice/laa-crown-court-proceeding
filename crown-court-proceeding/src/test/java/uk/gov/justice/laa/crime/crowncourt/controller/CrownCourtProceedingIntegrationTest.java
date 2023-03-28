@@ -226,7 +226,7 @@ class CrownCourtProceedingIntegrationTest {
         var updateApplicationResponse = TestModelDataBuilder.getApiUpdateApplicationResponse();
         ApiUpdateApplicationRequest apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
         apiUpdateApplicationRequest.setCaseType(CaseType.APPEAL_CC);
-        webServer.stubFor(get(urlPathMatching(MAAT_COURT_API_ENDPOINT_URL)).willReturn(aResponse()
+        webServer.stubFor(put(urlPathMatching(MAAT_COURT_API_ENDPOINT_URL)).willReturn(aResponse()
                 .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .withBody(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderDTO()))));
 
