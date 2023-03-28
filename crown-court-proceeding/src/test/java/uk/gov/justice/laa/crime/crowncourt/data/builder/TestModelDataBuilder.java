@@ -29,6 +29,7 @@ public class TestModelDataBuilder {
             LocalDateTime.of(2022, 1, 19, 15, 1, 25);
     public static final LocalDateTime TEST_SENTENCE_ORDER_DATE =
             LocalDateTime.of(2022, 2, 19, 15, 1, 25);
+    public static final LocalDateTime TEST_DATE_MODIFIED = LocalDateTime.now();
 
     public static final String MEANS_ASSESSMENT_TRANSACTION_ID = "7c49ebfe-fe3a-4f2f-8dad-f7b8f03b8327";
     public static final String MOCK_DECISION = "MOCK_DECISION";
@@ -315,4 +316,14 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static ApiUpdateApplicationResponse getApiUpdateApplicationResponse() {
+        return new ApiUpdateApplicationResponse()
+                .withModifiedDateTime(TEST_DATE_MODIFIED);
+    }
+
+    public static RepOrderDTO getRepOrderDTO() {
+        return RepOrderDTO.builder()
+                .dateModified(TEST_DATE_MODIFIED)
+                .build();
+    }
 }
