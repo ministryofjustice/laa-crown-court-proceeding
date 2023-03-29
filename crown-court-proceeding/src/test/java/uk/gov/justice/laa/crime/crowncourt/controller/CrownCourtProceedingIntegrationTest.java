@@ -29,6 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.WireMockServerConfig;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -222,9 +223,17 @@ class CrownCourtProceedingIntegrationTest {
 
     @Test
     void givenAValidContent_whenUpdateApplicationIsInvoked_thenUpdateApplicationIsSuccess() throws Exception {
-        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, objectMapper.writeValueAsString(
-                        TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE))))
-                .andExpect(status().isOk());
+        var updateApplicationResponse = TestModelDataBuilder.getApiUpdateApplicationResponse();
+        ApiUpdateApplicationRequest apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
+        apiUpdateApplicationRequest.setCaseType(CaseType.APPEAL_CC);
+        webServer.stubFor(put(urlPathMatching(MAAT_COURT_API_ENDPOINT_URL)).willReturn(aResponse()
+                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .withBody(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderDTO()))));
+
+        MvcResult result = mvc.perform(buildRequestGivenContent(HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateApplicationRequest)))
+                .andExpect(status().isOk()).andReturn();
+
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(updateApplicationResponse));
     }
 
     @Test

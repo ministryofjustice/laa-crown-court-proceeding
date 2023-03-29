@@ -203,6 +203,8 @@ class ProceedingServiceTest {
     @Test
     void givenCCApplication_whenUpdateApplicationIsInvoked_thenSentenceOrderDateIsPersisted() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
+        when(maatCourtDataService.updateRepOrder(any(UpdateRepOrderRequestDTO.class), anyString()))
+                .thenReturn(TestModelDataBuilder.getRepOrderDTO());
         proceedingService.updateApplication(requestDTO);
         verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class), anyString());
     }
