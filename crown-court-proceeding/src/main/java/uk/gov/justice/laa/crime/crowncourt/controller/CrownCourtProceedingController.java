@@ -17,6 +17,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.ErrorDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 
 import javax.validation.Valid;
@@ -86,9 +87,9 @@ public class CrownCourtProceedingController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<Object> updateApplication(@Valid @RequestBody ApiUpdateApplicationRequest request) {
-        proceedingService.updateApplication(preProcessRequest(request));
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ApiUpdateApplicationResponse> updateApplication(@Valid @RequestBody ApiUpdateApplicationRequest request) {
+        CrownCourtDTO crownCourtDTO = preProcessRequest(request);
+        return ResponseEntity.ok(proceedingService.updateApplication(crownCourtDTO));
     }
 
     @PostMapping(value = "/graphql", produces = MediaType.APPLICATION_JSON_VALUE)

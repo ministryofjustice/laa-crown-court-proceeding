@@ -162,10 +162,13 @@ class CrownCourtProceedingControllerTest {
         var apiUpdateApplicationRequest =
                 TestModelDataBuilder.getApiUpdateApplicationRequest(IS_VALID);
         var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
-        doNothing().when(proceedingService).updateApplication(any(CrownCourtDTO.class));
+        var updateApplicationResponse = TestModelDataBuilder.getApiUpdateApplicationResponse();
+        when(proceedingService.updateApplication(any(CrownCourtDTO.class)))
+                .thenReturn(updateApplicationResponse);
 
         mvc.perform(buildRequestGivenContent(HttpMethod.PUT, updateApplicationRequestJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test

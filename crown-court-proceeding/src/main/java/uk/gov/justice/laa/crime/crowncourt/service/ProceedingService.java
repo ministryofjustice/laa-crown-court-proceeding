@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
@@ -50,9 +52,10 @@ public class ProceedingService {
         return apiProcessRepOrderResponse;
     }
 
-    public void updateApplication(CrownCourtDTO dto) {
-        ApiProcessRepOrderResponse apiProcessRepOrderResponse = processRepOrder(dto);
-        maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto, apiProcessRepOrderResponse), dto.getLaaTransactionId());
+
+    public ApiUpdateApplicationResponse updateApplication(CrownCourtDTO dto) {
+        RepOrderDTO repOrderDTO = maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto, processRepOrder(dto)), dto.getLaaTransactionId());
+        return new ApiUpdateApplicationResponse().withModifiedDateTime(repOrderDTO.getDateModified());
     }
 
     public Object graphQLQuery() throws IOException {
