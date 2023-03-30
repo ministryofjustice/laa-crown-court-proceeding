@@ -2,7 +2,6 @@ version: 2.1
 
 orbs:
   snyk: snyk/snyk@1.4.0
-  helm: circleci/helm@1.2.0
 
 _snyk_options: &snyk_options
   project: "${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}"
@@ -57,13 +56,14 @@ commands:
             kubectl config set-context ${K8S_CLUSTER_NAME} --cluster=${K8S_CLUSTER_NAME} --user=circleci --namespace=laa-crown-court-proceeding-<< parameters.environment >>
             kubectl config use-context ${K8S_CLUSTER_NAME}
             kubectl --namespace=laa-crown-court-proceeding-<< parameters.environment >> get pods
-      - helm/upgrade-helm-chart:
-          namespace: laa-crown-court-proceeding-<< parameters.environment >>
-          update-repositories: false
-          chart: ./helm_deploy/laa-crown-court-proceeding/
-          release-name: laa-crown-court-proceeding
-          values: ./helm_deploy/laa-crown-court-proceeding/values-<< parameters.environment >>.yaml
-          values-to-override: image.tag=${CIRCLE_SHA1}
+      - run:
+          name: Upgrade helm chart
+          command: |
+            helm upgrade laa-crown-court-proceeding ./helm_deploy/laa-crown-court-proceeding/. \
+                          --install --wait \
+                          --namespace=laa-crown-court-proceeding-<< parameters.environment >> \
+                          --values ./helm_deploy/laa-crown-court-proceeding/values-<< parameters.environment >>.yaml \
+                          --set image.tag="${CIRCLE_SHA1}"
 
 # ------------------
 # JOBS
