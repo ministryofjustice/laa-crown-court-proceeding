@@ -8,6 +8,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderReque
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPaymentDetails;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 
 import java.time.LocalDateTime;
 
@@ -17,16 +18,16 @@ import static java.util.Optional.ofNullable;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateRepOrderDTOBuilder {
 
-    public static UpdateRepOrderRequestDTO build(CrownCourtDTO crownCourtDTO) {
+    public static UpdateRepOrderRequestDTO build(CrownCourtDTO crownCourtDTO, ApiProcessRepOrderResponse apiProcessRepOrderResponse) {
         ApiPaymentDetails paymentDetails = crownCourtDTO.getPaymentDetails();
         ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
         return UpdateRepOrderRequestDTO.builder()
                 .repId(crownCourtDTO.getRepId())
                 .crownRepId(crownCourtDTO.getCrownRepId())
-                .crownRepOrderDecision(crownCourtSummary.getRepOrderDecision())
-                .crownRepOrderType(crownCourtSummary.getRepType())
+                .crownRepOrderDecision(apiProcessRepOrderResponse.getRepOrderDecision())
+                .crownRepOrderType(apiProcessRepOrderResponse.getRepType())
                 .crownRepOrderDate(
-                        ofNullable(crownCourtSummary.getRepOrderDate())
+                        ofNullable(apiProcessRepOrderResponse.getRepOrderDate())
                         .map(LocalDateTime::toLocalDate)
                         .orElse(null))
                 .crownWithdrawalDate(

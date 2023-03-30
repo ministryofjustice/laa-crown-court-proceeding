@@ -51,8 +51,8 @@ public class ProceedingService {
     }
 
     public void updateApplication(CrownCourtDTO dto) {
-        processRepOrder(dto);
-        maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto), dto.getLaaTransactionId());
+        ApiProcessRepOrderResponse apiProcessRepOrderResponse = processRepOrder(dto);
+        maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto, apiProcessRepOrderResponse), dto.getLaaTransactionId());
     }
 
     public Object graphQLQuery() throws IOException {
