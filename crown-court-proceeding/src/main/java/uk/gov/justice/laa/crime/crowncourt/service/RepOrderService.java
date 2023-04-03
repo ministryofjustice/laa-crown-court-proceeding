@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.builder.OutcomeDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
@@ -132,9 +133,9 @@ public class RepOrderService {
     }
 
     public ReviewResult getReviewResult(ApiIOJAppeal apiIOJAppeal) {
-        if (apiIOJAppeal.getDecisionResult() != null) {
+        if (StringUtils.isNotBlank(apiIOJAppeal.getDecisionResult())) {
             return ReviewResult.getFrom(apiIOJAppeal.getDecisionResult());
-        } else if (apiIOJAppeal.getIojResult() != null) {
+        } else if (StringUtils.isNotBlank(apiIOJAppeal.getIojResult())) {
             return ReviewResult.getFrom(apiIOJAppeal.getIojResult());
         }
         return null;
@@ -142,7 +143,7 @@ public class RepOrderService {
 
     public ApiCrownCourtSummary determineCrownRepType(CrownCourtDTO requestDTO) {
         ApiCrownCourtSummary crownCourtSummary = requestDTO.getCrownCourtSummary();
-        if (crownCourtSummary.getRepOrderDecision() != null) {
+        if (StringUtils.isNotBlank(crownCourtSummary.getRepOrderDecision())) {
             if (requestDTO.getMagCourtOutcome() == MagCourtOutcome.SENT_FOR_TRIAL
                     || requestDTO.getMagCourtOutcome() == MagCourtOutcome.COMMITTED_FOR_TRIAL) {
                 determineRepTypeByDecisionReason(requestDTO, crownCourtSummary);
@@ -186,7 +187,7 @@ public class RepOrderService {
     public ApiCrownCourtSummary determineRepOrderDate(CrownCourtDTO requestDTO) {
         ApiCrownCourtSummary crownCourtSummary = requestDTO.getCrownCourtSummary();
         String repOrderDecision = crownCourtSummary.getRepOrderDecision();
-        if (repOrderDecision != null && crownCourtSummary.getRepOrderDate() == null) {
+        if (StringUtils.isNotBlank(repOrderDecision) && crownCourtSummary.getRepOrderDate() == null) {
             switch (requestDTO.getCaseType()) {
                 case INDICTABLE -> crownCourtSummary.setRepOrderDate(requestDTO.getDecisionDate());
                 case EITHER_WAY -> crownCourtSummary.setRepOrderDate(
