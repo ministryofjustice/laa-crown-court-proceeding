@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
@@ -41,6 +42,9 @@ public class TestModelDataBuilder {
     public static final String TEST_OFFENCE_ID = "324234";
 
     public static final Integer PASSPORT_ID =23456;
+
+    public static final LocalDateTime TEST_CROWN_REP_ORDER_DATE =
+            LocalDateTime.of(2022, 10, 19, 0, 0, 0);
 
     public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
         return new ApiProcessRepOrderRequest()
@@ -318,12 +322,18 @@ public class TestModelDataBuilder {
 
     public static ApiUpdateApplicationResponse getApiUpdateApplicationResponse() {
         return new ApiUpdateApplicationResponse()
-                .withModifiedDateTime(TEST_DATE_MODIFIED);
+                .withModifiedDateTime(TEST_DATE_MODIFIED)
+                .withCrownRepOrderDate(TEST_CROWN_REP_ORDER_DATE)
+                .withCrownRepOrderDecision(Constants.GRANTED_PASSED_MEANS_TEST)
+                .withCrownRepOrderType(Constants.CROWN_COURT_ONLY);
     }
 
     public static RepOrderDTO getRepOrderDTO() {
         return RepOrderDTO.builder()
                 .dateModified(TEST_DATE_MODIFIED)
+                .crownRepOrderDecision(Constants.GRANTED_PASSED_MEANS_TEST)
+                .crownRepOrderDate(TEST_CROWN_REP_ORDER_DATE.toLocalDate())
+                .crownRepOrderType(Constants.CROWN_COURT_ONLY)
                 .build();
     }
 }

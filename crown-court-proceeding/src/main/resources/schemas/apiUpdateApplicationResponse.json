@@ -9,6 +9,19 @@
       "type": "string",
       "title": "Rep Order modified date time",
       "format": "date-time"
+    },
+    "crownRepOrderDecision": {
+      "type": "string",
+      "title": "Rep Order decision"
+    },
+    "crownRepOrderType": {
+      "type": "string",
+      "title": "crown court rep type"
+    },
+    "crownRepOrderDate": {
+      "type": "string",
+      "title": "crown court Rep Order decision",
+      "format": "date-time"
     }
   },
   "additionalProperties": false

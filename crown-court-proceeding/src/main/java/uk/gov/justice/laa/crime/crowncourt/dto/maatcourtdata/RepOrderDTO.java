@@ -36,6 +36,7 @@ public class RepOrderDTO {
     private String decisionReasonCode;
     private String crownRepOrderDecision;
     private String crownRepOrderType;
+    private LocalDate crownRepOrderDate;
     private LocalDate assessmentDateCompleted;
     private LocalDate sentenceOrderDate;
 }
