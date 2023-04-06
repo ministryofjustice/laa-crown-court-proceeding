@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 
 @ExtendWith(SoftAssertionsExtension.class)
 class UpdateRepOrderDTOBuilderTest {
@@ -18,18 +19,19 @@ class UpdateRepOrderDTOBuilderTest {
     @Test
     void givenCrownCourtDTO_whenBuildIsInvoked_thenCorrectUpdateRepOrderRequestDTOFieldsArePopulated() {
         CrownCourtDTO dto = TestModelDataBuilder.getCrownCourtDTO();
-        UpdateRepOrderRequestDTO updateRequest = UpdateRepOrderDTOBuilder.build(dto);
+        ApiProcessRepOrderResponse apiProcessRepOrderResponse = TestModelDataBuilder.getApiProcessRepOrderResponse();
+        UpdateRepOrderRequestDTO updateRequest = UpdateRepOrderDTOBuilder.build(dto, apiProcessRepOrderResponse);
 
         softly.assertThat(updateRequest.getRepId())
                 .isEqualTo(dto.getRepId());
         softly.assertThat(updateRequest.getCrownRepId())
                 .isEqualTo(dto.getCrownRepId());
         softly.assertThat(updateRequest.getCrownRepOrderDecision())
-                .isEqualTo(dto.getCrownCourtSummary().getRepOrderDecision());
+                .isEqualTo(apiProcessRepOrderResponse.getRepOrderDecision());
         softly.assertThat(updateRequest.getCrownRepOrderType())
-                .isEqualTo(dto.getCrownCourtSummary().getRepType());
+                .isEqualTo(apiProcessRepOrderResponse.getRepType());
         softly.assertThat(updateRequest.getCrownRepOrderDate())
-                .isEqualTo(dto.getCrownCourtSummary().getRepOrderDate().toLocalDate());
+                .isEqualTo(apiProcessRepOrderResponse.getRepOrderDate().toLocalDate());
         softly.assertThat(updateRequest.getCrownWithdrawalDate())
                 .isEqualTo(dto.getCrownCourtSummary().getWithdrawalDate());
         softly.assertThat(updateRequest.getEvidenceFeeLevel())

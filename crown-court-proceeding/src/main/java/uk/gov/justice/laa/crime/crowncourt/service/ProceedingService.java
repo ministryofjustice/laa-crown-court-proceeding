@@ -17,11 +17,14 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.util.SortUtils;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -52,11 +55,18 @@ public class ProceedingService {
         return apiProcessRepOrderResponse;
     }
 
+
     public ApiUpdateApplicationResponse updateApplication(CrownCourtDTO dto) {
-        processRepOrder(dto);
-        RepOrderDTO repOrderDTO = maatCourtDataService
-                .updateRepOrder(UpdateRepOrderDTOBuilder.build(dto), dto.getLaaTransactionId());
-        return new ApiUpdateApplicationResponse().withModifiedDateTime(repOrderDTO.getDateModified());
+        RepOrderDTO repOrderDTO = maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto, processRepOrder(dto)), dto.getLaaTransactionId());
+
+        ApiUpdateApplicationResponse apiUpdateApplicationResponse = new ApiUpdateApplicationResponse();
+        apiUpdateApplicationResponse.withModifiedDateTime(repOrderDTO.getDateModified());
+        apiUpdateApplicationResponse.withCrownRepOrderDate(
+                ofNullable(repOrderDTO.getCrownRepOrderDate()).map(LocalDate::atStartOfDay).orElse(null));
+        apiUpdateApplicationResponse.withCrownRepOrderDecision(repOrderDTO.getCrownRepOrderDecision());
+        apiUpdateApplicationResponse.withCrownRepOrderType(repOrderDTO.getCrownRepOrderType());
+
+        return apiUpdateApplicationResponse;
     }
 
     public Object graphQLQuery() throws IOException {
