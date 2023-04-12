@@ -17,14 +17,11 @@ management:
 
 springdoc:
   packagesToScan: uk.gov.justice.laa.crime.crowncourt
-  show-actuator: true
   api-docs:
-    path: /crown-court-proceeding
-    enabled: true
+    path: /open-api/api-docs
 
   swagger-ui:
-    path: /open-api/docs.html
-    enabled: true
+    path: open-api/swagger-ui/index.html
     operationsSorter: method
 
 spring:
