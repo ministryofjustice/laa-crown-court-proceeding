@@ -58,6 +58,8 @@ spring:
             token-uri: ${MAAT_API_OAUTH_URL}
           cda:
             token-uri: ${CDA_OAUTH_URL}
+          evidence-api:
+            token-uri: ${EVIDENCE_API_OAUTH_URL}
         registration:
           maat-api:
             client-id: ${MAAT_API_OAUTH_CLIENT_ID}
@@ -67,6 +69,10 @@ spring:
             clientId: ${CDA_OAUTH_CLIENT_ID}
             clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
             authorizationGrantType: client_credentials
+          evidence-api:
+            client-id: ${EVIDENCE_API_OAUTH_CLIENT_ID}
+            client-secret: ${EVIDENCE_API_OAUTH_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
       resource-server:
         jwt:
           issuer-uri: ${crown-court-proceeding.security.issuer-uri}
@@ -141,14 +147,12 @@ services:
       update-cc-sentence-url: ${services.maat-api.assessments-domain}/crown-court/update-cc-sentence
     reservation-endpoints:
       is-maat-record-locked-url: ${services.maat-api.assessments-domain}/reservations/{maatId}
+
   evidence:
     oAuthEnabled: true
-    baseUrl: ${CRIME_EVIDENCE_API_BASE_URL}
+    baseUrl: ${EVIDENCE_API_BASE_URL}
     evidence-fee-endpoints:
       evidence-fee-url: api/internal/v1/evidence/calculate-evidence-fee
-
-
-
 
 queue:
   message:
