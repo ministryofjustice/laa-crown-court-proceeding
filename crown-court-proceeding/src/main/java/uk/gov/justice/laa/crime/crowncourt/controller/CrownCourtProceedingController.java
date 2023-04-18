@@ -111,6 +111,7 @@ public class CrownCourtProceedingController {
     )
     public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> update(@Valid @RequestBody ApiUpdateApplicationRequest request) {
         CrownCourtDTO crownCourtDTO = preProcessRequest(request);
+        proceedingService.checkCCDetails(crownCourtDTO);
         return ResponseEntity.ok(proceedingService.update(crownCourtDTO));
     }
 

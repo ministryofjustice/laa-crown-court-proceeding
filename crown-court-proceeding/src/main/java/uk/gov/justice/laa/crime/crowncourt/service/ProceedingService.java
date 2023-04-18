@@ -9,10 +9,8 @@ import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateCrownCourtOutcomeResponse;
+import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
+import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
@@ -35,7 +33,6 @@ public class ProceedingService {
 
     private final RepOrderService repOrderService;
     private final MaatCourtDataService maatCourtDataService;
-
 
     private final Set<CaseType> caseTypes = Set.of(
             CaseType.INDICTABLE, CaseType.CC_ALREADY, CaseType.APPEAL_CC, CaseType.COMMITAL
@@ -69,6 +66,23 @@ public class ProceedingService {
         apiUpdateApplicationResponse.withCrownRepOrderType(repOrderDTO.getCrownRepOrderType());
 
         return apiUpdateApplicationResponse;
+    }
+
+
+    public void checkCCDetails(CrownCourtDTO dto) {
+        if (dto.getCrownCourtSummary() != null && dto.getCrownCourtSummary().getCrownCourtOutcome() != null
+                && !dto.getCrownCourtSummary().getCrownCourtOutcome().isEmpty()) {
+            ApiCrownCourtOutcome crownCourtOutcome = dto.getCrownCourtSummary().getCrownCourtOutcome()
+                    .get(dto.getCrownCourtSummary().getCrownCourtOutcome().size() - 1);
+            if (crownCourtOutcome.getOutcome().getCode().matches("CONVICTED|PART CONVICTED")
+                    && dto.getCrownCourtSummary().getIsImprisoned() == null
+                    && crownCourtOutcome.getDateSet() == null
+            ) {
+
+            }
+            throw new ValidationException("Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of "
+                    + crownCourtOutcome.getOutcome().getDescription());
+        }
     }
 
     public ApiUpdateCrownCourtOutcomeResponse update(CrownCourtDTO dto) {
