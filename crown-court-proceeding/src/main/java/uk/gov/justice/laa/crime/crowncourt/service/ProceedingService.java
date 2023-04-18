@@ -4,13 +4,16 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.crowncourt.builder.UpdateApiResponseBuilder;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
+import uk.gov.justice.laa.crime.crowncourt.client.CrimeEvidenceClient;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
@@ -34,6 +37,7 @@ public class ProceedingService {
 
     private final RepOrderService repOrderService;
     private final MaatCourtDataService maatCourtDataService;
+
 
     private final Set<CaseType> caseTypes = Set.of(
             CaseType.INDICTABLE, CaseType.CC_ALREADY, CaseType.APPEAL_CC, CaseType.COMMITAL
@@ -69,6 +73,13 @@ public class ProceedingService {
         return apiUpdateApplicationResponse;
     }
 
+    public ApiUpdateOutcomeResponse update(CrownCourtDTO dto) {
+        ApiProcessRepOrderResponse apiProcessRepOrderResponse = processRepOrder(dto);
+        RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(dto);
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = getCCOutcome(dto.getRepId(), dto.getLaaTransactionId());
+        return UpdateApiResponseBuilder.build(apiProcessRepOrderResponse, repOrderDTO, repOrderCCOutcomeList);
+    }
+
     public Object graphQLQuery() throws IOException {
         log.info("Start");
         Object obj = maatCourtDataService.getRepOrderByFilter("5639461", "false");
@@ -91,5 +102,9 @@ public class ProceedingService {
             });
         }
         return repOrderCCOutcomeList;
+    }
+    public List<RepOrderCCOutcomeDTO> updateCCOutcome(CrownCourtDTO dto) {
+        RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(dto);
+        return getCCOutcome(dto.getRepId(), dto.getLaaTransactionId());
     }
 }

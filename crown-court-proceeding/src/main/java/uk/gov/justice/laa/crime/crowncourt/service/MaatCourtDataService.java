@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
@@ -249,5 +250,16 @@ public class MaatCourtDataService {
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId));
         log.info(String.format(RESPONSE_STRING, response));
         return response;
+    }
+
+    public Long outcomeCount(Integer repId, String laaTransactionId) {
+
+        ResponseEntity<Void> response = maatAPIClient.getApiResponseViaHEAD(
+                configuration.getMaatApi().getRepOrderEndpoints().getFindOutcomeUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
+                repId
+        );
+        log.info(String.format(RESPONSE_STRING, response));
+        return response.getHeaders().getContentLength();
     }
 }
