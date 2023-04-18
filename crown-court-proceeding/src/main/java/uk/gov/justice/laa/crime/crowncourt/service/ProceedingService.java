@@ -6,14 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateApiResponseBuilder;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
-import uk.gov.justice.laa.crime.crowncourt.client.CrimeEvidenceClient;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateOutcomeResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
@@ -21,7 +20,6 @@ import uk.gov.justice.laa.crime.crowncourt.util.SortUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -73,7 +71,7 @@ public class ProceedingService {
         return apiUpdateApplicationResponse;
     }
 
-    public ApiUpdateOutcomeResponse update(CrownCourtDTO dto) {
+    public ApiUpdateCrownCourtOutcomeResponse update(CrownCourtDTO dto) {
         ApiProcessRepOrderResponse apiProcessRepOrderResponse = processRepOrder(dto);
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(dto);
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = getCCOutcome(dto.getRepId(), dto.getLaaTransactionId());
@@ -103,6 +101,7 @@ public class ProceedingService {
         }
         return repOrderCCOutcomeList;
     }
+
     public List<RepOrderCCOutcomeDTO> updateCCOutcome(CrownCourtDTO dto) {
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(dto);
         return getCCOutcome(dto.getRepId(), dto.getLaaTransactionId());

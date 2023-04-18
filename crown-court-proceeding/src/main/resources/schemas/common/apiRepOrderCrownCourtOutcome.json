@@ -1,22 +1,18 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "apiCrownCourtOutcome.json",
-  "description": "Crown Court Outcome",
+  "id": "apiRepOrderCrownCourtOutcome.json",
+  "description": "Rep Order Crown Court Outcome",
   "type": "object",
   "properties": {
     "outcome": {
-      "description": "CC Outcome",
+      "description": "CCOO Outcome",
       "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome"
     },
     "description": {
-      "description": "description of outcome",
+      "description": "description of CCOO Outcome",
       "type": "string"
     },
-    "outComeType": {
-      "description": "CC outCome type like Trial or Appeal",
-      "type": "string"
-    },
-    "dateSet": {
+    "outcomeDate": {
       "description": "crown court outcome date",
       "type": "string",
       "format": "date-time"

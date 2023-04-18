@@ -278,7 +278,7 @@ class ProceedingServiceTest {
     }
 
     @Test
-    void givenAValidParameter_whenGraphQLQueryIsInvoked_thenReturnIsSuccess() throws Exception{
+    void givenAValidParameter_whenGraphQLQueryIsInvoked_thenReturnIsSuccess() throws Exception {
         when(maatCourtDataService.getRepOrderByFilter(any(), any())).thenReturn(new Object());
         proceedingService.graphQLQuery();
         verify(maatCourtDataService, atLeastOnce()).getRepOrderByFilter(any(), any());

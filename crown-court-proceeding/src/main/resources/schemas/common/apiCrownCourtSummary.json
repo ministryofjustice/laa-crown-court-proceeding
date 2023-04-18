@@ -48,9 +48,17 @@
       "description": "list of crown court outcome",
       "items": {
         "$ref": "apiCrownCourtOutcome.json"
+        }
+      },
+      "repOrderCrownCourtOutcome": {
+        "type": "array",
+        "description": "list of rep order crown court outcome",
+        "items": {
+          "$ref": "apiRepOrderCrownCourtOutcome.json"
+        }
       }
-    }
-  },
-  "additionalProperties": false,
-  "required": ["repOrderDecision", "repType"]
-}
+    },
+    "additionalProperties": false,
+    "required": ["repOrderDecision", "repType"]
+  }
+

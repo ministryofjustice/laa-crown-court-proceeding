@@ -109,7 +109,7 @@ public class CrownCourtProceedingController {
                     schema = @Schema(implementation = ErrorDTO.class)
             )
     )
-    public ResponseEntity<ApiUpdateOutcomeResponse> update(@Valid @RequestBody ApiUpdateApplicationRequest request) {
+    public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> update(@Valid @RequestBody ApiUpdateApplicationRequest request) {
         CrownCourtDTO crownCourtDTO = preProcessRequest(request);
         return ResponseEntity.ok(proceedingService.update(crownCourtDTO));
     }
