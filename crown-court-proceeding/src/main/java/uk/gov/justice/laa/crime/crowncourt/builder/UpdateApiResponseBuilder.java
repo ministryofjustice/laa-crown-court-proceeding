@@ -21,10 +21,12 @@ public class UpdateApiResponseBuilder {
         summary.withRepOrderDecision(response.getRepOrderDecision());
 
         if (!repOrderCCOutcomeList.isEmpty()) {
-            summary.getCrownCourtOutcome().addAll(repOrderCCOutcomeList.stream().forEach(ccOutcomeDTO -> {
-                         new ApiCrownCourtOutcome().withOutcome(CrownCourtOutcome.getFrom(ccOutcomeDTO.getOutcome()))
+           repOrderCCOutcomeList.stream().forEach(ccOutcomeDTO -> {
+
+               summary.getCrownCourtOutcome().add(new ApiCrownCourtOutcome().withOutcome(CrownCourtOutcome.getFrom(ccOutcomeDTO.getOutcome()))
                         .withDescription(ccOutcomeDTO.getDescription()).withDateSet(ccOutcomeDTO.getOutcomeDate()));
-            });
+                 }
+             );
         }
 
         return apiUpdateOutcomeResponse;
