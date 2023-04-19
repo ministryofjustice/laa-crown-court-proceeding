@@ -336,4 +336,11 @@ public class TestModelDataBuilder {
                 .crownRepOrderType(Constants.CROWN_COURT_ONLY)
                 .build();
     }
+
+    public static ApiCalculateEvidenceFeeResponse getApiCalculateEvidenceFeeResponse() {
+         ApiCalculateEvidenceFeeResponse response = new ApiCalculateEvidenceFeeResponse();
+         response.setEvidenceFee(new ApiEvidenceFee().withFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
+                 .withDescription(EvidenceFeeLevel.LEVEL1.getDescription()));
+         return response;
+    }
 }
