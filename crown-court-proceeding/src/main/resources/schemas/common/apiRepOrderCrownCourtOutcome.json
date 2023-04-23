@@ -8,10 +8,6 @@
       "description": "CCOO Outcome",
       "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome"
     },
-    "description": {
-      "description": "description of CCOO Outcome",
-      "type": "string"
-    },
     "outcomeDate": {
       "description": "crown court outcome date",
       "type": "string",
@@ -19,5 +15,7 @@
     }
   },
   "additionalProperties": false,
-  "required": ["outcome"]
+  "required": [
+    "outcome"
+  ]
 }

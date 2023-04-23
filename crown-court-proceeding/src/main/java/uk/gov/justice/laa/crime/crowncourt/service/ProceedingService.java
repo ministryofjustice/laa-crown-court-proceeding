@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -69,7 +70,7 @@ public class ProceedingService {
     }
 
 
-    public void checkCCDetails(CrownCourtDTO dto) {
+    public Optional<Void> checkCCDetails(CrownCourtDTO dto) {
         if (dto.getCrownCourtSummary() != null && dto.getCrownCourtSummary().getCrownCourtOutcome() != null
                 && !dto.getCrownCourtSummary().getCrownCourtOutcome().isEmpty()) {
             ApiCrownCourtOutcome crownCourtOutcome = dto.getCrownCourtSummary().getCrownCourtOutcome()
@@ -79,17 +80,18 @@ public class ProceedingService {
                     && crownCourtOutcome.getDateSet() == null
             ) {
 
+                throw new ValidationException("Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of "
+                        + crownCourtOutcome.getOutcome().getDescription());
             }
-            throw new ValidationException("Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of "
-                    + crownCourtOutcome.getOutcome().getDescription());
         }
+        return Optional.empty();
     }
 
     public ApiUpdateCrownCourtOutcomeResponse update(CrownCourtDTO dto) {
         ApiProcessRepOrderResponse apiProcessRepOrderResponse = processRepOrder(dto);
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(dto);
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = getCCOutcome(dto.getRepId(), dto.getLaaTransactionId());
-        return UpdateApiResponseBuilder.build(apiProcessRepOrderResponse, repOrderDTO, repOrderCCOutcomeList);
+        return UpdateApiResponseBuilder.build(repOrderDTO, repOrderCCOutcomeList);
     }
 
     public Object graphQLQuery() throws IOException {

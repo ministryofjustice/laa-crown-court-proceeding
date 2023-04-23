@@ -33,7 +33,7 @@ public class CrownCourtDTO {
     private LocalDateTime incomeEvidenceReceivedDate;
     private LocalDateTime capitalEvidenceReceivedDate;
     private String emstCode;
-    private List<CapitalEvidenceDTO> capitalEvidence;
+    private List<ApiCapitalEvidence> capitalEvidence;
     private ApiIOJAppeal iojAppeal;
     private ApiFinancialAssessment financialAssessment;
     private ApiPassportAssessment passportAssessment;

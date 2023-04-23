@@ -227,23 +227,22 @@ public class RepOrderService {
     }
 
     public RepOrderDTO updateCCOutcome(CrownCourtDTO dto) {
-        RepOrderDTO repOrderDTO = null;
         Long repOrderOutcomeCount = maatCourtDataService.outcomeCount(dto.getRepId(), dto.getLaaTransactionId());
         if (repOrderOutcomeCount == 0 && null != dto.getCrownCourtSummary().getCrownCourtOutcome() &&
                 !dto.getCrownCourtSummary().getCrownCourtOutcome().isEmpty()) {
             ApiCalculateEvidenceFeeResponse evidenceFeeResponse = crimeEvidenceDataService.getCalEvidenceFee(CrimeEvidenceBuilder.build(dto));
-            if(null != evidenceFeeResponse.getEvidenceFee()) {
+            if (null != evidenceFeeResponse.getEvidenceFee()) {
                 dto.getCrownCourtSummary().setEvidenceFeeLevel(evidenceFeeResponse.getEvidenceFee().getFeeLevel());
             }
-            repOrderDTO = update(dto);
-            createOutcome(dto);
         }
+        RepOrderDTO repOrderDTO = update(dto);
+        createOutcome(dto);
         return repOrderDTO;
     }
 
 
     protected RepOrderDTO update(CrownCourtDTO dto) {
-       return  maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.buildOutcome(dto), dto.getLaaTransactionId());
+        return maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.buildOutcome(dto), dto.getLaaTransactionId());
     }
 
     protected void createOutcome(CrownCourtDTO dto) {

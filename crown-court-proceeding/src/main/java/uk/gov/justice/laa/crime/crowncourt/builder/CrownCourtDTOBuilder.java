@@ -32,6 +32,7 @@ public class CrownCourtDTOBuilder {
                     .applicantHistoryId(updateRequest.getApplicantHistoryId())
                     .isImprisoned(updateRequest.getIsImprisoned())
                     .paymentDetails(updateRequest.getPaymentDetails())
+                    .capitalEvidence(updateRequest.getCapitalEvidence())
                     .build();
         } else {
             return builder.build();

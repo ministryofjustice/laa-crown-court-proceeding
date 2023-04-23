@@ -26,11 +26,23 @@
       "type": "object",
       "description": "The applications payment details",
       "$ref": "common/apiPaymentDetails.json"
+    },
+    "capitalEvidence": {
+      "type": "array",
+      "description": "List of Capital Evidence",
+      "items": {
+        "$ref": "common/apiCapitalEvidence.json"
+      }
     }
   },
   "extends": {
     "$ref": "apiProcessRepOrderRequest.json"
   },
   "additionalProperties": false,
-  "required": ["userSession", "isImprisoned", "paymentDetails", "applicantHistoryId"]
+  "required": [
+    "userSession",
+    "isImprisoned",
+    "paymentDetails",
+    "applicantHistoryId"
+  ]
 }

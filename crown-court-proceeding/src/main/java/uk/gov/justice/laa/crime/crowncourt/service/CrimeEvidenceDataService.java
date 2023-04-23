@@ -8,7 +8,6 @@ import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiFinancialAssessment;
 
 import java.util.Map;
 
@@ -17,9 +16,9 @@ import java.util.Map;
 @Slf4j
 public class CrimeEvidenceDataService {
 
+    public static final String RESPONSE_STRING = "Response from Court Data API: %s";
     private final CrimeEvidenceClient evidenceAPIClient;
     private final ServicesConfiguration configuration;
-    public static final String RESPONSE_STRING = "Response from Court Data API: %s";
 
     public ApiCalculateEvidenceFeeResponse getCalEvidenceFee(ApiCalculateEvidenceFeeRequest evidenceFeeRequest) {
         ApiCalculateEvidenceFeeResponse response = evidenceAPIClient.getApiResponseViaPOST(
