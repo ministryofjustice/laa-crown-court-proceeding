@@ -39,10 +39,5 @@
     "$ref": "apiProcessRepOrderRequest.json"
   },
   "additionalProperties": false,
-  "required": [
-    "userSession",
-    "isImprisoned",
-    "paymentDetails",
-    "applicantHistoryId"
-  ]
+  "required": ["userSession", "isImprisoned", "paymentDetails", "applicantHistoryId"]
 }
