@@ -1,5 +1,8 @@
 package uk.gov.justice.laa.crime.crowncourt.builder;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
@@ -11,6 +14,8 @@ import java.util.List;
 
 import static java.util.Optional.ofNullable;
 
+@Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateApiResponseBuilder {
 
 
@@ -19,21 +24,18 @@ public class UpdateApiResponseBuilder {
         ApiUpdateCrownCourtOutcomeResponse apiUpdateOutcomeResponse = new ApiUpdateCrownCourtOutcomeResponse();
         ApiCrownCourtSummary summary = new ApiCrownCourtSummary();
 
-        apiUpdateOutcomeResponse.setModifiedDateTime(repOrderDTO.getDateModified());
-
         if (null != repOrderDTO) {
+            apiUpdateOutcomeResponse.setModifiedDateTime(repOrderDTO.getDateModified());
             summary.withRepType(repOrderDTO.getCrownRepOrderType());
             summary.withRepOrderDate(ofNullable(repOrderDTO.getCrownRepOrderDate().atStartOfDay()).orElse(null));
             summary.withRepOrderDecision(repOrderDTO.getCrownRepOrderDecision());
             summary.setEvidenceFeeLevel(repOrderDTO.getEvidenceFeeLevel());
 
             if (!repOrderCCOutcomeList.isEmpty()) {
-                repOrderCCOutcomeList.stream().forEach(ccOutcomeDTO -> {
-
-                            summary.getRepOrderCrownCourtOutcome().add(new ApiRepOrderCrownCourtOutcome()
-                                    .withOutcome(CrownCourtOutcome.getFrom(ccOutcomeDTO.getOutcome()))
-                                    .withOutcomeDate(ccOutcomeDTO.getOutcomeDate()));
-                        }
+                repOrderCCOutcomeList.stream().forEach(ccOutcomeDTO ->
+                        summary.getRepOrderCrownCourtOutcome().add(new ApiRepOrderCrownCourtOutcome()
+                                .withOutcome(CrownCourtOutcome.getFrom(ccOutcomeDTO.getOutcome()))
+                                .withOutcomeDate(ccOutcomeDTO.getOutcomeDate()))
                 );
             }
             apiUpdateOutcomeResponse.setCrownCourtSummary(summary);

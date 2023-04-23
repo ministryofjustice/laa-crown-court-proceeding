@@ -88,7 +88,7 @@ public class ProceedingService {
     }
 
     public ApiUpdateCrownCourtOutcomeResponse update(CrownCourtDTO dto) {
-        ApiProcessRepOrderResponse apiProcessRepOrderResponse = processRepOrder(dto);
+        processRepOrder(dto);
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(dto);
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = getCCOutcome(dto.getRepId(), dto.getLaaTransactionId());
         return UpdateApiResponseBuilder.build(repOrderDTO, repOrderCCOutcomeList);
@@ -116,10 +116,5 @@ public class ProceedingService {
             });
         }
         return repOrderCCOutcomeList;
-    }
-
-    public List<RepOrderCCOutcomeDTO> updateCCOutcome(CrownCourtDTO dto) {
-        RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(dto);
-        return getCCOutcome(dto.getRepId(), dto.getLaaTransactionId());
     }
 }

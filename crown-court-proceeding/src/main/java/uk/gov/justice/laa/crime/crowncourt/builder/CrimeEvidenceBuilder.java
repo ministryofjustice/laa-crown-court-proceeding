@@ -1,10 +1,15 @@
 package uk.gov.justice.laa.crime.crowncourt.builder;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCapitalEvidence;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiEvidenceFee;
 
+@Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CrimeEvidenceBuilder {
 
     public static ApiCalculateEvidenceFeeRequest build(final CrownCourtDTO crownCourtDTO) {

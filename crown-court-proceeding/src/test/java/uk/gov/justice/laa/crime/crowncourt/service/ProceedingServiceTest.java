@@ -14,7 +14,9 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDT
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtOutcome;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
@@ -359,5 +361,23 @@ class ProceedingServiceTest {
         apiCrownCourtOutcomes.get(0).setDateSet(null);
         crownCourtDTO.getCrownCourtSummary().setIsImprisoned(null);
         assertThat(proceedingService.checkCCDetails(crownCourtDTO)).isEmpty();
+    }
+
+    @Test
+    void givenAInput_whenUpdateIsInvoked_thenReturnResponse() {
+        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
+        when(repOrderService.updateCCOutcome(any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
+        List<RepOrderCCOutcomeDTO> outcomeList = new ArrayList<>();
+        outcomeList.add(TestModelDataBuilder.getRepOrderCCOutcomeDTO(2, CrownCourtOutcome.CONVICTED.getCode(),
+                LocalDateTime.of(2023, 2, 7, 15, 1, 25)));
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(outcomeList);
+        ApiUpdateCrownCourtOutcomeResponse response = proceedingService.update(crownCourtDTO);
+        ApiCrownCourtSummary summary = response.getCrownCourtSummary();
+        assertThat(response.getModifiedDateTime()).isEqualTo(TestModelDataBuilder.TEST_DATE_MODIFIED);
+        assertThat(summary.getRepOrderDecision()).isEqualTo("Granted - Passed Means Test");
+        assertThat(summary.getRepType()).isEqualTo("Crown Court Only");
+        assertThat(summary.getRepOrderDate()).isNotNull();
+        assertThat(summary.getRepOrderCrownCourtOutcome().get(0).getOutcome()).isEqualTo(CrownCourtOutcome.CONVICTED);
+        assertThat(summary.getRepOrderCrownCourtOutcome().get(0).getOutcomeDate()).isNotNull();
     }
 }
