@@ -24,23 +24,21 @@ public class UpdateApiResponseBuilder {
         ApiUpdateCrownCourtOutcomeResponse apiUpdateOutcomeResponse = new ApiUpdateCrownCourtOutcomeResponse();
         ApiCrownCourtSummary summary = new ApiCrownCourtSummary();
 
-        if (null != repOrderDTO) {
-            apiUpdateOutcomeResponse.setModifiedDateTime(repOrderDTO.getDateModified());
-            summary.withRepType(repOrderDTO.getCrownRepOrderType());
-            summary.withRepOrderDate(ofNullable(repOrderDTO.getCrownRepOrderDate().atStartOfDay()).orElse(null));
-            summary.withRepOrderDecision(repOrderDTO.getCrownRepOrderDecision());
-            summary.setEvidenceFeeLevel(repOrderDTO.getEvidenceFeeLevel());
+        apiUpdateOutcomeResponse.setModifiedDateTime(repOrderDTO.getDateModified());
+        summary.withRepType(repOrderDTO.getCrownRepOrderType());
+        summary.withRepOrderDate(ofNullable(repOrderDTO.getCrownRepOrderDate().atStartOfDay()).orElse(null));
+        summary.withRepOrderDecision(repOrderDTO.getCrownRepOrderDecision());
+        summary.setEvidenceFeeLevel(repOrderDTO.getEvidenceFeeLevel());
+        apiUpdateOutcomeResponse.setCrownCourtSummary(summary);
 
-            if (!repOrderCCOutcomeList.isEmpty()) {
-                repOrderCCOutcomeList.stream().forEach(ccOutcomeDTO ->
-                        summary.getRepOrderCrownCourtOutcome().add(new ApiRepOrderCrownCourtOutcome()
-                                .withOutcome(CrownCourtOutcome.getFrom(ccOutcomeDTO.getOutcome()))
-                                .withOutcomeDate(ccOutcomeDTO.getOutcomeDate()))
-                );
-            }
+        if (!repOrderCCOutcomeList.isEmpty()) {
+            repOrderCCOutcomeList.stream().forEach(ccOutcomeDTO ->
+                    summary.getRepOrderCrownCourtOutcome().add(new ApiRepOrderCrownCourtOutcome()
+                            .withOutcome(CrownCourtOutcome.getFrom(ccOutcomeDTO.getOutcome()))
+                            .withOutcomeDate(ccOutcomeDTO.getOutcomeDate()))
+            );
             apiUpdateOutcomeResponse.setCrownCourtSummary(summary);
         }
-
         return apiUpdateOutcomeResponse;
     }
 }

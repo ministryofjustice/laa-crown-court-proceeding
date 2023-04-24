@@ -13,6 +13,7 @@ import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
@@ -823,6 +824,21 @@ class RepOrderServiceTest {
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
         verify(maatCourtDataService, atLeastOnce()).outcomeCount(any(), any());
         assertThat(repOrderDTO).isNull();
+    }
+
+    @Test
+    void givenAEvidenceFeeIsEmpty_whenUpdateCCOutcomeIsInvoked_thenReturnRepOrder() throws Exception {
+
+        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
+        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0l);
+        when(crimeEvidenceDataService.getCalEvidenceFee(any())).thenReturn(new ApiCalculateEvidenceFeeResponse());
+        when(maatCourtDataService.updateRepOrder(any(), any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
+        RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
+        verify(maatCourtDataService, atLeastOnce()).outcomeCount(any(), any());
+        verify(crimeEvidenceDataService).getCalEvidenceFee(any());
+        verify(maatCourtDataService).updateRepOrder(any(), any());
+        verify(maatCourtDataService).createOutcome(any(), any());
+        assertThat(repOrderDTO).isNotNull();
     }
 
     @Test

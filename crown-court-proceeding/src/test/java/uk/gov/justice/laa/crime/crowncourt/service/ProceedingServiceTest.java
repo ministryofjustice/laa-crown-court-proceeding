@@ -283,6 +283,35 @@ class ProceedingServiceTest {
     }
 
     @Test
+    void givenAValidRepIdAndInvalidCrownCourtOutcome_whenGetCCOutcomeIsInvoked_thenReturnOutcomeInNaturalOrder() {
+        List<RepOrderCCOutcomeDTO> outcomeList = new ArrayList<>();
+        outcomeList.add(TestModelDataBuilder.getRepOrderCCOutcomeDTO(2, "",
+                LocalDateTime.of(2023, 2, 7, 15, 1, 25)));
+        outcomeList.add(TestModelDataBuilder.getRepOrderCCOutcomeDTO(3, CrownCourtOutcome.PART_CONVICTED.getCode(),
+                LocalDateTime.of(2022, 2, 7, 9, 1, 25)));
+        outcomeList.add(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1, CrownCourtOutcome.SUCCESSFUL.getCode(),
+                LocalDateTime.of(2022, 3, 7, 10, 1, 25)));
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(outcomeList);
+
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        softly.assertThat(repOrderCCOutcomeDTOList.size()).isEqualTo(2);
+
+        softly.assertThat(repOrderCCOutcomeDTOList.get(0).getOutcome()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getCode());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(0).getDescription()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getDescription());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(0).getOutcomeDate())
+                .isEqualTo(LocalDateTime.of(2022, 2, 7, 9, 1, 25));
+
+        softly.assertThat(repOrderCCOutcomeDTOList.get(1).getOutcome()).isEqualTo(CrownCourtOutcome.SUCCESSFUL.getCode());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(1).getDescription()).isEqualTo(CrownCourtOutcome.SUCCESSFUL.getDescription());
+        softly.assertThat(repOrderCCOutcomeDTOList.get(1).getOutcomeDate())
+                .isEqualTo(LocalDateTime.of(2022, 3, 7, 10, 1, 25));
+
+        softly.assertAll();
+
+    }
+
+
+    @Test
     void givenAValidParameter_whenGraphQLQueryIsInvoked_thenReturnIsSuccess() throws Exception {
         when(maatCourtDataService.getRepOrderByFilter(any(), any())).thenReturn(new Object());
         proceedingService.graphQLQuery();

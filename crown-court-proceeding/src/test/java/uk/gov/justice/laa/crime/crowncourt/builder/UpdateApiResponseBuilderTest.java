@@ -13,6 +13,7 @@ import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateCrownCourtOutcomeRespo
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -39,6 +40,21 @@ class UpdateApiResponseBuilderTest {
                 .isEqualTo(repOrderCCOutcomeList.get(0).getOutcome());
         softly.assertThat(crownCourtSummary.getRepOrderCrownCourtOutcome().get(0).getOutcomeDate())
                 .isEqualTo(repOrderCCOutcomeList.get(0).getOutcomeDate());
+        softly.assertAll();
+
+    }
+
+    @Test
+    void givenARepOrderIsEmpty_whenBuildIsInvoked_thenReturnApiUpdateCrownCourtOutcomeResponse() {
+
+        RepOrderDTO repOrderDTO = TestModelDataBuilder.getRepOrderDTO();
+        ApiUpdateCrownCourtOutcomeResponse response = UpdateApiResponseBuilder.build(repOrderDTO, Collections.emptyList());
+        ApiCrownCourtSummary crownCourtSummary = response.getCrownCourtSummary();
+        softly.assertThat(response.getModifiedDateTime()).isEqualTo(repOrderDTO.getDateModified());
+        softly.assertThat(crownCourtSummary.getRepOrderDate()).isEqualTo(repOrderDTO.getCrownRepOrderDate().atStartOfDay());
+        softly.assertThat(crownCourtSummary.getRepOrderDecision()).isEqualTo(repOrderDTO.getCrownRepOrderDecision());
+        softly.assertThat(crownCourtSummary.getRepType()).isEqualTo(repOrderDTO.getCrownRepOrderType());
+        softly.assertThat(crownCourtSummary.getEvidenceFeeLevel()).isEqualTo(repOrderDTO.getEvidenceFeeLevel());
         softly.assertAll();
 
     }

@@ -103,7 +103,7 @@ class CrimeEvidenceClientTest {
         assertThatThrownBy(
                 () -> crimeEvidenceClient.getApiResponseViaHEAD(
                         MOCK_URL,
-                        Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
+                        null,
                         REP_ID
                 )
         ).isInstanceOf(APIClientException.class).getCause().isInstanceOf(WebClientResponseException.class);
