@@ -66,7 +66,7 @@ class CrimeEvidenceClientTest {
     @Test
     void givenCrimeEvidenceClient_whenGetRegistrationIdIsInvoked_thenRegistrationIdIsReturned() {
         assertThat(crimeEvidenceClient.getRegistrationId())
-                .isEqualTo("evidence");
+                .isEqualTo("evidence-api");
     }
 
     @Test
