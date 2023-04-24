@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class CrimeEvidenceClient extends RestAPIClient {
 
-    private static final String REGISTERED_ID = "evidence";
+    private static final String REGISTERED_ID = "evidence-api";
 
     @Qualifier("evidenceOAuth2WebClient")
     private final WebClient webClient;

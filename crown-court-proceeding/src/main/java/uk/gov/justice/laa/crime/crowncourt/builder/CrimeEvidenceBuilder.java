@@ -31,6 +31,7 @@ public class CrimeEvidenceBuilder {
         }
         evidenceFeeRequest.setIncomeEvidenceReceivedDate(crownCourtDTO.getIncomeEvidenceReceivedDate());
         evidenceFeeRequest.setCapitalEvidenceReceivedDate(crownCourtDTO.getCapitalEvidenceReceivedDate());
+        evidenceFeeRequest.setEmstCode(crownCourtDTO.getEmstCode());
         return evidenceFeeRequest;
     }
 }

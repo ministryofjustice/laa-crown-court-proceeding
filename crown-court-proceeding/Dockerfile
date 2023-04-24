@@ -1,8 +1,9 @@
-FROM amazoncorretto:17-alpine
+FROM openjdk:17-jdk-slim
 RUN mkdir -p /opt/laa-crown-court-proceeding/
 WORKDIR /opt/laa-crown-court-proceeding/
 COPY ./build/libs/crown-court-proceeding.jar /opt/laa-crown-court-proceeding/app.jar
-RUN addgroup -S appgroup && adduser -u 1001 -S appuser -G appgroup
+RUN useradd -r -u 1001 appuser
 USER 1001
-EXPOSE 8087 8096
+EXPOSE 8087 8096 8099
+ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8099
 ENTRYPOINT ["java","-jar","app.jar"]

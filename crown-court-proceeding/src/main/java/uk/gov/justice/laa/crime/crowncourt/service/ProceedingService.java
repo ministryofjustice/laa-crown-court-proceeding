@@ -79,7 +79,6 @@ public class ProceedingService {
                     && dto.getCrownCourtSummary().getIsImprisoned() == null
                     && crownCourtOutcome.getDateSet() == null
             ) {
-
                 throw new ValidationException("Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of "
                         + crownCourtOutcome.getOutcome().getDescription());
             }
