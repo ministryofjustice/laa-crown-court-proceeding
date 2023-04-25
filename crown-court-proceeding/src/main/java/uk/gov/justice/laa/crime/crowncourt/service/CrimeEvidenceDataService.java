@@ -16,7 +16,7 @@ import java.util.Map;
 @Slf4j
 public class CrimeEvidenceDataService {
 
-    public static final String RESPONSE_STRING = "Response from Court Data API: %s";
+    private static final String RESPONSE_STRING = "Response from Court Data API: {}";
     private final CrimeEvidenceClient evidenceAPIClient;
     private final ServicesConfiguration configuration;
 
@@ -27,7 +27,7 @@ public class CrimeEvidenceDataService {
                 configuration.getEvidence().getEvidenceFeeEndpoints().getEvidenceFeeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, evidenceFeeRequest.getLaaTransactionId())
         );
-        log.info(String.format(RESPONSE_STRING, response));
+        log.info(RESPONSE_STRING, response);
         return response;
     }
 }

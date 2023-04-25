@@ -28,10 +28,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @ExtendWith(MockitoExtension.class)
 class CrimeEvidenceClientTest {
 
-    public static final String MOCK_URL = "mock-url";
+    private static final String MOCK_URL = "mock-url";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private final String LAA_TRANSACTION_ID = "laaTransactionId";
-    private final Integer REP_ID = 1234;
+    private static final String LAA_TRANSACTION_ID = "laaTransactionId";
+    private static final Integer REP_ID = 1234;
     private WebClient testWebClient;
     private CrimeEvidenceClient crimeEvidenceClient;
 

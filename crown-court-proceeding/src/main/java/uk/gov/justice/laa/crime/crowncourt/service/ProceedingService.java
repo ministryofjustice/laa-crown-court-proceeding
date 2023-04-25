@@ -71,12 +71,13 @@ public class ProceedingService {
 
 
     public Optional<Void> checkCCDetails(CrownCourtDTO dto) {
-        if (dto.getCrownCourtSummary() != null && dto.getCrownCourtSummary().getCrownCourtOutcome() != null
-                && !dto.getCrownCourtSummary().getCrownCourtOutcome().isEmpty()) {
-            ApiCrownCourtOutcome crownCourtOutcome = dto.getCrownCourtSummary().getCrownCourtOutcome()
-                    .get(dto.getCrownCourtSummary().getCrownCourtOutcome().size() - 1);
+        ApiCrownCourtSummary crownCourtSummary = dto.getCrownCourtSummary();
+        if (crownCourtSummary != null && crownCourtSummary.getCrownCourtOutcome() != null
+                && !crownCourtSummary.getCrownCourtOutcome().isEmpty()) {
+            ApiCrownCourtOutcome crownCourtOutcome = crownCourtSummary.getCrownCourtOutcome()
+                    .get(crownCourtSummary.getCrownCourtOutcome().size() - 1);
             if (crownCourtOutcome.getOutcome().getCode().matches("CONVICTED|PART CONVICTED")
-                    && dto.getCrownCourtSummary().getIsImprisoned() == null
+                    && crownCourtSummary.getIsImprisoned() == null
                     && crownCourtOutcome.getDateSet() == null
             ) {
                 throw new ValidationException("Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of "

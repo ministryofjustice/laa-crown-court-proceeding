@@ -2,7 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.builder;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
@@ -14,8 +14,7 @@ import java.util.List;
 
 import static java.util.Optional.ofNullable;
 
-@Component
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class UpdateApiResponseBuilder {
 
 
