@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.builder;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.experimental.UtilityClass;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
