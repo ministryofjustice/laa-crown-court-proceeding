@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
@@ -24,9 +25,9 @@ import static java.util.Collections.emptyMap;
 @Slf4j
 public class MaatCourtDataService {
 
+    public static final String RESPONSE_STRING = "Response from Court Data API: {}";
     private final MaatAPIClient maatAPIClient;
     private final ServicesConfiguration configuration;
-    public static final String RESPONSE_STRING = "Response from Court Data API: %s";
 
     private static Map<String, Object> getGraphQLRequestBody(String repId, String sentenceOrdDate) throws IOException {
         final String query = GraphqlSchemaReaderUtil.getSchemaFromFileName("repOrderFilter");
@@ -48,18 +49,18 @@ public class MaatCourtDataService {
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
                 repId
         );
-        log.info(String.format(RESPONSE_STRING, response));
+        log.info(RESPONSE_STRING, response);
         return response;
     }
 
     public RepOrderDTO updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO, String laaTransactionId) {
-        RepOrderDTO response =  maatAPIClient.getApiResponseViaPUT(
+        RepOrderDTO response = maatAPIClient.getApiResponseViaPUT(
                 updateRepOrderRequestDTO,
                 RepOrderDTO.class,
                 configuration.getMaatApi().getRepOrderEndpoints().getUpdateUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
         );
-        log.info(String.format(RESPONSE_STRING, response));
+        log.info(RESPONSE_STRING, response);
         return response;
     }
 
@@ -70,7 +71,7 @@ public class MaatCourtDataService {
                 configuration.getMaatApi().getGraphQLEndpoints().getGraphqlQueryUrl(),
                 graphQLBody
         );
-        log.info(String.format(RESPONSE_STRING, response));
+        log.info(RESPONSE_STRING, response);
         return response;
     }
 
@@ -81,7 +82,7 @@ public class MaatCourtDataService {
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
                 repId
         );
-        log.info(String.format(RESPONSE_STRING, response));
+        log.info(RESPONSE_STRING, response);
         return response;
     }
 
@@ -205,7 +206,7 @@ public class MaatCourtDataService {
                 configuration.getMaatApi().getRepOrderEndpoints().getFindUrl(),
                 repId
         );
-        log.info(String.format(RESPONSE_STRING, response));
+        log.info(RESPONSE_STRING, response);
         return response;
     }
 
@@ -247,7 +248,18 @@ public class MaatCourtDataService {
                 RepOrderCCOutcomeDTO.class,
                 configuration.getMaatApi().getRepOrderEndpoints().getCreateOutcomeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId));
-        log.info(String.format(RESPONSE_STRING, response));
+        log.info(RESPONSE_STRING, response);
         return response;
+    }
+
+    public long outcomeCount(Integer repId, String laaTransactionId) {
+
+        ResponseEntity<Void> response = maatAPIClient.getApiResponseViaHEAD(
+                configuration.getMaatApi().getRepOrderEndpoints().getFindOutcomeUrl(),
+                Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
+                repId
+        );
+        log.info(RESPONSE_STRING, response);
+        return response.getHeaders().getContentLength();
     }
 }

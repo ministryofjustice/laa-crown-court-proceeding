@@ -5,9 +5,11 @@ import lombok.Data;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.DecisionReason;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -26,7 +28,12 @@ public class CrownCourtDTO {
     private LocalDateTime decisionDate;
     private LocalDateTime committalDate;
     private LocalDateTime dateReceived;
+    private EvidenceFeeLevel evidenceFeeLevel;
     private ApiCrownCourtSummary crownCourtSummary;
+    private LocalDateTime incomeEvidenceReceivedDate;
+    private LocalDateTime capitalEvidenceReceivedDate;
+    private String emstCode;
+    private List<ApiCapitalEvidence> capitalEvidence;
     private ApiIOJAppeal iojAppeal;
     private ApiFinancialAssessment financialAssessment;
     private ApiPassportAssessment passportAssessment;

@@ -26,6 +26,13 @@
       "type": "object",
       "description": "The applications payment details",
       "$ref": "common/apiPaymentDetails.json"
+    },
+    "capitalEvidence": {
+      "type": "array",
+      "description": "List of Capital Evidence",
+      "items": {
+        "$ref": "common/apiCapitalEvidence.json"
+      }
     }
   },
   "extends": {

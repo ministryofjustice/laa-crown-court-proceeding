@@ -90,6 +90,11 @@ services:
       update-cc-sentence-url: ${services.maat-api.assessments-domain}/crown-court/update-cc-sentence
     reservation-endpoints:
       is-maat-record-locked-url: ${services.maat-api.assessments-domain}/reservations/{maatId}
+  evidence:
+    oAuthEnabled: true
+    baseUrl: ${EVIDENCE_API_BASE_URL}
+    evidence-fee-endpoints:
+      evidence-fee-url: api/internal/v1/evidence/calculate-evidence-fee
 
 retry-config:
   max-retries: 2

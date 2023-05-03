@@ -87,4 +87,9 @@ public class WebClientConfiguration {
     public WebClient cdaWebClient(WebClient.Builder builder) {
         return builder.baseUrl(configuration.getCourtDataAdapter().getBaseUrl()).build();
     }
+
+    @Bean(name = "evidenceOAuth2WebClient")
+    public WebClient evidenceWebClient(WebClient.Builder builder) {
+        return builder.baseUrl(configuration.getEvidence().getBaseUrl()).build();
+    }
 }
