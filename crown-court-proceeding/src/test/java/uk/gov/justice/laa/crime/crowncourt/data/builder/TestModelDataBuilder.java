@@ -116,7 +116,6 @@ public class TestModelDataBuilder {
                 .iojAppeal(getIojAppeal())
                 .isImprisoned(false)
                 .userSession(getApiUserSession(true))
-                .paymentDetails(getApiPaymentDetails())
                 .applicantHistoryId(TEST_APPLICANT_HISTORY_ID)
                 .incomeEvidenceReceivedDate(INCOME_EVIDENCE_DATE)
                 .capitalEvidenceReceivedDate(CAPITAL_EVIDENCE_DATE)
@@ -159,14 +158,6 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static ApiPaymentDetails getApiPaymentDetails() {
-        return new ApiPaymentDetails()
-                .withPaymentMethod("STANDING ORDER")
-                .withBankAccountNo(11101011)
-                .withBankAccountName(TEST_USER)
-                .withSortCode("121314");
-    }
-
     public static ApiUserSession getApiUserSession(boolean isValid) {
         return new ApiUserSession()
                 .withUserName(isValid ? TEST_USER : null)
@@ -195,7 +186,6 @@ public class TestModelDataBuilder {
                 .withDateReceived(TEST_DATE_RECEIVED)
                 .withIojAppeal(getIojAppeal())
                 .withIsImprisoned(false)
-                .withPaymentDetails(getApiPaymentDetails())
                 .withFinancialAssessment(getFinancialAssessment())
                 .withPassportAssessment(getPassportAssessment());
     }
