@@ -38,16 +38,6 @@ class UpdateRepOrderDTOBuilderTest {
                 .isEqualTo(dto.getCrownCourtSummary().getEvidenceFeeLevel());
         softly.assertThat(updateRequest.getIsImprisoned())
                 .isEqualTo(dto.getIsImprisoned());
-        softly.assertThat(updateRequest.getBankAccountNo())
-                .isEqualTo(dto.getPaymentDetails().getBankAccountNo());
-        softly.assertThat(updateRequest.getBankAccountName())
-                .isEqualTo(dto.getPaymentDetails().getBankAccountName());
-        softly.assertThat(updateRequest.getPaymentMethod())
-                .isEqualTo(dto.getPaymentDetails().getPaymentMethod());
-        softly.assertThat(updateRequest.getPreferredPaymentDay())
-                .isEqualTo(dto.getPaymentDetails().getPreferredPaymentDay());
-        softly.assertThat(updateRequest.getSortCode())
-                .isEqualTo(dto.getPaymentDetails().getSortCode());
         softly.assertThat(updateRequest.getUserModified())
                 .isEqualTo(dto.getUserSession().getUserName());
         softly.assertThat(updateRequest.getSentenceOrderDate())

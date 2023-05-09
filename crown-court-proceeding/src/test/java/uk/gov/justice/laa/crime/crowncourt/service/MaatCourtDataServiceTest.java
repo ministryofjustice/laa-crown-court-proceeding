@@ -264,7 +264,7 @@ class MaatCourtDataServiceTest {
 
     @Test
     void givenAValidParameter_whenOutcomeCountIsInvoked_thenResponseIsReturned() throws Exception {
-        ResponseEntity response = new ResponseEntity(HttpStatus.OK);
+        ResponseEntity<Void> response = new ResponseEntity<>(HttpStatus.OK);
         when(maatCourtDataClient.getApiResponseViaHEAD(any(), any(), any())).thenReturn(response);
         maatCourtDataService.outcomeCount(TestModelDataBuilder.TEST_REP_ID, TestModelDataBuilder.MEANS_ASSESSMENT_TRANSACTION_ID);
         verify(maatCourtDataClient).getApiResponseViaHEAD(any(), any(), any());

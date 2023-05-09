@@ -20,7 +20,6 @@ public class CrownCourtDTO {
     private ApiUserSession userSession;
     private Integer applicantHistoryId;
     private Boolean isImprisoned;
-    private ApiPaymentDetails paymentDetails;
     private CaseType caseType;
     private MagCourtOutcome magCourtOutcome;
     private Integer crownRepId;
