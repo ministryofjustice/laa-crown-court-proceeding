@@ -23,7 +23,6 @@ def versions = [
         okhttpVersion                      : "4.9.3",
         mockwebserverVersion               : "4.9.3",
         pitest                             : "1.4.10",
-        commonsLang3Version                : "3.10",
         amazonSQSVersion                   : "2.1.1",
         wireMock                           : "2.27.2"
 ]
@@ -64,10 +63,10 @@ dependencies {
     implementation "org.springframework.security:spring-security-oauth2-authorization-server:$versions.springauthserverVersion"
 
     implementation "org.postgresql:postgresql"
+    implementation "com.google.code.gson:gson"
     implementation "org.liquibase:liquibase-core"
-    implementation "com.google.code.gson:gson:$versions.gsonVersion"
     implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
-    implementation "org.apache.commons:commons-lang3:$versions.commonsLang3Version"
+    implementation "org.apache.commons:commons-lang3"
 
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"

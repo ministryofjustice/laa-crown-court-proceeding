@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.*;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
@@ -46,10 +47,12 @@ class MaatAPIClientTest {
                 .builder()
                 .baseUrl("http://localhost:1234")
                 .filter(ExchangeFilterFunctions.statusError(
-                                HttpStatus::is4xxClientError,
-                                r -> WebClientResponseException.create(
-                                        r.rawStatusCode(), r.statusCode().getReasonPhrase(), null, null, null
-                                )
+                                HttpStatusCode::is4xxClientError, r -> {
+                                    HttpStatus status = HttpStatus.valueOf(r.statusCode().value());
+                                    return WebClientResponseException.create(
+                                            status.value(), status.getReasonPhrase(), null, null, null
+                                    );
+                                }
                         )
                 )
                 .exchangeFunction(shortCircuitExchangeFunction)
@@ -111,7 +114,7 @@ class MaatAPIClientTest {
                         Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
                         HttpMethod.POST
                 )
-        ).isInstanceOf(APIClientException.class).getCause().isInstanceOf(WebClientResponseException.class);
+        ).isInstanceOf(APIClientException.class).cause().isInstanceOf(WebClientResponseException.class);
     }
 
     @Test
@@ -136,7 +139,7 @@ class MaatAPIClientTest {
                         Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID),
                         REP_ID
                 )
-        ).isInstanceOf(APIClientException.class).getCause().isInstanceOf(WebClientResponseException.class);
+        ).isInstanceOf(APIClientException.class).cause().isInstanceOf(WebClientResponseException.class);
     }
 
     @Test
@@ -200,7 +203,7 @@ class MaatAPIClientTest {
                         MOCK_URL,
                         REP_ID
                 )
-        ).isInstanceOf(APIClientException.class).getCause().isInstanceOf(WebClientResponseException.class);
+        ).isInstanceOf(APIClientException.class).cause().isInstanceOf(WebClientResponseException.class);
     }
 
     @Test
