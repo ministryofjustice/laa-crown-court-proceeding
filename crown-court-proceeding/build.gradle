@@ -16,10 +16,8 @@ jacoco {
 }
 
 def versions = [
-        springdocVersion                   : "1.7.0",
-        springauthserverVersion            : "0.2.2",
-        sonarPitest                        : "0.5",
-        mockitoVersion                     : "3.3.3",
+        springdocVersion                   : "1.6.15",
+        springauthserverVersion            : "1.0.1",
         okhttpVersion                      : "4.9.3",
         mockwebserverVersion               : "4.9.3",
         pitest                             : "1.4.10",

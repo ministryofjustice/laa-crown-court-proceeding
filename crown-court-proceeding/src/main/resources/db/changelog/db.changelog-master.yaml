@@ -13,3 +13,5 @@ databaseChangeLog:
       file: db/changelog/changeset/06-create-queue-message-log-table.sql
   - include:
       file: db/changelog/changeset/07-create-prosecution-concluded-table.sql
+  - include:
+      file: db/changelog/changeset/08-spring-security-oauth2-table-update.sql
