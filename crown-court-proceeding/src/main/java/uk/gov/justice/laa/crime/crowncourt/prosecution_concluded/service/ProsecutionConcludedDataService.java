@@ -1,24 +1,22 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
-@XRayEnabled
 @RequiredArgsConstructor
 public class ProsecutionConcludedDataService {
 

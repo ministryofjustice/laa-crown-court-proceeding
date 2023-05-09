@@ -20,7 +20,7 @@ import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.io.IOException;
 
 @Slf4j
