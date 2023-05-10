@@ -41,10 +41,13 @@ public class TestModelDataBuilder {
     public static final Integer TEST_CASE_ID = 45673;
     public static final String TEST_OFFENCE_ID = "324234";
 
-    public static final Integer PASSPORT_ID =23456;
+    public static final Integer PASSPORT_ID = 23456;
 
     public static final LocalDateTime TEST_CROWN_REP_ORDER_DATE =
             LocalDateTime.of(2022, 10, 19, 0, 0, 0);
+
+    public static final LocalDateTime INCOME_EVIDENCE_DATE = LocalDateTime.of(2023, 6, 5, 15, 0, 0);
+    public static final LocalDateTime CAPITAL_EVIDENCE_DATE = LocalDateTime.of(2023, 6, 5, 15, 0, 0);
 
     public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
         return new ApiProcessRepOrderRequest()
@@ -113,8 +116,11 @@ public class TestModelDataBuilder {
                 .iojAppeal(getIojAppeal())
                 .isImprisoned(false)
                 .userSession(getApiUserSession(true))
-                .paymentDetails(getApiPaymentDetails())
                 .applicantHistoryId(TEST_APPLICANT_HISTORY_ID)
+                .incomeEvidenceReceivedDate(INCOME_EVIDENCE_DATE)
+                .capitalEvidenceReceivedDate(CAPITAL_EVIDENCE_DATE)
+                .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
+                .capitalEvidence(List.of(getCapitalEvidenceDTO(TEST_DATE_RECEIVED, "Type")))
                 .build();
     }
 
@@ -123,6 +129,7 @@ public class TestModelDataBuilder {
                 .withRepOrderDecision(MOCK_DECISION)
                 .withRepOrderDate(TEST_REP_ORDER_DATE)
                 .withRepId(TEST_REP_ID)
+                .withIsImprisoned(true)
                 .withCrownCourtOutcome(List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED, TEST_SENTENCE_ORDER_DATE)));
     }
 
@@ -149,14 +156,6 @@ public class TestModelDataBuilder {
                 .repId(TEST_REP_ID)
                 .decisionDate(TEST_IOJ_APPEAL_DECISION_DATE)
                 .build();
-    }
-
-    public static ApiPaymentDetails getApiPaymentDetails() {
-        return new ApiPaymentDetails()
-                .withPaymentMethod("STANDING ORDER")
-                .withBankAccountNo(11101011)
-                .withBankAccountName(TEST_USER)
-                .withSortCode("121314");
     }
 
     public static ApiUserSession getApiUserSession(boolean isValid) {
@@ -187,7 +186,6 @@ public class TestModelDataBuilder {
                 .withDateReceived(TEST_DATE_RECEIVED)
                 .withIojAppeal(getIojAppeal())
                 .withIsImprisoned(false)
-                .withPaymentDetails(getApiPaymentDetails())
                 .withFinancialAssessment(getFinancialAssessment())
                 .withPassportAssessment(getPassportAssessment());
     }
@@ -213,6 +211,7 @@ public class TestModelDataBuilder {
                 .verdictDate(verdictDate)
                 .build();
     }
+
     public static ProsecutionConcluded getProsecutionConcluded() {
         return ProsecutionConcluded.builder()
                 .isConcluded(true)
@@ -251,54 +250,54 @@ public class TestModelDataBuilder {
     public static String getCaseData() {
 
         return """
-            {
-               "maatId":5636361,
-               "defendantId":"9c26435c-b262-4318-9927-f40bc4e7f0c7",
-               "prosecutionCaseId":"1d329c30-936c-11ec-b909-0242ac120002",
-               "isConcluded":true,
-               "hearingIdWhereChangeOccurred":"0ffd1c68-9428-11ec-b909-0242ac120002",
-               "offenceSummary":[
-                  {
-                     "offenceId":"40989abc-2d8c-431a-8692-535848b2e918",
-                     "offenceCode":"PT00011",
-                     "proceedingsConcluded":false,
-                     "plea":{
-                        "originatingHearingId":"08c98420-5f6a-4839-b48b-19646e81619a",
-                        "value":"NOT_GUILTY",
-                        "pleaDate":"2022-02-10"
-                     },
-                     "verdict":{
-                        "verdictDate":"2022-02-10",
-                        "originatingHearingId":"08c98420-5f6a-4839-b48b-19646e81619a",
-                        "verdictType":{
-                           "verdictTypeId":"dfd71ee7-039d-3d93-ae37-98ef38aec6e4",
-                           "sequence":10,
-                           "description":"Found guilty",
-                           "category":"Guilty",
-                           "categoryType":"GUILTY_BY_JURY_CONVICTED"
-                        }
-                     },
-                     "proceedingsConcludedChangedDate":"2022-02-10"
-                  },
-                  {
-                     "offenceId":"b72f793a-93ed-11ec-b909-0242ac120002",
-                     "offenceCode":"PT00011",
-                     "proceedingsConcluded":false,
-                     "plea":{
-                        "originatingHearingId":"08c98420-5f6a-4839-b48b-19646e81619a",
-                        "value":"NOT_GUILTY",
-                        "pleaDate":"2022-02-10"
-                     },
-                     "proceedingsConcludedChangedDate":"2022-02-10"
-                  }
-               ],
-               "messageRetryCounter":0,
-               "retryCounterForHearing":0,
-               "metadata":{
-                  "laaTransactionId":"ea0af85c36b17113389bb9aae924e9ad"
-               }
-            }
-                      """;
+                {
+                   "maatId":5636361,
+                   "defendantId":"9c26435c-b262-4318-9927-f40bc4e7f0c7",
+                   "prosecutionCaseId":"1d329c30-936c-11ec-b909-0242ac120002",
+                   "isConcluded":true,
+                   "hearingIdWhereChangeOccurred":"0ffd1c68-9428-11ec-b909-0242ac120002",
+                   "offenceSummary":[
+                      {
+                         "offenceId":"40989abc-2d8c-431a-8692-535848b2e918",
+                         "offenceCode":"PT00011",
+                         "proceedingsConcluded":false,
+                         "plea":{
+                            "originatingHearingId":"08c98420-5f6a-4839-b48b-19646e81619a",
+                            "value":"NOT_GUILTY",
+                            "pleaDate":"2022-02-10"
+                         },
+                         "verdict":{
+                            "verdictDate":"2022-02-10",
+                            "originatingHearingId":"08c98420-5f6a-4839-b48b-19646e81619a",
+                            "verdictType":{
+                               "verdictTypeId":"dfd71ee7-039d-3d93-ae37-98ef38aec6e4",
+                               "sequence":10,
+                               "description":"Found guilty",
+                               "category":"Guilty",
+                               "categoryType":"GUILTY_BY_JURY_CONVICTED"
+                            }
+                         },
+                         "proceedingsConcludedChangedDate":"2022-02-10"
+                      },
+                      {
+                         "offenceId":"b72f793a-93ed-11ec-b909-0242ac120002",
+                         "offenceCode":"PT00011",
+                         "proceedingsConcluded":false,
+                         "plea":{
+                            "originatingHearingId":"08c98420-5f6a-4839-b48b-19646e81619a",
+                            "value":"NOT_GUILTY",
+                            "pleaDate":"2022-02-10"
+                         },
+                         "proceedingsConcludedChangedDate":"2022-02-10"
+                      }
+                   ],
+                   "messageRetryCounter":0,
+                   "retryCounterForHearing":0,
+                   "metadata":{
+                      "laaTransactionId":"ea0af85c36b17113389bb9aae924e9ad"
+                   }
+                }
+                          """;
     }
 
     public static RepOrderDTO getGraphQLRepOrderDTO() {
@@ -313,8 +312,8 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static  FinancialAssessmentDTO getFinancialAssessmentDTO() {
-        return  FinancialAssessmentDTO.builder()
+    public static FinancialAssessmentDTO getFinancialAssessmentDTO() {
+        return FinancialAssessmentDTO.builder()
                 .id(1)
                 .assessmentType("Full")
                 .build();
@@ -334,6 +333,51 @@ public class TestModelDataBuilder {
                 .crownRepOrderDecision(Constants.GRANTED_PASSED_MEANS_TEST)
                 .crownRepOrderDate(TEST_CROWN_REP_ORDER_DATE.toLocalDate())
                 .crownRepOrderType(Constants.CROWN_COURT_ONLY)
+                .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
                 .build();
+    }
+
+    public static ApiCalculateEvidenceFeeResponse getApiCalculateEvidenceFeeResponse() {
+        ApiCalculateEvidenceFeeResponse response = new ApiCalculateEvidenceFeeResponse();
+        response.setEvidenceFee(new ApiEvidenceFee().withFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
+                .withDescription(EvidenceFeeLevel.LEVEL1.getDescription()));
+        return response;
+    }
+
+    public static ApiCapitalEvidence getCapitalEvidenceDTO(LocalDateTime dataReceived, String evidenceType) {
+        ApiCapitalEvidence evidence = new ApiCapitalEvidence();
+        evidence.setDateReceived(dataReceived);
+        evidence.setEvidenceType(evidenceType);
+        return evidence;
+
+    }
+
+    public static ApiCalculateEvidenceFeeRequest getApiCalculateEvidenceFeeRequest() {
+        ApiCalculateEvidenceFeeRequest request = new ApiCalculateEvidenceFeeRequest();
+        request.setRepId(TEST_REP_ID);
+        request.setLaaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID);
+        request.setMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL.getOutcome());
+        ApiEvidenceFee evidenceFee = new ApiEvidenceFee();
+        evidenceFee.setFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel());
+        evidenceFee.setDescription(EvidenceFeeLevel.LEVEL1.getDescription());
+        request.setEvidenceFee(evidenceFee);
+        request.setCapitalEvidenceReceivedDate(CAPITAL_EVIDENCE_DATE);
+        request.setIncomeEvidenceReceivedDate(INCOME_EVIDENCE_DATE);
+        return request;
+    }
+
+    public static ApiUpdateCrownCourtOutcomeResponse getApiUpdateCrownCourtOutcomeResponse() {
+        ApiUpdateCrownCourtOutcomeResponse response = new ApiUpdateCrownCourtOutcomeResponse();
+        response.setModifiedDateTime(TEST_DATE_MODIFIED);
+        ApiCrownCourtSummary summary = new ApiCrownCourtSummary();
+        summary.setEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel());
+        summary.setRepOrderDate(TEST_REP_ORDER_DATE);
+        summary.setRepOrderDecision("");
+        summary.setRepType("");
+        ApiRepOrderCrownCourtOutcome outcome = new ApiRepOrderCrownCourtOutcome();
+        outcome.setOutcome(CrownCourtOutcome.CONVICTED);
+        outcome.setOutcomeDate(TEST_CROWN_REP_ORDER_DATE);
+        response.setCrownCourtSummary(summary);
+        return response;
     }
 }

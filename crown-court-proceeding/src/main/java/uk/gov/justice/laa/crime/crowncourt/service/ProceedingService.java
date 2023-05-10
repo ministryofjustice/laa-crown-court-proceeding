@@ -4,13 +4,13 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.crowncourt.builder.UpdateApiResponseBuilder;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationResponse;
+import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
+import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
@@ -18,9 +18,9 @@ import uk.gov.justice.laa.crime.crowncourt.util.SortUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -67,6 +67,31 @@ public class ProceedingService {
         apiUpdateApplicationResponse.withCrownRepOrderType(repOrderDTO.getCrownRepOrderType());
 
         return apiUpdateApplicationResponse;
+    }
+
+
+    public Optional<Void> checkCCDetails(CrownCourtDTO dto) {
+        ApiCrownCourtSummary crownCourtSummary = dto.getCrownCourtSummary();
+        if (crownCourtSummary != null && crownCourtSummary.getCrownCourtOutcome() != null
+                && !crownCourtSummary.getCrownCourtOutcome().isEmpty()) {
+            ApiCrownCourtOutcome crownCourtOutcome = crownCourtSummary.getCrownCourtOutcome()
+                    .get(crownCourtSummary.getCrownCourtOutcome().size() - 1);
+            if (crownCourtOutcome.getOutcome().getCode().matches("CONVICTED|PART CONVICTED")
+                    && crownCourtSummary.getIsImprisoned() == null
+                    && crownCourtOutcome.getDateSet() == null
+            ) {
+                throw new ValidationException("Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of "
+                        + crownCourtOutcome.getOutcome().getDescription());
+            }
+        }
+        return Optional.empty();
+    }
+
+    public ApiUpdateCrownCourtOutcomeResponse update(CrownCourtDTO dto) {
+        processRepOrder(dto);
+        RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(dto);
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = getCCOutcome(dto.getRepId(), dto.getLaaTransactionId());
+        return UpdateApiResponseBuilder.build(repOrderDTO, repOrderCCOutcomeList);
     }
 
     public Object graphQLQuery() throws IOException {

@@ -4,6 +4,7 @@ import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -103,6 +104,28 @@ public abstract class RestAPIClient {
                 .bodyValue(graphQLBody)
                 .retrieve()
                 .bodyToMono(responseClass)
+                .onErrorMap(this::handleError)
+                .doOnError(Sentry::captureException)
+                .block();
+    }
+
+    public ResponseEntity<Void> getApiResponseViaHEAD(String url,
+                                                      Map<String, String> headers,
+                                                      Object... urlVariables) {
+
+        return getWebClient()
+                .head()
+                .uri(uriBuilder -> uriBuilder.path(url)
+                        .build(urlVariables))
+                .headers(httpHeaders -> {
+                    if (headers != null) {
+                        httpHeaders.setAll(headers);
+                    }
+                })
+                .attributes(WebClientConfiguration.getExchangeFilterWith(getRegistrationId()))
+                .retrieve()
+                .toBodilessEntity()
+                .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Mono.empty())
                 .onErrorMap(this::handleError)
                 .doOnError(Sentry::captureException)
                 .block();

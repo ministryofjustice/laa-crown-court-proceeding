@@ -30,7 +30,8 @@ import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -84,6 +85,7 @@ class CrownCourtProceedingControllerTest {
         }
         return requestBuilder;
     }
+
 
     private String obtainAccessToken() throws Exception {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -214,5 +216,29 @@ class CrownCourtProceedingControllerTest {
         doThrow(new APIClientException()).when(proceedingService).graphQLQuery();
         mvc.perform(buildRequestGivenContent(HttpMethod.POST, ENDPOINT_URL + "/graphql", "{}", Boolean.TRUE))
                 .andExpect(status().is5xxServerError());
+    }
+
+    @Test
+    void givenAValidInput_whenUpdateIsInvoked_thenSuccess() throws Exception {
+        var apiUpdateApplicationRequest =
+                TestModelDataBuilder.getApiUpdateApplicationRequest(IS_VALID);
+        var updateRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
+        var updateResponse = TestModelDataBuilder.getApiUpdateCrownCourtOutcomeResponse();
+        when(proceedingService.update(any(CrownCourtDTO.class)))
+                .thenReturn(updateResponse);
+
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, ENDPOINT_URL + "/update-crown-court", updateRequestJson, true))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void givenAValidInput_whenUpdateIsInvoked_RequestObjectFailsValidation() throws Exception {
+        var apiUpdateApplicationRequest =
+                TestModelDataBuilder.getApiUpdateApplicationRequest(!IS_VALID);
+        var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
+
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, ENDPOINT_URL + "/update-crown-court", updateApplicationRequestJson, true))
+                .andExpect(status().is4xxClientError());
     }
 }

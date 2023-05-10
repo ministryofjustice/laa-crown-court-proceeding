@@ -16,6 +16,9 @@ public class ServicesConfiguration {
     @NotNull
     private CourtDataAdapter courtDataAdapter;
 
+    @NotNull
+    private Evidence  evidence;
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -270,5 +273,25 @@ public class ServicesConfiguration {
 
         @NotNull
         private String hearingUrl;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Evidence {
+
+        @NotNull
+        private String baseUrl;
+
+        @NotNull
+        private EvidenceFeeEndpoints evidenceFeeEndpoints;
+
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class EvidenceFeeEndpoints {
+            @NotNull
+            private String evidenceFeeUrl;
+        }
     }
 }

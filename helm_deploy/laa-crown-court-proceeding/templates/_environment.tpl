@@ -26,6 +26,14 @@ env:
     value: {{ .Values.cdaApi.clientId }}
   - name: CDA_OAUTH_CLIENT_SECRET
     value: {{ .Values.cdaApi.clientSecret }}
+  - name: EVIDENCE_API_BASE_URL
+    value: {{ .Values.evidenceApi.baseUrl }}
+  - name: EVIDENCE_API_OAUTH_URL
+    value: {{ .Values.evidenceApi.oauthUrl }}
+  - name: EVIDENCE_API_OAUTH_CLIENT_ID
+    value: {{ .Values.evidenceApi.clientId }}
+  - name: EVIDENCE_API_OAUTH_CLIENT_SECRET
+    value: {{ .Values.evidenceApi.clientSecret }}
   - name: CLOUD_PLATFORM_QUEUE_REGION
     value: {{ .Values.cloudplatform.aws.sqs.region }}
   - name: CLOUD_PLATFORM_QUEUE_ACCESS_KEY

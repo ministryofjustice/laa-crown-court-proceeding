@@ -11,12 +11,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -34,6 +37,9 @@ class RepOrderServiceTest {
     private RepOrderService repOrderService;
     @Mock
     private MaatCourtDataService maatCourtDataService;
+
+    @Mock
+    private CrimeEvidenceDataService crimeEvidenceDataService;
 
     private static final String ERROR_MSG = "Call to Court Data API failed, invalid response";
 
@@ -790,5 +796,63 @@ class RepOrderServiceTest {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         repOrderService.createOutcome(requestDTO);
         verify(maatCourtDataService, atLeast(1)).createOutcome(any(), any());
+    }
+
+    @Test
+    void givenAValidCrownCourtInput_whenOutcomeCountIsNotZero_thenReturnEmptyRepOrder() throws Exception {
+        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(1l);
+        RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(TestModelDataBuilder.getCrownCourtDTO());
+        verify(maatCourtDataService, atLeastOnce()).outcomeCount(any(), any());
+        assertThat(repOrderDTO).isNull();
+    }
+
+    @Test
+    void givenAOutcomeIsNull_whenUpdateCCOutcomeIsInvoked_thenReturnEmptyRepOrder() throws Exception {
+        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0l);
+        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
+        crownCourtDTO.getCrownCourtSummary().setCrownCourtOutcome(null);
+        RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
+        verify(maatCourtDataService, atLeastOnce()).outcomeCount(any(), any());
+        assertThat(repOrderDTO).isNull();
+    }
+
+    @Test
+    void givenAOutcomeIsEmpty_whenUpdateCCOutcomeIsInvoked_thenReturnEmptyRepOrder() throws Exception {
+        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0l);
+        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
+        crownCourtDTO.getCrownCourtSummary().setCrownCourtOutcome(new ArrayList<>());
+        RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
+        verify(maatCourtDataService, atLeastOnce()).outcomeCount(any(), any());
+        assertThat(repOrderDTO).isNull();
+    }
+
+    @Test
+    void givenAEvidenceFeeIsEmpty_whenUpdateCCOutcomeIsInvoked_thenReturnRepOrder() throws Exception {
+
+        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
+        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0l);
+        when(crimeEvidenceDataService.getCalEvidenceFee(any())).thenReturn(new ApiCalculateEvidenceFeeResponse());
+        when(maatCourtDataService.updateRepOrder(any(), any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
+        RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
+        verify(maatCourtDataService, atLeastOnce()).outcomeCount(any(), any());
+        verify(crimeEvidenceDataService).getCalEvidenceFee(any());
+        verify(maatCourtDataService).updateRepOrder(any(), any());
+        verify(maatCourtDataService).createOutcome(any(), any());
+        assertThat(repOrderDTO).isNotNull();
+    }
+
+    @Test
+    void givenAValidInput_whenUpdateCCOutcomeIsInvoked_thenReturnRepOrder() throws Exception {
+
+        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
+        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0l);
+        when(crimeEvidenceDataService.getCalEvidenceFee(any())).thenReturn(TestModelDataBuilder.getApiCalculateEvidenceFeeResponse());
+        when(maatCourtDataService.updateRepOrder(any(), any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
+        RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
+        verify(maatCourtDataService, atLeastOnce()).outcomeCount(any(), any());
+        verify(crimeEvidenceDataService).getCalEvidenceFee(any());
+        verify(maatCourtDataService).updateRepOrder(any(), any());
+        verify(maatCourtDataService).createOutcome(any(), any());
+        assertThat(repOrderDTO).isNotNull();
     }
 }

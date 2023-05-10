@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.ErrorDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 
 import jakarta.validation.Valid;
@@ -91,6 +88,33 @@ public class CrownCourtProceedingController {
         CrownCourtDTO crownCourtDTO = preProcessRequest(request);
         return ResponseEntity.ok(proceedingService.updateApplication(crownCourtDTO));
     }
+
+
+    @PutMapping(value = "/update-crown-court" , produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Update Crown Court")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ApiUpdateApplicationRequest.class)
+            )
+    )
+    @ApiResponse(responseCode = "400",
+            description = "Bad Request.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> update(@Valid @RequestBody ApiUpdateApplicationRequest request) {
+        CrownCourtDTO crownCourtDTO = preProcessRequest(request);
+        proceedingService.checkCCDetails(crownCourtDTO);
+        return ResponseEntity.ok(proceedingService.update(crownCourtDTO));
+    }
+
 
     @PostMapping(value = "/graphql", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve an old means assessment")

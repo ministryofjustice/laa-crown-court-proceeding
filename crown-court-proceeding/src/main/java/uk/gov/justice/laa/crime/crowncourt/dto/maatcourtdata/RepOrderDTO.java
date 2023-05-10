@@ -39,4 +39,5 @@ public class RepOrderDTO {
     private LocalDate crownRepOrderDate;
     private LocalDate assessmentDateCompleted;
     private LocalDate sentenceOrderDate;
+    private String evidenceFeeLevel;
 }

@@ -7,7 +7,6 @@ import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiPaymentDetails;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 
 import java.time.LocalDateTime;
@@ -19,7 +18,6 @@ import static java.util.Optional.ofNullable;
 public class UpdateRepOrderDTOBuilder {
 
     public static UpdateRepOrderRequestDTO build(CrownCourtDTO crownCourtDTO, ApiProcessRepOrderResponse apiProcessRepOrderResponse) {
-        ApiPaymentDetails paymentDetails = crownCourtDTO.getPaymentDetails();
         ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
         return UpdateRepOrderRequestDTO.builder()
                 .repId(crownCourtDTO.getRepId())
@@ -38,11 +36,6 @@ public class UpdateRepOrderDTOBuilder {
                 .sentenceOrderDate(crownCourtSummary.getSentenceOrderDate())
                 .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel())
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
-                .bankAccountName(paymentDetails.getBankAccountName())
-                .bankAccountNo(paymentDetails.getBankAccountNo())
-                .paymentMethod(paymentDetails.getPaymentMethod())
-                .preferredPaymentDay(paymentDetails.getPreferredPaymentDay())
-                .sortCode(paymentDetails.getSortCode())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
                 .build();
     }

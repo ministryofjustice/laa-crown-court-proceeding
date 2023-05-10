@@ -7,6 +7,7 @@ services:
     ports:
       - "8087:8087"
       - "8096:8096"
+
     depends_on:
       - postgres
 

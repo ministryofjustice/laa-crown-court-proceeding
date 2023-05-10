@@ -66,8 +66,6 @@ class CrownCourtDTOBuilderTest {
                 .isEqualTo(request.getApplicantHistoryId());
         softly.assertThat(dto.getIsImprisoned())
                 .isEqualTo(request.getIsImprisoned());
-        softly.assertThat(dto.getPaymentDetails())
-                .isEqualTo(request.getPaymentDetails());
         softly.assertAll();
     }
 }
