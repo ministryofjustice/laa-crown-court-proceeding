@@ -1,13 +1,10 @@
 package uk.gov.justice.laa.crime.crowncourt.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.http.Fault;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import okhttp3.mockwebserver.*;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
@@ -27,36 +24,36 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
-import uk.gov.justice.laa.crime.crowncourt.config.WireMockServerConfig;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.Map;
+import java.util.UUID;
+
+import static io.netty.handler.codec.http.HttpResponseStatus.NOT_IMPLEMENTED;
+import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@SpringBootTest(properties = "spring.main.allow-bean-definition-overriding=true",
-        classes = {CrownCourtProceedingApplication.class, WireMockServerConfig.class}, webEnvironment = DEFINED_PORT)
+@DirtiesContext
 @RunWith(SpringRunner.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext
+@SpringBootTest(classes = CrownCourtProceedingApplication.class, webEnvironment = DEFINED_PORT)
 class CrownCourtProceedingIntegrationTest {
 
     private static final String CLIENT_SECRET = "secret";
-    private static final String CLIENT_CREDENTIALS = "client_credentials";
     private static final String CLIENT_ID = "test-client";
     private static final String SCOPE_READ_WRITE = "READ_WRITE";
-    private static final String CCP_ENDPOINT_URL = "/api/internal/v1/proceedings";
-
-    private static final String MAAT_COURT_API_ENDPOINT_URL = "/api/internal/v1/assessment/.*";
-
+    private static final String CLIENT_CREDENTIALS = "client_credentials";
     private static final String ERROR_MSG = "Call to service MAAT-API failed.";
+    private static final String CCP_ENDPOINT_URL = "/api/internal/v1/proceedings";
 
     private MockMvc mvc;
 
@@ -69,18 +66,61 @@ class CrownCourtProceedingIntegrationTest {
     @Autowired
     private FilterChainProxy springSecurityFilterChain;
 
-    @Autowired
-    private WireMockServer webServer;
+    private MockWebServer mockMaatCourtDataApi;
 
 
-    @BeforeEach
-    public void setup() {
-        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).addFilter(springSecurityFilterChain).build();
+    @BeforeAll
+    public void initialiseMockWebServer() {
+        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
+                .addFilter(springSecurityFilterChain).build();
     }
 
-    @AfterAll
-    public void cleanUp() {
-        webServer.shutdown();
+    @AfterEach
+    protected void shutdownMockWebServer() throws IOException {
+        mockMaatCourtDataApi.shutdown();
+    }
+
+    @BeforeEach
+    public void setup() throws IOException {
+        mockMaatCourtDataApi = new MockWebServer();
+        mockMaatCourtDataApi.start(9999);
+
+        final Dispatcher dispatcher = new QueueDispatcher() {
+            @NotNull @Override
+            public MockResponse dispatch (RecordedRequest request) throws InterruptedException {
+
+                if ("/oauth2/token".equals(request.getPath())) {
+                    return getOauthResponse();
+                }
+
+                var requestLine = request.getRequestLine();
+                if ("GET /favicon.ico HTTP/1.1".equals(requestLine)) {
+                    return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
+                }
+
+                return getResponseQueue().take();
+            }
+        };
+        mockMaatCourtDataApi.setDispatcher(dispatcher);
+    }
+
+    private MockResponse getOauthResponse() {
+        Map<String, Object> token = Map.of(
+                "expires_in", 3600,
+                "token_type", "Bearer",
+                "access_token", UUID.randomUUID()
+        );
+        String responseBody;
+        MockResponse response = new MockResponse();
+        response.setResponseCode(OK.code());
+        response.setHeader("Content-Type", MediaType.APPLICATION_JSON);
+
+        try {
+            responseBody = objectMapper.writeValueAsString(token);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return response.setBody(responseBody);
     }
 
     private MockHttpServletRequestBuilder buildRequestGivenContent(HttpMethod method, String content) throws Exception {
@@ -152,8 +192,9 @@ class CrownCourtProceedingIntegrationTest {
         var apiProcessRepOrderRequest = TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE);
         apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
 
-        webServer.stubFor(get(urlPathMatching(MAAT_COURT_API_ENDPOINT_URL)).willReturn(aResponse()
-                .withFault(Fault.MALFORMED_RESPONSE_CHUNK)));
+        mockMaatCourtDataApi.enqueue(new MockResponse()
+                .setHeader("Content-Type", MediaType.APPLICATION_JSON)
+                .setResponseCode(NOT_IMPLEMENTED.code()));
 
         mvc.perform(buildRequestGivenContent(HttpMethod.POST, objectMapper.writeValueAsString(apiProcessRepOrderRequest)))
                 .andExpect(status().is5xxServerError())
@@ -178,9 +219,11 @@ class CrownCourtProceedingIntegrationTest {
         var processRepOrderResponse = TestModelDataBuilder.getApiProcessRepOrderResponse();
         processRepOrderResponse.setRepOrderDate(TestModelDataBuilder.TEST_IOJ_APPEAL_DECISION_DATE);
 
-        webServer.stubFor(get(urlPathMatching(MAAT_COURT_API_ENDPOINT_URL)).willReturn(aResponse()
-                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .withBody(objectMapper.writeValueAsString(TestModelDataBuilder.getIOJAppealDTO()))));
+        mockMaatCourtDataApi.enqueue(new MockResponse()
+                .setResponseCode(OK.code())
+                .setHeader("Content-Type", MediaType.APPLICATION_JSON)
+                .setBody(objectMapper.writeValueAsString(TestModelDataBuilder.getIOJAppealDTO()))
+        );
 
         MvcResult result = mvc.perform(buildRequestGivenContent(HttpMethod.POST, objectMapper.writeValueAsString(apiProcessRepOrderRequest)))
                 .andExpect(status().isOk()).andReturn();
@@ -211,8 +254,9 @@ class CrownCourtProceedingIntegrationTest {
     @Test
     void givenAValidUpdateApplicationContent_whenApiResponseIsError_thenUpdateApplicationIsFails() throws Exception {
 
-        webServer.stubFor((WireMock.put(urlPathMatching(MAAT_COURT_API_ENDPOINT_URL)).willReturn(aResponse()
-                .withFault(Fault.MALFORMED_RESPONSE_CHUNK))));
+        mockMaatCourtDataApi.enqueue(new MockResponse()
+                .setHeader("Content-Type", MediaType.APPLICATION_JSON)
+                .setResponseCode(NOT_IMPLEMENTED.code()));
 
         mvc.perform(buildRequestGivenContent(HttpMethod.PUT, objectMapper.writeValueAsString(
                         TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE))))
@@ -226,9 +270,18 @@ class CrownCourtProceedingIntegrationTest {
         var updateApplicationResponse = TestModelDataBuilder.getApiUpdateApplicationResponse();
         ApiUpdateApplicationRequest apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
         apiUpdateApplicationRequest.setCaseType(CaseType.APPEAL_CC);
-        webServer.stubFor(put(urlPathMatching(MAAT_COURT_API_ENDPOINT_URL)).willReturn(aResponse()
-                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .withBody(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderDTO()))));
+
+        mockMaatCourtDataApi.enqueue(new MockResponse()
+                .setResponseCode(OK.code())
+                .setHeader("Content-Type", MediaType.APPLICATION_JSON)
+                .setBody(objectMapper.writeValueAsString(TestModelDataBuilder.getIOJAppealDTO()))
+        );
+
+        mockMaatCourtDataApi.enqueue(new MockResponse()
+                .setResponseCode(OK.code())
+                .setHeader("Content-Type", MediaType.APPLICATION_JSON)
+                .setBody(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderDTO()))
+        );
 
         MvcResult result = mvc.perform(buildRequestGivenContent(HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateApplicationRequest)))
                 .andExpect(status().isOk()).andReturn();
@@ -239,9 +292,11 @@ class CrownCourtProceedingIntegrationTest {
     @Test
     void givenAValidContent_whenGraphQLQueryIsInvoked_thenSuccess() throws Exception {
 
-        webServer.stubFor((WireMock.post(urlPathMatching(MAAT_COURT_API_ENDPOINT_URL)).willReturn(aResponse()
-                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .withBody(objectMapper.writeValueAsString(TestModelDataBuilder.getGraphQLRepOrderDTO())))));
+        mockMaatCourtDataApi.enqueue(new MockResponse()
+                .setResponseCode(OK.code())
+                .setHeader("Content-Type", MediaType.APPLICATION_JSON)
+                .setBody(objectMapper.writeValueAsString(TestModelDataBuilder.getGraphQLRepOrderDTO()))
+        );
 
         MvcResult result = mvc.perform(buildRequestGivenContent(HttpMethod.POST, CCP_ENDPOINT_URL + "/graphql",
                         "{}", Boolean.TRUE))
@@ -255,13 +310,14 @@ class CrownCourtProceedingIntegrationTest {
     @Test
     void givenAValidContent_whenApiResponseIsError_thenGraphQLIsFails() throws Exception {
 
-        webServer.stubFor((WireMock.get(urlPathMatching(MAAT_COURT_API_ENDPOINT_URL)).willReturn(aResponse()
-                .withFault(Fault.MALFORMED_RESPONSE_CHUNK))));
+        mockMaatCourtDataApi.enqueue(new MockResponse()
+                .setHeader("Content-Type", MediaType.APPLICATION_JSON)
+                .setResponseCode(NOT_IMPLEMENTED.code()));
 
-        mvc.perform(buildRequestGivenContent(HttpMethod.POST, CCP_ENDPOINT_URL + "/graphql", "{}", Boolean.TRUE))
+        mvc.perform(buildRequestGivenContent(HttpMethod.POST,
+                        CCP_ENDPOINT_URL + "/graphql", "{}", Boolean.TRUE))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value(ERROR_MSG));
-
     }
 }

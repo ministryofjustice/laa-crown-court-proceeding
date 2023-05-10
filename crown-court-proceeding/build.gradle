@@ -19,10 +19,9 @@ def versions = [
         springdocVersion                   : "1.6.15",
         springauthserverVersion            : "1.0.1",
         okhttpVersion                      : "4.9.3",
-        mockwebserverVersion               : "4.9.3",
+        mockwebserverVersion               : "4.10.0",
         pitest                             : "1.4.10",
         amazonSQSVersion                   : "2.1.1",
-        wireMock                           : "2.27.2"
 ]
 
 java {
@@ -73,12 +72,12 @@ dependencies {
     implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$versions.amazonSQSVersion"
 
     testImplementation "com.h2database:h2"
+    testImplementation "org.mockito:mockito-inline"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.pitest:pitest:$versions.pitest"
     testImplementation "com.squareup.okhttp3:okhttp:$versions.okhttpVersion"
     testImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserverVersion"
-    testImplementation "com.github.tomakehurst:wiremock:$versions.wireMock"
 }
 
 tasks.named("test").configure {

@@ -27,8 +27,8 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
-@Configuration(proxyBeanMethods = false)
 @Order(2)
+@Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfiguration {
     @Value("${crown-court-proceeding.security.issuer-uri}")
     private String issuerUri;
