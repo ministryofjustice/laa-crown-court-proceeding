@@ -5,7 +5,7 @@ logging:
   level:
     root: INFO
     org.springframework.web: INFO
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
 
 management:
   server:
@@ -39,7 +39,7 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     generate-ddl: false
     hibernate:
