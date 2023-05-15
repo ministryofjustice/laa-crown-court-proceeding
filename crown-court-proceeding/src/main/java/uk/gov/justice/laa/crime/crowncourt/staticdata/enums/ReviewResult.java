@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.stream.Stream;
 
 @Getter
@@ -19,7 +19,7 @@ public enum ReviewResult {
 
     @NotNull
     @JsonPropertyDescription("Determines review result")
-    private String result;
+    private final String result;
 
 
     public static ReviewResult getFrom(String result) {

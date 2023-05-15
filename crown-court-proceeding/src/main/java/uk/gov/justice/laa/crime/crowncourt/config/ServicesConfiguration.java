@@ -3,7 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.config;
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @RequiredArgsConstructor

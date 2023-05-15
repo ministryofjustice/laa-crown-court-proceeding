@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
@@ -17,7 +16,6 @@ import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCas
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.isTrial;
 
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class ProsecutionConcludedImpl {
 

@@ -144,7 +144,7 @@ class ExchangeFilterUtilsTest {
         assertThatThrownBy(
                 response::block
         ).isInstanceOf(WebClientResponseException.class)
-                .hasMessage("0 Not Found");
+                .hasMessage("404 Not Found");
     }
 
     @Test

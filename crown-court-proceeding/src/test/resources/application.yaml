@@ -25,9 +25,9 @@ spring:
       client:
         provider:
           maat-api:
-            token-uri: http://dummyserver:9999
+            token-uri: http://localhost:9999/oauth2/token
           cda:
-            token-uri: http://dummyserver:9999
+            token-uri: http://localhost:9999/oauth2/token
         registration:
           maat-api:
             client-id: dummy-client
@@ -55,7 +55,7 @@ services:
 
   maat-api:
     oAuthEnabled: true
-    baseUrl: ${MAAT_API_BASE_URL}
+    baseUrl: http://localhost:9999
     assessments-domain: /api/internal/v1/assessment
     ioj-appeal-endpoints:
       find-url: ${services.maat-api.assessments-domain}/ioj-appeal/repId/{repId}/current-passed

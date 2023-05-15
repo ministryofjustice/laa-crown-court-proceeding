@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -9,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.entity.QueueMessageLogEntity;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.crowncourt.repository.QueueMessageLogRepository;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -18,7 +17,6 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-@XRayEnabled
 @RequiredArgsConstructor
 public class QueueMessageLogService {
 

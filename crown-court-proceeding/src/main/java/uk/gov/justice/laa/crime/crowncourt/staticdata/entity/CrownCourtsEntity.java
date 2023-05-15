@@ -1,16 +1,19 @@
 package uk.gov.justice.laa.crime.crowncourt.staticdata.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "crown_courts", schema = "crown_court_proceeding")
 public class CrownCourtsEntity {
     @Id

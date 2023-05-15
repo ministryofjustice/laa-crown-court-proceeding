@@ -4,13 +4,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 
 import java.util.UUID;
 
@@ -22,23 +21,19 @@ public class CrownCourtProceedingTestConfiguration {
 
     @Bean
     @Primary
-    public RegisteredClientRepository registeredTestClientRepository(JdbcTemplate jdbcTemplate) {
+    public RegisteredClientRepository registeredTestClientRepository() {
 
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("test-client")
                 .clientSecret("{noop}secret")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("http://127.0.0.1:"+serverPort+"/authorized")
+                .redirectUri("http://127.0.0.1:" + serverPort + "/authorized")
                 .scope("READ")
                 .scope("READ_WRITE")
                 .clientSettings(ClientSettings.builder().build())
                 .build();
 
-        // Save registered client in db as if in-memory
-        JdbcRegisteredClientRepository registeredClientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
-        registeredClientRepository.save(registeredClient);
-
-        return registeredClientRepository;
+        return new InMemoryRegisteredClientRepository(registeredClient);
     }
 }

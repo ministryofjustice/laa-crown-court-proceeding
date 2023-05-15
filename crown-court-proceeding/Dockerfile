@@ -5,4 +5,4 @@ COPY ./build/libs/crown-court-proceeding.jar /opt/laa-crown-court-proceeding/app
 RUN addgroup -S appgroup && adduser -u 1001 -S appuser -G appgroup
 USER 1001
 EXPOSE 8087 8096
-ENTRYPOINT ["java","-jar","app.jar"]
+CMD java -jar app.jar

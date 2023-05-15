@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
@@ -10,7 +9,6 @@ import java.util.Optional;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
-@XRayEnabled
 public class ProsecutionConcludedValidator {
 
     public static final String PAYLOAD_IS_NOT_AVAILABLE_OR_NULL = "Payload is not available or null.";

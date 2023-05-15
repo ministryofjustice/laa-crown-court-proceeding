@@ -1,11 +1,9 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.builder.CaseConclusionDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CalculateOutcomeHelper;
@@ -15,12 +13,12 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSu
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
 import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 
 import java.util.List;
 
-@Service
 @Slf4j
-@XRayEnabled
+@Service
 @RequiredArgsConstructor
 public class ProsecutionConcludedService {
 

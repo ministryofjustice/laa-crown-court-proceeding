@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.scheduler;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +16,16 @@ import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
+@Getter
 @Configuration
 @EnableScheduling
-@Getter
-@XRayEnabled
-@Slf4j
 @RequiredArgsConstructor
 public class ProsecutionConcludedScheduler {
 
@@ -84,7 +81,7 @@ public class ProsecutionConcludedScheduler {
             return null;
         }
     }
-    
+
     public void updateConclusion(String hearingId, CaseConclusionStatus caseConclusionStatus) {
         List<ProsecutionConcludedEntity> processedCases = prosecutionConcludedRepository.getByHearingId(hearingId);
         processedCases.forEach(concludedCase -> {

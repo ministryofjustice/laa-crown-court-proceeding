@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -53,20 +54,23 @@ public class ExchangeFilterUtils {
         );
 
         return ExchangeFilterFunctions.statusError(
-                HttpStatus::isError, r -> {
+                HttpStatusCode::isError, r -> {
+
+                    HttpStatus status = HttpStatus.valueOf(r.statusCode().value());
+
                     String errorMessage =
                             String.format("Received error %s due to %s",
-                                    r.statusCode().value(), r.statusCode().getReasonPhrase());
+                                    r.statusCode().value(), status.getReasonPhrase());
 
-                    if (retryableStatuses.contains(r.statusCode())) {
+                    if (retryableStatuses.contains(status)) {
                         return new RetryableWebClientResponseException(errorMessage);
-                    } else if (r.statusCode().is5xxServerError()) {
-                        return new HttpServerErrorException(r.statusCode(), errorMessage);
-                    } else if (r.statusCode().is4xxClientError() && !r.statusCode().equals(HttpStatus.NOT_FOUND)) {
-                        return new HttpClientErrorException(r.statusCode(), errorMessage);
+                    } else if (status.is5xxServerError()) {
+                        return new HttpServerErrorException(status, errorMessage);
+                    } else if (status.is4xxClientError() && !status.equals(HttpStatus.NOT_FOUND)) {
+                        return new HttpClientErrorException(status, errorMessage);
                     }
                     return WebClientResponseException.create(
-                            r.rawStatusCode(), r.statusCode().getReasonPhrase(), null, null, null
+                            status.value(), status.getReasonPhrase(), null, null, null
                     );
                 });
     }

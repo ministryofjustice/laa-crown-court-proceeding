@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.stream.Stream;
 
 @Getter
@@ -24,8 +24,8 @@ public enum DecisionReason {
 
     @NotNull
     @JsonPropertyDescription("This will have the decision reason")
-    private String code;
-    private String description;
+    private final String code;
+    private final String description;
 
     public static DecisionReason getFrom(String code) {
         if (StringUtils.isBlank(code)) return null;
