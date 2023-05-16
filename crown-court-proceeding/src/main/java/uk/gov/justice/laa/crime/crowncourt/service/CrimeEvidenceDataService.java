@@ -3,7 +3,6 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.crowncourt.client.CrimeEvidenceClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeRequest;

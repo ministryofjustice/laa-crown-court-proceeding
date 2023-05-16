@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.MultiValueMap;
-import uk.gov.justice.laa.crime.crowncourt.client.CourtDataAdapterClient;
 import uk.gov.justice.laa.crime.crowncourt.config.MockServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
