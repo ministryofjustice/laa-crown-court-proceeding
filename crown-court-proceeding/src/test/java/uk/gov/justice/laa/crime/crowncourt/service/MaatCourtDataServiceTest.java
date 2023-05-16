@@ -9,7 +9,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.justice.laa.crime.crowncourt.client.MaatAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.config.MockServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
@@ -253,13 +252,6 @@ class MaatCourtDataServiceTest {
     void givenAValidParameter_whenMaatRecordLockedIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.isMaatRecordLocked(TestModelDataBuilder.TEST_REP_ID);
         verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any());
-    }
-
-    @Test
-    void givenAValidParameter_whenGetRepOrderByFilterIsInvoked_thenResponseIsReturned() throws Exception {
-        maatCourtDataService.getRepOrderByFilter(TestModelDataBuilder.TEST_REP_ID.toString(),
-                TestModelDataBuilder.TEST_SENTENCE_ORDER_DATE.toString());
-        verify(maatCourtDataClient).getGraphQLApiResponse(any(), any(), any());
     }
 
     @Test

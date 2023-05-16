@@ -221,21 +221,6 @@ class MaatAPIClientTest {
         assertThat(apiResponse.getRepOrderDecision()).isEqualTo(response.getRepOrderDecision());
     }
 
-    @Test
-    void givenCorrectParams_whenGetGraphQLApiResponseIsInvoked_thenGetApiResponseIsCalledWithCorrectMethod()
-            throws JsonProcessingException {
-        RepOrderDTO responseBody = new RepOrderDTO();
-        responseBody.setId(1234);
-        setupValidResponseTest(responseBody);
-        RepOrderDTO apiRes = maatAPIClient.getGraphQLApiResponse(
-                RepOrderDTO.class,
-                MOCK_URL,
-                Map.of("LAA_TRANSACTION_ID", LAA_TRANSACTION_ID)
-        );
-        assertThat(apiRes.getId()).isEqualTo(responseBody.getId());
-    }
-
-
     private void setupNotFoundTest() {
         when(shortCircuitExchangeFunction.exchange(any()))
                 .thenReturn(

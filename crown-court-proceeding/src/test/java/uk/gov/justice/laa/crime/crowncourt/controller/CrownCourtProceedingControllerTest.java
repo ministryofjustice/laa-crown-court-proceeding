@@ -202,23 +202,6 @@ class CrownCourtProceedingControllerTest {
     }
 
     @Test
-    void givenAValidContent_whenGraphQLQueryIsInvoked_thenSuccess() throws Exception {
-        when(proceedingService.graphQLQuery()).thenReturn(TestModelDataBuilder.getGraphQLRepOrderDTO());
-        MvcResult result = mvc.perform(buildRequestGivenContent(HttpMethod.POST, ENDPOINT_URL + "/graphql", "{}", Boolean.TRUE))
-                .andExpect(status().isOk()).andReturn();
-        assertThat(result.getResponse().getContentAsString())
-                .isEqualTo(objectMapper.writeValueAsString(TestModelDataBuilder.getGraphQLRepOrderDTO()));
-    }
-
-    @Test
-    void givenAValidContent_whenApiResponseIsError_thenGraphQLIsFails() throws Exception {
-
-        doThrow(new APIClientException()).when(proceedingService).graphQLQuery();
-        mvc.perform(buildRequestGivenContent(HttpMethod.POST, ENDPOINT_URL + "/graphql", "{}", Boolean.TRUE))
-                .andExpect(status().is5xxServerError());
-    }
-
-    @Test
     void givenAValidInput_whenUpdateIsInvoked_thenSuccess() throws Exception {
         var apiUpdateApplicationRequest =
                 TestModelDataBuilder.getApiUpdateApplicationRequest(IS_VALID);

@@ -310,14 +310,6 @@ class ProceedingServiceTest {
 
     }
 
-
-    @Test
-    void givenAValidParameter_whenGraphQLQueryIsInvoked_thenReturnIsSuccess() throws Exception {
-        when(maatCourtDataService.getRepOrderByFilter(any(), any())).thenReturn(new Object());
-        proceedingService.graphQLQuery();
-        verify(maatCourtDataService, atLeastOnce()).getRepOrderByFilter(any(), any());
-    }
-
     @Test
     void givenACrownCourtIsEmpty_whenCheckCCDetailsIsInvoked_thenValidationPass() {
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();

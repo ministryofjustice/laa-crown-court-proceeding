@@ -300,18 +300,6 @@ public class TestModelDataBuilder {
                           """;
     }
 
-    public static RepOrderDTO getGraphQLRepOrderDTO() {
-
-        return RepOrderDTO.builder()
-                .id(TEST_REP_ID)
-                .caseId(TEST_CASE_ID.toString())
-                .dateModified(TEST_REP_ORDER_DATE)
-                .sentenceOrderDate(TEST_REP_ORDER_DATE.toLocalDate())
-                .passportAssessments(List.of(PassportAssessmentDTO.builder().id(PASSPORT_ID).build()))
-                .financialAssessments(List.of(FinancialAssessmentDTO.builder().build()))
-                .build();
-    }
-
     public static FinancialAssessmentDTO getFinancialAssessmentDTO() {
         return FinancialAssessmentDTO.builder()
                 .id(1)

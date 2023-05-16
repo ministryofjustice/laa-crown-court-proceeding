@@ -64,8 +64,6 @@ services:
       update-url: ${services.maat-api.assessments-domain}/rep-orders
       find-outcome-url: ${services.maat-api.assessments-domain}/rep-orders/cc-outcome/reporder/{repId}
       create-outcome-url: ${services.maat-api.assessments-domain}/rep-orders/cc-outcome
-    graphql-endpoints:
-      graphql-query-url: ${services.maat-api.assessments-domain}/graphQL
     offence-endpoints:
       find-url: ${services.maat-api.assessments-domain}/offence/case/{caseId}
       offence-count-url: ${services.maat-api.assessments-domain}/offence/{offenceId}/case/{caseId}
