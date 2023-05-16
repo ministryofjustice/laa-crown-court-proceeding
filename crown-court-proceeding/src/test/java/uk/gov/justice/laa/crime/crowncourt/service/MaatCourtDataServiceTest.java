@@ -271,8 +271,8 @@ class MaatCourtDataServiceTest {
 
         when(maatAPIClient.head(any(), any(), any())).thenThrow(new APIClientException());
 
-        assertThatThrownBy(() -> {
-            maatCourtDataService.outcomeCount(TestModelDataBuilder.TEST_REP_ID, TestModelDataBuilder.MEANS_ASSESSMENT_TRANSACTION_ID);
-        }).isInstanceOf(APIClientException.class);
+        assertThatThrownBy(() -> maatCourtDataService.outcomeCount(
+                TestModelDataBuilder.TEST_REP_ID, TestModelDataBuilder.MEANS_ASSESSMENT_TRANSACTION_ID)
+        ).isInstanceOf(APIClientException.class);
     }
 }

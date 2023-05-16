@@ -799,16 +799,16 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenAValidCrownCourtInput_whenOutcomeCountIsNotZero_thenReturnEmptyRepOrder() throws Exception {
-        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(1l);
+    void givenAValidCrownCourtInput_whenOutcomeCountIsNotZero_thenReturnEmptyRepOrder() {
+        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(1L);
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(TestModelDataBuilder.getCrownCourtDTO());
         verify(maatCourtDataService, atLeastOnce()).outcomeCount(any(), any());
         assertThat(repOrderDTO).isNull();
     }
 
     @Test
-    void givenAOutcomeIsNull_whenUpdateCCOutcomeIsInvoked_thenReturnEmptyRepOrder() throws Exception {
-        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0l);
+    void givenAOutcomeIsNull_whenUpdateCCOutcomeIsInvoked_thenReturnEmptyRepOrder() {
+        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0L);
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
         crownCourtDTO.getCrownCourtSummary().setCrownCourtOutcome(null);
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
@@ -817,8 +817,8 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenAOutcomeIsEmpty_whenUpdateCCOutcomeIsInvoked_thenReturnEmptyRepOrder() throws Exception {
-        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0l);
+    void givenAOutcomeIsEmpty_whenUpdateCCOutcomeIsInvoked_thenReturnEmptyRepOrder() {
+        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0L);
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
         crownCourtDTO.getCrownCourtSummary().setCrownCourtOutcome(new ArrayList<>());
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
@@ -827,10 +827,10 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenAEvidenceFeeIsEmpty_whenUpdateCCOutcomeIsInvoked_thenReturnRepOrder() throws Exception {
+    void givenAEvidenceFeeIsEmpty_whenUpdateCCOutcomeIsInvoked_thenReturnRepOrder() {
 
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
-        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0l);
+        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0L);
         when(crimeEvidenceDataService.getCalEvidenceFee(any())).thenReturn(new ApiCalculateEvidenceFeeResponse());
         when(maatCourtDataService.updateRepOrder(any(), any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
@@ -842,10 +842,10 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenAValidInput_whenUpdateCCOutcomeIsInvoked_thenReturnRepOrder() throws Exception {
+    void givenAValidInput_whenUpdateCCOutcomeIsInvoked_thenReturnRepOrder() {
 
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
-        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0l);
+        when(maatCourtDataService.outcomeCount(any(), any())).thenReturn(0L);
         when(crimeEvidenceDataService.getCalEvidenceFee(any())).thenReturn(TestModelDataBuilder.getApiCalculateEvidenceFeeResponse());
         when(maatCourtDataService.updateRepOrder(any(), any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);

@@ -40,9 +40,9 @@ class CrimeEvidenceDataServiceTest {
     void givenAValidEvidenceFeeRequest_whenGetCalEvidenceFeeIsInvokedAndTheApiCallFails_thenFailureIsHandled() {
 
         when(evidenceAPIClient.post(any(), any(), any(), any())).thenThrow(new APIClientException());
-        assertThatThrownBy(() -> {
-            crimeEvidenceDataService.getCalEvidenceFee(TestModelDataBuilder.getApiCalculateEvidenceFeeRequest());
-        }).isInstanceOf(APIClientException.class);
+        assertThatThrownBy(() -> crimeEvidenceDataService.getCalEvidenceFee(
+                TestModelDataBuilder.getApiCalculateEvidenceFeeRequest())
+        ).isInstanceOf(APIClientException.class);
     }
 
 }

@@ -65,7 +65,7 @@ class ProsecutionConcludedSchedulerTest {
 
 
     @Test
-    void givenAJurisdictionIsMagistrates_whenProcessCaseConclusionIsInvokes_thenUpdateConclusionIsSuccess() throws Exception {
+    void givenAJurisdictionIsMagistrates_whenProcessCaseConclusionIsInvokes_thenUpdateConclusionIsSuccess() {
 
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).
                 thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.MAGISTRATES.name()).build());
@@ -78,7 +78,7 @@ class ProsecutionConcludedSchedulerTest {
     }
 
     @Test
-    void givenAInvalidCaseConclusion_whenProcessCaseConclusionIsInvokes_thenUpdateConclusionIsError() throws Exception {
+    void givenAInvalidCaseConclusion_whenProcessCaseConclusionIsInvokes_thenUpdateConclusionIsError() {
 
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).thenThrow(new APIClientException());
         when(prosecutionConcludedRepository.getByHearingId(any())).thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));

@@ -67,21 +67,8 @@ class CrownCourtProceedingControllerTest {
     }
 
     private MockHttpServletRequestBuilder buildRequestGivenContent(HttpMethod method, String content) throws Exception {
-        return buildRequestGivenContent(method, content, true);
+        return buildRequestGivenContent(method, content, null, true);
     }
-
-    private MockHttpServletRequestBuilder buildRequestGivenContent(HttpMethod method, String content, boolean withAuth) throws Exception {
-        MockHttpServletRequestBuilder requestBuilder =
-                MockMvcRequestBuilders.request(method, ENDPOINT_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content);
-        if (withAuth) {
-            final String accessToken = obtainAccessToken();
-            requestBuilder.header("Authorization", "Bearer " + accessToken);
-        }
-        return requestBuilder;
-    }
-
 
     private String obtainAccessToken() throws Exception {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -98,10 +85,11 @@ class CrownCourtProceedingControllerTest {
         return jsonParser.parseMap(resultString).get("access_token").toString();
     }
 
-    private MockHttpServletRequestBuilder buildRequestGivenContent(HttpMethod method, String endpointUrl, String content,
+    private MockHttpServletRequestBuilder buildRequestGivenContent(HttpMethod method, String content, String endpointUrl,
                                                                    boolean withAuth) throws Exception {
+        String endpoint = endpointUrl != null ? endpointUrl : ENDPOINT_URL;
         MockHttpServletRequestBuilder requestBuilder =
-                MockMvcRequestBuilders.request(method, endpointUrl)
+                MockMvcRequestBuilders.request(method, endpoint)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content);
         if (withAuth) {
@@ -151,7 +139,7 @@ class CrownCourtProceedingControllerTest {
 
     @Test
     void processRepOrder_Unauthorized_NoAccessToken() throws Exception {
-        mvc.perform(buildRequestGivenContent(HttpMethod.POST, "{}", false))
+        mvc.perform(buildRequestGivenContent(HttpMethod.POST, "{}", null, false))
                 .andExpect(status().isForbidden());
     }
 
@@ -193,7 +181,7 @@ class CrownCourtProceedingControllerTest {
 
     @Test
     void updateApplication_Unauthorized_NoAccessToken() throws Exception {
-        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, "{}", false))
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, "{}", null, false))
                 .andExpect(status().isForbidden());
     }
 
@@ -206,7 +194,7 @@ class CrownCourtProceedingControllerTest {
         when(proceedingService.update(any(CrownCourtDTO.class)))
                 .thenReturn(updateResponse);
 
-        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, ENDPOINT_URL + "/update-crown-court", updateRequestJson, true))
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, updateRequestJson, ENDPOINT_URL + "/update-crown-court", true))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
@@ -217,7 +205,7 @@ class CrownCourtProceedingControllerTest {
                 TestModelDataBuilder.getApiUpdateApplicationRequest(!IS_VALID);
         var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
 
-        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, ENDPOINT_URL + "/update-crown-court", updateApplicationRequestJson, true))
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, updateApplicationRequestJson, ENDPOINT_URL + "/update-crown-court", true))
                 .andExpect(status().is4xxClientError());
     }
 }

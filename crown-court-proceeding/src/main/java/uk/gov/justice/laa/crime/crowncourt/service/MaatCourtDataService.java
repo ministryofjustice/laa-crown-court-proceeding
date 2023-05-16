@@ -50,6 +50,7 @@ public class MaatCourtDataService {
         return response;
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(Integer repId, String laaTransactionId) {
         List<RepOrderCCOutcomeDTO> response = maatAPIClient.get(
                 List.class,
@@ -61,6 +62,7 @@ public class MaatCourtDataService {
         return response;
     }
 
+    @SuppressWarnings({"unchecked"})
     public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
 
         WQHearingDTO wqHearingDTO = null;
@@ -76,6 +78,7 @@ public class MaatCourtDataService {
         return wqHearingDTO;
     }
 
+    @SuppressWarnings({"unchecked"})
     public int findWQLinkRegisterByMaatId(int maatId) {
         int caseId = 0;
         List<WQLinkRegisterDTO> wqLinkRegisterList = maatAPIClient.get(
@@ -84,21 +87,26 @@ public class MaatCourtDataService {
                 emptyMap(),
                 maatId
         );
+        log.info(RESPONSE_STRING, wqLinkRegisterList);
         if (wqLinkRegisterList != null && !wqLinkRegisterList.isEmpty()) {
             caseId = wqLinkRegisterList.get(0).getCaseId();
         }
         return caseId;
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<OffenceDTO> findOffenceByCaseId(int caseId) {
-        return maatAPIClient.get(
+        List<OffenceDTO> response = maatAPIClient.get(
                 List.class,
                 configuration.getMaatApi().getWqLinkRegisterEndpoints().getFindUrl(),
                 emptyMap(),
                 caseId
         );
+        log.info(RESPONSE_STRING, response);
+        return response;
     }
 
+    @SuppressWarnings({"unchecked"})
     public int getOffenceNewOffenceCount(int caseId, String offenceId) {
         int count = 0;
         List<Integer> offenceCount = maatAPIClient.get(
@@ -108,12 +116,14 @@ public class MaatCourtDataService {
                 caseId,
                 offenceId
         );
+        log.info(RESPONSE_STRING, offenceCount);
         if (offenceCount != null && !offenceCount.isEmpty()) {
             count = offenceCount.get(0);
         }
         return count;
     }
 
+    @SuppressWarnings({"unchecked"})
     public int getWQOffenceNewOffenceCount(int caseId, String offenceId) {
         int count = 0;
         List<Integer> offenceCount = maatAPIClient.get(
@@ -123,56 +133,72 @@ public class MaatCourtDataService {
                 caseId,
                 offenceId
         );
+        log.info(RESPONSE_STRING, offenceCount);
         if (offenceCount != null && !offenceCount.isEmpty()) {
             count = offenceCount.get(0);
         }
         return count;
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<Integer> findResultsByWQTypeSubType(int wqType, int subTypeCode) {
-        return maatAPIClient.get(
+        List<Integer> response = maatAPIClient.get(
                 List.class,
                 configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForWQTypeSubTypeUrl(),
                 emptyMap(),
                 wqType,
                 subTypeCode
         );
+        log.info(RESPONSE_STRING, response);
+        return response;
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<Integer> getResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
-        return maatAPIClient.get(
+        List<Integer> response = maatAPIClient.get(
                 List.class,
                 configuration.getMaatApi().getResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
                 emptyMap(),
                 caseId,
                 offenceId
         );
+        log.info(RESPONSE_STRING, response);
+        return response;
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<Integer> getWqResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
-        return maatAPIClient.get(
+        List<Integer> response = maatAPIClient.get(
                 List.class,
                 configuration.getMaatApi().getWqResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
                 emptyMap(),
                 caseId,
                 offenceId
         );
+        log.info(RESPONSE_STRING, response);
+        return response;
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<Integer> fetchResultCodesForCCImprisonment() {
-        return maatAPIClient.get(
+        List<Integer> response = maatAPIClient.get(
                 List.class,
                 configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForCCImprisonmentUrl(),
                 emptyMap()
         );
+        log.info(RESPONSE_STRING, response);
+        return response;
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<Integer> findByCjsResultCodeIn() {
-        return maatAPIClient.get(
+        List<Integer> response = maatAPIClient.get(
                 List.class,
                 configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForCCBenchWarrantUrl(),
                 emptyMap()
         );
+        log.info(RESPONSE_STRING, response);
+        return response;
     }
 
     public RepOrderDTO getRepOrder(Integer repId) {
@@ -210,11 +236,13 @@ public class MaatCourtDataService {
     }
 
     public Boolean isMaatRecordLocked(Integer maatId) {
-        return maatAPIClient.get(
+        Boolean response = maatAPIClient.get(
                 Boolean.class,
                 configuration.getMaatApi().getReservationEndpoints().getIsMaatRecordLockedUrl(),
                 maatId
         );
+        log.info(RESPONSE_STRING, response);
+        return response;
     }
 
     public RepOrderCCOutcomeDTO createOutcome(RepOrderCCOutcomeDTO outcomeDTO, String laaTransactionId) {
