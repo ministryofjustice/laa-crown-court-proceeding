@@ -55,7 +55,7 @@ spring:
             token-uri: ${MAAT_API_OAUTH_URL}
           cda:
             token-uri: ${CDA_OAUTH_URL}
-          evidence-api:
+          evidence:
             token-uri: ${EVIDENCE_API_OAUTH_URL}
         registration:
           maat-api:
@@ -66,7 +66,7 @@ spring:
             clientId: ${CDA_OAUTH_CLIENT_ID}
             clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
             authorizationGrantType: client_credentials
-          evidence-api:
+          evidence:
             client-id: ${EVIDENCE_API_OAUTH_CLIENT_ID}
             client-secret: ${EVIDENCE_API_OAUTH_CLIENT_SECRET}
             authorization-grant-type: client_credentials

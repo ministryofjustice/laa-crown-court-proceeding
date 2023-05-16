@@ -8,9 +8,10 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.MultiValueMap;
+import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
+import uk.gov.justice.laa.crime.commons.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.config.MockServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
-import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.*;
 class CourtDataAdapterServiceTest {
 
     @Mock
-    private CourtDataAdapterClient courtDataAdapterClient;
+    private RestAPIClient cdaAPIClient;
 
     @InjectMocks
     private CourtDataAdapterService courtDataAdapterService;
@@ -35,7 +36,7 @@ class CourtDataAdapterServiceTest {
         String testTransactionId = UUID.randomUUID().toString();
         courtDataAdapterService.triggerHearingProcessing(testHearingId, testTransactionId);
 
-        verify(courtDataAdapterClient).getApiResponseViaGET(
+        verify(cdaAPIClient).get(
                 eq(Void.class),
                 anyString(),
                 anyMap(),
@@ -50,7 +51,7 @@ class CourtDataAdapterServiceTest {
         UUID testHearingId = UUID.randomUUID();
         String testTransactionId = UUID.randomUUID().toString();
 
-        when(courtDataAdapterClient.getApiResponseViaGET(
+        when(cdaAPIClient.get(
                 eq(Void.class),
                 anyString(),
                 anyMap(),

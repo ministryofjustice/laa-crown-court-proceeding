@@ -6,10 +6,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
+import uk.gov.justice.laa.crime.commons.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.config.MockServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
-import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.when;
 class CrimeEvidenceDataServiceTest {
 
     @Mock
-    private CrimeEvidenceClient crimeEvidenceClient;
+    private RestAPIClient evidenceAPIClient;
 
     @InjectMocks
     private CrimeEvidenceDataService crimeEvidenceDataService;
@@ -31,14 +32,14 @@ class CrimeEvidenceDataServiceTest {
     @Test
     void givenAValidEvidenceFeeRequest_whenGetCalEvidenceFeeIsInvoked_thenReturnEvidenceFeeResponse() {
         crimeEvidenceDataService.getCalEvidenceFee(TestModelDataBuilder.getApiCalculateEvidenceFeeRequest());
-        verify(crimeEvidenceClient).getApiResponseViaPOST(any(), any(), any(), any());
+        verify(evidenceAPIClient).post(any(), any(), any(), any());
 
     }
 
     @Test
     void givenAValidEvidenceFeeRequest_whenGetCalEvidenceFeeIsInvokedAndTheApiCallFails_thenFailureIsHandled() {
 
-        when(crimeEvidenceClient.getApiResponseViaPOST(any(), any(), any(), any())).thenThrow(new APIClientException());
+        when(evidenceAPIClient.post(any(), any(), any(), any())).thenThrow(new APIClientException());
         assertThatThrownBy(() -> {
             crimeEvidenceDataService.getCalEvidenceFee(TestModelDataBuilder.getApiCalculateEvidenceFeeRequest());
         }).isInstanceOf(APIClientException.class);

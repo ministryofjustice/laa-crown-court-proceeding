@@ -18,9 +18,9 @@ import java.util.Map;
 
 import static java.util.Collections.emptyMap;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class MaatCourtDataService {
 
     @Qualifier("maatApiClient")
