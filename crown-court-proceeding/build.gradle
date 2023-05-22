@@ -19,7 +19,7 @@ def versions = [
         springdocVersion                   : "1.6.15",
         springauthserverVersion            : "1.0.1",
         okhttpVersion                      : "4.9.3",
-        mockwebserverVersion               : "4.10.0",
+        mockwebserverVersion               : "4.11.0",
         pitest                             : "1.4.10",
         amazonSQSVersion                   : "2.1.1",
 ]
