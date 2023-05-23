@@ -218,7 +218,7 @@ public class RepOrderService {
         if (MagCourtOutcome.COMMITTED_FOR_TRIAL.equals(requestDTO.getMagCourtOutcome())) {
             if (DecisionReason.GRANTED.equals(decisionReason)) {
                 return requestDTO.getDecisionDate();
-            } else if (failedDecisionReasons.contains(decisionReason) ||
+            } else if ((decisionReason != null && failedDecisionReasons.contains(decisionReason)) ||
                     Constants.REFUSED_INELIGIBLE.equals(repOrderDecision)) {
                 return requestDTO.getCommittalDate();
             }
@@ -227,7 +227,7 @@ public class RepOrderService {
     }
 
     public RepOrderDTO updateCCOutcome(CrownCourtDTO dto) {
-        Long repOrderOutcomeCount = maatCourtDataService.outcomeCount(dto.getRepId(), dto.getLaaTransactionId());
+        long repOrderOutcomeCount = maatCourtDataService.outcomeCount(dto.getRepId(), dto.getLaaTransactionId());
         if (repOrderOutcomeCount == 0 && null != dto.getCrownCourtSummary().getCrownCourtOutcome() &&
                 !dto.getCrownCourtSummary().getCrownCourtOutcome().isEmpty()) {
             ApiCalculateEvidenceFeeResponse evidenceFeeResponse = crimeEvidenceDataService.getCalEvidenceFee(CrimeEvidenceBuilder.build(dto));
@@ -248,7 +248,7 @@ public class RepOrderService {
     protected void createOutcome(CrownCourtDTO dto) {
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = OutcomeDTOBuilder.build(dto);
         if (null != repOrderCCOutcomeDTOList) {
-            repOrderCCOutcomeDTOList.stream().forEach(repOrderCCOutcomeDTO ->
+            repOrderCCOutcomeDTOList.forEach(repOrderCCOutcomeDTO ->
                     maatCourtDataService.createOutcome(repOrderCCOutcomeDTO, dto.getLaaTransactionId())
             );
         }
