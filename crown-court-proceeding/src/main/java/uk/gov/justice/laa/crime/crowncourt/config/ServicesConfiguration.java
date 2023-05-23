@@ -54,9 +54,6 @@ public class ServicesConfiguration {
         private IOJAppealEndpoints iojAppealEndpoints;
 
         @NotNull
-        private GraphQLEndpoints graphQLEndpoints;
-
-        @NotNull
         private OffenceEndpoints offenceEndpoints;
 
         @NotNull
@@ -158,15 +155,6 @@ public class ServicesConfiguration {
 
             @NotNull
             private String findUrl;
-        }
-
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        public static class GraphQLEndpoints {
-
-            @NotNull
-            private String graphqlQueryUrl;
         }
 
         @Data
