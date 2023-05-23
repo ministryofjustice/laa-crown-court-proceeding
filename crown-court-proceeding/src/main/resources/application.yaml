@@ -109,8 +109,8 @@ services:
 
   maat-api:
     oAuthEnabled: true
-    baseUrl: ${MAAT_API_BASE_URL}
-    assessments-domain: /api/internal/v1/assessment
+    base-url: ${MAAT_API_BASE_URL}
+    assessments-domain: ${services.maat-api.base-url}/api/internal/v1/assessment
     ioj-appeal-endpoints:
       find-url: ${services.maat-api.assessments-domain}/ioj-appeal/repId/{repId}/current-passed
     rep-order-endpoints:
