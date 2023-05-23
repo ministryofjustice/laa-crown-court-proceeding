@@ -697,6 +697,12 @@ class RepOrderServiceTest {
         requestDTO.getCrownCourtSummary().setRepOrderDate(null);
         softly.assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
                 .isEqualTo(requestDTO.getCommittalDate());
+
+        requestDTO.setDecisionReason(null);
+        requestDTO.getCrownCourtSummary().setRepOrderDate(null);
+        softly.assertThat(repOrderService.determineRepOrderDate(requestDTO).getRepOrderDate())
+                .isEqualTo(requestDTO.getCommittalDate());
+
         softly.assertAll();
     }
 
