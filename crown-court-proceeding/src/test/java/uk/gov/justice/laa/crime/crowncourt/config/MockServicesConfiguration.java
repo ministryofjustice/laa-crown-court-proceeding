@@ -68,9 +68,6 @@ public class MockServicesConfiguration {
         ServicesConfiguration.MaatApi.ReservationEndpoints reservationsEndpoints =
                 new ServicesConfiguration.MaatApi.ReservationEndpoints("/reservations/{maatId}");
 
-        ServicesConfiguration.MaatApi.GraphQLEndpoints graphQLEndpoints =
-                new ServicesConfiguration.MaatApi.GraphQLEndpoints("/graphQL");
-
         ServicesConfiguration.MaatApi.ResultEndpoints resultEndpoints =
                 new ServicesConfiguration.MaatApi.ResultEndpoints("/result/caseId/{caseId}/asnSeq/{asnSeq}");
 
@@ -95,7 +92,6 @@ public class MockServicesConfiguration {
         maatApiConfiguration.setCrownCourtStoredProcedureEndpoints(storedProcedureEndpoints);
         maatApiConfiguration.setCrownCourtProcessingEndpoints(processingEndpoints);
         maatApiConfiguration.setReservationEndpoints(reservationsEndpoints);
-        maatApiConfiguration.setGraphQLEndpoints(graphQLEndpoints);
         maatApiConfiguration.setResultEndpoints(resultEndpoints);
         maatApiConfiguration.setWqResultEndpoints(wqResultEndpoints);
 

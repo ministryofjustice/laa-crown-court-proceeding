@@ -71,6 +71,8 @@ dependencies {
 
     implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$versions.amazonSQSVersion"
 
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:1.1.0"
+
     testImplementation "com.h2database:h2"
     testImplementation "org.mockito:mockito-inline"
     testImplementation "org.springframework.boot:spring-boot-starter-test"

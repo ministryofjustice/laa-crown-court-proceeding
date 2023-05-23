@@ -16,7 +16,6 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.util.SortUtils;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,13 +91,6 @@ public class ProceedingService {
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(dto);
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = getCCOutcome(dto.getRepId(), dto.getLaaTransactionId());
         return UpdateApiResponseBuilder.build(repOrderDTO, repOrderCCOutcomeList);
-    }
-
-    public Object graphQLQuery() throws IOException {
-        log.info("Start");
-        Object obj = maatCourtDataService.getRepOrderByFilter("5639461", "false");
-        log.info("Response :" + obj.toString());
-        return obj;
     }
 
     public List<RepOrderCCOutcomeDTO> getCCOutcome(Integer repId, String laaTransactionId) {

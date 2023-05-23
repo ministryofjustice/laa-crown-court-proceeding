@@ -28,12 +28,18 @@ spring:
             token-uri: http://localhost:9999/oauth2/token
           cda:
             token-uri: http://localhost:9999/oauth2/token
+          evidence:
+            token-uri: http://localhost:9999/oauth2/token
         registration:
           maat-api:
             client-id: dummy-client
             client-secret: dummy-secret
             authorization-grant-type: client_credentials
           cda:
+            client-id: dummy-client
+            client-secret: dummy-secret
+            authorization-grant-type: client_credentials
+          evidence:
             client-id: dummy-client
             client-secret: dummy-secret
             authorization-grant-type: client_credentials
@@ -50,13 +56,12 @@ swagger-ui:
 
 services:
   court-data-adapter:
-    base-url: ${CDA_BASE_URL}
+    base-url: http://localhost:9999
     hearing-url: "/api/internal/v2/hearing_results/{hearingId}"
 
   maat-api:
-    oAuthEnabled: true
     baseUrl: http://localhost:9999
-    assessments-domain: /api/internal/v1/assessment
+    assessments-domain: ${services.maat-api.baseUrl}/api/internal/v1/assessment
     ioj-appeal-endpoints:
       find-url: ${services.maat-api.assessments-domain}/ioj-appeal/repId/{repId}/current-passed
     rep-order-endpoints:
@@ -64,8 +69,6 @@ services:
       update-url: ${services.maat-api.assessments-domain}/rep-orders
       find-outcome-url: ${services.maat-api.assessments-domain}/rep-orders/cc-outcome/reporder/{repId}
       create-outcome-url: ${services.maat-api.assessments-domain}/rep-orders/cc-outcome
-    graphql-endpoints:
-      graphql-query-url: ${services.maat-api.assessments-domain}/graphQL
     offence-endpoints:
       find-url: ${services.maat-api.assessments-domain}/offence/case/{caseId}
       offence-count-url: ${services.maat-api.assessments-domain}/offence/{offenceId}/case/{caseId}
@@ -91,10 +94,9 @@ services:
     reservation-endpoints:
       is-maat-record-locked-url: ${services.maat-api.assessments-domain}/reservations/{maatId}
   evidence:
-    oAuthEnabled: true
-    baseUrl: ${EVIDENCE_API_BASE_URL}
+    baseUrl: http://localhost:9999
     evidence-fee-endpoints:
-      evidence-fee-url: api/internal/v1/evidence/calculate-evidence-fee
+      evidence-fee-url: /api/internal/v1/evidence/calculate-evidence-fee
 
 retry-config:
   max-retries: 2

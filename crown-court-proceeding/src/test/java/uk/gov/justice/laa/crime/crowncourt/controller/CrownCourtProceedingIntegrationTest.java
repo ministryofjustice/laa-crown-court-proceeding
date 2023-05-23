@@ -297,36 +297,4 @@ class CrownCourtProceedingIntegrationTest {
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(updateApplicationResponse));
     }
-
-    @Test
-    void givenAValidContent_whenGraphQLQueryIsInvoked_thenSuccess() throws Exception {
-
-        mockMaatCourtDataApi.enqueue(new MockResponse()
-                .setResponseCode(OK.code())
-                .setHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setBody(objectMapper.writeValueAsString(TestModelDataBuilder.getGraphQLRepOrderDTO()))
-        );
-
-        MvcResult result = mvc.perform(buildRequestGivenContent(HttpMethod.POST, CCP_ENDPOINT_URL + "/graphql",
-                        "{}", Boolean.TRUE))
-                .andExpect(status().isOk()).andReturn();
-
-        assertThat(result.getResponse().getContentAsString())
-                .isEqualTo(objectMapper.writeValueAsString(TestModelDataBuilder.getGraphQLRepOrderDTO()));
-
-    }
-
-    @Test
-    void givenAValidContent_whenApiResponseIsError_thenGraphQLIsFails() throws Exception {
-
-        mockMaatCourtDataApi.enqueue(new MockResponse()
-                .setHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setResponseCode(NOT_IMPLEMENTED.code()));
-
-        mvc.perform(buildRequestGivenContent(HttpMethod.POST,
-                        CCP_ENDPOINT_URL + "/graphql", "{}", Boolean.TRUE))
-                .andExpect(status().is5xxServerError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(ERROR_MSG));
-    }
 }

@@ -6,10 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.crime.commons.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
-import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
-import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.scheduler.ProsecutionConcludedScheduler;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
@@ -17,7 +16,6 @@ import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,7 +65,7 @@ class ProsecutionConcludedSchedulerTest {
 
 
     @Test
-    void givenAJurisdictionIsMagistrates_whenProcessCaseConclusionIsInvokes_thenUpdateConclusionIsSuccess() throws Exception {
+    void givenAJurisdictionIsMagistrates_whenProcessCaseConclusionIsInvokes_thenUpdateConclusionIsSuccess() {
 
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).
                 thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.MAGISTRATES.name()).build());
@@ -80,7 +78,7 @@ class ProsecutionConcludedSchedulerTest {
     }
 
     @Test
-    void givenAInvalidCaseConclusion_whenProcessCaseConclusionIsInvokes_thenUpdateConclusionIsError() throws Exception {
+    void givenAInvalidCaseConclusion_whenProcessCaseConclusionIsInvokes_thenUpdateConclusionIsError() {
 
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).thenThrow(new APIClientException());
         when(prosecutionConcludedRepository.getByHearingId(any())).thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));

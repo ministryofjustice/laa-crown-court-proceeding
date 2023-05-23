@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -16,9 +17,6 @@ import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.ErrorDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
-
-import jakarta.validation.Valid;
-import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -114,16 +112,4 @@ public class CrownCourtProceedingController {
         proceedingService.checkCCDetails(crownCourtDTO);
         return ResponseEntity.ok(proceedingService.update(crownCourtDTO));
     }
-
-
-    @PostMapping(value = "/graphql", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Retrieve an old means assessment")
-    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Object.class)))
-    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
-    public ResponseEntity<Object> graphQLQuery() throws IOException {
-        log.info("Make GraphQL Query Request");
-        return ResponseEntity.ok(proceedingService.graphQLQuery());
-    }
-
 }
