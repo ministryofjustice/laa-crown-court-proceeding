@@ -112,4 +112,28 @@ public class CrownCourtProceedingController {
         proceedingService.checkCCDetails(crownCourtDTO);
         return ResponseEntity.ok(proceedingService.update(crownCourtDTO));
     }
+
+
+    @GetMapping(value = "/{repId}" , produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Update Crown Court")
+    @ApiResponse(responseCode = "200",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ApiUpdateApplicationRequest.class)
+            )
+    )
+    @ApiResponse(responseCode = "400",
+            description = "Bad Request.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorDTO.class)
+            )
+    )
+    public ResponseEntity<Object> fetch(@PathVariable int repId) {
+        return ResponseEntity.ok(proceedingService.getCCOutcome(repId, "4324"));
+    }
 }
