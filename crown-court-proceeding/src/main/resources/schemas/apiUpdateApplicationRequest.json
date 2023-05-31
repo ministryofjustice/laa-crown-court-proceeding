@@ -28,11 +28,25 @@
       "items": {
         "$ref": "common/apiCapitalEvidence.json"
       }
+    },
+    "incomeEvidenceReceivedDate": {
+      "type": "string",
+      "description": "Income evidence Received Date",
+      "format": "date-time"
+    },
+    "capitalEvidenceReceivedDate": {
+      "type": "string",
+      "description": "Capital evidence Received Date",
+      "format": "date-time"
+    },
+    "emstCode": {
+      "type": "string",
+      "description": "Emp status code"
     }
   },
   "extends": {
     "$ref": "apiProcessRepOrderRequest.json"
   },
   "additionalProperties": false,
-  "required": ["userSession", "isImprisoned", "paymentDetails", "applicantHistoryId"]
+  "required": ["userSession", "isImprisoned", "applicantHistoryId"]
 }
