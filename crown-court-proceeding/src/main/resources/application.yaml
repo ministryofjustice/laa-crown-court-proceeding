@@ -106,10 +106,9 @@ crown-court-proceeding:
 services:
   court-data-adapter:
     base-url: ${CDA_BASE_URL}
-    hearing-url: "/api/internal/v2/hearing_results/{hearingId}"
+    hearing-url: ${services.court-data-adapter.base-url}/api/internal/v2/hearing_results/{hearingId}
 
   maat-api:
-    oAuthEnabled: true
     base-url: ${MAAT_API_BASE_URL}
     assessments-domain: ${services.maat-api.base-url}/api/internal/v1/assessment
     ioj-appeal-endpoints:
@@ -145,10 +144,9 @@ services:
       is-maat-record-locked-url: ${services.maat-api.assessments-domain}/reservations/{maatId}
 
   evidence:
-    oAuthEnabled: true
-    baseUrl: ${EVIDENCE_API_BASE_URL}
+    base-url: ${EVIDENCE_API_BASE_URL}
     evidence-fee-endpoints:
-      evidence-fee-url: api/internal/v1/evidence/calculate-evidence-fee
+      evidence-fee-url: ${services.evidence.base-url}/api/internal/v1/evidence/calculate-evidence-fee
 
 queue:
   message:
