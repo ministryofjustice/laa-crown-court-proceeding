@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.ParameterizedTypeReference;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
 import uk.gov.justice.laa.crime.commons.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.config.MockServicesConfiguration;
@@ -36,7 +37,7 @@ class CourtDataAdapterServiceTest {
         courtDataAdapterService.triggerHearingProcessing(testHearingId, testTransactionId);
 
         verify(cdaAPIClient).get(
-                eq(Void.class),
+                any(),
                 anyString(),
                 anyMap(),
                 ArgumentMatchers.any(),
@@ -51,7 +52,7 @@ class CourtDataAdapterServiceTest {
         String testTransactionId = UUID.randomUUID().toString();
 
         when(cdaAPIClient.get(
-                eq(Void.class),
+                any(),
                 anyString(),
                 anyMap(),
                 ArgumentMatchers.any(),

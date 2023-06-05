@@ -3,10 +3,12 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeResponse;
 
@@ -25,7 +27,7 @@ public class CrimeEvidenceDataService {
     public ApiCalculateEvidenceFeeResponse getCalEvidenceFee(ApiCalculateEvidenceFeeRequest evidenceFeeRequest) {
         ApiCalculateEvidenceFeeResponse response = evidenceAPIClient.post(
                 evidenceFeeRequest,
-                ApiCalculateEvidenceFeeResponse.class,
+                new ParameterizedTypeReference<ApiCalculateEvidenceFeeResponse>() {},
                 configuration.getEvidence().getEvidenceFeeEndpoints().getEvidenceFeeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, evidenceFeeRequest.getLaaTransactionId())
         );
