@@ -3,6 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
@@ -30,7 +31,7 @@ public class MaatCourtDataService {
 
     public IOJAppealDTO getCurrentPassedIOJAppealFromRepId(Integer repId, String laaTransactionId) {
         IOJAppealDTO response = maatAPIClient.get(
-                IOJAppealDTO.class,
+                new ParameterizedTypeReference<IOJAppealDTO>() {},
                 configuration.getMaatApi().getIojAppealEndpoints().getFindUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
                 repId
@@ -42,7 +43,7 @@ public class MaatCourtDataService {
     public RepOrderDTO updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO, String laaTransactionId) {
         RepOrderDTO response = maatAPIClient.put(
                 updateRepOrderRequestDTO,
-                RepOrderDTO.class,
+                new ParameterizedTypeReference<RepOrderDTO>() {},
                 configuration.getMaatApi().getRepOrderEndpoints().getUpdateUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
         );
@@ -53,7 +54,7 @@ public class MaatCourtDataService {
     @SuppressWarnings({"unchecked"})
     public List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(Integer repId, String laaTransactionId) {
         List<RepOrderCCOutcomeDTO> response = maatAPIClient.get(
-                List.class,
+                new ParameterizedTypeReference<List<RepOrderCCOutcomeDTO>>() {},
                 configuration.getMaatApi().getRepOrderEndpoints().getFindOutcomeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
                 repId
@@ -67,7 +68,7 @@ public class MaatCourtDataService {
 
         WQHearingDTO wqHearingDTO = null;
         List<WQHearingDTO> wqHearingList = maatAPIClient.get(
-                List.class,
+                new ParameterizedTypeReference<List<WQHearingDTO>>() {},
                 configuration.getMaatApi().getWqHearingEndpoints().getFindUrl(),
                 emptyMap(),
                 prosecutionConcluded
@@ -82,7 +83,7 @@ public class MaatCourtDataService {
     public int findWQLinkRegisterByMaatId(int maatId) {
         int caseId = 0;
         List<WQLinkRegisterDTO> wqLinkRegisterList = maatAPIClient.get(
-                List.class,
+                new ParameterizedTypeReference<List<WQLinkRegisterDTO>>() {},
                 configuration.getMaatApi().getWqLinkRegisterEndpoints().getFindUrl(),
                 emptyMap(),
                 maatId
@@ -97,7 +98,7 @@ public class MaatCourtDataService {
     @SuppressWarnings({"unchecked"})
     public List<OffenceDTO> findOffenceByCaseId(int caseId) {
         List<OffenceDTO> response = maatAPIClient.get(
-                List.class,
+                new ParameterizedTypeReference<List<OffenceDTO>>() {},
                 configuration.getMaatApi().getWqLinkRegisterEndpoints().getFindUrl(),
                 emptyMap(),
                 caseId
@@ -110,7 +111,7 @@ public class MaatCourtDataService {
     public int getOffenceNewOffenceCount(int caseId, String offenceId) {
         int count = 0;
         List<Integer> offenceCount = maatAPIClient.get(
-                List.class,
+                new ParameterizedTypeReference<List<Integer>>() {},
                 configuration.getMaatApi().getOffenceEndpoints().getOffenceCountUrl(),
                 emptyMap(),
                 caseId,
@@ -127,7 +128,7 @@ public class MaatCourtDataService {
     public int getWQOffenceNewOffenceCount(int caseId, String offenceId) {
         int count = 0;
         List<Integer> offenceCount = maatAPIClient.get(
-                List.class,
+                new ParameterizedTypeReference<List<Integer>>() {},
                 configuration.getMaatApi().getWqOffenceEndpoints().getWqOffenceCountUrl(),
                 emptyMap(),
                 caseId,
@@ -143,7 +144,7 @@ public class MaatCourtDataService {
     @SuppressWarnings({"unchecked"})
     public List<Integer> findResultsByWQTypeSubType(int wqType, int subTypeCode) {
         List<Integer> response = maatAPIClient.get(
-                List.class,
+                new ParameterizedTypeReference<List<Integer>>() {},
                 configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForWQTypeSubTypeUrl(),
                 emptyMap(),
                 wqType,
@@ -156,7 +157,7 @@ public class MaatCourtDataService {
     @SuppressWarnings({"unchecked"})
     public List<Integer> getResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
         List<Integer> response = maatAPIClient.get(
-                List.class,
+                new ParameterizedTypeReference<List<Integer>>() {},
                 configuration.getMaatApi().getResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
                 emptyMap(),
                 caseId,
@@ -169,7 +170,7 @@ public class MaatCourtDataService {
     @SuppressWarnings({"unchecked"})
     public List<Integer> getWqResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
         List<Integer> response = maatAPIClient.get(
-                List.class,
+                new ParameterizedTypeReference<List<Integer>>() {},
                 configuration.getMaatApi().getWqResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
                 emptyMap(),
                 caseId,
@@ -182,7 +183,7 @@ public class MaatCourtDataService {
     @SuppressWarnings({"unchecked"})
     public List<Integer> fetchResultCodesForCCImprisonment() {
         List<Integer> response = maatAPIClient.get(
-                List.class,
+                new ParameterizedTypeReference<List<Integer>>() {},
                 configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForCCImprisonmentUrl(),
                 emptyMap()
         );
@@ -193,7 +194,7 @@ public class MaatCourtDataService {
     @SuppressWarnings({"unchecked"})
     public List<Integer> findByCjsResultCodeIn() {
         List<Integer> response = maatAPIClient.get(
-                List.class,
+                new ParameterizedTypeReference<List<Integer>>() {},
                 configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForCCBenchWarrantUrl(),
                 emptyMap()
         );
@@ -203,7 +204,7 @@ public class MaatCourtDataService {
 
     public RepOrderDTO getRepOrder(Integer repId) {
         RepOrderDTO response = maatAPIClient.get(
-                RepOrderDTO.class,
+                new ParameterizedTypeReference<RepOrderDTO>() {},
                 configuration.getMaatApi().getRepOrderEndpoints().getFindUrl(),
                 repId
         );
@@ -213,7 +214,7 @@ public class MaatCourtDataService {
 
     public void updateCrownCourtOutcome(UpdateCCOutcome updateCCOutcome) {
         maatAPIClient.get(
-                RepOrderDTO.class,
+                new ParameterizedTypeReference<RepOrderDTO>() {},
                 configuration.getMaatApi().getCrownCourtStoredProcedureEndpoints().getUpdateCrownCourtOutcomeUrl(),
                 updateCCOutcome
         );
@@ -221,7 +222,7 @@ public class MaatCourtDataService {
 
     public void invokeUpdateAppealSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
         maatAPIClient.get(
-                RepOrderDTO.class,
+                new ParameterizedTypeReference<RepOrderDTO>() {},
                 configuration.getMaatApi().getCrownCourtProcessingEndpoints().getUpdateAppealCcSentenceUrl(),
                 updateSentenceOrder
         );
@@ -229,7 +230,7 @@ public class MaatCourtDataService {
 
     public void invokeUpdateSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
         maatAPIClient.get(
-                RepOrderDTO.class,
+                new ParameterizedTypeReference<RepOrderDTO>() {},
                 configuration.getMaatApi().getCrownCourtProcessingEndpoints().getUpdateCcSentenceUrl(),
                 updateSentenceOrder
         );
@@ -237,7 +238,7 @@ public class MaatCourtDataService {
 
     public Boolean isMaatRecordLocked(Integer maatId) {
         Boolean response = maatAPIClient.get(
-                Boolean.class,
+                new ParameterizedTypeReference<Boolean>() {},
                 configuration.getMaatApi().getReservationEndpoints().getIsMaatRecordLockedUrl(),
                 maatId
         );
@@ -248,7 +249,7 @@ public class MaatCourtDataService {
     public RepOrderCCOutcomeDTO createOutcome(RepOrderCCOutcomeDTO outcomeDTO, String laaTransactionId) {
         RepOrderCCOutcomeDTO response = maatAPIClient.put(
                 outcomeDTO,
-                RepOrderCCOutcomeDTO.class,
+                new ParameterizedTypeReference<RepOrderCCOutcomeDTO>() {},
                 configuration.getMaatApi().getRepOrderEndpoints().getCreateOutcomeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId));
         log.info(RESPONSE_STRING, response);
