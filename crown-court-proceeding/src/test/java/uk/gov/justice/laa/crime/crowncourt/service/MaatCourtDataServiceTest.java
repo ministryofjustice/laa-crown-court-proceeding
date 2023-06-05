@@ -84,7 +84,7 @@ class MaatCourtDataServiceTest {
     @Test
     void givenAValidRequest_whenCreateOutcomeIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.createOutcome(RepOrderCCOutcomeDTO.builder().build(), LAA_TRANSACTION_ID);
-        verify(maatAPIClient).put(
+        verify(maatAPIClient).post(
                 any(RepOrderCCOutcomeDTO.class),
                 any(),
                 anyString(),

@@ -247,7 +247,7 @@ public class MaatCourtDataService {
     }
 
     public RepOrderCCOutcomeDTO createOutcome(RepOrderCCOutcomeDTO outcomeDTO, String laaTransactionId) {
-        RepOrderCCOutcomeDTO response = maatAPIClient.put(
+        RepOrderCCOutcomeDTO response = maatAPIClient.post(
                 outcomeDTO,
                 new ParameterizedTypeReference<RepOrderCCOutcomeDTO>() {},
                 configuration.getMaatApi().getRepOrderEndpoints().getCreateOutcomeUrl(),
