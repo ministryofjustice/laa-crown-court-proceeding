@@ -16,7 +16,6 @@ jacoco {
 }
 
 def versions = [
-        springdocVersion                   : "1.6.15",
         springauthserverVersion            : "1.0.1",
         okhttpVersion                      : "4.9.3",
         mockwebserverVersion               : "4.10.0",
@@ -62,7 +61,7 @@ dependencies {
     implementation "org.postgresql:postgresql"
     implementation "com.google.code.gson:gson"
     implementation "org.liquibase:liquibase-core"
-    implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4"
     implementation "org.apache.commons:commons-lang3"
 
     compileOnly "org.projectlombok:lombok"
