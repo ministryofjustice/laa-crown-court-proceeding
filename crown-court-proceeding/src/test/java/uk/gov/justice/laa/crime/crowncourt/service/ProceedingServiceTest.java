@@ -354,7 +354,7 @@ class ProceedingServiceTest {
         List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
         apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.CONVICTED);
         apiCrownCourtOutcomes.get(0).setDateSet(null);
-        crownCourtDTO.getCrownCourtSummary().setIsImprisoned(null);
+        crownCourtDTO.setIsImprisoned(null);
         assertThatThrownBy(() -> {
             proceedingService.checkCCDetails(crownCourtDTO);
         }).isInstanceOf(ValidationException.class).hasMessageContaining("Check Crown Court Details-Imprisoned value must be entered " +
@@ -367,7 +367,7 @@ class ProceedingServiceTest {
         List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
         apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.PART_CONVICTED);
         apiCrownCourtOutcomes.get(0).setDateSet(null);
-        crownCourtDTO.getCrownCourtSummary().setIsImprisoned(null);
+        crownCourtDTO.setIsImprisoned(null);
         assertThatThrownBy(() -> {
             proceedingService.checkCCDetails(crownCourtDTO);
         }).isInstanceOf(ValidationException.class).hasMessageContaining("Check Crown Court Details-Imprisoned value must be entered " +

@@ -76,7 +76,7 @@ public class ProceedingService {
             ApiCrownCourtOutcome crownCourtOutcome = crownCourtSummary.getCrownCourtOutcome()
                     .get(crownCourtSummary.getCrownCourtOutcome().size() - 1);
             if (crownCourtOutcome.getOutcome().getCode().matches("CONVICTED|PART CONVICTED")
-                    && crownCourtSummary.getIsImprisoned() == null
+                    && dto.getIsImprisoned() == null
                     && crownCourtOutcome.getDateSet() == null
             ) {
                 throw new ValidationException("Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of "
