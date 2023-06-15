@@ -3,7 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.config;
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @RequiredArgsConstructor
@@ -15,6 +15,9 @@ public class ServicesConfiguration {
 
     @NotNull
     private CourtDataAdapter courtDataAdapter;
+
+    @NotNull
+    private Evidence  evidence;
 
     @Data
     @AllArgsConstructor
@@ -49,9 +52,6 @@ public class ServicesConfiguration {
 
         @NotNull
         private IOJAppealEndpoints iojAppealEndpoints;
-
-        @NotNull
-        private GraphQLEndpoints graphQLEndpoints;
 
         @NotNull
         private OffenceEndpoints offenceEndpoints;
@@ -160,15 +160,6 @@ public class ServicesConfiguration {
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
-        public static class GraphQLEndpoints {
-
-            @NotNull
-            private String graphqlQueryUrl;
-        }
-
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
         public static class OffenceEndpoints {
 
             @NotNull
@@ -270,5 +261,25 @@ public class ServicesConfiguration {
 
         @NotNull
         private String hearingUrl;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Evidence {
+
+        @NotNull
+        private String baseUrl;
+
+        @NotNull
+        private EvidenceFeeEndpoints evidenceFeeEndpoints;
+
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class EvidenceFeeEndpoints {
+            @NotNull
+            private String evidenceFeeUrl;
+        }
     }
 }

@@ -7,6 +7,7 @@ services:
     ports:
       - "8087:8087"
       - "8096:8096"
+
     depends_on:
       - postgres
 
@@ -15,7 +16,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ~/apps/postgres:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s

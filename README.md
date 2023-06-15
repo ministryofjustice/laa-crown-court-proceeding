@@ -23,3 +23,10 @@ This is a Java based Spring Boot Application which will be hosted on Cloud Platf
 8. CircleCI CLI (optional)
 
 We're using [Gradle](https://gradle.org/) to build the application. This also includes plugins for generating IntelliJ configuration.
+
+## Documentation
+
+### Open API
+
+OpenAPI 3 specification is available [here](http://localhost:8087/open-api/api-docs/) and Swagger UI
+[here](http://localhost:8087/open-api/swagger-ui/index.html)

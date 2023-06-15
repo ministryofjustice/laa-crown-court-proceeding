@@ -1,12 +1,13 @@
 package uk.gov.justice.laa.crime.crowncourt.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 
-import javax.persistence.*;
+import java.sql.Types;
 import java.time.LocalDateTime;
 
 @Data
@@ -27,7 +28,7 @@ public class ProsecutionConcludedEntity {
     @Column(name = "HEARING_ID")
     private String hearingId;
     @Lob
-    @Type(type="org.hibernate.type.BinaryType")
+    @JdbcTypeCode(Types.VARBINARY)
     @Column(name = "CASE_DATA")
     private byte[] caseData;
     @Column(name = "STATUS")
@@ -38,5 +39,4 @@ public class ProsecutionConcludedEntity {
     private LocalDateTime updatedTime;
     @Column(name = "RETRY_COUNT")
     private Integer retryCount;
-
 }

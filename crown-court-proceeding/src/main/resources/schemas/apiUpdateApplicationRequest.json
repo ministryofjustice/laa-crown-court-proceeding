@@ -22,15 +22,31 @@
       "description": "The current users session",
       "$ref": "common/apiUserSession.json"
     },
-    "paymentDetails": {
-      "type": "object",
-      "description": "The applications payment details",
-      "$ref": "common/apiPaymentDetails.json"
+    "capitalEvidence": {
+      "type": "array",
+      "description": "List of Capital Evidence",
+      "items": {
+        "$ref": "common/apiCapitalEvidence.json"
+      }
+    },
+    "incomeEvidenceReceivedDate": {
+      "type": "string",
+      "description": "Income evidence Received Date",
+      "format": "date-time"
+    },
+    "capitalEvidenceReceivedDate": {
+      "type": "string",
+      "description": "Capital evidence Received Date",
+      "format": "date-time"
+    },
+    "emstCode": {
+      "type": "string",
+      "description": "Emp status code"
     }
   },
   "extends": {
     "$ref": "apiProcessRepOrderRequest.json"
   },
   "additionalProperties": false,
-  "required": ["userSession", "isImprisoned", "paymentDetails", "applicantHistoryId"]
+  "required": ["userSession", "isImprisoned", "applicantHistoryId"]
 }

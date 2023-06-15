@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,21 +24,19 @@ import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DirtiesContext
 @Import(CrownCourtProceedingTestConfiguration.class)
 @SpringBootTest(classes = {CrownCourtProceedingApplication.class}, webEnvironment = DEFINED_PORT)
-@DirtiesContext
 class CrownCourtProceedingControllerTest {
 
     private static final boolean IS_VALID = true;
@@ -70,19 +67,7 @@ class CrownCourtProceedingControllerTest {
     }
 
     private MockHttpServletRequestBuilder buildRequestGivenContent(HttpMethod method, String content) throws Exception {
-        return buildRequestGivenContent(method, content, true);
-    }
-
-    private MockHttpServletRequestBuilder buildRequestGivenContent(HttpMethod method, String content, boolean withAuth) throws Exception {
-        MockHttpServletRequestBuilder requestBuilder =
-                MockMvcRequestBuilders.request(method, ENDPOINT_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content);
-        if (withAuth) {
-            final String accessToken = obtainAccessToken();
-            requestBuilder.header("Authorization", "Bearer " + accessToken);
-        }
-        return requestBuilder;
+        return buildRequestGivenContent(method, content, null, true);
     }
 
     private String obtainAccessToken() throws Exception {
@@ -100,10 +85,11 @@ class CrownCourtProceedingControllerTest {
         return jsonParser.parseMap(resultString).get("access_token").toString();
     }
 
-    private MockHttpServletRequestBuilder buildRequestGivenContent(HttpMethod method, String endpointUrl, String content,
+    private MockHttpServletRequestBuilder buildRequestGivenContent(HttpMethod method, String content, String endpointUrl,
                                                                    boolean withAuth) throws Exception {
+        String endpoint = endpointUrl != null ? endpointUrl : ENDPOINT_URL;
         MockHttpServletRequestBuilder requestBuilder =
-                MockMvcRequestBuilders.request(method, endpointUrl)
+                MockMvcRequestBuilders.request(method, endpoint)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content);
         if (withAuth) {
@@ -153,7 +139,7 @@ class CrownCourtProceedingControllerTest {
 
     @Test
     void processRepOrder_Unauthorized_NoAccessToken() throws Exception {
-        mvc.perform(buildRequestGivenContent(HttpMethod.POST, "{}", false))
+        mvc.perform(buildRequestGivenContent(HttpMethod.POST, "{}", null, false))
                 .andExpect(status().isForbidden());
     }
 
@@ -195,24 +181,31 @@ class CrownCourtProceedingControllerTest {
 
     @Test
     void updateApplication_Unauthorized_NoAccessToken() throws Exception {
-        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, "{}", false))
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, "{}", null, false))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    void givenAValidContent_whenGraphQLQueryIsInvoked_thenSuccess() throws Exception {
-        when(proceedingService.graphQLQuery()).thenReturn(TestModelDataBuilder.getGraphQLRepOrderDTO());
-        MvcResult result = mvc.perform(buildRequestGivenContent(HttpMethod.POST, ENDPOINT_URL + "/graphql", "{}", Boolean.TRUE))
-                .andExpect(status().isOk()).andReturn();
-        assertThat(result.getResponse().getContentAsString())
-                .isEqualTo(objectMapper.writeValueAsString(TestModelDataBuilder.getGraphQLRepOrderDTO()));
+    void givenAValidInput_whenUpdateIsInvoked_thenSuccess() throws Exception {
+        var apiUpdateApplicationRequest =
+                TestModelDataBuilder.getApiUpdateApplicationRequest(IS_VALID);
+        var updateRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
+        var updateResponse = TestModelDataBuilder.getApiUpdateCrownCourtOutcomeResponse();
+        when(proceedingService.update(any(CrownCourtDTO.class)))
+                .thenReturn(updateResponse);
+
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, updateRequestJson, ENDPOINT_URL + "/update-crown-court", true))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    void givenAValidContent_whenApiResponseIsError_thenGraphQLIsFails() throws Exception {
+    void givenAValidInput_whenUpdateIsInvoked_RequestObjectFailsValidation() throws Exception {
+        var apiUpdateApplicationRequest =
+                TestModelDataBuilder.getApiUpdateApplicationRequest(!IS_VALID);
+        var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
 
-        doThrow(new APIClientException()).when(proceedingService).graphQLQuery();
-        mvc.perform(buildRequestGivenContent(HttpMethod.POST, ENDPOINT_URL + "/graphql", "{}", Boolean.TRUE))
-                .andExpect(status().is5xxServerError());
+        mvc.perform(buildRequestGivenContent(HttpMethod.PUT, updateApplicationRequestJson, ENDPOINT_URL + "/update-crown-court", true))
+                .andExpect(status().is4xxClientError());
     }
 }

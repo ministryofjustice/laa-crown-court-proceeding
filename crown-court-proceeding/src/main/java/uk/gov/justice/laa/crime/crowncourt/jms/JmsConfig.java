@@ -12,7 +12,7 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.support.destination.DynamicDestinationResolver;
 import uk.gov.justice.laa.crime.crowncourt.config.SqsClientConfig;
 
-import javax.jms.Session;
+import jakarta.jms.Session;
 
 
 @Slf4j

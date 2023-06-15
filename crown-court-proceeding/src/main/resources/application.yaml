@@ -5,7 +5,7 @@ logging:
   level:
     root: INFO
     org.springframework.web: INFO
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
 
 management:
   server:
@@ -21,7 +21,7 @@ springdoc:
     path: /open-api/api-docs
 
   swagger-ui:
-    path: open-api/swagger-ui/index.html
+    path: /open-api/swagger-ui/index.html
     operationsSorter: method
 
 spring:
@@ -39,7 +39,7 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     generate-ddl: false
     hibernate:
@@ -55,6 +55,8 @@ spring:
             token-uri: ${MAAT_API_OAUTH_URL}
           cda:
             token-uri: ${CDA_OAUTH_URL}
+          evidence:
+            token-uri: ${EVIDENCE_API_OAUTH_URL}
         registration:
           maat-api:
             client-id: ${MAAT_API_OAUTH_CLIENT_ID}
@@ -64,6 +66,11 @@ spring:
             clientId: ${CDA_OAUTH_CLIENT_ID}
             clientSecret: ${CDA_OAUTH_CLIENT_SECRET}
             authorizationGrantType: client_credentials
+          evidence:
+            client-id: ${EVIDENCE_API_OAUTH_CLIENT_ID}
+            client-secret: ${EVIDENCE_API_OAUTH_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            scope: READ_WRITE
       resource-server:
         jwt:
           issuer-uri: ${crown-court-proceeding.security.issuer-uri}
@@ -99,12 +106,11 @@ crown-court-proceeding:
 services:
   court-data-adapter:
     base-url: ${CDA_BASE_URL}
-    hearing-url: "/api/internal/v2/hearing_results/{hearingId}"
+    hearing-url: ${services.court-data-adapter.base-url}/api/internal/v2/hearing_results/{hearingId}
 
   maat-api:
-    oAuthEnabled: true
-    baseUrl: ${MAAT_API_BASE_URL}
-    assessments-domain: /api/internal/v1/assessment
+    base-url: ${MAAT_API_BASE_URL}
+    assessments-domain: ${services.maat-api.base-url}/api/internal/v1/assessment
     ioj-appeal-endpoints:
       find-url: ${services.maat-api.assessments-domain}/ioj-appeal/repId/{repId}/current-passed
     rep-order-endpoints:
@@ -112,8 +118,6 @@ services:
       update-url: ${services.maat-api.assessments-domain}/rep-orders
       find-outcome-url: ${services.maat-api.assessments-domain}/rep-orders/cc-outcome/reporder/{repId}
       create-outcome-url: ${services.maat-api.assessments-domain}/rep-orders/cc-outcome
-    graphql-endpoints:
-      graphql-query-url: ${services.maat-api.assessments-domain}/graphQL
     offence-endpoints:
       find-url: ${services.maat-api.assessments-domain}/offence/case/{caseId}
       offence-count-url: ${services.maat-api.assessments-domain}/offence/{offenceId}/case/{caseId}
@@ -138,6 +142,11 @@ services:
       update-cc-sentence-url: ${services.maat-api.assessments-domain}/crown-court/update-cc-sentence
     reservation-endpoints:
       is-maat-record-locked-url: ${services.maat-api.assessments-domain}/reservations/{maatId}
+
+  evidence:
+    base-url: ${EVIDENCE_API_BASE_URL}
+    evidence-fee-endpoints:
+      evidence-fee-url: ${services.evidence.base-url}/api/internal/v1/evidence/calculate-evidence-fee
 
 queue:
   message:

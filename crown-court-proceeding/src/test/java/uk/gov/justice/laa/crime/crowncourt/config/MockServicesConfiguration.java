@@ -9,6 +9,7 @@ public class MockServicesConfiguration {
         ServicesConfiguration servicesConfiguration = new ServicesConfiguration();
         ServicesConfiguration.MaatApi maatApiConfiguration = new ServicesConfiguration.MaatApi();
         ServicesConfiguration.CourtDataAdapter courtDataAdapterConfig = new ServicesConfiguration.CourtDataAdapter();
+        ServicesConfiguration.Evidence evidenceConfig = new ServicesConfiguration.Evidence();
 
         ServicesConfiguration.MaatApi.IOJAppealEndpoints iojEndpoints =
                 new ServicesConfiguration.MaatApi.IOJAppealEndpoints("/ioj-appeal/{repId}");
@@ -67,14 +68,14 @@ public class MockServicesConfiguration {
         ServicesConfiguration.MaatApi.ReservationEndpoints reservationsEndpoints =
                 new ServicesConfiguration.MaatApi.ReservationEndpoints("/reservations/{maatId}");
 
-        ServicesConfiguration.MaatApi.GraphQLEndpoints graphQLEndpoints =
-                new ServicesConfiguration.MaatApi.GraphQLEndpoints("/graphQL");
-
         ServicesConfiguration.MaatApi.ResultEndpoints resultEndpoints =
                 new ServicesConfiguration.MaatApi.ResultEndpoints("/result/caseId/{caseId}/asnSeq/{asnSeq}");
 
         ServicesConfiguration.MaatApi.WqResultEndpoints wqResultEndpoints =
                 new ServicesConfiguration.MaatApi.WqResultEndpoints("/wq-result/caseId/{caseId}/asnSeq/{asnSeq}");
+
+        ServicesConfiguration.Evidence.EvidenceFeeEndpoints  evidenceFeeEndpoints =
+                new ServicesConfiguration.Evidence.EvidenceFeeEndpoints("api/internal/v1/evidence/calculate-evidence-fee");
 
         maatApiConfiguration.setBaseUrl(host);
         maatApiConfiguration.setOAuthEnabled(false);
@@ -91,7 +92,6 @@ public class MockServicesConfiguration {
         maatApiConfiguration.setCrownCourtStoredProcedureEndpoints(storedProcedureEndpoints);
         maatApiConfiguration.setCrownCourtProcessingEndpoints(processingEndpoints);
         maatApiConfiguration.setReservationEndpoints(reservationsEndpoints);
-        maatApiConfiguration.setGraphQLEndpoints(graphQLEndpoints);
         maatApiConfiguration.setResultEndpoints(resultEndpoints);
         maatApiConfiguration.setWqResultEndpoints(wqResultEndpoints);
 
@@ -100,6 +100,10 @@ public class MockServicesConfiguration {
 
         servicesConfiguration.setMaatApi(maatApiConfiguration);
         servicesConfiguration.setCourtDataAdapter(courtDataAdapterConfig);
+
+        servicesConfiguration.setEvidence(evidenceConfig);
+        evidenceConfig.setEvidenceFeeEndpoints(evidenceFeeEndpoints);
+        evidenceConfig.setBaseUrl(host);
 
         return servicesConfiguration;
     }

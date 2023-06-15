@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.impl;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +14,6 @@ import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCas
 
 @Slf4j
 @Component
-@XRayEnabled
 @RequiredArgsConstructor
 public class ProcessSentencingImpl {
 

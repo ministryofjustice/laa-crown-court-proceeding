@@ -7,12 +7,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.laa.crime.crowncourt.client.MaatAPIClient;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
+import uk.gov.justice.laa.crime.commons.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.config.MockServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
-import uk.gov.justice.laa.crime.crowncourt.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
@@ -28,18 +30,21 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SoftAssertionsExtension.class)
 class MaatCourtDataServiceTest {
 
-    private static final String LAA_TRANSACTION_ID = "laaTransactionId";
     @Mock
-    MaatAPIClient maatCourtDataClient;
+    RestAPIClient maatAPIClient;
+
     @InjectMocks
     private MaatCourtDataService maatCourtDataService;
+
     @Spy
     private ServicesConfiguration configuration = MockServicesConfiguration.getConfiguration(1000);
+
+    private static final String LAA_TRANSACTION_ID = "laaTransactionId";
 
     @Test
     void givenRepId_whenGetCurrentPassedIojAppealFromRepIdIsInvoked_thenResponseIsReturned() {
         IOJAppealDTO expected = new IOJAppealDTO();
-        when(maatCourtDataClient.getApiResponseViaGET(any(), anyString(), anyMap(), any()))
+        when(maatAPIClient.get(any(), anyString(), anyMap(), any()))
                 .thenReturn(expected);
 
         IOJAppealDTO response =
@@ -51,7 +56,7 @@ class MaatCourtDataServiceTest {
     @Test
     void givenUpdateRepOrderRequest_whenUpdateRepOrderIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build(), LAA_TRANSACTION_ID);
-        verify(maatCourtDataClient).getApiResponseViaPUT(
+        verify(maatAPIClient).put(
                 any(UpdateRepOrderRequestDTO.class),
                 any(),
                 anyString(),
@@ -62,7 +67,7 @@ class MaatCourtDataServiceTest {
     @Test
     void givenAValidRequest_whenUpdateRepOrderIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build(), LAA_TRANSACTION_ID);
-        verify(maatCourtDataClient).getApiResponseViaPUT(
+        verify(maatAPIClient).put(
                 any(UpdateRepOrderRequestDTO.class),
                 any(),
                 anyString(),
@@ -73,13 +78,13 @@ class MaatCourtDataServiceTest {
     @Test
     void givenAValidRepId_whenGetRepOrderCCOutcomeByRepIdIsInvoked_thenReturnOutcome() {
         maatCourtDataService.getRepOrderCCOutcomeByRepId(TestModelDataBuilder.TEST_REP_ID, LAA_TRANSACTION_ID);
-        verify(maatCourtDataClient, atLeastOnce()).getApiResponseViaGET(any(), anyString(), anyMap(), any());
+        verify(maatAPIClient, atLeastOnce()).get(any(), anyString(), anyMap(), any());
     }
 
     @Test
     void givenAValidRequest_whenCreateOutcomeIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.createOutcome(RepOrderCCOutcomeDTO.builder().build(), LAA_TRANSACTION_ID);
-        verify(maatCourtDataClient).getApiResponseViaPUT(
+        verify(maatAPIClient).post(
                 any(RepOrderCCOutcomeDTO.class),
                 any(),
                 anyString(),
@@ -89,7 +94,7 @@ class MaatCourtDataServiceTest {
 
     @Test
     void givenAInvalidParameter_whenGetRepOrderCCOutcomeByRepIdIsInvoked_thenReturnError() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), anyString(), anyMap(), any())).thenThrow(new APIClientException());
+        when(maatAPIClient.get(any(), anyString(), anyMap(), any())).thenThrow(new APIClientException());
         assertThatThrownBy(() -> maatCourtDataService.getRepOrderCCOutcomeByRepId(
                 TestModelDataBuilder.TEST_REP_ID, LAA_TRANSACTION_ID)
         ).isInstanceOf(APIClientException.class);
@@ -97,166 +102,177 @@ class MaatCourtDataServiceTest {
 
     @Test
     void givenAInvalidParameter_whenRetrieveHearingForCaseConclusionIsInvoked_thenNullIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(null);
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(null);
         maatCourtDataService.retrieveHearingForCaseConclusion(ProsecutionConcluded.builder().build());
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
     }
 
     @Test
     void givenAInvalidParameter_whenRetrieveHearingForCaseConclusionIsInvoked_thenEmptyIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(List.of());
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(List.of());
         WQHearingDTO wqHearingDTO = maatCourtDataService.retrieveHearingForCaseConclusion(ProsecutionConcluded.builder().build());
         assertThat(wqHearingDTO).isNull();
     }
 
     @Test
-    void givenAInvalidParameter_whenRetrieveHearingForCaseConclusionIsInvoked_thenResponseIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(List.of(WQHearingDTO.builder().build()));
+    void givenAValidParameter_whenRetrieveHearingForCaseConclusionIsInvoked_thenResponseIsReturned() {
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(List.of(WQHearingDTO.builder().build()));
         WQHearingDTO wqHearingDTO = maatCourtDataService.retrieveHearingForCaseConclusion(ProsecutionConcluded.builder().build());
         assertThat(wqHearingDTO).isNotNull();
     }
 
     @Test
     void givenAInvalidParameter_whenFindWQLinkRegisterByMaatIdIsInvoked_thenNullIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(null);
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(null);
         int caseId = maatCourtDataService.findWQLinkRegisterByMaatId(TestModelDataBuilder.TEST_REP_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
         assertThat(caseId).isZero();
     }
 
     @Test
     void givenAInvalidParameter_whenFindWQLinkRegisterByMaatIdIsInvoked_thenEmptyIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(List.of());
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(List.of());
         int caseId = maatCourtDataService.findWQLinkRegisterByMaatId(TestModelDataBuilder.TEST_REP_ID);
         assertThat(caseId).isZero();
     }
 
     @Test
-    void givenAInvalidParameter_whenFindWQLinkRegisterByMaatIdIsInvoked_thenResponseIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(List.of(WQLinkRegisterDTO.builder()
+    void givenAValidParameter_whenFindWQLinkRegisterByMaatIdIsInvoked_thenResponseIsReturned() {
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(List.of(WQLinkRegisterDTO.builder()
                 .caseId(TestModelDataBuilder.TEST_CASE_ID).build()));
         int caseId = maatCourtDataService.findWQLinkRegisterByMaatId(TestModelDataBuilder.TEST_REP_ID);
         assertThat(caseId).isEqualTo(TestModelDataBuilder.TEST_CASE_ID);
     }
 
     @Test
-    void givenAInvalidParameter_whenFindOffenceByCaseIdIsInvoked_thenResponseIsReturned() {
+    void givenAValidParameter_whenFindOffenceByCaseIdIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.findOffenceByCaseId(TestModelDataBuilder.TEST_REP_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
     }
 
     @Test
     void givenAInvalidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenNullIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(null);
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(null);
         int offenceCount = maatCourtDataService.getOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
         assertThat(offenceCount).isZero();
     }
 
     @Test
     void givenAInvalidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenEmptyIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(List.of());
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(List.of());
         int offenceCount = maatCourtDataService.getOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
         assertThat(offenceCount).isZero();
     }
 
     @Test
-    void givenAInvalidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenResponseIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(List.of(4));
+    void givenAValidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenResponseIsReturned() {
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(List.of(4));
         int offenceCount = maatCourtDataService.getOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
         assertThat(offenceCount).isEqualTo(4);
     }
 
     @Test
     void givenAInvalidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenNullIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(null);
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(null);
         int offenceCount = maatCourtDataService.getWQOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
         assertThat(offenceCount).isZero();
     }
 
     @Test
     void givenAInvalidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenEmptyIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(List.of());
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(List.of());
         int offenceCount = maatCourtDataService.getWQOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
         assertThat(offenceCount).isZero();
     }
 
     @Test
-    void givenAInvalidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenResponseIsReturned() {
-        when(maatCourtDataClient.getApiResponseViaGET(any(), any(), any(), any())).thenReturn(List.of(5));
+    void givenAValidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenResponseIsReturned() {
+        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(List.of(5));
         int offenceCount = maatCourtDataService.getWQOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
         assertThat(offenceCount).isEqualTo(5);
     }
 
     @Test
-    void givenAInvalidParameter_whenFindResultsByWQTypeSubTypeIsInvoked_thenResponseIsReturned() {
+    void givenAValidParameter_whenFindResultsByWQTypeSubTypeIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.findResultsByWQTypeSubType(1244, 25243);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
     }
 
     @Test
-    void givenAInvalidParameter_whenGetResultCodeByCaseIdAndAsnSeqIsInvoked_thenResponseIsReturned() {
+    void givenAValidParameter_whenGetResultCodeByCaseIdAndAsnSeqIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.getResultCodeByCaseIdAndAsnSeq(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
     }
 
     @Test
     void givenAInvalidParameter_whenGetWqResultCodeByCaseIdAndAsnSeqIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.getWqResultCodeByCaseIdAndAsnSeq(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
     }
 
     @Test
-    void givenAInvalidParameter_whenFetchResultCodesForCCImprisonmentIsInvoked_thenResponseIsReturned() {
+    void givenAValidParameter_whenFetchResultCodesForCCImprisonmentIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.fetchResultCodesForCCImprisonment();
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
     }
 
     @Test
-    void givenAInvalidParameter_whenFindByCjsResultCodeInIsInvoked_thenResponseIsReturned() {
+    void givenAValidParameter_whenFindByCjsResultCodeInIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.findByCjsResultCodeIn();
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any(), any());
     }
 
     @Test
-    void givenAInvalidParameter_whenGetRepOrderIsInvoked_thenResponseIsReturned() {
+    void givenAValidParameter_whenGetRepOrderIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.getRepOrder(TestModelDataBuilder.TEST_REP_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any());
     }
 
     @Test
-    void givenAInvalidParameter_whenUpdateCrownCourtOutcomeIsInvoked_thenResponseIsReturned() {
+    void givenAValidParameter_whenUpdateCrownCourtOutcomeIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.updateCrownCourtOutcome(UpdateCCOutcome.builder().build());
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any());
     }
 
     @Test
-    void givenAInvalidParameter_whenInvokeUpdateAppealSentenceOrderDateIsInvoked_thenResponseIsReturned() {
+    void givenAValidParameter_whenInvokeUpdateAppealSentenceOrderDateIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.invokeUpdateAppealSentenceOrderDate(UpdateSentenceOrder.builder().build());
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any());
     }
 
     @Test
-    void givenAInvalidParameter_whenInvokeUpdateSentenceOrderDateIsInvoked_thenResponseIsReturned() {
+    void givenAValidParameter_whenInvokeUpdateSentenceOrderDateIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.invokeUpdateSentenceOrderDate(UpdateSentenceOrder.builder().build());
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any());
     }
 
     @Test
-    void givenAInvalidParameter_whenMaatRecordLockedIsInvoked_thenResponseIsReturned() {
+    void givenAValidParameter_whenMaatRecordLockedIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.isMaatRecordLocked(TestModelDataBuilder.TEST_REP_ID);
-        verify(maatCourtDataClient).getApiResponseViaGET(any(), any(), any());
+        verify(maatAPIClient).get(any(), any(), any());
     }
 
     @Test
-    void givenAInvalidParameter_whenGetRepOrderByFilterIsInvoked_thenResponseIsReturned() throws Exception {
-        maatCourtDataService.getRepOrderByFilter(TestModelDataBuilder.TEST_REP_ID.toString(),
-                TestModelDataBuilder.TEST_SENTENCE_ORDER_DATE.toString());
-        verify(maatCourtDataClient).getGraphQLApiResponse(any(), any(), any());
+    void givenAValidParameter_whenOutcomeCountIsInvoked_thenResponseIsReturned() {
+        ResponseEntity<Void> response = new ResponseEntity<>(HttpStatus.OK);
+        when(maatAPIClient.head(any(), any(), any())).thenReturn(response);
+        maatCourtDataService.outcomeCount(TestModelDataBuilder.TEST_REP_ID, TestModelDataBuilder.MEANS_ASSESSMENT_TRANSACTION_ID);
+        verify(maatAPIClient).head(any(), any(), any());
+    }
+
+    @Test
+    void givenAValidEvidenceFeeRequest_whenGetCalEvidenceFeeIsInvokedAndTheApiCallFails_thenFailureIsHandled() {
+
+        when(maatAPIClient.head(any(), any(), any())).thenThrow(new APIClientException());
+
+        assertThatThrownBy(() -> maatCourtDataService.outcomeCount(
+                TestModelDataBuilder.TEST_REP_ID, TestModelDataBuilder.MEANS_ASSESSMENT_TRANSACTION_ID)
+        ).isInstanceOf(APIClientException.class);
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.crowncourt.builder.CrimeEvidenceBuilder;
 import uk.gov.justice.laa.crime.crowncourt.builder.OutcomeDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
@@ -11,10 +12,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiHardshipOverview;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
+import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 
 import java.time.LocalDateTime;
@@ -26,6 +24,9 @@ import java.util.List;
 public class RepOrderService {
 
     private final MaatCourtDataService maatCourtDataService;
+
+    private final CrimeEvidenceDataService crimeEvidenceDataService;
+
     List<String> grantedRepOrderDecisions = List.of(Constants.GRANTED_FAILED_MEANS_TEST,
             Constants.GRANTED_PASSED_MEANS_TEST,
             Constants.GRANTED_PASSPORTED);
@@ -217,7 +218,7 @@ public class RepOrderService {
         if (MagCourtOutcome.COMMITTED_FOR_TRIAL.equals(requestDTO.getMagCourtOutcome())) {
             if (DecisionReason.GRANTED.equals(decisionReason)) {
                 return requestDTO.getDecisionDate();
-            } else if (failedDecisionReasons.contains(decisionReason) ||
+            } else if ((decisionReason != null && failedDecisionReasons.contains(decisionReason)) ||
                     Constants.REFUSED_INELIGIBLE.equals(repOrderDecision)) {
                 return requestDTO.getCommittalDate();
             }
@@ -225,14 +226,29 @@ public class RepOrderService {
         return null;
     }
 
+    public RepOrderDTO updateCCOutcome(CrownCourtDTO dto) {
+        long repOrderOutcomeCount = maatCourtDataService.outcomeCount(dto.getRepId(), dto.getLaaTransactionId());
+        if (repOrderOutcomeCount == 0 && null != dto.getCrownCourtSummary().getCrownCourtOutcome() &&
+                !dto.getCrownCourtSummary().getCrownCourtOutcome().isEmpty()) {
+            ApiCalculateEvidenceFeeResponse evidenceFeeResponse = crimeEvidenceDataService.getCalEvidenceFee(CrimeEvidenceBuilder.build(dto));
+            if (null != evidenceFeeResponse.getEvidenceFee()) {
+                dto.getCrownCourtSummary().setEvidenceFeeLevel(evidenceFeeResponse.getEvidenceFee().getFeeLevel());
+            }
+        }
+        RepOrderDTO repOrderDTO = update(dto);
+        createOutcome(dto);
+        return repOrderDTO;
+    }
+
+
     protected RepOrderDTO update(CrownCourtDTO dto) {
-       return  maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.buildOutcome(dto), dto.getLaaTransactionId());
+        return maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.buildOutcome(dto), dto.getLaaTransactionId());
     }
 
     protected void createOutcome(CrownCourtDTO dto) {
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = OutcomeDTOBuilder.build(dto);
         if (null != repOrderCCOutcomeDTOList) {
-            repOrderCCOutcomeDTOList.stream().forEach(repOrderCCOutcomeDTO ->
+            repOrderCCOutcomeDTOList.forEach(repOrderCCOutcomeDTO ->
                     maatCourtDataService.createOutcome(repOrderCCOutcomeDTO, dto.getLaaTransactionId())
             );
         }
