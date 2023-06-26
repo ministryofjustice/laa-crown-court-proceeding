@@ -23,7 +23,7 @@ public class UpdateApiResponseBuilder {
 
         apiUpdateOutcomeResponse.setModifiedDateTime(repOrderDTO.getDateModified());
         summary.withRepType(repOrderDTO.getCrownRepOrderType());
-        summary.withRepOrderDate(ofNullable(repOrderDTO.getCrownRepOrderDate().atStartOfDay()).orElse(null));
+        summary.withRepOrderDate(ofNullable(repOrderDTO.getCrownRepOrderDate()).map(o -> o.atStartOfDay()).orElse(null));
         summary.withRepOrderDecision(repOrderDTO.getCrownRepOrderDecision());
         summary.setEvidenceFeeLevel(repOrderDTO.getEvidenceFeeLevel());
         apiUpdateOutcomeResponse.setCrownCourtSummary(summary);
