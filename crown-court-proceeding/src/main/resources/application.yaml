@@ -73,7 +73,7 @@ spring:
             scope: evidence/standard
       resource-server:
         jwt:
-          issuer-uri: ${crown-court-proceeding.security.issuer-uri}
+          issuer-uri: ${JWT_ISSUER_URI}
 
 sentry:
   dsn: ${SENTRY_DSN}
@@ -98,10 +98,6 @@ cloud-platform:
       queue:
         hearingResulted: ${HEARING_RESULTED_QUEUE}
         prosecutionConcluded: ${PROSECUTION_CONCLUDED_QUEUE}
-
-crown-court-proceeding:
-  security:
-    issuer-uri: http://localhost:${server.port}
 
 services:
   court-data-adapter:

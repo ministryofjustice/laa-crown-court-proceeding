@@ -1,39 +1,44 @@
 package uk.gov.justice.laa.crime.crowncourt.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 
-import java.util.UUID;
+import java.time.Instant;
+import java.util.Map;
 
-@Configuration(proxyBeanMethods = false)
+@TestConfiguration
 public class CrownCourtProceedingTestConfiguration {
 
-    @Value("${server.port}")
-    private String serverPort;
+    static final String SUB = "sub";
+    static final String AUTH0_TOKEN = "token";
+    static final String AUTH_ID = "4jefq4i3331tf3d850ve49qofm";
 
     @Bean
-    @Primary
-    public RegisteredClientRepository registeredTestClientRepository() {
+    public JwtDecoder jwtDecoder() {
 
-        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("test-client")
-                .clientSecret("{noop}secret")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("http://127.0.0.1:" + serverPort + "/authorized")
-                .scope("READ")
-                .scope("READ_WRITE")
-                .clientSettings(ClientSettings.builder().build())
-                .build();
+        return new JwtDecoder() {
+            @Override
+            public Jwt decode(String token) {
+                return jwt();
+            }
+        };
+    }
 
-        return new InMemoryRegisteredClientRepository(registeredClient);
+    public Jwt jwt() {
+
+        Map<String, Object> claims = Map.of(
+                SUB, AUTH_ID,
+                "scope", "ccp/standard"
+        );
+
+        return new Jwt(
+                AUTH0_TOKEN,
+                Instant.now(),
+                Instant.now().plusSeconds(30),
+                Map.of("alg", "none"),
+                claims
+        );
     }
 }

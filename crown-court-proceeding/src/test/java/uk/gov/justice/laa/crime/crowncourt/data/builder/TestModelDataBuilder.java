@@ -28,6 +28,9 @@ public class TestModelDataBuilder {
             LocalDateTime.of(2022, 9, 19, 15, 1, 25);
     public static final LocalDateTime TEST_IOJ_APPEAL_DECISION_DATE =
             LocalDateTime.of(2022, 1, 19, 15, 1, 25);
+
+    public static final LocalDateTime TEST_IOJ_APPEAL_DECISION_DATE_1 =
+            LocalDateTime.of(2021, 6, 5, 15, 0, 00);
     public static final LocalDateTime TEST_SENTENCE_ORDER_DATE =
             LocalDateTime.of(2022, 2, 19, 15, 1, 25);
     public static final LocalDateTime TEST_DATE_MODIFIED = LocalDateTime.now();
