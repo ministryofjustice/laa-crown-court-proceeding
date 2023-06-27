@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -23,10 +22,10 @@ import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfig
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
+import uk.gov.justice.laa.crime.crowncourt.util.MockWebServerStubs;
 import uk.gov.justice.laa.crime.crowncourt.util.RequestBuilderUtils;
 
 import java.io.IOException;
-import java.util.Map;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.NOT_IMPLEMENTED;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
@@ -62,7 +61,7 @@ class CrownCourtProceedingIntegrationTest {
     public void initialiseMockWebServer() throws IOException {
         mockMaatCourtDataApi = new MockWebServer();
         mockMaatCourtDataApi.start(9999);
-        enqueueOAuthResponse();
+        mockMaatCourtDataApi.setDispatcher(MockWebServerStubs.getDispatcher());
     }
 
     @AfterAll
@@ -71,7 +70,7 @@ class CrownCourtProceedingIntegrationTest {
     }
 
     @BeforeEach
-    public void setup() throws JsonProcessingException {
+    public void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .addFilter(springSecurityFilterChain).build();
     }
@@ -81,7 +80,6 @@ class CrownCourtProceedingIntegrationTest {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.POST, "{}", ENDPOINT_URL))
                 .andExpect(status().isBadRequest());
     }
-
 
     @Test
     void givenAEmptyOAuthToken_whenCreateAssessmentIsInvoked_thenFailsUnauthorizedAccess() throws Exception {
@@ -208,19 +206,4 @@ class CrownCourtProceedingIntegrationTest {
         assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(updateApplicationResponse));
     }
 
-    private void enqueueOAuthResponse() throws JsonProcessingException {
-        Map<String, String> token = Map.of(
-                "expires_in", "3600",
-                "token_type", "Bearer",
-                "access_token", "token"
-        );
-        MockResponse response = new MockResponse();
-        response.setBody(objectMapper.writeValueAsString(token));
-
-        mockMaatCourtDataApi.enqueue(response
-                .setResponseCode(OK.code())
-                .setHeader("Content-Type", MediaType.APPLICATION_JSON)
-                .setBody(objectMapper.writeValueAsString(token))
-        );
-    }
 }
