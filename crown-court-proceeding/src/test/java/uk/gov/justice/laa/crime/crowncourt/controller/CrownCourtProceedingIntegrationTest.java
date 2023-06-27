@@ -62,6 +62,7 @@ class CrownCourtProceedingIntegrationTest {
     public void initialiseMockWebServer() throws IOException {
         mockMaatCourtDataApi = new MockWebServer();
         mockMaatCourtDataApi.start(9999);
+        enqueueOAuthResponse();
     }
 
     @AfterAll
@@ -70,7 +71,7 @@ class CrownCourtProceedingIntegrationTest {
     }
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws JsonProcessingException {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .addFilter(springSecurityFilterChain).build();
     }
@@ -85,7 +86,7 @@ class CrownCourtProceedingIntegrationTest {
     @Test
     void givenAEmptyOAuthToken_whenCreateAssessmentIsInvoked_thenFailsUnauthorizedAccess() throws Exception {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.POST, "{}", ENDPOINT_URL, false))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden()).andReturn();
     }
 
     @Test
@@ -147,9 +148,10 @@ class CrownCourtProceedingIntegrationTest {
 
     @Test
     void givenAEmptyContent_whenUpdateApplicationIsInvoked_thenFailsBadRequest() throws Exception {
-        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+        MvcResult result = mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, "{}", ENDPOINT_URL))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest()).andReturn();
+        System.out.println(result.getResponse().getErrorMessage());
     }
 
     @Test
@@ -164,13 +166,11 @@ class CrownCourtProceedingIntegrationTest {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, objectMapper.writeValueAsString(
                                 TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.FALSE)), ENDPOINT_URL))
-
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void givenAValidUpdateApplicationContent_whenApiResponseIsError_thenUpdateApplicationIsFails() throws Exception {
-
         mockMaatCourtDataApi.enqueue(new MockResponse()
                 .setHeader("Content-Type", MediaType.APPLICATION_JSON)
                 .setResponseCode(NOT_IMPLEMENTED.code()));
@@ -185,7 +185,6 @@ class CrownCourtProceedingIntegrationTest {
 
     @Test
     void givenAValidContent_whenUpdateApplicationIsInvoked_thenUpdateApplicationIsSuccess() throws Exception {
-        enqueueOAuthResponse();
         var updateApplicationResponse = TestModelDataBuilder.getApiUpdateApplicationResponse();
         ApiUpdateApplicationRequest apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
         apiUpdateApplicationRequest.setCaseType(CaseType.APPEAL_CC);
