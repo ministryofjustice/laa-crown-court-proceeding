@@ -2,15 +2,13 @@ package uk.gov.justice.laa.crime.crowncourt.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.mockwebserver.*;
-import org.jetbrains.annotations.NotNull;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.FilterChainProxy;
@@ -18,39 +16,22 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.util.RequestBuilderUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Map;
-import java.util.UUID;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.NOT_IMPLEMENTED;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -61,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = CrownCourtProceedingApplication.class, webEnvironment = DEFINED_PORT)
 class CrownCourtProceedingIntegrationTest {
 
+    private static final boolean IS_VALID = true;
     private static final String ERROR_MSG = "Call to service MAAT-API failed.";
     private static final String ENDPOINT_URL = "/api/internal/v1/proceedings";
 
@@ -108,7 +90,10 @@ class CrownCourtProceedingIntegrationTest {
 
     @Test
     void givenAInvalidContent_whenProcessRepOrderIsInvoked_thenFailsBadRequest() throws Exception {
-        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.POST, "{}", ENDPOINT_URL))
+        var apiUpdateApplicationRequest =
+                TestModelDataBuilder.getApiProcessRepOrderRequest(!IS_VALID);
+        var applicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
+        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.POST, applicationRequestJson, ENDPOINT_URL))
                 .andExpect(status().isBadRequest());
     }
 
@@ -141,6 +126,7 @@ class CrownCourtProceedingIntegrationTest {
 
     @Test
     void givenAValidAppealCCContent_whenProcessRepOrderIsInvoked_thenSuccess() throws Exception {
+        enqueueOAuthResponse();
         var apiProcessRepOrderRequest = TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE);
         apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
         var processRepOrderRequestJson = objectMapper.writeValueAsString(apiProcessRepOrderRequest);

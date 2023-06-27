@@ -3,7 +3,6 @@ package uk.gov.justice.laa.crime.crowncourt.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,6 +35,7 @@ public class ResourceServerConfiguration {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/oauth2/**").permitAll()
                         .requestMatchers("/open-api/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/**").hasAuthority(SCOPE_CCP_STANDARD)
