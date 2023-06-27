@@ -126,7 +126,6 @@ class CrownCourtProceedingIntegrationTest {
 
     @Test
     void givenAValidAppealCCContent_whenProcessRepOrderIsInvoked_thenSuccess() throws Exception {
-        enqueueOAuthResponse();
         var apiProcessRepOrderRequest = TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE);
         apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
         var processRepOrderRequestJson = objectMapper.writeValueAsString(apiProcessRepOrderRequest);
