@@ -84,7 +84,7 @@ class CrownCourtProceedingIntegrationTest {
     @Test
     void givenAEmptyOAuthToken_whenCreateAssessmentIsInvoked_thenFailsUnauthorizedAccess() throws Exception {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.POST, "{}", ENDPOINT_URL, false))
-                .andExpect(status().isForbidden()).andReturn();
+                .andExpect(status().isUnauthorized()).andReturn();
     }
 
     @Test
@@ -156,7 +156,7 @@ class CrownCourtProceedingIntegrationTest {
     void givenAEmptyOAuthToken_whenUpdateApplicationIsInvoked_thenFailsUnauthorizedAccess() throws Exception {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, "{}", ENDPOINT_URL, Boolean.FALSE))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

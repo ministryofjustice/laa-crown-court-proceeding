@@ -1,21 +1,15 @@
 package uk.gov.justice.laa.crime.crowncourt.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
-import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
@@ -23,37 +17,25 @@ import uk.gov.justice.laa.crime.crowncourt.util.RequestBuilderUtils;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DirtiesContext
-@Import(CrownCourtProceedingTestConfiguration.class)
-@SpringBootTest(classes = {CrownCourtProceedingApplication.class}, webEnvironment = DEFINED_PORT)
+@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(CrownCourtProceedingController.class)
 class CrownCourtProceedingControllerTest {
 
     private static final boolean IS_VALID = true;
     private static final String ENDPOINT_URL = "/api/internal/v1/proceedings";
 
+    @Autowired
     private MockMvc mvc;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private FilterChainProxy springSecurityFilterChain;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @MockBean
     private ProceedingService proceedingService;
-
-    @BeforeEach
-    public void setup() {
-        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
-                .addFilter(springSecurityFilterChain).build();
-    }
 
     @Test
     void processRepOrder_Success() throws Exception {
@@ -95,12 +77,6 @@ class CrownCourtProceedingControllerTest {
     }
 
     @Test
-    void processRepOrder_Unauthorized_NoAccessToken() throws Exception {
-        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.POST, "{}", ENDPOINT_URL, false))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
     void updateApplication_Success() throws Exception {
         var apiUpdateApplicationRequest =
                 TestModelDataBuilder.getApiUpdateApplicationRequest(IS_VALID);
@@ -138,12 +114,6 @@ class CrownCourtProceedingControllerTest {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, "{}", ENDPOINT_URL))
                 .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void updateApplication_Unauthorized_NoAccessToken() throws Exception {
-        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.PUT, "{}", ENDPOINT_URL, false))
-                .andExpect(status().isForbidden());
     }
 
     @Test
