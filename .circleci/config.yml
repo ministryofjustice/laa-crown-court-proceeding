@@ -133,7 +133,7 @@ jobs:
       - run:
           name: Push to ECR
           command: |
-            docker push "$AWS_ECR_ACCOUNT_URL/crime-apps/laa-crown-court-proceeding-dev-ecr:${CIRCLE_SHA1}"      
+            docker push "$AWS_ECR_ACCOUNT_URL/crime-apps/laa-crown-court-proceeding-dev-ecr:${CIRCLE_SHA1}"
 
   deploy-dev:
     executor: cloud-platform-executor
