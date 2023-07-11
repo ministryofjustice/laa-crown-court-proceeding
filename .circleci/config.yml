@@ -110,7 +110,7 @@ jobs:
           <<: *snyk_options
 
   build_scan_and_push_image:
-    executor: build-executor
+    executor: aws-ecr/default
     steps:
       - checkout:
           path: ~/laa-crown-court-proceeding
