@@ -1,0 +1,12 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JAVA-ORGSPRINGFRAMEWORKSECURITY-5777893:
+    - '*':
+        reason: >-
+          Need to upgrade to Spring Boot 3.1.x to eliminate which is not a
+          simple upgrade.
+        expires: 2023-09-01T00:00:00.000Z
+        created: 2023-07-18T15:04:01.944Z
+patch: {}
