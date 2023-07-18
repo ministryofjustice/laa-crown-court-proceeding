@@ -22,4 +22,11 @@ ignore:
         reason: no fix available
         expires: 2023-01-10T00:00:00.000Z
         created: 2022-06-09T10:28:24.517Z
+  SNYK-JAVA-ORGSPRINGFRAMEWORKSECURITY-5777893:
+    - '*':
+        reason: >-
+          Need to upgrade to Spring Boot 3.1.x to eliminate which is not a
+          simple upgrade.
+        expires: 2023-09-01T00:00:00.000Z
+        created: 2023-07-18T15:19:14.620Z
 patch: {}
