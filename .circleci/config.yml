@@ -131,7 +131,7 @@ jobs:
             --build-arg BUILD_TAG=${CIRCLE_SHA1} \
             --build-arg APP_BRANCH=${CIRCLE_BRANCH} \
             --build-arg BUILD_DATE=$(date +%Y-%m-%dT%H:%M:%S%z) \
-            -t $AWS_ECR_ACCOUNT_URL/crime-apps/laa-crime-means-assessment-dev-ecr:${CIRCLE_SHA1} .
+            -t $AWS_ECR_ACCOUNT_URL/crime-apps/laa-crown-court-proceeding-dev-ecr:${CIRCLE_SHA1} .
       - snyk/scan:
           docker-image-name: "$AWS_ECR_ACCOUNT_URL/crime-apps/laa-crown-court-proceeding-dev-ecr:${CIRCLE_SHA1}"
           <<: *snyk_options
