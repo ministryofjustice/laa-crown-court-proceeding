@@ -3,7 +3,6 @@ package uk.gov.justice.laa.crime.crowncourt.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,9 +16,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @EnableWebSecurity
 public class ResourceServerConfiguration {
 
-    public static final String API_PATH = "/api/**";
-    public static final String SCOPE_READ = "SCOPE_READ";
-    public static final String SCOPE_READ_WRITE = "SCOPE_READ_WRITE";
+    public static final String SCOPE_CCP_STANDARD = "SCOPE_ccp/standard";
 
     @Bean
     protected BearerTokenAuthenticationEntryPoint bearerTokenAuthenticationEntryPoint() {
@@ -35,24 +32,18 @@ public class ResourceServerConfiguration {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/oauth2/**").permitAll()
                         .requestMatchers("/open-api/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .requestMatchers(HttpMethod.GET, API_PATH).hasAnyAuthority(SCOPE_READ, SCOPE_READ_WRITE)
-                        .requestMatchers(HttpMethod.POST, API_PATH).hasAuthority(SCOPE_READ_WRITE)
-                        .requestMatchers(HttpMethod.PUT, API_PATH).hasAuthority(SCOPE_READ_WRITE)
-                        .requestMatchers(HttpMethod.DELETE, API_PATH).hasAuthority(SCOPE_READ_WRITE)
-                        .requestMatchers(HttpMethod.PATCH, API_PATH).hasAuthority(SCOPE_READ_WRITE)
+                        .requestMatchers("/api/**").hasAuthority(SCOPE_CCP_STANDARD)
                         .anyRequest().authenticated())
-                .oauth2ResourceServer().accessDeniedHandler(bearerTokenAccessDeniedHandler()).authenticationEntryPoint(bearerTokenAuthenticationEntryPoint())
-                .jwt()
-        ;
-
+                .oauth2ResourceServer()
+                .accessDeniedHandler(bearerTokenAccessDeniedHandler())
+                .authenticationEntryPoint(bearerTokenAuthenticationEntryPoint()).jwt();
         return http.build();
     }
 }

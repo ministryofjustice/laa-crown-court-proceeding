@@ -16,7 +16,6 @@ jacoco {
 }
 
 def versions = [
-        springauthserverVersion            : "1.0.1",
         okhttpVersion                      : "4.9.3",
         mockwebserverVersion               : "4.10.0",
         pitest                             : "1.4.10",
@@ -56,19 +55,17 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
 
-    implementation "org.springframework.security:spring-security-oauth2-authorization-server:$versions.springauthserverVersion"
-
     implementation "org.postgresql:postgresql"
     implementation "com.google.code.gson:gson"
     implementation "org.liquibase:liquibase-core"
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4"
     implementation "org.apache.commons:commons-lang3"
+    implementation "io.micrometer:micrometer-registry-prometheus"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4"
+    implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$versions.amazonSQSVersion"
 
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-
-    implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$versions.amazonSQSVersion"
 
     implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:2.0.0"
 

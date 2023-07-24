@@ -2,6 +2,8 @@ version: 2.1
 
 orbs:
   snyk: snyk/snyk@1.4.0
+  aws-cli: circleci/aws-cli@4.0.0
+  aws-ecr: circleci/aws-ecr@8.2.1
 
 _snyk_options: &snyk_options
   project: "${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}"
@@ -116,6 +118,11 @@ jobs:
           at: .
       - setup_remote_docker:
           docker_layer_caching: true
+      - aws-cli/setup:
+          role_arn: $ECR_ROLE_TO_ASSUME
+          region: $ECR_REGION
+      - run: |
+          aws ecr get-login-password --region $ECR_REGION | docker login --username AWS --password-stdin ${AWS_ECR_REGISTRY_ID}.dkr.ecr.${ECR_REGION}.amazonaws.com
       - run:
           name: Build docker image
           command: |
@@ -131,10 +138,6 @@ jobs:
       - run:
           name: Push to ECR
           command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
-            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_ACCOUNT_URL
             docker push "$AWS_ECR_ACCOUNT_URL/crime-apps/laa-crown-court-proceeding-dev-ecr:${CIRCLE_SHA1}"
 
   deploy-dev:

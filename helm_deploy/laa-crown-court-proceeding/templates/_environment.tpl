@@ -44,6 +44,8 @@ env:
     value: {{ .Values.cloudplatform.aws.sqs.queue.hearingResulted }}
   - name: PROSECUTION_CONCLUDED_QUEUE
     value: {{ .Values.cloudplatform.aws.sqs.queue.prosecutionConcluded }}
+  - name: JWT_ISSUER_URI
+    value: {{ .Values.jwt.issuerUri }}
   - name: DATASOURCE_HOST_PORT
     valueFrom:
       secretKeyRef:
