@@ -1,6 +1,10 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -9,7 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.MessageHeaders;
+import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener.ProsecutionConcludedListener;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
@@ -19,12 +26,13 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.PleaTrialOutcome;
 
 import java.util.HashMap;
 
+import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
-class ProsecutionConcludedListenerTest {
+class ProsecutionConcludedIntegrationTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -33,23 +41,30 @@ class ProsecutionConcludedListenerTest {
     @InjectMocks
     private ProsecutionConcludedListener prosecutionConcludedListener;
     @Mock
-    private ProsecutionConcludedService prosecutionConcludedService;
-    @Mock
     private QueueMessageLogService queueMessageLogService;
 
+    private static MockWebServer mockMaatCourtDataApi;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
-    void givenJSONMessageIsReceived_whenProsecutionConcludedListenerIsInvoked_thenReceiveIsCalled() {
+    void givenJSONMessageIsReceived_whenProsecutionConcludedListenerIsInvoked_thenReceiveIsCalled() throws JsonProcessingException {
         String message = getSqsMessagePayload();
         Gson locaGson = new Gson();
         ProsecutionConcluded prosecutionConcluded = locaGson.fromJson(getSqsMessagePayload(), ProsecutionConcluded.class);
         String originatingHearingId = "61600a90-89e2-4717-aa9b-a01fc66130c1";
 
-        //when
-        when(gson.fromJson(message, ProsecutionConcluded.class)).thenReturn(prosecutionConcluded);
+
+        mockMaatCourtDataApi.enqueue(new MockResponse()
+                .setResponseCode(OK.code())
+                .setHeader("Content-Type", MediaType.APPLICATION_JSON)
+                //.setBody(objectMapper.writeValueAsString(TestModelDataBuilder.getIOJAppealDTO()))
+        );
+
         prosecutionConcludedListener.receive(message, new MessageHeaders(new HashMap<>()));
 
         //then
-        verify(prosecutionConcludedService).execute(prosecutionConcluded);
         verify(queueMessageLogService).createLog(MessageType.PROSECUTION_CONCLUDED, message);
 
         softly.assertThat(prosecutionConcluded.getProsecutionCaseId()).hasToString("998984a0-ae53-466c-9c13-e0c84c1fd581");
