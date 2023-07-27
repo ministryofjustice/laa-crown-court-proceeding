@@ -78,7 +78,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:2.0.0"
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:2.1.0"
 
     testImplementation 'io.awspring.cloud:spring-cloud-aws-test:2.4.4'
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
