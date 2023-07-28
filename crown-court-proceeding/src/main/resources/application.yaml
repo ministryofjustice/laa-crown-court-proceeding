@@ -153,4 +153,4 @@ queue:
 
 feature:
   postMvp:
-    enabled: false
+    enabled: true
