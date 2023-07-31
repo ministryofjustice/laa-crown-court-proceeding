@@ -2,11 +2,11 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
-import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
-import io.awspring.cloud.messaging.listener.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
+import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -37,10 +37,8 @@ public class ProsecutionConcludedListener {
         try {
             log.debug("message-id {}", headers.get("MessageId"));
             queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
-
             ProsecutionConcluded prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
             prosecutionConcludedService.execute(prosecutionConcluded);
-
             log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
         } catch (ValidationException exception) {
             log.warn(exception.getMessage());

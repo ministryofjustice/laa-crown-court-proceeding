@@ -99,6 +99,7 @@ cloud-platform:
         hearingResulted: ${HEARING_RESULTED_QUEUE}
         prosecutionConcluded: ${PROSECUTION_CONCLUDED_QUEUE}
 
+
 services:
   court-data-adapter:
     base-url: ${CDA_BASE_URL}
@@ -153,4 +154,4 @@ queue:
 
 feature:
   postMvp:
-    enabled: true
+    enabled: false
