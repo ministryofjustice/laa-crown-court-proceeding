@@ -79,7 +79,7 @@ class ProsecutionConcludedListenerTest {
 
 
     @Test
-    void givenInvalidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldNotCalledService() {
+    void givenInvalidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldNotCallService() {
         String message = getSqsMessagePayload();
         when(gson.fromJson(message, ProsecutionConcluded.class)).thenThrow(new ValidationException());
         prosecutionConcludedListener.receive(message, new MessageHeaders(new HashMap<>()));
