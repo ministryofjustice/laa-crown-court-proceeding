@@ -44,7 +44,6 @@ dependencies {
 
     implementation platform("io.sentry:sentry-bom:6.15.0")
     implementation platform(SpringBootPlugin.BOM_COORDINATES)
-    implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     annotationProcessor platform(SpringBootPlugin.BOM_COORDINATES)
 
     implementation "io.sentry:sentry-logback"
@@ -83,11 +82,7 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:2.1.0"
-
-    testImplementation 'io.awspring.cloud:spring-cloud-aws-test:2.4.4'
-    testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
+    
     testImplementation "com.h2database:h2"
     testImplementation "org.mockito:mockito-inline"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
