@@ -35,6 +35,14 @@ spring:
       idle-timeout: 60000
       max-lifetime: 3600000
 
+  cloud:
+    aws:
+      credentials:
+        access-key: ${CLOUD_PLATFORM_QUEUE_ACCESS_KEY}
+        secret-key: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
+      region:
+        static: ${CLOUD_PLATFORM_QUEUE_REGION}
+
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
 
