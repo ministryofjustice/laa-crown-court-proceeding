@@ -9,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.messaging.MessageHeaders;
+import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener.ProsecutionConcludedListener;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
@@ -16,8 +18,11 @@ import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.PleaTrialOutcome;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.io.Reader;
+import java.util.HashMap;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
@@ -43,7 +48,7 @@ class ProsecutionConcludedListenerTest {
 
         //when
         when(gson.fromJson(message, ProsecutionConcluded.class)).thenReturn(prosecutionConcluded);
-        prosecutionConcludedListener.receive(message);
+        prosecutionConcludedListener.receive(message, new MessageHeaders(new HashMap<>()));
 
         //then
         verify(prosecutionConcludedService).execute(prosecutionConcluded);
@@ -70,6 +75,16 @@ class ProsecutionConcludedListenerTest {
 
         softly.assertThat(prosecutionConcluded.getMetadata().getLaaTransactionId()).isEqualTo(originatingHearingId);
         softly.assertAll();
+    }
+
+
+    @Test
+    void givenInvalidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldNotCallService() {
+        String message = getSqsMessagePayload();
+        when(gson.fromJson(message, ProsecutionConcluded.class)).thenThrow(new ValidationException());
+        prosecutionConcludedListener.receive(message, new MessageHeaders(new HashMap<>()));
+        verify(prosecutionConcludedService, times(0)).execute(any());
+
     }
 
     private String getSqsMessagePayload() {

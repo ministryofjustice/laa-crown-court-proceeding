@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
@@ -15,6 +16,7 @@ import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCas
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.caseTypeForTrial;
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.isTrial;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ProsecutionConcludedImpl {
@@ -32,6 +34,7 @@ public class ProsecutionConcludedImpl {
         Integer maatId = concludedDTO.getProsecutionConcluded().getMaatId();
         final RepOrderDTO repOrderDTO = maatCourtDataService.getRepOrder(maatId);
         if (repOrderDTO != null) {
+            log.debug("Maat-id found and processing ProsecutionConcluded");
 
             verifyCaseTypeValidator(repOrderDTO, concludedDTO.getCalculatedOutcome());
 
@@ -53,6 +56,7 @@ public class ProsecutionConcludedImpl {
 
     private void verifyCaseTypeValidator(RepOrderDTO repOrderDTO, String calculatedOutcome) {
 
+        log.debug("Crown Court - verifying case Type validator");
         String caseType = repOrderDTO.getCatyCaseType();
 
         if (isTrial(calculatedOutcome) && !caseTypeForTrial(caseType)) {
