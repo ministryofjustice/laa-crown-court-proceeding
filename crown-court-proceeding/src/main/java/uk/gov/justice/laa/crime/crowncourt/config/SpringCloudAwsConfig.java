@@ -43,8 +43,8 @@ public class SpringCloudAwsConfig {
 //                .build();
 //    }
 
-    @Bean
-    public ProsecutionConcludedListener listener() {
-        return new ProsecutionConcludedListener();
-    }
+//    @Bean
+//    public ProsecutionConcludedListener listener() {
+//        return new ProsecutionConcludedListener();
+//    }
 }
