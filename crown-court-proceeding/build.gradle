@@ -50,11 +50,7 @@ dependencies {
     implementation "io.sentry:sentry-logback"
     implementation "io.sentry:sentry-spring-boot-starter"
 
-    implementation "org.springframework.cloud:spring-cloud-starter-aws:$versions.springFrameworkCloudVersion"
-    implementation "org.springframework.cloud:spring-cloud-starter-aws-messaging:$versions.springFrameworkCloudVersion"
-    implementation "org.springframework.cloud:spring-cloud-aws-autoconfigure:$versions.springFrameworkCloudVersion"
-    implementation group: 'org.springframework', name: 'spring-messaging', version: '5.3.25'
-
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs:3.0.0'
 
     implementation "org.springframework:spring-jms"
     implementation "org.springframework.boot:spring-boot-starter-web"

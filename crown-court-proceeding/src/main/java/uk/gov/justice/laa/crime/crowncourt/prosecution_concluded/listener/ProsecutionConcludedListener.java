@@ -2,11 +2,10 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener;
 
 import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
+import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
-import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -30,8 +29,7 @@ public class ProsecutionConcludedListener {
 
     private final QueueMessageLogService queueMessageLogService;
 
-    @SqsListener(value = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}",
-            deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+    @SqsListener(value = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
     public void receive(@Payload final String message,
                         final @Headers MessageHeaders headers) {
         try {
