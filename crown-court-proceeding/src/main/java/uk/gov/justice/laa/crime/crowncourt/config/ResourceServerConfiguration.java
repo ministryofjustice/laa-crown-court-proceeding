@@ -11,6 +11,8 @@ import org.springframework.security.oauth2.server.resource.web.access.BearerToke
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @Order(1)
 @EnableWebSecurity
@@ -32,18 +34,18 @@ public class ResourceServerConfiguration {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .csrf().disable()
+        http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/oauth2/**").permitAll()
                         .requestMatchers("/open-api/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/**").hasAuthority(SCOPE_CCP_STANDARD)
                         .anyRequest().authenticated())
-                .oauth2ResourceServer()
-                .accessDeniedHandler(bearerTokenAccessDeniedHandler())
-                .authenticationEntryPoint(bearerTokenAuthenticationEntryPoint()).jwt();
+                .oauth2ResourceServer((oauth2) -> oauth2
+                        .accessDeniedHandler(bearerTokenAccessDeniedHandler())
+                        .authenticationEntryPoint(bearerTokenAuthenticationEntryPoint())
+                        .jwt(withDefaults()));
         return http.build();
     }
 }
