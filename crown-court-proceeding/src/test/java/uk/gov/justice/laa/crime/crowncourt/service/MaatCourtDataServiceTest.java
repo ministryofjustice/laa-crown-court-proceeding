@@ -153,80 +153,80 @@ class MaatCourtDataServiceTest {
 
     @Test
     void givenAInvalidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenNullIsReturned() {
-        when(maatAPIClient.get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString())).thenReturn(null);
+        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString())).thenReturn(null);
         int offenceCount = maatCourtDataService.getOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatAPIClient).get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString());
+        verify(maatAPIClient).get(any(), anyString(), anyMap(), anyInt(), anyString());
         assertThat(offenceCount).isZero();
     }
 
     @Test
     void givenAInvalidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenEmptyIsReturned() {
-        when(maatAPIClient.get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString())).thenReturn(List.of());
+        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString())).thenReturn(List.of());
         int offenceCount = maatCourtDataService.getOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatAPIClient).get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString());
+        verify(maatAPIClient).get(any(), anyString(), anyMap(), anyInt(), anyString());
         assertThat(offenceCount).isZero();
     }
 
     @Test
     void givenAValidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenResponseIsReturned() {
-        when(maatAPIClient.get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString())).thenReturn(List.of(4));
+        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString())).thenReturn(List.of(4));
         int offenceCount = maatCourtDataService.getOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatAPIClient).get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString());
+        verify(maatAPIClient).get(any(), anyString(), anyMap(), anyInt(), anyString());
         assertThat(offenceCount).isEqualTo(4);
     }
 
     @Test
     void givenAInvalidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenNullIsReturned() {
-        when(maatAPIClient.get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString())).thenReturn(null);
+        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString())).thenReturn(null);
         int offenceCount = maatCourtDataService.getWQOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatAPIClient).get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString());
+        verify(maatAPIClient).get(any(), anyString(), anyMap(), anyInt(), anyString());
         assertThat(offenceCount).isZero();
     }
 
     @Test
     void givenAInvalidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenEmptyIsReturned() {
-        when(maatAPIClient.get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString())).thenReturn(List.of());
+        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString())).thenReturn(List.of());
         int offenceCount = maatCourtDataService.getWQOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatAPIClient).get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString());
+        verify(maatAPIClient).get(any(), anyString(), anyMap(), anyInt(), anyString());
         assertThat(offenceCount).isZero();
     }
 
     @Test
     void givenAValidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenResponseIsReturned() {
-        when(maatAPIClient.get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString())).thenReturn(List.of(5));
+        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString())).thenReturn(List.of(5));
         int offenceCount = maatCourtDataService.getWQOffenceNewOffenceCount(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatAPIClient).get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString());
+        verify(maatAPIClient).get(any(), anyString(), anyMap(), anyInt(), anyString());
         assertThat(offenceCount).isEqualTo(5);
     }
 
     @Test
     void givenAValidParameter_whenFindResultsByWQTypeSubTypeIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.findResultsByWQTypeSubType(1244, 25243);
-        verify(maatAPIClient).get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyInt());
+        verify(maatAPIClient).get(any(), anyString(), anyMap(), anyInt(), anyInt());
     }
 
     @Test
     void givenAValidParameter_whenGetResultCodeByCaseIdAndAsnSeqIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.getResultCodeByCaseIdAndAsnSeq(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatAPIClient).get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString());
+        verify(maatAPIClient).get(any(), anyString(), anyMap(), anyInt(), anyString());
     }
 
     @Test
     void givenAInvalidParameter_whenGetWqResultCodeByCaseIdAndAsnSeqIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.getWqResultCodeByCaseIdAndAsnSeq(TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
-        verify(maatAPIClient).get(any(ParameterizedTypeReference.class), anyString(), anyMap(), anyInt(), anyString());
+        verify(maatAPIClient).get(any(), anyString(), anyMap(), anyInt(), anyString());
     }
 
     @Test
     void givenAValidParameter_whenFetchResultCodesForCCImprisonmentIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.fetchResultCodesForCCImprisonment();
-        verify(maatAPIClient).get(any(ParameterizedTypeReference.class), anyString(), anyMap());
+        verify(maatAPIClient).get(any(), anyString(), anyMap());
     }
 
     @Test
     void givenAValidParameter_whenFindByCjsResultCodeInIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.findByCjsResultCodeIn();
-        verify(maatAPIClient).get(any(ParameterizedTypeReference.class), anyString(), anyMap());
+        verify(maatAPIClient).get(any(), anyString(), anyMap());
     }
 
     @Test

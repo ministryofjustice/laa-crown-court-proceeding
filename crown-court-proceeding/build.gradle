@@ -22,7 +22,8 @@ def versions = [
         pitest                             : "1.4.10",
         amazonSQSVersion                   : "2.1.1",
         xRayVersion                        : "2.11.2",
-        springFrameworkCloudVersion        : "2.2.6.RELEASE",
+        springFrameworkCloudVersion        : "3.0.1",
+        crimeCommonsVersion                : "2.2.0"
 ]
 
 java {
@@ -50,7 +51,7 @@ dependencies {
     implementation "io.sentry:sentry-logback"
     implementation "io.sentry:sentry-spring-boot-starter"
 
-    implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs:3.0.1'
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springFrameworkCloudVersion"
 
     implementation "org.springframework:spring-jms"
     implementation "org.springframework.boot:spring-boot-starter-web"
@@ -78,7 +79,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:2.2.0"
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion"
     
     testImplementation "com.h2database:h2"
     testImplementation 'org.mockito:mockito-inline:5.2.0'
