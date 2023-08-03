@@ -23,7 +23,8 @@ def versions = [
         amazonSQSVersion                   : "2.1.1",
         xRayVersion                        : "2.11.2",
         springFrameworkCloudVersion        : "3.0.1",
-        crimeCommonsVersion                : "2.2.0"
+        crimeCommonsVersion                : "2.2.0",
+        mockitoInlineVersion               : "5.2.0",
 ]
 
 java {
@@ -82,7 +83,7 @@ dependencies {
     implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion"
     
     testImplementation "com.h2database:h2"
-    testImplementation 'org.mockito:mockito-inline:5.2.0'
+    testImplementation "org.mockito:mockito-inline:$versions.mockitoInlineVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.pitest:pitest:$versions.pitest"
