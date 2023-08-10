@@ -17,3 +17,5 @@ databaseChangeLog:
       file: db/changelog/changeset/08-spring-security-oauth2-table-update.sql
   - include:
       file: db/changelog/changeset/09-drop-spring-security-oauth2-tables.sql
+  - include:
+      file: db/changelog/changeset/10-recreate-prosecution-concluded-table.sql
