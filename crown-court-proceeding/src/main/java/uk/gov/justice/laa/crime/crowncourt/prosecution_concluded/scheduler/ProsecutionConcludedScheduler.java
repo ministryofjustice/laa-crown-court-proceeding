@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "feature.prosecution-concluded-listener.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "feature.prosecution-concluded-schedule.enabled", havingValue = "true")
 public class ProsecutionConcludedScheduler {
 
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;

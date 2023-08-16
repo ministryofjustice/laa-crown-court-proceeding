@@ -35,15 +35,19 @@ env:
   - name: EVIDENCE_API_OAUTH_CLIENT_SECRET
     value: {{ .Values.evidenceApi.clientSecret }}
   - name: CLOUD_PLATFORM_QUEUE_REGION
-    value: {{ .Values.cloudplatform.aws.sqs.region }}
+    value: {{ .Values.cloud-platform.aws.sqs.region }}
   - name: CLOUD_PLATFORM_QUEUE_ACCESS_KEY
-    value: {{ .Values.cloudplatform.aws.sqs.accesskey }}
+    value: {{ .Values.cloud-platform.aws.sqs.accessKey }}
   - name: CLOUD_PLATFORM_QUEUE_SECRET_KEY
-    value: {{ .Values.cloudplatform.aws.sqs.secretkey }}
+    value: {{ .Values.cloud-platform.aws.sqs.secretKey }}
   - name: HEARING_RESULTED_QUEUE
-    value: {{ .Values.cloudplatform.aws.sqs.queue.hearingResulted }}
+    value: {{ .Values.cloud-platform.aws.sqs.queue.hearingResulted }}
   - name: PROSECUTION_CONCLUDED_QUEUE
-    value: {{ .Values.cloudplatform.aws.sqs.queue.prosecutionConcluded }}
+    value: {{ .Values.cloud-platform.aws.sqs.queue.prosecutionConcluded.url }}
+  - name: PROSECUTION_CONCLUDED_LISTENER_ENABLED
+    value: {{ .Values.cloud-platform.aws.sqs.queue.prosecutionConcluded.listenerEnabled }}
+  - name: PROSECUTION_CONCLUDED_SCHEDULE_ENABLED
+      value: {{ .Values.cloud-platform.aws.sqs.queue.prosecutionConcluded.scheduleEnabled }}
   - name: JWT_ISSUER_URI
     value: {{ .Values.jwt.issuerUri }}
   - name: DATASOURCE_HOST_PORT

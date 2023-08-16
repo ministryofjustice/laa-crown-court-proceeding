@@ -134,6 +134,8 @@ cloud-platform:
 feature:
   prosecution-concluded-listener:
     enabled: false
+  prosecution-concluded-scheduler:
+    enabled: false
 
 queue:
   message:

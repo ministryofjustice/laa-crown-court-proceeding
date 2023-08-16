@@ -24,10 +24,9 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 public class ProsecutionConcludedListener {
 
     private final Gson gson;
-
+    private final QueueMessageLogService queueMessageLogService;
     private final ProsecutionConcludedService prosecutionConcludedService;
 
-    private final QueueMessageLogService queueMessageLogService;
 
     @SqsListener(value = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
     public void receive(@Payload final String message,
