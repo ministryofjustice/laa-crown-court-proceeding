@@ -160,5 +160,5 @@ queue:
       expiryInDays: 30
 
 feature:
-  postMvp:
+  prosecution-concluded-listener:
     enabled: false

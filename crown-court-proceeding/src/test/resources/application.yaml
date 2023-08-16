@@ -132,7 +132,7 @@ cloud-platform:
           messageDelayDuration: 120
 
 feature:
-  postMvp:
+  prosecution-concluded-listener:
     enabled: false
 
 queue:

@@ -20,7 +20,7 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 @RequiredArgsConstructor
 @Component
 @XRayEnabled
-@ConditionalOnProperty(value = "feature.postMvp.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "feature.prosecution-concluded-listener.enabled", havingValue = "true")
 public class ProsecutionConcludedListener {
 
     private final Gson gson;
