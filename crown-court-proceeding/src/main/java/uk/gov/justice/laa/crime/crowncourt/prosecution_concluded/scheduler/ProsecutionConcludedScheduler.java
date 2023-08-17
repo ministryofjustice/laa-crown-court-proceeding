@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "feature.prosecution-concluded-schedule.enabled", havingValue = "true")
 public class ProsecutionConcludedScheduler {
 
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;

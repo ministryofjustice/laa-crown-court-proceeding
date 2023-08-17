@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener;
 
-import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.google.gson.Gson;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +16,15 @@ import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
-@XRayEnabled
-@ConditionalOnProperty(value = "feature.postMvp.enabled", havingValue = "true")
+@RequiredArgsConstructor
+@ConditionalOnProperty(value = "feature.prosecution-concluded-listener.enabled", havingValue = "true")
 public class ProsecutionConcludedListener {
 
     private final Gson gson;
-
+    private final QueueMessageLogService queueMessageLogService;
     private final ProsecutionConcludedService prosecutionConcludedService;
 
-    private final QueueMessageLogService queueMessageLogService;
 
     @SqsListener(value = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
     public void receive(@Payload final String message,

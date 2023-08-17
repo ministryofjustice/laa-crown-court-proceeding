@@ -160,5 +160,7 @@ queue:
       expiryInDays: 30
 
 feature:
-  postMvp:
-    enabled: false
+  prosecution-concluded-listener:
+    enabled: ${PROSECUTION_CONCLUDED_LISTENER_ENABLED}
+  prosecution-concluded-schedule:
+    enabled: ${PROSECUTION_CONCLUDED_SCHEDULE_ENABLED}
