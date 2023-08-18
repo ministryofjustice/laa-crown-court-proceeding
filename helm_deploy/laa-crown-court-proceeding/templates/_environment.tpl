@@ -47,9 +47,9 @@ env:
   - name: PROSECUTION_CONCLUDED_QUEUE
     value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.url }}
   - name: PROSECUTION_CONCLUDED_LISTENER_ENABLED
-    value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.listenerEnabled }}
+    value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.listenerEnabled | quote }}
   - name: PROSECUTION_CONCLUDED_SCHEDULE_ENABLED
-    value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.scheduleEnabled }}
+    value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.scheduleEnabled | quote }}
   - name: JWT_ISSUER_URI
     value: {{ .Values.jwt.issuerUri }}
   - name: DATASOURCE_HOST_PORT
