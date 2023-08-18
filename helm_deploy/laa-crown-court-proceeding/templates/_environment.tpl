@@ -7,9 +7,11 @@ env:
   - name: AWS_REGION
     value: {{ .Values.aws_region }}
   - name: SENTRY_DSN
-    value: {{ .Values.sentry_dsn }}
+    value: {{ .Values.sentry.dsn }}
   - name: SENTRY_ENV
     value: {{ .Values.java.host_env }}
+  - name: SENTRY_SAMPLE_RATE
+    value: {{ .Values.sentry.sampleRate | quote }}
   - name: MAAT_API_BASE_URL
     value: {{ .Values.maatApi.baseUrl }}
   - name: MAAT_API_OAUTH_URL
