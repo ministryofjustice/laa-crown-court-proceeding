@@ -91,9 +91,9 @@ configurations {
     }
 }
 
-tasks.named("test").configure {
-    it.useJUnitPlatform()
-    it.dependsOn "cleanTest"
+test {
+    useJUnitPlatform()
+    dependsOn "cleanTest"
     finalizedBy jacocoTestReport
 }
 
