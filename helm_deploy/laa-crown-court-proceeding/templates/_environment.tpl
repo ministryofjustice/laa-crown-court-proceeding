@@ -49,7 +49,7 @@ env:
   - name: PROSECUTION_CONCLUDED_LISTENER_ENABLED
     value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.listenerEnabled }}
   - name: PROSECUTION_CONCLUDED_SCHEDULE_ENABLED
-      value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.scheduleEnabled }}
+    value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.scheduleEnabled }}
   - name: JWT_ISSUER_URI
     value: {{ .Values.jwt.issuerUri }}
   - name: DATASOURCE_HOST_PORT
