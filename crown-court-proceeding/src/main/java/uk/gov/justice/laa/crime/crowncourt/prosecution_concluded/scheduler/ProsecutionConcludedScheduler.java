@@ -48,7 +48,7 @@ public class ProsecutionConcludedScheduler {
                 .values()
                 .stream()
                 .map(this::convertToObject)
-                .filter(Objects::isNull)
+                .filter(Objects::nonNull)
                 .forEach(this::processCaseConclusion);
 
         log.info("Case conclusions are processed");
