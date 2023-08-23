@@ -51,7 +51,6 @@ public class MaatCourtDataService {
         return response;
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(Integer repId, String laaTransactionId) {
         List<RepOrderCCOutcomeDTO> response = maatAPIClient.get(
                 new ParameterizedTypeReference<List<RepOrderCCOutcomeDTO>>() {},
@@ -63,7 +62,6 @@ public class MaatCourtDataService {
         return response;
     }
 
-    @SuppressWarnings({"unchecked"})
     public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
 
         WQHearingDTO wqHearingDTO = null;
@@ -80,7 +78,6 @@ public class MaatCourtDataService {
         return wqHearingDTO;
     }
 
-    @SuppressWarnings({"unchecked"})
     public int findWQLinkRegisterByMaatId(int maatId) {
         int caseId = 0;
         List<WQLinkRegisterDTO> wqLinkRegisterList = maatAPIClient.get(
@@ -96,7 +93,6 @@ public class MaatCourtDataService {
         return caseId;
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<OffenceDTO> findOffenceByCaseId(int caseId) {
         List<OffenceDTO> response = maatAPIClient.get(
                 new ParameterizedTypeReference<List<OffenceDTO>>() {},
@@ -108,7 +104,6 @@ public class MaatCourtDataService {
         return response;
     }
 
-    @SuppressWarnings({"unchecked"})
     public int getOffenceNewOffenceCount(int caseId, String offenceId) {
         int count = 0;
         List<Integer> offenceCount = maatAPIClient.get(
@@ -125,7 +120,6 @@ public class MaatCourtDataService {
         return count;
     }
 
-    @SuppressWarnings({"unchecked"})
     public int getWQOffenceNewOffenceCount(int caseId, String offenceId) {
         int count = 0;
         List<Integer> offenceCount = maatAPIClient.get(
@@ -142,7 +136,6 @@ public class MaatCourtDataService {
         return count;
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<Integer> findResultsByWQTypeSubType(int wqType, int subTypeCode) {
         List<Integer> response = maatAPIClient.get(
                 new ParameterizedTypeReference<List<Integer>>() {},
@@ -155,7 +148,6 @@ public class MaatCourtDataService {
         return response;
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<Integer> getResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
         List<Integer> response = maatAPIClient.get(
                 new ParameterizedTypeReference<List<Integer>>() {},
@@ -168,7 +160,6 @@ public class MaatCourtDataService {
         return response;
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<Integer> getWqResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
         List<Integer> response = maatAPIClient.get(
                 new ParameterizedTypeReference<List<Integer>>() {},
@@ -181,7 +172,6 @@ public class MaatCourtDataService {
         return response;
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<Integer> fetchResultCodesForCCImprisonment() {
         List<Integer> response = maatAPIClient.get(
                 new ParameterizedTypeReference<List<Integer>>() {},
@@ -192,7 +182,6 @@ public class MaatCourtDataService {
         return response;
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<Integer> findByCjsResultCodeIn() {
         List<Integer> response = maatAPIClient.get(
                 new ParameterizedTypeReference<List<Integer>>() {},
