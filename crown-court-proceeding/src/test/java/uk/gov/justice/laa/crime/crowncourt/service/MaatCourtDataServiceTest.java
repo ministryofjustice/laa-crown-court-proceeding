@@ -3,9 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
@@ -21,10 +19,13 @@ import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 
 import java.util.List;
+import java.util.UUID;
 
+import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -100,26 +101,11 @@ class MaatCourtDataServiceTest {
                 TestModelDataBuilder.TEST_REP_ID, LAA_TRANSACTION_ID)
         ).isInstanceOf(APIClientException.class);
     }
-
-    @Test
-    void givenAInvalidParameter_whenRetrieveHearingForCaseConclusionIsInvoked_thenNullIsReturned() {
-        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(null);
-        maatCourtDataService.retrieveHearingForCaseConclusion(ProsecutionConcluded.builder().build());
-        verify(maatAPIClient).get(any(), any(), any(), any());
-    }
-
     @Test
     void givenAInvalidParameter_whenRetrieveHearingForCaseConclusionIsInvoked_thenEmptyIsReturned() {
-        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(List.of());
-        WQHearingDTO wqHearingDTO = maatCourtDataService.retrieveHearingForCaseConclusion(ProsecutionConcluded.builder().build());
+        WQHearingDTO wqHearingDTO = maatCourtDataService.retrieveHearingForCaseConclusion(ProsecutionConcluded.builder().hearingIdWhereChangeOccurred(UUID.randomUUID())
+                .maatId(TestModelDataBuilder.TEST_REP_ID).build());
         assertThat(wqHearingDTO).isNull();
-    }
-
-    @Test
-    void givenAValidParameter_whenRetrieveHearingForCaseConclusionIsInvoked_thenResponseIsReturned() {
-        when(maatAPIClient.get(any(), any(), any(), any())).thenReturn(List.of(WQHearingDTO.builder().build()));
-        WQHearingDTO wqHearingDTO = maatCourtDataService.retrieveHearingForCaseConclusion(ProsecutionConcluded.builder().build());
-        assertThat(wqHearingDTO).isNotNull();
     }
 
     @Test

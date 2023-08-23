@@ -71,7 +71,8 @@ public class MaatCourtDataService {
                 new ParameterizedTypeReference<List<WQHearingDTO>>() {},
                 configuration.getMaatApi().getWqHearingEndpoints().getFindUrl(),
                 emptyMap(),
-                prosecutionConcluded
+                prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(),
+                prosecutionConcluded.getMaatId()
         );
         if (wqHearingList != null && !wqHearingList.isEmpty()) {
             wqHearingDTO = wqHearingList.get(0);

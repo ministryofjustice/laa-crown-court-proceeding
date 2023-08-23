@@ -37,11 +37,12 @@ class ProsecutionConcludedSchedulerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void givenHearingISFound_whenSchedulerIsCalledThenCCtProcessIsTriggered() {
+    void givenHearingISFound_whenSchedulerIsCalledThenCCtProcessIsTriggered() throws Exception{
         //given
         when(prosecutionConcludedRepository.getConcludedCases()).thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).
                 thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.CROWN.name()).build());
+        when(objectMapper.readValue(TestModelDataBuilder.getProsecutionConcludedEntity().getCaseData(), ProsecutionConcluded.class)).thenReturn(ProsecutionConcluded.builder().build());
 
         //when
         prosecutionConcludedScheduler.process();
@@ -89,10 +90,12 @@ class ProsecutionConcludedSchedulerTest {
     @Test
     void givenAInvalidCaseData_whenProcessIsInvoked_thenExecuteOutcomeIsFailed() throws Exception {
         //given
-        when(objectMapper.readValue(TestModelDataBuilder.getCaseData().getBytes(), ProsecutionConcluded.class)).thenThrow(new IOException());
+        when(objectMapper.readValue(TestModelDataBuilder.getCaseData().getBytes(), ProsecutionConcluded.class)).thenReturn(null);
         when(prosecutionConcludedRepository.getConcludedCases()).thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
         when(maatCourtDataService.retrieveHearingForCaseConclusion(any())).
                 thenReturn(null);
+        when(objectMapper.readValue(TestModelDataBuilder.getProsecutionConcludedEntity().getCaseData(), ProsecutionConcluded.class)).thenReturn(ProsecutionConcluded.builder().build());
+
 
         //when
         prosecutionConcludedScheduler.process();
