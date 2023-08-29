@@ -24,16 +24,17 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ProsecutionConcludedSchedulerTest {
 
-    @InjectMocks
-    private ProsecutionConcludedScheduler prosecutionConcludedScheduler;
     @Mock
-    private ProsecutionConcludedRepository prosecutionConcludedRepository;
-    @Mock
-    private ProsecutionConcludedService prosecutionConcludedService;
+    private ObjectMapper objectMapper;
     @Mock
     private CourtDataAPIService courtDataAPIService;
     @Mock
-    private ObjectMapper objectMapper;
+    private ProsecutionConcludedService prosecutionConcludedService;
+    @Mock
+    private ProsecutionConcludedRepository prosecutionConcludedRepository;
+
+    @InjectMocks
+    private ProsecutionConcludedScheduler prosecutionConcludedScheduler;
 
     @Test
     void givenHearingISFound_whenSchedulerIsCalledThenCCtProcessIsTriggered() throws Exception {
