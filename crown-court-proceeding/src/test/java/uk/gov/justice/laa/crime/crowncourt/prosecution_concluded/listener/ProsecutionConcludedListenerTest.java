@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded;
+package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener;
 
 import com.google.gson.Gson;
 import org.assertj.core.api.SoftAssertions;

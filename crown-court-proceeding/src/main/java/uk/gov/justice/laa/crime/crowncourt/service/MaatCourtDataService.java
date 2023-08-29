@@ -9,15 +9,13 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
-import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
-import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Collections.emptyMap;
 
 @Slf4j
 @Service
@@ -31,7 +29,8 @@ public class MaatCourtDataService {
 
     public IOJAppealDTO getCurrentPassedIOJAppealFromRepId(Integer repId, String laaTransactionId) {
         IOJAppealDTO response = maatAPIClient.get(
-                new ParameterizedTypeReference<IOJAppealDTO>() {},
+                new ParameterizedTypeReference<IOJAppealDTO>() {
+                },
                 configuration.getMaatApi().getIojAppealEndpoints().getFindUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
                 repId
@@ -43,7 +42,8 @@ public class MaatCourtDataService {
     public RepOrderDTO updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO, String laaTransactionId) {
         RepOrderDTO response = maatAPIClient.put(
                 updateRepOrderRequestDTO,
-                new ParameterizedTypeReference<RepOrderDTO>() {},
+                new ParameterizedTypeReference<RepOrderDTO>() {
+                },
                 configuration.getMaatApi().getRepOrderEndpoints().getUpdateUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId)
         );
@@ -53,7 +53,8 @@ public class MaatCourtDataService {
 
     public List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(Integer repId, String laaTransactionId) {
         List<RepOrderCCOutcomeDTO> response = maatAPIClient.get(
-                new ParameterizedTypeReference<List<RepOrderCCOutcomeDTO>>() {},
+                new ParameterizedTypeReference<List<RepOrderCCOutcomeDTO>>() {
+                },
                 configuration.getMaatApi().getRepOrderEndpoints().getFindOutcomeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId),
                 repId
@@ -62,184 +63,11 @@ public class MaatCourtDataService {
         return response;
     }
 
-    public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
-
-        WQHearingDTO wqHearingDTO = null;
-        List<WQHearingDTO> wqHearingList = maatAPIClient.get(
-                new ParameterizedTypeReference<List<WQHearingDTO>>() {},
-                configuration.getMaatApi().getWqHearingEndpoints().getFindUrl(),
-                emptyMap(),
-                prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(),
-                prosecutionConcluded.getMaatId()
-        );
-        if (wqHearingList != null && !wqHearingList.isEmpty()) {
-            wqHearingDTO = wqHearingList.get(0);
-        }
-        return wqHearingDTO;
-    }
-
-    public int findWQLinkRegisterByMaatId(int maatId) {
-        int caseId = 0;
-        List<WQLinkRegisterDTO> wqLinkRegisterList = maatAPIClient.get(
-                new ParameterizedTypeReference<List<WQLinkRegisterDTO>>() {},
-                configuration.getMaatApi().getWqLinkRegisterEndpoints().getFindUrl(),
-                emptyMap(),
-                maatId
-        );
-        log.info(RESPONSE_STRING, wqLinkRegisterList);
-        if (wqLinkRegisterList != null && !wqLinkRegisterList.isEmpty()) {
-            caseId = wqLinkRegisterList.get(0).getCaseId();
-        }
-        return caseId;
-    }
-
-    public List<OffenceDTO> findOffenceByCaseId(int caseId) {
-        List<OffenceDTO> response = maatAPIClient.get(
-                new ParameterizedTypeReference<List<OffenceDTO>>() {},
-                configuration.getMaatApi().getWqLinkRegisterEndpoints().getFindUrl(),
-                emptyMap(),
-                caseId
-        );
-        log.info(RESPONSE_STRING, response);
-        return response;
-    }
-
-    public int getOffenceNewOffenceCount(int caseId, String offenceId) {
-        int count = 0;
-        List<Integer> offenceCount = maatAPIClient.get(
-                new ParameterizedTypeReference<List<Integer>>() {},
-                configuration.getMaatApi().getOffenceEndpoints().getOffenceCountUrl(),
-                emptyMap(),
-                caseId,
-                offenceId
-        );
-        log.info(RESPONSE_STRING, offenceCount);
-        if (offenceCount != null && !offenceCount.isEmpty()) {
-            count = offenceCount.get(0);
-        }
-        return count;
-    }
-
-    public int getWQOffenceNewOffenceCount(int caseId, String offenceId) {
-        int count = 0;
-        List<Integer> offenceCount = maatAPIClient.get(
-                new ParameterizedTypeReference<List<Integer>>() {},
-                configuration.getMaatApi().getWqOffenceEndpoints().getWqOffenceCountUrl(),
-                emptyMap(),
-                caseId,
-                offenceId
-        );
-        log.info(RESPONSE_STRING, offenceCount);
-        if (offenceCount != null && !offenceCount.isEmpty()) {
-            count = offenceCount.get(0);
-        }
-        return count;
-    }
-
-    public List<Integer> findResultsByWQTypeSubType(int wqType, int subTypeCode) {
-        List<Integer> response = maatAPIClient.get(
-                new ParameterizedTypeReference<List<Integer>>() {},
-                configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForWQTypeSubTypeUrl(),
-                emptyMap(),
-                wqType,
-                subTypeCode
-        );
-        log.info(RESPONSE_STRING, response);
-        return response;
-    }
-
-    public List<Integer> getResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
-        List<Integer> response = maatAPIClient.get(
-                new ParameterizedTypeReference<List<Integer>>() {},
-                configuration.getMaatApi().getResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
-                emptyMap(),
-                caseId,
-                offenceId
-        );
-        log.info(RESPONSE_STRING, response);
-        return response;
-    }
-
-    public List<Integer> getWqResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
-        List<Integer> response = maatAPIClient.get(
-                new ParameterizedTypeReference<List<Integer>>() {},
-                configuration.getMaatApi().getWqResultEndpoints().getResultCodeByCaseIdAndAsnSeqUrl(),
-                emptyMap(),
-                caseId,
-                offenceId
-        );
-        log.info(RESPONSE_STRING, response);
-        return response;
-    }
-
-    public List<Integer> fetchResultCodesForCCImprisonment() {
-        List<Integer> response = maatAPIClient.get(
-                new ParameterizedTypeReference<List<Integer>>() {},
-                configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForCCImprisonmentUrl(),
-                emptyMap()
-        );
-        log.info(RESPONSE_STRING, response);
-        return response;
-    }
-
-    public List<Integer> findByCjsResultCodeIn() {
-        List<Integer> response = maatAPIClient.get(
-                new ParameterizedTypeReference<List<Integer>>() {},
-                configuration.getMaatApi().getXlatResultEndpoints().getResultCodesForCCBenchWarrantUrl(),
-                emptyMap()
-        );
-        log.info(RESPONSE_STRING, response);
-        return response;
-    }
-
-    public RepOrderDTO getRepOrder(Integer repId) {
-        RepOrderDTO response = maatAPIClient.get(
-                new ParameterizedTypeReference<RepOrderDTO>() {},
-                configuration.getMaatApi().getRepOrderEndpoints().getFindUrl(),
-                repId
-        );
-        log.info(RESPONSE_STRING, response);
-        return response;
-    }
-
-    public void updateCrownCourtOutcome(UpdateCCOutcome updateCCOutcome) {
-        maatAPIClient.get(
-                new ParameterizedTypeReference<RepOrderDTO>() {},
-                configuration.getMaatApi().getCrownCourtStoredProcedureEndpoints().getUpdateCrownCourtOutcomeUrl(),
-                updateCCOutcome
-        );
-    }
-
-    public void invokeUpdateAppealSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
-        maatAPIClient.get(
-                new ParameterizedTypeReference<RepOrderDTO>() {},
-                configuration.getMaatApi().getCrownCourtProcessingEndpoints().getUpdateAppealCcSentenceUrl(),
-                updateSentenceOrder
-        );
-    }
-
-    public void invokeUpdateSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
-        maatAPIClient.get(
-                new ParameterizedTypeReference<RepOrderDTO>() {},
-                configuration.getMaatApi().getCrownCourtProcessingEndpoints().getUpdateCcSentenceUrl(),
-                updateSentenceOrder
-        );
-    }
-
-    public Boolean isMaatRecordLocked(Integer maatId) {
-        Boolean response = maatAPIClient.get(
-                new ParameterizedTypeReference<Boolean>() {},
-                configuration.getMaatApi().getReservationEndpoints().getIsMaatRecordLockedUrl(),
-                maatId
-        );
-        log.info(RESPONSE_STRING, response);
-        return response;
-    }
-
     public RepOrderCCOutcomeDTO createOutcome(RepOrderCCOutcomeDTO outcomeDTO, String laaTransactionId) {
         RepOrderCCOutcomeDTO response = maatAPIClient.post(
                 outcomeDTO,
-                new ParameterizedTypeReference<RepOrderCCOutcomeDTO>() {},
+                new ParameterizedTypeReference<RepOrderCCOutcomeDTO>() {
+                },
                 configuration.getMaatApi().getRepOrderEndpoints().getCreateOutcomeUrl(),
                 Map.of(Constants.LAA_TRANSACTION_ID, laaTransactionId));
         log.info(RESPONSE_STRING, response);

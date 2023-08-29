@@ -11,9 +11,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
-import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 
@@ -31,12 +31,12 @@ import java.util.stream.Collectors;
 @ConditionalOnProperty(value = "feature.prosecution-concluded-schedule.enabled", havingValue = "true")
 public class ProsecutionConcludedScheduler {
 
-    private final ProsecutionConcludedRepository prosecutionConcludedRepository;
-    private final ProsecutionConcludedService prosecutionConcludedService;
-    private final MaatCourtDataService maatCourtDataService;
     private final ObjectMapper objectMapper;
+    private final CourtDataAPIService courtDataAPIService;
+    private final ProsecutionConcludedService prosecutionConcludedService;
+    private final ProsecutionConcludedRepository prosecutionConcludedRepository;
 
-    @Scheduled(cron = "${queue.message.log.cron.expression}")
+    @Scheduled(fixedRate = 5000)
     public void process() {
 
         log.info("Prosecution Conclusion Scheduling is started");
@@ -57,7 +57,7 @@ public class ProsecutionConcludedScheduler {
 
     public void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
         try {
-            WQHearingDTO wqHearingDTO = maatCourtDataService.retrieveHearingForCaseConclusion(prosecutionConcluded);
+            WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
             if (wqHearingDTO != null) {
                 if (isCCConclusion(wqHearingDTO)) {
                     prosecutionConcludedService.executeCCOutCome(prosecutionConcluded, wqHearingDTO);
@@ -68,6 +68,7 @@ public class ProsecutionConcludedScheduler {
         } catch (Exception exception) {
             log.error("Prosecution Conclusion failed for MAAT ID :" + prosecutionConcluded.getMaatId());
             updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.ERROR);
+            throw exception;
         }
     }
 

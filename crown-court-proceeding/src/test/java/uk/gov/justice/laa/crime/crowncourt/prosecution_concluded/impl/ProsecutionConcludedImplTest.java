@@ -14,7 +14,7 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDT
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.ResultCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
-import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome;
 
@@ -40,7 +40,7 @@ class ProsecutionConcludedImplTest {
     private ResultCodeHelper resultCodeHelper;
 
     @Mock
-    private MaatCourtDataService maatCourtDataService;
+    private CourtDataAPIService courtDataAPIService;
 
     @Test
     void testWhenCaseConcludedAndImpAndWarrantIsY_thenProcessDataAsExpected() {
@@ -55,7 +55,7 @@ class ProsecutionConcludedImplTest {
                 .appealTypeCode("ACV")
                 .id(123)
                 .build();
-        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderDTO);
+        when(courtDataAPIService.getRepOrder(anyInt())).thenReturn(repOrderDTO);
 
         String courtCode = "1212";
         when(crownCourtCodeHelper.getCode(anyString())).thenReturn(courtCode);
@@ -66,7 +66,7 @@ class ProsecutionConcludedImplTest {
         prosecutionConcludedImpl.execute(concludedDTO);
 
         //then
-        verify(maatCourtDataService, times(1))
+        verify(courtDataAPIService, times(1))
                 .updateCrownCourtOutcome(getUpdateCCOutcome(concludedDTO.getProsecutionConcluded().getMaatId(), "Y", "Y", courtCode));
 
         verify(processSentencingHelper)
@@ -92,11 +92,11 @@ class ProsecutionConcludedImplTest {
 
         ConcludedDTO concludedDTO = getConcludedDTO();
 
-        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(null);
+        when(courtDataAPIService.getRepOrder(anyInt())).thenReturn(null);
 
         prosecutionConcludedImpl.execute(concludedDTO);
 
-        verify(maatCourtDataService, never())
+        verify(courtDataAPIService, never())
                 .updateCrownCourtOutcome(getUpdateCCOutcome(concludedDTO.getProsecutionConcluded().getMaatId(), "Y", "Y", ""));
 
         verify(processSentencingHelper, never())
@@ -117,7 +117,7 @@ class ProsecutionConcludedImplTest {
                 .appealTypeCode("ACV")
                 .id(123)
                 .build();
-        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderDTO);
+        when(courtDataAPIService.getRepOrder(anyInt())).thenReturn(repOrderDTO);
 
         String courtCode = "1212";
         when(crownCourtCodeHelper.getCode(anyString())).thenReturn(courtCode);
@@ -128,7 +128,7 @@ class ProsecutionConcludedImplTest {
         prosecutionConcludedImpl.execute(concludedDTO);
 
         //then
-        verify(maatCourtDataService)
+        verify(courtDataAPIService)
                 .updateCrownCourtOutcome(getUpdateCCOutcome(concludedDTO.getProsecutionConcluded().getMaatId(),
                         "N",
                         "N",
@@ -150,7 +150,7 @@ class ProsecutionConcludedImplTest {
                 .catyCaseType(CrownCourtCaseType.INDICTABLE.name())
                 .appealTypeCode("ACV")
                 .id(123).build();
-        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderEntity);
+        when(courtDataAPIService.getRepOrder(anyInt())).thenReturn(repOrderEntity);
 
         String courtCode = "1212";
         when(crownCourtCodeHelper.getCode(anyString())).thenReturn(courtCode);
@@ -158,7 +158,7 @@ class ProsecutionConcludedImplTest {
         prosecutionConcludedImpl.execute(concludedDTO);
 
         //then
-        verify(maatCourtDataService)
+        verify(courtDataAPIService)
                 .updateCrownCourtOutcome(
                         getUpdateCCOutcome(concludedDTO.getProsecutionConcluded().getMaatId(),
                                 null,
@@ -195,7 +195,7 @@ class ProsecutionConcludedImplTest {
                 .catyCaseType("CONVICTED")
                 .appealTypeCode("ACV")
                 .id(123).build();
-        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderEntity);
+        when(courtDataAPIService.getRepOrder(anyInt())).thenReturn(repOrderEntity);
 
         assertThatThrownBy(() -> prosecutionConcludedImpl.execute(concludedDTO))
                 .isInstanceOf(ValidationException.class).hasMessageContaining("Crown Court - Case type not valid for Trial");
@@ -214,7 +214,7 @@ class ProsecutionConcludedImplTest {
                 .catyCaseType("CONVICTED")
                 .appealTypeCode("ACV")
                 .id(123).build();
-        when(maatCourtDataService.getRepOrder(anyInt())).thenReturn(repOrderEntity);
+        when(courtDataAPIService.getRepOrder(anyInt())).thenReturn(repOrderEntity);
 
         assertThatThrownBy(() -> prosecutionConcludedImpl.execute(concludedDTO))
                 .isInstanceOf(ValidationException.class).hasMessageContaining("Case type not valid for Appeal");

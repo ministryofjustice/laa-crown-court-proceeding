@@ -9,7 +9,7 @@ import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.ResultCodeHelper;
-import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtAppealOutcome.isAppeal;
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.caseTypeForAppeal;
@@ -27,18 +27,18 @@ public class ProsecutionConcludedImpl {
 
     private final ResultCodeHelper resultCodeHelper;
 
-    private final MaatCourtDataService maatCourtDataService;
+    private final CourtDataAPIService courtDataAPIService;
 
     public void execute(ConcludedDTO concludedDTO) {
 
         Integer maatId = concludedDTO.getProsecutionConcluded().getMaatId();
-        final RepOrderDTO repOrderDTO = maatCourtDataService.getRepOrder(maatId);
+        final RepOrderDTO repOrderDTO = courtDataAPIService.getRepOrder(maatId);
         if (repOrderDTO != null) {
             log.debug("Maat-id found and processing ProsecutionConcluded");
 
             verifyCaseTypeValidator(repOrderDTO, concludedDTO.getCalculatedOutcome());
 
-            maatCourtDataService
+            courtDataAPIService
                     .updateCrownCourtOutcome(
                             UpdateCCOutcome.builder()
                                     .repId(maatId)

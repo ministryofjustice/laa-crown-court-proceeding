@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.OffenceDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Plea;
-import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,43 +24,43 @@ class OffenceHelperTest {
     @InjectMocks
     private OffenceHelper offenceHelper;
     @Mock
-    private MaatCourtDataService maatCourtDataService;
+    private CourtDataAPIService courtDataAPIService;
 
     @Test
     void testWhenOffenceResultIsCommittal_thenReturnTrue() {
 
-        when(maatCourtDataService.findOffenceByCaseId(anyInt())).thenReturn(getOffenceEntity());
-        when(maatCourtDataService.findWQLinkRegisterByMaatId(anyInt())).thenReturn(456);
-        when(maatCourtDataService.findResultsByWQTypeSubType(anyInt(), anyInt()))
+        when(courtDataAPIService.findOffenceByCaseId(anyInt())).thenReturn(getOffenceEntity());
+        when(courtDataAPIService.findWQLinkRegisterByMaatId(anyInt())).thenReturn(456);
+        when(courtDataAPIService.findResultsByWQTypeSubType(anyInt(), anyInt()))
                 .thenReturn(List.of(4057, 4558, 4559, 4560, 4561, 4562, 4564, 4567, 4593, 1290));
-        when(maatCourtDataService.getResultCodeByCaseIdAndAsnSeq(anyInt(), anyString()))
+        when(courtDataAPIService.getResultCodeByCaseIdAndAsnSeq(anyInt(), anyString()))
                 .thenReturn(List.of(4057, 4558));
-        when(maatCourtDataService.getWqResultCodeByCaseIdAndAsnSeq(anyInt(), anyString()))
+        when(courtDataAPIService.getWqResultCodeByCaseIdAndAsnSeq(anyInt(), anyString()))
                 .thenReturn(List.of(4057, 4558));
 
         List<OffenceSummary> offenceSummaryList = offenceHelper.getTrialOffences(getOffenceSummary(), 12121);
 
-        verify(maatCourtDataService).findOffenceByCaseId(anyInt());
-        verify(maatCourtDataService, atLeast(2)).findResultsByWQTypeSubType(anyInt(), anyInt());
+        verify(courtDataAPIService).findOffenceByCaseId(anyInt());
+        verify(courtDataAPIService, atLeast(2)).findResultsByWQTypeSubType(anyInt(), anyInt());
         assertThat(offenceSummaryList).hasSize(1);
         assertThat(offenceSummaryList.get(0).getOffenceId()).hasToString("e2540d98-995f-43f2-97e4-f712b8a5d6a6");
     }
 
     @Test
     void testWhenOffenceResultIsNotCommittal_thenReturnFalse() {
-        when(maatCourtDataService.findOffenceByCaseId(anyInt())).thenReturn(getOffenceEntity());
-        when(maatCourtDataService.findWQLinkRegisterByMaatId(anyInt())).thenReturn(456);
-        when(maatCourtDataService.findResultsByWQTypeSubType(anyInt(), anyInt()))
+        when(courtDataAPIService.findOffenceByCaseId(anyInt())).thenReturn(getOffenceEntity());
+        when(courtDataAPIService.findWQLinkRegisterByMaatId(anyInt())).thenReturn(456);
+        when(courtDataAPIService.findResultsByWQTypeSubType(anyInt(), anyInt()))
                 .thenReturn(List.of(4057, 4558, 4559, 4560, 4561, 4562, 4564, 4567, 4593, 1290));
-        when(maatCourtDataService.getResultCodeByCaseIdAndAsnSeq(anyInt(), anyString()))
+        when(courtDataAPIService.getResultCodeByCaseIdAndAsnSeq(anyInt(), anyString()))
                 .thenReturn(List.of(453, 454));
-        when(maatCourtDataService.getWqResultCodeByCaseIdAndAsnSeq(anyInt(), anyString()))
+        when(courtDataAPIService.getWqResultCodeByCaseIdAndAsnSeq(anyInt(), anyString()))
                 .thenReturn(List.of(6665, 6666));
 
         List<OffenceSummary> offenceSummaryList = offenceHelper.getTrialOffences(getOffenceSummary(), 12121);
 
-        verify(maatCourtDataService).findOffenceByCaseId(anyInt());
-        verify(maatCourtDataService, atLeast(2)).findResultsByWQTypeSubType(anyInt(), anyInt());
+        verify(courtDataAPIService).findOffenceByCaseId(anyInt());
+        verify(courtDataAPIService, atLeast(2)).findResultsByWQTypeSubType(anyInt(), anyInt());
         assertThat(offenceSummaryList).isEmpty();
     }
 
