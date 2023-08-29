@@ -68,7 +68,6 @@ public class ProsecutionConcludedScheduler {
         } catch (Exception exception) {
             log.error("Prosecution Conclusion failed for MAAT ID :" + prosecutionConcluded.getMaatId());
             updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.ERROR);
-            throw exception;
         }
     }
 
