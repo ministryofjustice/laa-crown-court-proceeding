@@ -4,6 +4,9 @@ server:
 spring:
   cloud:
     aws:
+      credentials:
+        access-key: mock-access-key
+        secret-key: mock-secret-key
       region:
         static: test-region
 

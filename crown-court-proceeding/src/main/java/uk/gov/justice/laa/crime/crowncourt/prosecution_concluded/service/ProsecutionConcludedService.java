@@ -12,7 +12,6 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.impl.Prosecutio
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
-import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 
 import java.util.List;
@@ -28,20 +27,20 @@ public class ProsecutionConcludedService {
     private final CaseConclusionDTOBuilder caseConclusionDTOBuilder;
     private final OffenceHelper offenceHelper;
     private final ProsecutionConcludedDataService prosecutionConcludedDataService;
-    private final MaatCourtDataService maatCourtDataService;
+    private final CourtDataAPIService courtDataAPIService;
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
 
         log.info("CC Outcome process is kicked off for  maat-id {}", prosecutionConcluded.getMaatId());
         prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
 
-        WQHearingDTO wqHearingDTO = maatCourtDataService.retrieveHearingForCaseConclusion(prosecutionConcluded);
+        WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
         if (prosecutionConcluded.isConcluded()
                 && wqHearingDTO != null
                 && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
 
 
-            if (Boolean.TRUE.equals(maatCourtDataService.isMaatRecordLocked(prosecutionConcluded.getMaatId()))) {
+            if (Boolean.TRUE.equals(courtDataAPIService.isMaatRecordLocked(prosecutionConcluded.getMaatId()))) {
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
             } else {
                 executeCCOutCome(prosecutionConcluded, wqHearingDTO);

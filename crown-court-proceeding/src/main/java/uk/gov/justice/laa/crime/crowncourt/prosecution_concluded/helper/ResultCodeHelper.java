@@ -3,7 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 
 import java.util.List;
 
@@ -17,12 +17,12 @@ import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTri
 @RequiredArgsConstructor
 public class ResultCodeHelper {
 
-    private final MaatCourtDataService maatCourtDataService;
+    private final CourtDataAPIService courtDataAPIService;
 
     public String isBenchWarrantIssued(final String caseLevelOutcome, List<String> hearingResultCodes) {
 
         if (isTrial(caseLevelOutcome)) {
-            return anyResultCodeMatch(maatCourtDataService.findByCjsResultCodeIn(), hearingResultCodes) ? YES : null;
+            return anyResultCodeMatch(courtDataAPIService.findByCjsResultCodeIn(), hearingResultCodes) ? YES : null;
         }
         return null;
     }
@@ -30,7 +30,7 @@ public class ResultCodeHelper {
     public String isImprisoned(final String caseLevelOutcome, List<String> hearingResultCodes) {
 
         if (isConvicted(caseLevelOutcome)) {
-            return anyResultCodeMatch(maatCourtDataService.fetchResultCodesForCCImprisonment(), hearingResultCodes) ? YES : NO;
+            return anyResultCodeMatch(courtDataAPIService.fetchResultCodesForCCImprisonment(), hearingResultCodes) ? YES : NO;
         }
         return null;
     }
