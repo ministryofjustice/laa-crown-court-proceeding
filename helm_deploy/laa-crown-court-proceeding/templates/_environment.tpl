@@ -36,12 +36,12 @@ env:
     value: {{ .Values.evidenceApi.clientId }}
   - name: EVIDENCE_API_OAUTH_CLIENT_SECRET
     value: {{ .Values.evidenceApi.clientSecret }}
-  - name: CLOUD_PLATFORM_QUEUE_REGION
-    value: {{ .Values.cloudPlatform.aws.sqs.region }}
-  - name: CLOUD_PLATFORM_QUEUE_ACCESS_KEY
-    value: {{ .Values.cloudPlatform.aws.sqs.accessKey }}
-  - name: CLOUD_PLATFORM_QUEUE_SECRET_KEY
-    value: {{ .Values.cloudPlatform.aws.sqs.secretKey }}
+{{/*  - name: CLOUD_PLATFORM_QUEUE_REGION*/}}
+{{/*    value: {{ .Values.cloudPlatform.aws.sqs.region }}*/}}
+{{/*  - name: CLOUD_PLATFORM_QUEUE_ACCESS_KEY*/}}
+{{/*    value: {{ .Values.cloudPlatform.aws.sqs.accessKey }}*/}}
+{{/*  - name: CLOUD_PLATFORM_QUEUE_SECRET_KEY*/}}
+{{/*    value: {{ .Values.cloudPlatform.aws.sqs.secretKey }}*/}}
   - name: HEARING_RESULTED_QUEUE
     value: {{ .Values.cloudPlatform.aws.sqs.queue.hearingResulted }}
   - name: PROSECUTION_CONCLUDED_QUEUE
