@@ -3,9 +3,9 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.OffenceDTO;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.WQType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
-import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +17,15 @@ import static uk.gov.justice.laa.crime.crowncourt.common.Constants.COMMITTAL_FOR
 @RequiredArgsConstructor
 @Component
 public class OffenceHelper {
-    private final MaatCourtDataService maatCourtDataService;
+    private final CourtDataAPIService courtDataAPIService;
 
     public List<OffenceSummary> getTrialOffences(List<OffenceSummary> offenceList, int maatId) {
 
-        int caseId = maatCourtDataService.findWQLinkRegisterByMaatId(maatId);
-        List<OffenceDTO> offenceDTO = maatCourtDataService.findOffenceByCaseId(caseId);
-        List<Integer> committalForTrialRefResults = maatCourtDataService.findResultsByWQTypeSubType(WQType.COMMITTAL_QUEUE.value(),
+        int caseId = courtDataAPIService.findWQLinkRegisterByMaatId(maatId);
+        List<OffenceDTO> offenceDTO = courtDataAPIService.findOffenceByCaseId(caseId);
+        List<Integer> committalForTrialRefResults = courtDataAPIService.findResultsByWQTypeSubType(WQType.COMMITTAL_QUEUE.value(),
                 COMMITTAL_FOR_TRIAL_SUB_TYPE);
-        List<Integer> committalForSentenceRefResults = maatCourtDataService.findResultsByWQTypeSubType(WQType.COMMITTAL_QUEUE.value(),
+        List<Integer> committalForSentenceRefResults = courtDataAPIService.findResultsByWQTypeSubType(WQType.COMMITTAL_QUEUE.value(),
                 COMMITTAL_FOR_SENTENCE_SUB_TYPE);
 
         List<OffenceSummary> list = new ArrayList<>();
@@ -36,14 +36,13 @@ public class OffenceHelper {
             }
         }
         return list;
-
     }
 
     private boolean isNewCCOffence(OffenceSummary offence, List<OffenceDTO> offenceDTO, List<Integer> committalForSentenceRefResults, int caseId) {
         boolean isNewCCOffence = false;
 
-        int newOffenceCount = maatCourtDataService.getOffenceNewOffenceCount(caseId, offence.getOffenceId().toString())
-                + maatCourtDataService.getWQOffenceNewOffenceCount(caseId, offence.getOffenceId().toString());
+        int newOffenceCount = courtDataAPIService.getOffenceNewOffenceCount(caseId, offence.getOffenceId().toString())
+                + courtDataAPIService.getWQOffenceNewOffenceCount(caseId, offence.getOffenceId().toString());
 
         if (newOffenceCount > 0 &&
                 !hasCommittalResults(offence, offenceDTO, committalForSentenceRefResults)) {
@@ -66,9 +65,9 @@ public class OffenceHelper {
         boolean isCommittal = false;
         if (offenceDTO != null) {
             String asnSeq = getAsnSeq(offenceDTO);
-            List<Integer> resultList = maatCourtDataService
+            List<Integer> resultList = courtDataAPIService
                     .getResultCodeByCaseIdAndAsnSeq(offenceDTO.getCaseId(), asnSeq);
-            List<Integer> wqResultList = maatCourtDataService
+            List<Integer> wqResultList = courtDataAPIService
                     .getWqResultCodeByCaseIdAndAsnSeq(offenceDTO.getCaseId(), asnSeq);
 
             isCommittal = Stream.concat(resultList.stream(), wqResultList.stream())

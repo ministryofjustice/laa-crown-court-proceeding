@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
-import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 
 import java.time.LocalDate;
 
@@ -21,13 +21,13 @@ class ProcessSentencingImplTest {
     private ProcessSentencingImpl processSentencingImpl;
 
     @Mock
-    private MaatCourtDataService maatCourtDataService;
+    private CourtDataAPIService courtDataAPIService;
 
     @Test
     void testWhenAppealTypeCC_thenProcessInvoke() {
-        doNothing().when(maatCourtDataService).invokeUpdateSentenceOrderDate(any());
+        doNothing().when(courtDataAPIService).invokeUpdateSentenceOrderDate(any());
         processSentencingImpl.processSentencingDate("2012-12-12", 121121, "CC");
-        verify(maatCourtDataService).invokeUpdateSentenceOrderDate(any());
+        verify(courtDataAPIService).invokeUpdateSentenceOrderDate(any());
     }
 
     private UpdateSentenceOrder getUpdateSentenceOrder() {
@@ -41,14 +41,14 @@ class ProcessSentencingImplTest {
 
     @Test
     void testWhenAppealTypeCC_thenProcessUpdate() {
-        doNothing().when(maatCourtDataService).invokeUpdateAppealSentenceOrderDate(any());
+        doNothing().when(courtDataAPIService).invokeUpdateAppealSentenceOrderDate(any());
         processSentencingImpl.processSentencingDate("2012-12-12", 121121, APPEAL_CC.getValue());
-        verify(maatCourtDataService).invokeUpdateAppealSentenceOrderDate(getUpdateSentenceOrder());
+        verify(courtDataAPIService).invokeUpdateAppealSentenceOrderDate(getUpdateSentenceOrder());
     }
 
     @Test
     void givenAEndDateIsEmpty_whenInvokeUpdateSentenceOrderDateIsInvoked_thenUpdateFailed() {
         processSentencingImpl.processSentencingDate(null, 121121, "CC");
-        verify(maatCourtDataService, times(0)).invokeUpdateSentenceOrderDate(any());
+        verify(courtDataAPIService, times(0)).invokeUpdateSentenceOrderDate(any());
     }
 }

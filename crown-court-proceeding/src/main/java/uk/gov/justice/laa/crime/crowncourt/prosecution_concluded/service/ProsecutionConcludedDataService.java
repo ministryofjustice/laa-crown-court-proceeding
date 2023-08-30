@@ -20,8 +20,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProsecutionConcludedDataService {
 
-    private final ProsecutionConcludedRepository prosecutionConcludedRepository;
     private final ObjectMapper objectMapper;
+    private final ProsecutionConcludedRepository prosecutionConcludedRepository;
 
     @Transactional
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
