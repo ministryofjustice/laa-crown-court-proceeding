@@ -24,14 +24,14 @@ springdoc:
     path: /open-api/swagger-ui/index.html
     operationsSorter: method
 
-  #spring:
-  #  cloud:
-  #    aws:
-  #      credentials:
-  #        access-key: ${CLOUD_PLATFORM_QUEUE_ACCESS_KEY}
-  #        secret-key: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
-  #      region:
-  #        static: ${CLOUD_PLATFORM_QUEUE_REGION}
+spring:
+#  cloud:
+#    aws:
+#      credentials:
+#        access-key: ${CLOUD_PLATFORM_QUEUE_ACCESS_KEY}
+#        secret-key: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
+#      region:
+#        static: ${CLOUD_PLATFORM_QUEUE_REGION}
 
   datasource:
     url: jdbc:postgresql://${DATASOURCE_HOST_PORT}/${DATASOURCE_DBNAME}
