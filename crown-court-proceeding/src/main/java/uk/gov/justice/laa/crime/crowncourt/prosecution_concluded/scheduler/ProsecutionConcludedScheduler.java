@@ -36,7 +36,7 @@ public class ProsecutionConcludedScheduler {
     private final ProsecutionConcludedService prosecutionConcludedService;
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(cron = "${queue.message.log.cron.expression}")
     public void process() {
 
         log.info("Prosecution Conclusion Scheduling is started");
