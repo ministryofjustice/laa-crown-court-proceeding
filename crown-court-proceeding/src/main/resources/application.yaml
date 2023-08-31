@@ -28,8 +28,7 @@ spring:
   cloud:
     aws:
       credentials:
-        access-key: ${CLOUD_PLATFORM_QUEUE_ACCESS_KEY}
-        secret-key: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
+        use-default-aws-credentials-chain: true
       region:
         static: ${CLOUD_PLATFORM_QUEUE_REGION}
 
