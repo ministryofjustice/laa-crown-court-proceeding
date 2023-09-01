@@ -119,8 +119,6 @@ cloud-platform:
   aws:
     sqs:
       region: eu-west-2
-      accesskey: access
-      secretkey: secret
       queue:
         link: link
         unlink: unlink
