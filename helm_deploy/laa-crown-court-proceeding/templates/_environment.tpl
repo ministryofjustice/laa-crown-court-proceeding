@@ -16,26 +16,14 @@ env:
     value: {{ .Values.maatApi.baseUrl }}
   - name: MAAT_API_OAUTH_URL
     value: {{ .Values.maatApi.oauthUrl }}
-  - name: MAAT_API_OAUTH_CLIENT_ID
-    value: {{ .Values.maatApi.clientId }}
-  - name: MAAT_API_OAUTH_CLIENT_SECRET
-    value: {{ .Values.maatApi.clientSecret }}
   - name: CDA_BASE_URL
     value: {{ .Values.cdaApi.baseUrl }}
   - name: CDA_OAUTH_URL
     value: {{ .Values.cdaApi.oauthUrl }}
-  - name: CDA_OAUTH_CLIENT_ID
-    value: {{ .Values.cdaApi.clientId }}
-  - name: CDA_OAUTH_CLIENT_SECRET
-    value: {{ .Values.cdaApi.clientSecret }}
   - name: EVIDENCE_API_BASE_URL
     value: {{ .Values.evidenceApi.baseUrl }}
   - name: EVIDENCE_API_OAUTH_URL
     value: {{ .Values.evidenceApi.oauthUrl }}
-  - name: EVIDENCE_API_OAUTH_CLIENT_ID
-    value: {{ .Values.evidenceApi.clientId }}
-  - name: EVIDENCE_API_OAUTH_CLIENT_SECRET
-    value: {{ .Values.evidenceApi.clientSecret }}
   - name: CLOUD_PLATFORM_QUEUE_REGION
     value: {{ .Values.cloudPlatform.aws.sqs.region }}
   - name: HEARING_RESULTED_QUEUE
@@ -68,4 +56,34 @@ env:
       secretKeyRef:
         name: rds-postgresql-instance-output
         key: database_password
+  - name: MAAT_API_OAUTH_CLIENT_ID
+    valueFrom:
+        secretKeyRef:
+            name: maat-api-oauth-client-id
+            key: MAAT_API_OAUTH_CLIENT_ID
+  - name: MAAT_API_OAUTH_CLIENT_SECRET
+    valueFrom:
+        secretKeyRef:
+            name: maat-api-oauth-client-secret
+            key: MAAT_API_OAUTH_CLIENT_SECRET
+  - name: CDA_OAUTH_CLIENT_ID
+    valueFrom:
+        secretKeyRef:
+            name: cda-oauth-client-id
+            key: CDA_OAUTH_CLIENT_ID
+  - name: CDA_OAUTH_CLIENT_SECRET
+    valueFrom:
+        secretKeyRef:
+            name: cda-oauth-client-secret
+            key: CDA_OAUTH_CLIENT_SECRET
+  - name: EVIDENCE_API_OAUTH_CLIENT_ID
+    valueFrom:
+        secretKeyRef:
+            name: evidence-oauth-client-id
+            key: EVIDENCE_API_OAUTH_CLIENT_ID
+  - name: EVIDENCE_API_OAUTH_CLIENT_SECRET
+    valueFrom:
+        secretKeyRef:
+            name: evidence-oauth-client-secret
+            key: EVIDENCE_API_OAUTH_CLIENT_SECRET
 {{- end -}}
