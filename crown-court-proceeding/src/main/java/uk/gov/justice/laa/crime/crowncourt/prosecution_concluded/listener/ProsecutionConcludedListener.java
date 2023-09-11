@@ -30,6 +30,7 @@ public class ProsecutionConcludedListener {
     public void receive(@Payload final String message,
                         final @Headers MessageHeaders headers) {
         try {
+            System.out.print("Test");
             log.debug("message-id {}", headers.get("MessageId"));
             queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
             ProsecutionConcluded prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
