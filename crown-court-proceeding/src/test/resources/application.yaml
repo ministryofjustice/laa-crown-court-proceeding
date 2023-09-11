@@ -5,10 +5,10 @@ spring:
   cloud:
     aws:
       credentials:
-        access-key: mock-access-key
-        secret-key: mock-secret-key
+        access-key: test
+        secret-key: test
       region:
-        static: test-region
+        static: us-east-1
 
   datasource:
     url: jdbc:h2:mem:crime_means_assessment;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
@@ -118,7 +118,7 @@ crown-court-proceeding:
 cloud-platform:
   aws:
     sqs:
-      region: eu-west-2
+      region: us-east-1
       queue:
         link: link
         unlink: unlink
@@ -126,7 +126,7 @@ cloud-platform:
         hearingResulted: hearing
         laaStatusJob: laaStatusJob
         createLinkCpStatusJob: createLinkCpStatusJob
-        prosecutionConcluded: prosecutionConcluded
+        prosecutionConcluded: crime-apps-dev-prosecution-concluded-queue
         meansAssessmentPostProcessing: meansAssessmentPostProcessing
         config:
           messageDelay: 900
