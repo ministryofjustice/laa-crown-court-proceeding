@@ -41,7 +41,7 @@ public class OffenceHelper {
     private boolean isNewCCOffence(OffenceSummary offence, List<OffenceDTO> offenceDTO, List<Integer> committalForSentenceRefResults, int caseId) {
         boolean isNewCCOffence = false;
 
-        int newOffenceCount = courtDataAPIService.getOffenceNewOffenceCount(caseId, offence.getOffenceId().toString())
+        long newOffenceCount = courtDataAPIService.getOffenceNewOffenceCount(caseId, offence.getOffenceId().toString())
                 + courtDataAPIService.getWQOffenceNewOffenceCount(caseId, offence.getOffenceId().toString());
 
         if (newOffenceCount > 0 &&
