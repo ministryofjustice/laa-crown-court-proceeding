@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
@@ -85,7 +86,7 @@ public class CourtDataAPIService {
     public List<OffenceDTO> findOffenceByCaseId(int caseId) {
         List<OffenceDTO> response = maatAPIClient.get(
                 new ParameterizedTypeReference<List<OffenceDTO>>() {},
-                configuration.getMaatApi().getWqLinkRegisterEndpoints().getFindUrl(),
+                configuration.getMaatApi().getOffenceEndpoints().getFindUrl(),
                 emptyMap(),
                 caseId
         );
@@ -93,36 +94,32 @@ public class CourtDataAPIService {
         return response;
     }
 
-    public int getOffenceNewOffenceCount(int caseId, String offenceId) {
-        int count = 0;
-        List<Integer> offenceCount = maatAPIClient.get(
-                new ParameterizedTypeReference<List<Integer>>() {},
+    public long getOffenceNewOffenceCount(int caseId, String offenceId) {
+        ResponseEntity<Void> response = maatAPIClient.head(
                 configuration.getMaatApi().getOffenceEndpoints().getOffenceCountUrl(),
                 emptyMap(),
                 caseId,
                 offenceId
         );
-        log.info(RESPONSE_STRING, offenceCount);
-        if (offenceCount != null && !offenceCount.isEmpty()) {
-            count = offenceCount.get(0);
+        log.info(RESPONSE_STRING, response);
+        if (response != null) {
+            return response.getHeaders().getContentLength();
         }
-        return count;
+        return 0;
     }
 
-    public int getWQOffenceNewOffenceCount(int caseId, String offenceId) {
-        int count = 0;
-        List<Integer> offenceCount = maatAPIClient.get(
-                new ParameterizedTypeReference<List<Integer>>() {},
+    public long getWQOffenceNewOffenceCount(int caseId, String offenceId) {
+        ResponseEntity<Void> response = maatAPIClient.head(
                 configuration.getMaatApi().getWqOffenceEndpoints().getWqOffenceCountUrl(),
                 emptyMap(),
                 caseId,
                 offenceId
         );
-        log.info(RESPONSE_STRING, offenceCount);
-        if (offenceCount != null && !offenceCount.isEmpty()) {
-            count = offenceCount.get(0);
+        log.info(RESPONSE_STRING, response);
+        if (response != null) {
+            return response.getHeaders().getContentLength();
         }
-        return count;
+        return 0;
     }
 
     public List<Integer> findResultsByWQTypeSubType(int wqType, int subTypeCode) {

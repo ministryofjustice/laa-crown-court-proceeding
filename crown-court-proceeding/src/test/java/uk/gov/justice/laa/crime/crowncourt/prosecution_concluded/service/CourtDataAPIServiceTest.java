@@ -7,6 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.config.MockServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
@@ -86,9 +89,12 @@ class CourtDataAPIServiceTest {
 
     @Test
     void givenAInvalidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenNullIsReturned() {
-        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString()))
-                .thenReturn(null);
-        int offenceCount = courtDataAPIService.getOffenceNewOffenceCount(
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentLength(0);
+        ResponseEntity<Void> expected = ResponseEntity.ok().headers(responseHeaders).build();
+        when(maatAPIClient.head(any(), anyMap(), any(), any()))
+                .thenReturn(expected);
+        long offenceCount = courtDataAPIService.getOffenceNewOffenceCount(
                 TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
         );
         assertThat(offenceCount).isZero();
@@ -96,9 +102,12 @@ class CourtDataAPIServiceTest {
 
     @Test
     void givenAInvalidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenEmptyIsReturned() {
-        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString()))
-                .thenReturn(List.of());
-        int offenceCount = courtDataAPIService.getOffenceNewOffenceCount(
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentLength(0);
+        ResponseEntity<Void> expected = ResponseEntity.ok().headers(responseHeaders).build();
+        when(maatAPIClient.head(any(), anyMap(), any(), any()))
+                .thenReturn(expected);
+        long offenceCount = courtDataAPIService.getOffenceNewOffenceCount(
                 TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
         );
         assertThat(offenceCount).isZero();
@@ -106,9 +115,12 @@ class CourtDataAPIServiceTest {
 
     @Test
     void givenAValidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenResponseIsReturned() {
-        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString()))
-                .thenReturn(List.of(4));
-        int offenceCount = courtDataAPIService.getOffenceNewOffenceCount(
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentLength(4);
+        ResponseEntity<Void> expected = ResponseEntity.ok().headers(responseHeaders).build();
+        when(maatAPIClient.head(any(), anyMap(), any(), any()))
+                .thenReturn(expected);
+        long offenceCount = courtDataAPIService.getOffenceNewOffenceCount(
                 TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
         );
         assertThat(offenceCount).isEqualTo(4);
@@ -116,9 +128,12 @@ class CourtDataAPIServiceTest {
 
     @Test
     void givenAInvalidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenNullIsReturned() {
-        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString()))
-                .thenReturn(null);
-        int offenceCount = courtDataAPIService.getWQOffenceNewOffenceCount(
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentLength(0);
+        ResponseEntity<Void> expected = ResponseEntity.ok().headers(responseHeaders).build();
+        when(maatAPIClient.head(any(), anyMap(), any(), any()))
+                .thenReturn(expected);
+        long offenceCount = courtDataAPIService.getWQOffenceNewOffenceCount(
                 TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
         );
         assertThat(offenceCount).isZero();
@@ -126,9 +141,12 @@ class CourtDataAPIServiceTest {
 
     @Test
     void givenAInvalidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenEmptyIsReturned() {
-        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString()))
-                .thenReturn(List.of());
-        int offenceCount = courtDataAPIService.getWQOffenceNewOffenceCount(
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentLength(0);
+        ResponseEntity<Void> expected = ResponseEntity.ok().headers(responseHeaders).build();
+        when(maatAPIClient.head(any(), anyMap(), any(), any()))
+                .thenReturn(expected);
+        long offenceCount = courtDataAPIService.getWQOffenceNewOffenceCount(
                 TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
         );
         assertThat(offenceCount).isZero();
@@ -136,9 +154,12 @@ class CourtDataAPIServiceTest {
 
     @Test
     void givenAValidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenResponseIsReturned() {
-        when(maatAPIClient.get(any(), anyString(), anyMap(), anyInt(), anyString()))
-                .thenReturn(List.of(5));
-        int offenceCount = courtDataAPIService.getWQOffenceNewOffenceCount(
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentLength(5);
+        ResponseEntity<Void> expected = ResponseEntity.ok().headers(responseHeaders).build();
+        when(maatAPIClient.head(any(), anyMap(), any(), any()))
+                .thenReturn(expected);
+        long offenceCount = courtDataAPIService.getWQOffenceNewOffenceCount(
                 TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
         );
         assertThat(offenceCount).isEqualTo(5);
