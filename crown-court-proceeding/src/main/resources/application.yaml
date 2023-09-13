@@ -96,16 +96,6 @@ retry-config:
   min-back-off-period: 5
   jitter-value: 0.75
 
-cloud-platform:
-  aws:
-    sqs:
-      region: ${CLOUD_PLATFORM_QUEUE_REGION}
-      accesskey: ${CLOUD_PLATFORM_QUEUE_ACCESS_KEY}
-      secretkey: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
-      queue:
-        hearingResulted: ${HEARING_RESULTED_QUEUE}
-        prosecutionConcluded: ${PROSECUTION_CONCLUDED_QUEUE}
-
 services:
   court-data-adapter:
     base-url: ${CDA_BASE_URL}
