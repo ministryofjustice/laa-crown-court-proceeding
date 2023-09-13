@@ -37,7 +37,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SQS;
 
 @Testcontainers
-@SpringBootTest(classes = {TestConfig.class, CrownCourtProceedingApplication.class})
+@SpringBootTest(classes = {CrownCourtProceedingApplication.class})
 @ExtendWith(SpringExtension.class)
 class ProsecutionListenerTest {
 
