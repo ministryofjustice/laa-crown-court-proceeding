@@ -19,7 +19,7 @@ public class WireMockServerConfig {
     }
 
     @Bean
-    public WebClient webClient(WireMockServer webServer) {
+    public WebClient nonServletClient(WireMockServer webServer) {
         return WebClient.builder().baseUrl(webServer.baseUrl()).build();
     }
 }
