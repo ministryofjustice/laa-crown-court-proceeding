@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded;
+package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.integration;
 
 
 import cloud.localstack.Localstack;
@@ -9,27 +9,39 @@ import cloud.localstack.docker.annotation.LocalstackDockerConfiguration;
 import cloud.localstack.docker.annotation.LocalstackDockerProperties;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.SendMessageResult;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
+import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
+import uk.gov.justice.laa.crime.crowncourt.config.WireMockServerConfig;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 
 @ExtendWith(LocalstackDockerExtension.class)
 @LocalstackDockerProperties(services = {ServiceName.SQS})
 @Testcontainers
-@SpringBootTest
-public class ProsecutionListenerTest1 {
+@SpringBootTest(classes = {CrownCourtProceedingApplication.class, WireMockServerConfig.class,
+        CrownCourtProceedingTestConfiguration.class})
+public class ProsecutionListenerTest {
 
     private static String QUEUE_NAME = "crime-apps-dev-prosecution-concluded-queue";
 
     private static final LocalstackDockerConfiguration DOCKER_CONFIG = LocalstackDockerConfiguration.builder()
             .randomizePorts(false)
             .build();
+
+
+    @Autowired
+    private WireMockServer wiremock;
 
 
     @DynamicPropertySource
@@ -44,20 +56,25 @@ public class ProsecutionListenerTest1 {
 
     @BeforeEach
     void setUp() {
+        wiremock.start();
         Localstack.INSTANCE.stop();
         Localstack.INSTANCE.startup(DOCKER_CONFIG);
     }
 
     @Test
     public void startup() {
+        wiremock.stubFor(get(urlPathEqualTo("api/internal/v1/assessment/wq-hearing/61600a90-89e2-4717-aa9b-a01fc66130c1/maatId/6039349"))
+                .willReturn(aResponse().withStatus(200)));
         AmazonSQS amazonSQS = TestUtils.getClientSQS();
         String url = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
         SendMessageResult sendMessageResult = amazonSQS.sendMessage(url, getSqsMessagePayload());
+
     }
 
     @AfterEach
     void stop() {
         Localstack.INSTANCE.stop();
+        wiremock.shutdown();
     }
 
 
