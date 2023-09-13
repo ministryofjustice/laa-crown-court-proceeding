@@ -9,13 +9,17 @@ import cloud.localstack.docker.annotation.LocalstackDockerConfiguration;
 import cloud.localstack.docker.annotation.LocalstackDockerProperties;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.SendMessageResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -23,13 +27,16 @@ import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.config.WireMockServerConfig;
 
+import java.util.Map;
+import java.util.UUID;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 
 @ExtendWith(LocalstackDockerExtension.class)
 @LocalstackDockerProperties(services = {ServiceName.SQS})
 @Testcontainers
-@SpringBootTest(classes = {CrownCourtProceedingApplication.class, WireMockServerConfig.class,
+@SpringBootTest(classes = {CrownCourtProceedingApplication.class,
         CrownCourtProceedingTestConfiguration.class})
 public class ProsecutionListenerTest {
 
@@ -39,9 +46,7 @@ public class ProsecutionListenerTest {
             .randomizePorts(false)
             .build();
 
-
-    @Autowired
-    private WireMockServer wiremock;
+    private static final WireMockServer wiremock = new WireMockServer(9999);
 
 
     @DynamicPropertySource
@@ -56,13 +61,14 @@ public class ProsecutionListenerTest {
 
     @BeforeEach
     void setUp() {
-        //wiremock.start();
+        wiremock.start();
         Localstack.INSTANCE.stop();
         Localstack.INSTANCE.startup(DOCKER_CONFIG);
     }
 
     @Test
-    public void startup() {
+    public void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenUpdateCaseConclusion() throws JsonProcessingException {
+        stubForOAuth();
         AmazonSQS amazonSQS = TestUtils.getClientSQS();
         String url = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
         SendMessageResult sendMessageResult = amazonSQS.sendMessage(url, getSqsMessagePayload());
@@ -72,7 +78,24 @@ public class ProsecutionListenerTest {
     @AfterEach
     void stop() {
         Localstack.INSTANCE.stop();
-        //wiremock.shutdown();
+        wiremock.shutdown();
+    }
+
+    private void stubForOAuth() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> token = Map.of(
+                "expires_in", 3600,
+                "token_type", "Bearer",
+                "access_token", UUID.randomUUID()
+        );
+
+        wiremock.stubFor(
+                post("/oauth2/token").willReturn(
+                        WireMock.ok()
+                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
+                                .withBody(mapper.writeValueAsString(token))
+                )
+        );
     }
 
 
