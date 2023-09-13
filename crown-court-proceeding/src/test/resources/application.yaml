@@ -115,28 +115,11 @@ crown-court-proceeding:
   security:
     issuer-uri: http://localhost:${server.port}
 
-cloud-platform:
-  aws:
-    sqs:
-      region: us-east-1
-      queue:
-        link: link
-        unlink: unlink
-        laaStatus: laaStatus
-        hearingResulted: hearing
-        laaStatusJob: laaStatusJob
-        createLinkCpStatusJob: createLinkCpStatusJob
-        prosecutionConcluded: crime-apps-dev-prosecution-concluded-queue
-        meansAssessmentPostProcessing: meansAssessmentPostProcessing
-        config:
-          messageDelay: 900
-          messageDelayDuration: 120
-
 feature:
   prosecution-concluded-listener:
-    enabled: false
+    enabled: true
   prosecution-concluded-schedule:
-    enabled: false
+    enabled: true
 
 queue:
   message:
