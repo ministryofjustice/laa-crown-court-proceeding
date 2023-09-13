@@ -19,6 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -38,6 +40,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 @Testcontainers
 @SpringBootTest(classes = {CrownCourtProceedingApplication.class,
         CrownCourtProceedingTestConfiguration.class})
+@AutoConfigureWireMock(port = 9999)
 public class ProsecutionListenerTest {
 
     private static String QUEUE_NAME = "crime-apps-dev-prosecution-concluded-queue";
@@ -61,7 +64,6 @@ public class ProsecutionListenerTest {
 
     @BeforeEach
     void setUp() {
-        wiremock.start();
         Localstack.INSTANCE.stop();
         Localstack.INSTANCE.startup(DOCKER_CONFIG);
     }
@@ -78,7 +80,6 @@ public class ProsecutionListenerTest {
     @AfterEach
     void stop() {
         Localstack.INSTANCE.stop();
-        wiremock.shutdown();
     }
 
     private void stubForOAuth() throws JsonProcessingException {
@@ -89,7 +90,7 @@ public class ProsecutionListenerTest {
                 "access_token", UUID.randomUUID()
         );
 
-        wiremock.stubFor(
+        stubFor(
                 post("/oauth2/token").willReturn(
                         WireMock.ok()
                                 .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))

@@ -94,7 +94,7 @@ dependencies {
     implementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.12.264'
     implementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.12.264'
     testImplementation "org.testcontainers:junit-jupiter:1.19.0"
-
+    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.0.1"
 
 
 }

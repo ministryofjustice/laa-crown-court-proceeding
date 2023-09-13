@@ -35,6 +35,7 @@ public class ProsecutionConcludedService {
         prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
 
         WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
+        log.info("CC wqHearingDTO -->" + wqHearingDTO.toString());
         if (prosecutionConcluded.isConcluded()
                 && wqHearingDTO != null
                 && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
