@@ -56,15 +56,13 @@ public class ProsecutionListenerTest {
 
     @BeforeEach
     void setUp() {
-        wiremock.start();
+        //wiremock.start();
         Localstack.INSTANCE.stop();
         Localstack.INSTANCE.startup(DOCKER_CONFIG);
     }
 
     @Test
     public void startup() {
-        wiremock.stubFor(get(urlPathEqualTo("api/internal/v1/assessment/wq-hearing/61600a90-89e2-4717-aa9b-a01fc66130c1/maatId/6039349"))
-                .willReturn(aResponse().withStatus(200)));
         AmazonSQS amazonSQS = TestUtils.getClientSQS();
         String url = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
         SendMessageResult sendMessageResult = amazonSQS.sendMessage(url, getSqsMessagePayload());
@@ -74,7 +72,7 @@ public class ProsecutionListenerTest {
     @AfterEach
     void stop() {
         Localstack.INSTANCE.stop();
-        wiremock.shutdown();
+        //wiremock.shutdown();
     }
 
 
