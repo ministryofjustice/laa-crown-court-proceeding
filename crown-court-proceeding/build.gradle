@@ -83,6 +83,20 @@ dependencies {
     testImplementation "org.pitest:pitest:$versions.pitest"
     testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:$versions.wiremockVersion"
 
+
+
+    testImplementation 'org.testcontainers:testcontainers:1.18.3'
+    testImplementation 'org.testcontainers:localstack:1.18.3'
+    //testImplementation 'org.testcontainers:junit-jupiter:1.18.3'
+    testImplementation 'cloud.localstack:localstack-utils:0.2.23'
+    testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: '2.27.2', ext: 'pom'
+
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.12.264'
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.12.264'
+    testImplementation "org.testcontainers:junit-jupiter:1.19.0"
+
+
+
 }
 
 configurations {
