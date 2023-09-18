@@ -2,7 +2,7 @@
   "id" : "f0047ec9-506c-4ad8-b458-18e506be3024",
   "name" : "api_internal_v1_assessment_reservations_6039349",
   "request" : {
-    "urlPattern" : "/api/internal/v1/assessment/reservations/6039349",
+    "urlPattern" : "/api/internal/v1/assessment/reservations/5635566",
     "method" : "GET"
   },
   "response" : {
