@@ -28,12 +28,16 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.config.WireMockServerConfig;
+import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ExtendWith(LocalstackDockerExtension.class)
@@ -74,7 +78,17 @@ public class ProsecutionListenerTest {
         stubForOAuth();
         AmazonSQS amazonSQS = TestUtils.getClientSQS();
         String url = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
-        SendMessageResult sendMessageResult = amazonSQS.sendMessage(url, getSqsMessagePayload());
+        SendMessageResult sendMessageResult = amazonSQS.sendMessage(url, getSqsMessagePayload(5635566));
+        List<ProsecutionConcludedEntity> processedCases = prosecutionConcludedRepository.getByMaatId(6766767);
+        //assertThat(processedCases.get(0).getStatus()).isEqualTo(CaseConclusionStatus.PROCESSED.name());
+    }
+
+    //@Test
+    public void givenAValidMessageAndCaseIsNotConcluded_whenProsecutionConcludedListenerIsInvoked_thenShouldNotUpdateConclusion() throws JsonProcessingException {
+        stubForOAuth();
+        AmazonSQS amazonSQS = TestUtils.getClientSQS();
+        String url = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
+        SendMessageResult sendMessageResult = amazonSQS.sendMessage(url, getSqsMessagePayload(10));
 
     }
 
@@ -101,13 +115,13 @@ public class ProsecutionListenerTest {
     }
 
 
-    private String getSqsMessagePayload() {
+    private String getSqsMessagePayload(Integer maatId) {
         return """
                 {
                    prosecutionCaseId : 998984a0-ae53-466c-9c13-e0c84c1fd581,
                    defendantId: aa07e234-7e80-4be1-a076-5ab8a8f49df5,
                    isConcluded: true,
-                   hearingIdWhereChangeOccurred : 61600a90-89e2-4717-aa9b-a01fc66130c1,
+                   hearingIdWhereChangeOccurred : 908ad01e-5a38-4158-957a-0c1d1a783862,
                    offenceSummary: [
                            {
                                offenceId: ed0e9d59-cc1c-4869-8fcd-464caf770744,
@@ -115,13 +129,13 @@ public class ProsecutionListenerTest {
                                proceedingsConcluded: true,
                                proceedingsConcludedChangedDate: 2022-02-01,
                                plea: {
-                                   originatingHearingId: 61600a90-89e2-4717-aa9b-a01fc66130c1,
+                                   originatingHearingId: 908ad01e-5a38-4158-957a-0c1d1a783862,
                                    value: GUILTY,
                                    pleaDate: 2022-02-01
                                },
                                verdict: {
                                    verdictDate: 2022-02-01,
-                                   originatingHearingId: 61600a90-89e2-4717-aa9b-a01fc66130c1,
+                                   originatingHearingId: 908ad01e-5a38-4158-957a-0c1d1a783862,
                                    verdictType: {
                                        description: GUILTY,
                                        category: GUILTY,
@@ -132,8 +146,8 @@ public class ProsecutionListenerTest {
                                }
                            }
                        ],
-                       maatId: 6039349,
-                       metadata: {
+                       maatId: """ +maatId+ """
+                       ,metadata: {
                            laaTransactionId: 61600a90-89e2-4717-aa9b-a01fc66130c1
                        }
                    }""";
