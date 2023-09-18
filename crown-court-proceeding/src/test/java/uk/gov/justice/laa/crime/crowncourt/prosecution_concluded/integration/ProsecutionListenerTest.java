@@ -79,7 +79,7 @@ public class ProsecutionListenerTest {
         AmazonSQS amazonSQS = TestUtils.getClientSQS();
         String url = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
         SendMessageResult sendMessageResult = amazonSQS.sendMessage(url, getSqsMessagePayload(5635566));
-        List<ProsecutionConcludedEntity> processedCases = prosecutionConcludedRepository.getByMaatId(6766767);
+        List<ProsecutionConcludedEntity> processedCases = prosecutionConcludedRepository.getByMaatId(5635566);
         //assertThat(processedCases.get(0).getStatus()).isEqualTo(CaseConclusionStatus.PROCESSED.name());
     }
 
@@ -88,7 +88,7 @@ public class ProsecutionListenerTest {
         stubForOAuth();
         AmazonSQS amazonSQS = TestUtils.getClientSQS();
         String url = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
-        SendMessageResult sendMessageResult = amazonSQS.sendMessage(url, getSqsMessagePayload(10));
+        SendMessageResult sendMessageResult = amazonSQS.sendMessage(url, getSqsMessagePayload(5635566));
 
     }
 
