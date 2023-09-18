@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.integration;
 
-
 import cloud.localstack.Localstack;
 import cloud.localstack.ServiceName;
 import cloud.localstack.awssdkv1.TestUtils;
@@ -11,7 +10,6 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.SendMessageResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,39 +18,37 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
-import uk.gov.justice.laa.crime.crowncourt.config.WireMockServerConfig;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ExtendWith(LocalstackDockerExtension.class)
 @LocalstackDockerProperties(services = {ServiceName.SQS})
 @Testcontainers
-@SpringBootTest(classes = {CrownCourtProceedingApplication.class,
-        CrownCourtProceedingTestConfiguration.class})
+@SpringBootTest(classes = {CrownCourtProceedingApplication.class, CrownCourtProceedingTestConfiguration.class})
 @AutoConfigureWireMock(port = 9999)
+@DirtiesContext
 public class ProsecutionListenerTest {
-
-    private static String QUEUE_NAME = "crime-apps-dev-prosecution-concluded-queue";
 
     private static final LocalstackDockerConfiguration DOCKER_CONFIG = LocalstackDockerConfiguration.builder()
             .randomizePorts(false)
             .build();
+    private static String QUEUE_NAME = "crime-apps-dev-prosecution-concluded-queue";
+    @Autowired
+    private ProsecutionConcludedRepository prosecutionConcludedRepository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -63,9 +59,6 @@ public class ProsecutionListenerTest {
         registry.add("cloud-platform.aws.sqs.region", () -> "us-east-1");
         registry.add("feature.prosecution-concluded-listener.enabled", () -> "true");
     }
-
-    @Autowired
-    private ProsecutionConcludedRepository prosecutionConcludedRepository;
 
     @BeforeEach
     void setUp() {
@@ -81,6 +74,8 @@ public class ProsecutionListenerTest {
         SendMessageResult sendMessageResult = amazonSQS.sendMessage(url, getSqsMessagePayload(5635566));
         List<ProsecutionConcludedEntity> processedCases = prosecutionConcludedRepository.getByMaatId(5635566);
         //assertThat(processedCases.get(0).getStatus()).isEqualTo(CaseConclusionStatus.PROCESSED.name());
+        verify(exactly(1), postRequestedFor(urlEqualTo("/oauth2/token")));
+        verify(exactly(1), getRequestedFor(urlEqualTo("/wq-hearing/{hearingUUID}/maatId/5635566")));
     }
 
     //@Test
@@ -146,11 +141,11 @@ public class ProsecutionListenerTest {
                                }
                            }
                        ],
-                       maatId: """ +maatId+ """
-                       ,metadata: {
-                           laaTransactionId: 61600a90-89e2-4717-aa9b-a01fc66130c1
-                       }
-                   }""";
+                       maatId: """ + maatId + """
+                    ,metadata: {
+                        laaTransactionId: 61600a90-89e2-4717-aa9b-a01fc66130c1
+                    }
+                }""";
     }
 }
 
