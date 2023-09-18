@@ -1,0 +1,24 @@
+{
+  "id" : "fc0fc3de-1167-487e-9492-2d17f98bb14f",
+  "name" : "api_internal_v1_assessment_wq-link-register_6039349",
+  "request" : {
+    "url" : "/api/internal/v1/assessment/wq-link-register/6039349",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "[{\"createdTxId\":8063696,\"caseId\":665421,\"createdDate\":\"2020-05-22T01:01:01\",\"createdUserId\":\"testUser\",\"removedTxId\":null,\"removedDate\":null,\"removedUserId\":null,\"libraId\":\"CP665337\",\"maatId\":5635479,\"cjsAreaCode\":\"16\",\"cjsLocation\":\"B16BG\",\"maatCat\":253,\"proceedingId\":665420,\"mlrCat\":253,\"caseOwnerId\":null,\"caseUrn\":null,\"prosecutionConcluded\":null}]",
+    "headers" : {
+      "Date" : "Thu, 14 Sep 2023 21:01:41 GMT",
+      "Content-Type" : "application/json",
+      "apigw-requestid" : "LQ8sXg1irPEEPIA=",
+      "X-Amzn-Trace-Id" : "Root=1-650374b5-29dd86a351968e25147b497d;"
+    }
+  },
+  "uuid" : "fc0fc3de-1167-487e-9492-2d17f98bb14f",
+  "persistent" : true,
+  "scenarioName" : "scenario-1-api-internal-v1-assessment-wq-link-register-5635479",
+  "requiredScenarioState" : "Started",
+  "newScenarioState" : "scenario-1-api-internal-v1-assessment-wq-link-register-5635479-2",
+  "insertionIndex" : 1
+}

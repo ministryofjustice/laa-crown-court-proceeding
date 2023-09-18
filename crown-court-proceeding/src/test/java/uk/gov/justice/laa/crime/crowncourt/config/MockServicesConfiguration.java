@@ -38,10 +38,10 @@ public class MockServicesConfiguration {
 
         ServicesConfiguration.MaatApi.WqHearingEndpoints wqHearingEndpoints =
                 new ServicesConfiguration.MaatApi.WqHearingEndpoints(
-                        "wq-hearing/{hearingUUID}/maatId/{maatId}");
+                        "/wq-hearing/{hearingUUID}/maatId/{maatId}");
 
         ServicesConfiguration.MaatApi.WqLinkRegisterEndpoints wqLinkRegisterEndpoints =
-                new ServicesConfiguration.MaatApi.WqLinkRegisterEndpoints("wq-link-register/{maatId}");
+                new ServicesConfiguration.MaatApi.WqLinkRegisterEndpoints("/wq-link-register/{maatId}");
 
         ServicesConfiguration.MaatApi.OffenceEndpoints offenceEndpoints =
                 new ServicesConfiguration.MaatApi.OffenceEndpoints("/offence/case/{caseId}",
