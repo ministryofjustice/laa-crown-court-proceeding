@@ -1,0 +1,21 @@
+{
+  "id" : "86b05205-6f27-4e29-a3de-abefc99ab225",
+  "name" : "api_internal_v1_assessment_offence_case_665421",
+  "request" : {
+    "url" : "/api/internal/v1/assessment/offence/case/665421",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "[{\"txId\":8063696,\"caseId\":665421,\"asnSeq\":\"001\",\"offenceShortTitle\":null,\"offenceClassification\":null,\"offenceDate\":null,\"offenceWording\":null,\"modeOfTrial\":null,\"legalAidStatus\":null,\"legalAidStatusDate\":null,\"offenceCode\":\"ASANUA5\",\"legalaidReason\":null,\"iojDecision\":2,\"wqOffence\":0,\"applicationFlag\":1,\"attribute1\":null,\"attribute2\":null,\"attribute3\":null,\"attribute4\":null,\"attribute5\":null,\"offenceId\":null,\"isCCNewOffence\":null}]",
+    "headers" : {
+      "Date" : "Thu, 14 Sep 2023 21:59:49 GMT",
+      "Content-Type" : "application/json",
+      "apigw-requestid" : "LRFNWg4prPEEPgg=",
+      "X-Amzn-Trace-Id" : "Root=1-65038255-3c07f50d3b700c3e12f8a17e;"
+    }
+  },
+  "uuid" : "86b05205-6f27-4e29-a3de-abefc99ab225",
+  "persistent" : true,
+  "insertionIndex" : 3
+}

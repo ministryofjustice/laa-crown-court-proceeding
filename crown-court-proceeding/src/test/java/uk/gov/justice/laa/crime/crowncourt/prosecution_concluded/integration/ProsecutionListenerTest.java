@@ -28,6 +28,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.config.WireMockServerConfig;
+import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 
 import java.util.Map;
 import java.util.UUID;
@@ -49,9 +50,6 @@ public class ProsecutionListenerTest {
             .randomizePorts(false)
             .build();
 
-    private static final WireMockServer wiremock = new WireMockServer(9999);
-
-
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
         registry.add("cloud-platform.aws.sqs.queue.prosecutionConcluded", () -> QUEUE_NAME);
@@ -61,6 +59,9 @@ public class ProsecutionListenerTest {
         registry.add("cloud-platform.aws.sqs.region", () -> "us-east-1");
         registry.add("feature.prosecution-concluded-listener.enabled", () -> "true");
     }
+
+    @Autowired
+    private ProsecutionConcludedRepository prosecutionConcludedRepository;
 
     @BeforeEach
     void setUp() {

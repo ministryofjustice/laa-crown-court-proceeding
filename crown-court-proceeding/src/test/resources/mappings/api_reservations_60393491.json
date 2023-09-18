@@ -1,0 +1,21 @@
+{
+  "id" : "f0047ec9-506c-4ad8-b458-18e506be3024",
+  "name" : "api_internal_v1_assessment_reservations_6039349",
+  "request" : {
+    "urlPattern" : "/api/internal/v1/assessment/reservations/6039349",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "false",
+    "headers" : {
+      "Date" : "Thu, 14 Sep 2023 21:38:11 GMT",
+      "Content-Type" : "application/json",
+      "apigw-requestid" : "LRCCmhsbrPEEPvw=",
+      "X-Amzn-Trace-Id" : "Root=1-65037d43-2dcb1afd3494ceb33fe7f7e2;"
+    }
+  },
+  "uuid" : "f0047ec9-506c-4ad8-b458-18e506be3024",
+  "persistent" : true,
+  "insertionIndex" : 1
+}

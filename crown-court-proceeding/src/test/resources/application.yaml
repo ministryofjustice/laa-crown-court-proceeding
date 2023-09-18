@@ -83,9 +83,9 @@ services:
     wq-hearing-endpoints:
       find-url: ${services.maat-api.assessments-domain}/wq-hearing/{hearingUUID}/maatId/{maatId}
     wq-link-register-endpoints:
-      find-url: ${services.maatApi.assessments-domain}/wq-link-register/{maatId}
+      find-url: ${services.maat-api.assessments-domain}/wq-link-register/{maatId}
     wq-offence-endpoints:
-      offence-count-url: ${services.maat-api.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
+      wq-offence-count-url: ${services.maat-api.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
     xlat-result-endpoints:
       result-codes-for-cc-imprisonment-url: ${services.maat-api.assessments-domain}/xlat-result/cc-imprisonment
       result-codes-for-cc-bench-warrant-url: ${services.maat-api.assessments-domain}/xlat-result/cc-bench-warrant
@@ -117,9 +117,9 @@ crown-court-proceeding:
 
 feature:
   prosecution-concluded-listener:
-    enabled: true
+    enabled: false
   prosecution-concluded-schedule:
-    enabled: true
+    enabled: false
 
 queue:
   message:
