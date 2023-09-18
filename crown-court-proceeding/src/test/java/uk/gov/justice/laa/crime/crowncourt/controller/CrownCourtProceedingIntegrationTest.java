@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -35,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Import(CrownCourtProceedingTestConfiguration.class)
 @SpringBootTest(classes = CrownCourtProceedingTestConfiguration.class, webEnvironment = DEFINED_PORT)
+@AutoConfigureWireMock(port = 9999)
 class CrownCourtProceedingIntegrationTest {
 
     private static final boolean IS_VALID = true;
@@ -43,7 +45,7 @@ class CrownCourtProceedingIntegrationTest {
 
     private MockMvc mvc;
 
-    private static final WireMockServer wiremock = new WireMockServer(9999);
+//    private static final WireMockServer wiremock = new WireMockServer(9999);
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -54,20 +56,28 @@ class CrownCourtProceedingIntegrationTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @Autowired
+    private WireMockServer wiremock;
+
     @AfterEach
-    void after() {
+    void clean() {
         wiremock.resetAll();
     }
 
-    @AfterAll
-    static void clean() {
-        wiremock.shutdown();
-    }
-
-    @BeforeAll
-    void startWiremock() {
-        wiremock.start();
-    }
+//    @AfterEach
+//    void after() {
+//        wiremock.resetAll();
+//    }
+//
+//    @AfterAll
+//    static void clean() {
+//        wiremock.shutdown();
+//    }
+//
+//    @BeforeAll
+//    void startWiremock() {
+//        wiremock.start();
+//    }
     @BeforeEach
     public void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
