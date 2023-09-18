@@ -30,7 +30,6 @@ public class ProsecutionConcludedService {
     private final CourtDataAPIService courtDataAPIService;
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
-
         log.info("CC Outcome process is kicked off for  maat-id {}", prosecutionConcluded.getMaatId());
         prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
 
@@ -38,8 +37,6 @@ public class ProsecutionConcludedService {
         if (prosecutionConcluded.isConcluded()
                 && wqHearingDTO != null
                 && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
-
-
             if (Boolean.TRUE.equals(courtDataAPIService.isMaatRecordLocked(prosecutionConcluded.getMaatId()))) {
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
             } else {
@@ -63,7 +60,6 @@ public class ProsecutionConcludedService {
     }
 
     private void processOutcome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, List<OffenceSummary> trialOffences) {
-
         prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
         String calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences);
         log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
