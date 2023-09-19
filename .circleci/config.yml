@@ -82,9 +82,9 @@ jobs:
           key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
-      - run:
-          name: Pull localstack image for SQS integration test
-          command: docker pull localstack/localstack
+#      - run:
+#          name: Pull localstack image for SQS integration test
+#          command: docker pull localstack/localstack
       - run:
           name: Build
           command: ./gradlew clean build
