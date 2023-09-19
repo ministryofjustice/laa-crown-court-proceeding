@@ -99,11 +99,11 @@ dependencies {
 
 }
 
-configurations {
-    configureEach {
-        exclude group: 'junit', module: 'junit'
-    }
-}
+//configurations {
+//    configureEach {
+//        exclude group: 'junit', module: 'junit'
+//    }
+//}
 
 test {
     useJUnitPlatform()
