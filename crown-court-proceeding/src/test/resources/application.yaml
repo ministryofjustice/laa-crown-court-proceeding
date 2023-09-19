@@ -115,6 +115,19 @@ crown-court-proceeding:
   security:
     issuer-uri: http://localhost:${server.port}
 
+cloud-platform:
+  aws:
+    sqs:
+      region: us-east-1
+      accesskey: test
+      secretkey: test
+      queue:
+        hearingResulted: hearing
+        prosecutionConcluded: crime-apps-dev-prosecution-concluded-queue
+        config:
+          messageDelay: 900
+          messageDelayDuration: 120
+
 feature:
   prosecution-concluded-listener:
     enabled: false

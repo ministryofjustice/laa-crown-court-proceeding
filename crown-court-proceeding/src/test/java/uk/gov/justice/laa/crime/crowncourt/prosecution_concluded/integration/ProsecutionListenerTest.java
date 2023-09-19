@@ -4,17 +4,14 @@ import cloud.localstack.Localstack;
 import cloud.localstack.ServiceName;
 import cloud.localstack.awssdkv1.TestUtils;
 import cloud.localstack.docker.LocalstackDockerExtension;
-import cloud.localstack.docker.annotation.LocalstackDockerConfiguration;
 import cloud.localstack.docker.annotation.LocalstackDockerProperties;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
@@ -24,7 +21,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
-import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 
 import java.util.Map;
 import java.util.UUID;
@@ -32,7 +28,6 @@ import java.util.UUID;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
-
 
 @ExtendWith(LocalstackDockerExtension.class)
 @LocalstackDockerProperties(services = {ServiceName.SQS})
@@ -42,35 +37,35 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 @DirtiesContext
 public class ProsecutionListenerTest {
 
-    private static final LocalstackDockerConfiguration DOCKER_CONFIG = LocalstackDockerConfiguration.builder()
-            .randomizePorts(false)
-            .build();
     private static final String QUEUE_NAME = "crime-apps-dev-prosecution-concluded-queue";
     private static AmazonSQS amazonSQS;
     private static String queueUrl;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
-        registry.add("cloud-platform.aws.sqs.queue.prosecutionConcluded", () -> QUEUE_NAME);
         registry.add("spring.cloud.aws.sqs.endpoint", Localstack.INSTANCE::getEndpointSQS);
-        registry.add("cloud-platform.aws.sqs.accesskey", () -> "test");
-        registry.add("cloud-platform.aws.sqs.secretkey", () -> "test");
-        registry.add("cloud-platform.aws.sqs.region", () -> "us-east-1");
         registry.add("feature.prosecution-concluded-listener.enabled", () -> "true");
     }
 
     @BeforeAll
     static void beforeAll() throws JsonProcessingException {
-        Localstack.INSTANCE.stop();
-        Localstack.INSTANCE.startup(DOCKER_CONFIG);
         amazonSQS = TestUtils.getClientSQS();
         queueUrl = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
         stubForOAuth();
     }
 
-    @AfterAll
-    static void stop() {
-        Localstack.INSTANCE.stop();
+    @Test
+    public void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenUpdateCaseConclusion() {
+        amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(5635566, true));
+        with().pollDelay(5, SECONDS).await().until(() -> true);
+        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/wq-link-register/5635566")));
+    }
+
+    @Test
+    public void givenAValidMessageAndCaseIsNotConcluded_whenProsecutionConcludedListenerIsInvoked_thenShouldNotUpdateConclusion() {
+        amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(6766767, false));
+        with().pollDelay(5, SECONDS).await().until(() -> true);
+        verify(exactly(0), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/wq-link-register/5635566")));
     }
 
     private static void stubForOAuth() throws JsonProcessingException {
@@ -88,20 +83,6 @@ public class ProsecutionListenerTest {
                                 .withBody(mapper.writeValueAsString(token))
                 )
         );
-    }
-
-    @Test
-    public void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenUpdateCaseConclusion() throws JsonProcessingException, InterruptedException {
-        amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(5635566, true));
-        with().pollDelay(5, SECONDS).await().until(() -> true);
-        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/wq-link-register/5635566")));
-    }
-
-    @Test
-    public void givenAValidMessageAndCaseIsNotConcluded_whenProsecutionConcludedListenerIsInvoked_thenShouldNotUpdateConclusion() throws JsonProcessingException {
-        amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(6766767, false));
-        with().pollDelay(5, SECONDS).await().until(() -> true);
-        verify(exactly(0), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/wq-link-register/5635566")));
     }
 
     private String getSqsMessagePayload(Integer maatId, boolean isCaseConcluded) {
