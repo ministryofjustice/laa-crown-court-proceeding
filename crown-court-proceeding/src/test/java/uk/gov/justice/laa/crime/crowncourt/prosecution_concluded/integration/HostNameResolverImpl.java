@@ -7,6 +7,6 @@ public class HostNameResolverImpl implements IHostNameResolver {
     public String getHostName() {
         String dockerHost = System.getenv("DOCKER_HOST");
         System.out.println("dockerhost: " + dockerHost);
-        return "127.0.0.1";
+        return System.getenv("TEMP_HOST");
     }
 }

@@ -93,7 +93,10 @@ jobs:
             hostname -I | awk '{print $1}'
       - run:
           name: Build
-          command: ./gradlew clean build
+          command: |
+            export TEMP_HOST=$(hostname -I | awk '{print $1}')
+            echo $TEMP_HOST 
+            ./gradlew clean build
       - run:
           name: Run SonarQube
           command: ./gradlew sonarqube -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.organization=${SONAR_ORG}
