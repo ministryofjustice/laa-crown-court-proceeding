@@ -6,7 +6,6 @@ public class HostNameResolverImpl implements IHostNameResolver {
     @Override
     public String getHostName() {
         String dockerHost = System.getenv("DOCKER_HOST");
-        System.out.println("dockerhost: " + dockerHost);
         return System.getenv("TEMP_HOST");
     }
 }
