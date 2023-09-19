@@ -94,7 +94,7 @@ jobs:
       - run:
           name: Build
           command: |
-            export TEMP_HOST=$(hostname -I | awk '{print $1}')
+            export TEMP_HOST=$(hostname)
             echo $TEMP_HOST 
             ./gradlew clean build
       - run:
