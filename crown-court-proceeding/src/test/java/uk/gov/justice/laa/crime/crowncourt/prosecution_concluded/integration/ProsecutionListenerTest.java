@@ -20,7 +20,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
-import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 
 import java.util.Map;
 import java.util.UUID;
@@ -32,7 +31,7 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 @ExtendWith(LocalstackDockerExtension.class)
 @LocalstackDockerProperties(services = {ServiceName.SQS})
 @Testcontainers
-@SpringBootTest(classes = {CrownCourtProceedingApplication.class, CrownCourtProceedingTestConfiguration.class})
+@SpringBootTest(classes = {CrownCourtProceedingApplication.class})
 @AutoConfigureWireMock(port = 9999)
 @DirtiesContext
 public class ProsecutionListenerTest {
