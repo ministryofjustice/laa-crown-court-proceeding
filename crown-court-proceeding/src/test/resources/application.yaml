@@ -4,6 +4,8 @@ server:
 spring:
   cloud:
     aws:
+      stack:
+        auto: false
       credentials:
         access-key: test
         secret-key: test

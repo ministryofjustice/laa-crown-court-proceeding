@@ -27,6 +27,8 @@ springdoc:
 spring:
   cloud:
     aws:
+      stack:
+        auto: false
       credentials:
         use-default-aws-credentials-chain: true
       region:
