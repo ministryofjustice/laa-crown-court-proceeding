@@ -44,7 +44,7 @@ public class ProsecutionListenerTest {
     static void properties(DynamicPropertyRegistry registry) {
         registry.add("spring.cloud.aws.sqs.endpoint", Localstack.INSTANCE::getEndpointSQS);
         registry.add("feature.prosecution-concluded-listener.enabled", () -> "true");
-        System.out.println("queueUrl : " + Localstack.INSTANCE.getEndpointSQS());
+        System.out.println("getEndpointSQS : " + Localstack.INSTANCE.getEndpointSQS());
         System.out.println("LocalStack running Localstack.INSTANCE.getLocalStackContainer(): " + Localstack.INSTANCE.getLocalStackContainer().isRunning());
         System.out.println("LocalStack running : " + Localstack.INSTANCE.isRunning());
     }
@@ -55,6 +55,7 @@ public class ProsecutionListenerTest {
         amazonSQS = TestUtils.getClientSQS();
         System.out.println("LocalStack running : " + Localstack.INSTANCE.isRunning());
         queueUrl = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
+        System.out.println("queueUrl : " + Localstack.INSTANCE.getEndpointSQS());
         stubForOAuth();
     }
 
