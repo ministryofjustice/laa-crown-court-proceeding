@@ -28,9 +28,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 
-@ExtendWith(LocalstackDockerExtension.class)
-@LocalstackDockerProperties(services = {ServiceName.SQS}, hostNameResolver = HostNameResolverImpl.class)
-//@Testcontainers
+@ExtendWith({LocalstackDockerExtension.class})
+@LocalstackDockerProperties(services = {ServiceName.SQS})
+@Testcontainers
 @SpringBootTest(classes = {CrownCourtProceedingApplication.class})
 @AutoConfigureWireMock(port = 9999)
 @DirtiesContext
@@ -55,7 +55,8 @@ public class ProsecutionListenerTest {
         amazonSQS = TestUtils.getClientSQS();
         System.out.println("LocalStack running : " + Localstack.INSTANCE.isRunning());
         queueUrl = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
-        System.out.println("queueUrl : " + Localstack.INSTANCE.getEndpointSQS());
+        System.out.println("queueUrl : " + queueUrl);
+        System.out.println("region : " + Localstack.getDefaultRegion());
         stubForOAuth();
     }
 

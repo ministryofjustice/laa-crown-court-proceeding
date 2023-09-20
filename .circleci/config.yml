@@ -96,7 +96,7 @@ jobs:
           command: |
             export TEMP_HOST=$(hostname)
             echo $TEMP_HOST 
-            ./gradlew clean build
+            ./gradlew --info clean build
       - run:
           name: Run SonarQube
           command: ./gradlew sonarqube -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.organization=${SONAR_ORG}
