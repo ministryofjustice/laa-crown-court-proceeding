@@ -29,8 +29,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 
 @ExtendWith({LocalstackDockerExtension.class})
-@LocalstackDockerProperties(services = {ServiceName.SQS})
-@Testcontainers
+@LocalstackDockerProperties(services = {ServiceName.SQS}, hostNameResolver = HostNameResolverImpl.class)
+//@Testcontainers
 @SpringBootTest(classes = {CrownCourtProceedingApplication.class})
 @AutoConfigureWireMock(port = 9999)
 @DirtiesContext
