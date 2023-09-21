@@ -40,7 +40,7 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 @SpringBootTest(classes = {CrownCourtProceedingApplication.class})
 @AutoConfigureWireMock(port = 9999)
 @DirtiesContext
-public class ProsecutionListenerTest {
+class ProsecutionListenerTest {
 
     private static final String QUEUE_NAME = "crime-apps-dev-prosecution-concluded-queue";
     @Container
@@ -85,7 +85,7 @@ public class ProsecutionListenerTest {
 
     @Test
     @Order(1)
-    public void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldCreateWithPending() {
+    void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldCreateWithPending() {
         prosecutionConcludedRepository.deleteAll();
         amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(5635566, true));
         with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(60, SECONDS)
@@ -98,7 +98,7 @@ public class ProsecutionListenerTest {
 
     @Test
     @Order(2)
-    public void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldUpdateCaseConclusion() {
+    void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldUpdateCaseConclusion() {
         amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(5635566, true));
 
         with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(60, SECONDS)

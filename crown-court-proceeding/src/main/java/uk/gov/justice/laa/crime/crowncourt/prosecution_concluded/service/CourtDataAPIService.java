@@ -102,10 +102,7 @@ public class CourtDataAPIService {
                 caseId
         );
         log.info(RESPONSE_STRING, response);
-        if (null != response) {
-            return response.getHeaders().getContentLength();
-        }
-        return 0;
+        return response.getHeaders().getContentLength();
     }
 
     public long getWQOffenceNewOffenceCount(int caseId, String offenceId) {
@@ -116,10 +113,7 @@ public class CourtDataAPIService {
                 caseId
         );
         log.info(RESPONSE_STRING, response);
-        if (null != response) {
-            return response.getHeaders().getContentLength();
-        }
-        return 0;
+        return response.getHeaders().getContentLength();
     }
 
     public List<Integer> findResultsByWQTypeSubType(int wqType, int subTypeCode) {
