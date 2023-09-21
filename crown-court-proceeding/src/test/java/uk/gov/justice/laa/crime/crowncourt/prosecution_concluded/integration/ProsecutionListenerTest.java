@@ -30,10 +30,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 
 @Testcontainers
@@ -50,7 +50,7 @@ public class ProsecutionListenerTest {
     private static String queueUrl;
 
     @Autowired
-    private  ProsecutionConcludedRepository prosecutionConcludedRepository;
+    private ProsecutionConcludedRepository prosecutionConcludedRepository;
 
 
     @DynamicPropertySource
@@ -66,6 +66,23 @@ public class ProsecutionListenerTest {
         stubForOAuth();
     }
 
+    private static void stubForOAuth() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> token = Map.of(
+                "expires_in", 3600,
+                "token_type", "Bearer",
+                "access_token", UUID.randomUUID()
+        );
+
+        stubFor(
+                post("/oauth2/token").willReturn(
+                        WireMock.ok()
+                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
+                                .withBody(mapper.writeValueAsString(token))
+                )
+        );
+    }
+
     @Test
     @Order(1)
     public void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldCreateWithPending() {
@@ -73,7 +90,7 @@ public class ProsecutionListenerTest {
         amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(5635566, true));
         with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(60, SECONDS)
                 .until(() -> !prosecutionConcludedRepository.getByMaatId(5635566).isEmpty());
-        List<ProsecutionConcludedEntity> prosecutionConcludedEntities =  prosecutionConcludedRepository.getByMaatId(5635566);
+        List<ProsecutionConcludedEntity> prosecutionConcludedEntities = prosecutionConcludedRepository.getByMaatId(5635566);
         assertThat(prosecutionConcludedEntities).isNotEmpty();
         assertThat(prosecutionConcludedEntities.get(0).getStatus()).isEqualTo(CaseConclusionStatus.PENDING.name());
 
@@ -87,12 +104,11 @@ public class ProsecutionListenerTest {
         with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(60, SECONDS)
                 .until(() -> prosecutionConcludedRepository.getByMaatId(5635566).get(0).getStatus(),
                         Predicate.isEqual(CaseConclusionStatus.PROCESSED.name()));
-        List<ProsecutionConcludedEntity> prosecutionConcludedEntities =  prosecutionConcludedRepository.getByMaatId(5635566);
+        List<ProsecutionConcludedEntity> prosecutionConcludedEntities = prosecutionConcludedRepository.getByMaatId(5635566);
         assertThat(prosecutionConcludedEntities).isNotEmpty();
         assertThat(prosecutionConcludedEntities.get(0).getStatus()).isEqualTo(CaseConclusionStatus.PROCESSED.name());
         prosecutionConcludedRepository.deleteAll();
     }
-
 
     private String getSqsMessagePayload(Integer maatId, boolean isCaseConcluded) {
         return """
@@ -130,23 +146,6 @@ public class ProsecutionListenerTest {
                         laaTransactionId: 61600a90-89e2-4717-aa9b-a01fc66130c1
                     }
                 }""";
-    }
-
-    private static void stubForOAuth() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> token = Map.of(
-                "expires_in", 3600,
-                "token_type", "Bearer",
-                "access_token", UUID.randomUUID()
-        );
-
-        stubFor(
-                post("/oauth2/token").willReturn(
-                        WireMock.ok()
-                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
-                                .withBody(mapper.writeValueAsString(token))
-                )
-        );
     }
 }
 
