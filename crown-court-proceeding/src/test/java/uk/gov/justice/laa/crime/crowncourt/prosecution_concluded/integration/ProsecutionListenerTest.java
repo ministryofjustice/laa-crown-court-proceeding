@@ -6,7 +6,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
@@ -18,13 +20,20 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
+import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
+import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 
 @Testcontainers
@@ -40,6 +49,10 @@ public class ProsecutionListenerTest {
     private static AmazonSQS amazonSQS;
     private static String queueUrl;
 
+    @Autowired
+    private  ProsecutionConcludedRepository prosecutionConcludedRepository;
+
+
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
         registry.add("spring.cloud.aws.sqs.endpoint", () -> localStack.getEndpointOverride(LocalStackContainer.Service.SQS).toString());
@@ -54,18 +67,32 @@ public class ProsecutionListenerTest {
     }
 
     @Test
-    public void givenAValidMessageAndCaseIsNotConcluded_whenProsecutionConcludedListenerIsInvoked_thenShouldNotUpdateConclusion() {
-        amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(6766767, false));
-        with().pollDelay(5, SECONDS).await().until(() -> true);
-        verify(exactly(0), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/wq-link-register/5635566")));
+    @Order(1)
+    public void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldCreateWithPending() {
+        prosecutionConcludedRepository.deleteAll();
+        amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(5635566, true));
+        with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(60, SECONDS)
+                .until(() -> !prosecutionConcludedRepository.getByMaatId(5635566).isEmpty());
+        List<ProsecutionConcludedEntity> prosecutionConcludedEntities =  prosecutionConcludedRepository.getByMaatId(5635566);
+        assertThat(prosecutionConcludedEntities).isNotEmpty();
+        assertThat(prosecutionConcludedEntities.get(0).getStatus()).isEqualTo(CaseConclusionStatus.PENDING.name());
+
     }
 
     @Test
-    public void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenUpdateCaseConclusion() {
+    @Order(2)
+    public void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldUpdateCaseConclusion() {
         amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(5635566, true));
-        with().pollDelay(5, SECONDS).await().until(() -> true);
-        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/wq-link-register/5635566")));
+
+        with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(60, SECONDS)
+                .until(() -> prosecutionConcludedRepository.getByMaatId(5635566).get(0).getStatus(),
+                        Predicate.isEqual(CaseConclusionStatus.PROCESSED.name()));
+        List<ProsecutionConcludedEntity> prosecutionConcludedEntities =  prosecutionConcludedRepository.getByMaatId(5635566);
+        assertThat(prosecutionConcludedEntities).isNotEmpty();
+        assertThat(prosecutionConcludedEntities.get(0).getStatus()).isEqualTo(CaseConclusionStatus.PROCESSED.name());
+        prosecutionConcludedRepository.deleteAll();
     }
+
 
     private String getSqsMessagePayload(Integer maatId, boolean isCaseConcluded) {
         return """
