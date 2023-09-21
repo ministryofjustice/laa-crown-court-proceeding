@@ -30,8 +30,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
@@ -51,7 +51,6 @@ class ProsecutionListenerTest {
 
     @Autowired
     private ProsecutionConcludedRepository prosecutionConcludedRepository;
-
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -91,8 +90,11 @@ class ProsecutionListenerTest {
         with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(60, SECONDS)
                 .until(() -> !prosecutionConcludedRepository.getByMaatId(5635566).isEmpty());
         List<ProsecutionConcludedEntity> prosecutionConcludedEntities = prosecutionConcludedRepository.getByMaatId(5635566);
+
         assertThat(prosecutionConcludedEntities).isNotEmpty();
         assertThat(prosecutionConcludedEntities.get(0).getStatus()).isEqualTo(CaseConclusionStatus.PENDING.name());
+        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/wq-hearing/908ad01e-5a38-4158-957a-0c1d1a783862/maatId/5635566")));
+        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/reservations/5635566")));
 
     }
 
@@ -100,14 +102,17 @@ class ProsecutionListenerTest {
     @Order(2)
     void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldUpdateCaseConclusion() {
         amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(5635566, true));
-
         with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(60, SECONDS)
                 .until(() -> prosecutionConcludedRepository.getByMaatId(5635566).get(0).getStatus(),
                         Predicate.isEqual(CaseConclusionStatus.PROCESSED.name()));
         List<ProsecutionConcludedEntity> prosecutionConcludedEntities = prosecutionConcludedRepository.getByMaatId(5635566);
+
         assertThat(prosecutionConcludedEntities).isNotEmpty();
         assertThat(prosecutionConcludedEntities.get(0).getStatus()).isEqualTo(CaseConclusionStatus.PROCESSED.name());
         prosecutionConcludedRepository.deleteAll();
+        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/wq-link-register/5635566")));
+        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/offence/case/665421")));
+        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/crown-court/update-cc-sentence")));
     }
 
     private String getSqsMessagePayload(Integer maatId, boolean isCaseConcluded) {

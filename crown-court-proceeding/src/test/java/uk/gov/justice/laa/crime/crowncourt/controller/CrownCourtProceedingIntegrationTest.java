@@ -62,11 +62,6 @@ class CrownCourtProceedingIntegrationTest {
         wiremock.resetAll();
     }
 
-    @AfterEach
-    void after() {
-        wiremock.resetAll();
-    }
-
     @BeforeEach
     public void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
