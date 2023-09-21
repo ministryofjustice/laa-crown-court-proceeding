@@ -45,8 +45,6 @@ class CrownCourtProceedingIntegrationTest {
 
     private MockMvc mvc;
 
-//    private static final WireMockServer wiremock = new WireMockServer(9999);
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -64,20 +62,11 @@ class CrownCourtProceedingIntegrationTest {
         wiremock.resetAll();
     }
 
-//    @AfterEach
-//    void after() {
-//        wiremock.resetAll();
-//    }
-//
-//    @AfterAll
-//    static void clean() {
-//        wiremock.shutdown();
-//    }
-//
-//    @BeforeAll
-//    void startWiremock() {
-//        wiremock.start();
-//    }
+    @AfterEach
+    void after() {
+        wiremock.resetAll();
+    }
+
     @BeforeEach
     public void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
