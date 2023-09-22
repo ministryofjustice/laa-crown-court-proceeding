@@ -1,0 +1,21 @@
+{
+  "id": "050bdc7f-9684-4703-b844-e5f98754ab75",
+  "name": "api_internal_v1_assessment_xlat-result_cc-imprisonment",
+  "request": {
+    "url": "/api/internal/v1/assessment/xlat-result/cc-imprisonment",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "[1126,1507,1002,1003,1007,1016,1024,1081]",
+    "headers": {
+      "Date": "Mon, 18 Sep 2023 10:19:11 GMT",
+      "Content-Type": "application/json",
+      "apigw-requestid": "LcqU4hzrLPEEPsA=",
+      "X-Amzn-Trace-Id": "Root=1-6508241e-36a514671b29993c5cb0dfd1;"
+    }
+  },
+  "uuid": "050bdc7f-9684-4703-b844-e5f98754ab75",
+  "persistent": true,
+  "insertionIndex": 11
+}

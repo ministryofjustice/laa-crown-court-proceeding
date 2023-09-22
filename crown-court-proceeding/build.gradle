@@ -83,13 +83,20 @@ dependencies {
     testImplementation "org.pitest:pitest:$versions.pitest"
     testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:$versions.wiremockVersion"
 
+    testImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.12.264'
+    testImplementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.12.264'
+    testImplementation "org.testcontainers:junit-jupiter:1.19.0"
+    testImplementation 'org.testcontainers:localstack:1.18.3'
+    testImplementation 'cloud.localstack:localstack-utils:0.2.23'
+    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.0.1"
+
 }
 
-configurations {
-    configureEach {
-        exclude group: 'junit', module: 'junit'
-    }
-}
+//configurations {
+//    configureEach {
+//        exclude group: 'junit', module: 'junit'
+//    }
+//}
 
 test {
     useJUnitPlatform()

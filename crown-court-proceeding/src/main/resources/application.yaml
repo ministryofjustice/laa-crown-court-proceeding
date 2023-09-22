@@ -99,9 +99,6 @@ retry-config:
 cloud-platform:
   aws:
     sqs:
-      region: ${CLOUD_PLATFORM_QUEUE_REGION}
-      accesskey: ${CLOUD_PLATFORM_QUEUE_ACCESS_KEY}
-      secretkey: ${CLOUD_PLATFORM_QUEUE_SECRET_KEY}
       queue:
         hearingResulted: ${HEARING_RESULTED_QUEUE}
         prosecutionConcluded: ${PROSECUTION_CONCLUDED_QUEUE}
@@ -129,7 +126,7 @@ services:
     wq-link-register-endpoints:
       find-url: ${services.maatApi.assessments-domain}/wq-link-register/{maatId}
     wq-offence-endpoints:
-      offence-count-url: ${services.maat-api.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
+      wq-offence-count-url: ${services.maat-api.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
     xlat-result-endpoints:
       result-codes-for-cc-imprisonment-url: ${services.maat-api.assessments-domain}/xlat-result/cc-imprisonment
       result-codes-for-cc-bench-warrant-url: ${services.maat-api.assessments-domain}/xlat-result/cc-bench-warrant

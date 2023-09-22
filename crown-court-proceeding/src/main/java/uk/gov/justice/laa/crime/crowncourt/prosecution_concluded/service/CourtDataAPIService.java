@@ -98,8 +98,8 @@ public class CourtDataAPIService {
         ResponseEntity<Void> response = maatAPIClient.head(
                 configuration.getMaatApi().getOffenceEndpoints().getOffenceCountUrl(),
                 emptyMap(),
-                caseId,
-                offenceId
+                offenceId,
+                caseId
         );
         log.info(RESPONSE_STRING, response);
         return response.getHeaders().getContentLength();
@@ -109,8 +109,8 @@ public class CourtDataAPIService {
         ResponseEntity<Void> response = maatAPIClient.head(
                 configuration.getMaatApi().getWqOffenceEndpoints().getWqOffenceCountUrl(),
                 emptyMap(),
-                caseId,
-                offenceId
+                offenceId,
+                caseId
         );
         log.info(RESPONSE_STRING, response);
         return response.getHeaders().getContentLength();
