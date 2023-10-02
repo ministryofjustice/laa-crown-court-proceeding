@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Import(CrownCourtProceedingTestConfiguration.class)
 @SpringBootTest(classes = CrownCourtProceedingTestConfiguration.class, webEnvironment = DEFINED_PORT)
-@AutoConfigureWireMock(port = 9999)
+@AutoConfigureWireMock(port = 9998)
 class CrownCourtProceedingIntegrationTest {
 
     private static final boolean IS_VALID = true;
