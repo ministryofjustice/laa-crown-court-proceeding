@@ -33,11 +33,11 @@ spring:
       client:
         provider:
           maat-api:
-            token-uri: http://localhost:9999/oauth2/token
+            token-uri: http://localhost:${wiremock.server.port}/oauth2/token
           cda:
-            token-uri: http://localhost:9999/oauth2/token
+            token-uri: http://localhost:${wiremock.server.port}/oauth2/token
           evidence:
-            token-uri: http://localhost:9999/oauth2/token
+            token-uri: http://localhost:${wiremock.server.port}/oauth2/token
         registration:
           maat-api:
             client-id: dummy-client
@@ -64,11 +64,11 @@ swagger-ui:
 
 services:
   court-data-adapter:
-    base-url: http://localhost:9999
+    base-url: http://localhost:${wiremock.server.port}
     hearing-url: "/api/internal/v2/hearing_results/{hearingId}"
 
   maat-api:
-    baseUrl: http://localhost:9999
+    baseUrl: http://localhost:${wiremock.server.port}
     assessments-domain: ${services.maat-api.baseUrl}/api/internal/v1/assessment
     ioj-appeal-endpoints:
       find-url: ${services.maat-api.assessments-domain}/ioj-appeal/repId/{repId}/current-passed

@@ -29,6 +29,7 @@ import java.util.UUID;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Import(CrownCourtProceedingTestConfiguration.class)
 @SpringBootTest(classes = CrownCourtProceedingTestConfiguration.class, webEnvironment = DEFINED_PORT)
-@AutoConfigureWireMock(port = 9999)
+@AutoConfigureWireMock(port = 9998)
 class CrownCourtProceedingIntegrationTest {
 
     private static final boolean IS_VALID = true;
