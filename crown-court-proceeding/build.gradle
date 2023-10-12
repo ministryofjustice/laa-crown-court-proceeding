@@ -30,16 +30,25 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+sourceSets {
+    testSqsIntegration {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    testSqsIntegrationImplementation.extendsFrom implementation
+//    testSqsIntegrationRuntimeOnly.extendsFrom runtimeOnly
 }
 
 repositories {
     mavenCentral()
 }
-
 
 dependencies {
 
@@ -49,9 +58,7 @@ dependencies {
 
     implementation "io.sentry:sentry-logback"
     implementation "io.sentry:sentry-spring-boot-starter"
-
     implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springFrameworkCloudVersion"
-
     implementation "org.springframework:spring-jms"
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
@@ -60,7 +67,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-
     implementation "org.postgresql:postgresql"
     implementation "com.google.code.gson:gson"
     implementation "org.liquibase:liquibase-core"
@@ -80,29 +86,38 @@ dependencies {
     testImplementation "org.mockito:mockito-inline:$versions.mockitoInlineVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
-    testImplementation "org.pitest:pitest:$versions.pitest"
-    testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:$versions.wiremockVersion"
-
-    testImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.12.264'
-    testImplementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.12.264'
-    testImplementation "org.testcontainers:junit-jupiter:1.19.0"
-    testImplementation 'org.testcontainers:localstack:1.18.3'
-    testImplementation 'cloud.localstack:localstack-utils:0.2.23'
     testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.0.1"
+    testImplementation "org.pitest:pitest:$versions.pitest"
 
+    //dependencies for ProsecutionListenerTest only
+    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.12.264'
+    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.12.264'
+    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:1.19.0"
+    testSqsIntegrationImplementation 'org.testcontainers:localstack:1.18.3'
+    testSqsIntegrationImplementation 'cloud.localstack:localstack-utils:0.2.23'
+    testSqsIntegrationImplementation "com.h2database:h2"
+    testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.0.1"
 }
 
-//configurations {
-//    configureEach {
-//        exclude group: 'junit', module: 'junit'
-//    }
-//}
+configurations {
+    testImplementation {
+        exclude group: 'junit', module: 'junit'
+    }
+}
 
 test {
     useJUnitPlatform()
     dependsOn "cleanTest"
     finalizedBy jacocoTestReport
 }
+
+task testSqsIntegration(type: Test) {
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.testSqsIntegration.output.classesDirs
+    classpath = sourceSets.testSqsIntegration.runtimeClasspath
+}
+
+check.dependsOn testSqsIntegration
 
 jacocoTestReport {
     onlyIf = { true }
