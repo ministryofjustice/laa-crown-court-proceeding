@@ -62,30 +62,32 @@ public class RepOrderService {
 
     public String getDecisionByFinAssessment(CrownCourtDTO requestDTO, ReviewResult reviewResult, boolean isValidCaseType) {
 
-        FullAssessmentResult fullAssessmentResult = FullAssessmentResult.getFrom(requestDTO.getFinancialAssessment().getFullResult());
-        CurrentStatus fullAssessmentStatus = requestDTO.getFinancialAssessment().getFullStatus();
-        if (fullAssessmentResult == FullAssessmentResult.INEL
-                && fullAssessmentStatus == CurrentStatus.COMPLETE
-                && (requestDTO.getMagCourtOutcome() == MagCourtOutcome.COMMITTED_FOR_TRIAL
-                || requestDTO.getMagCourtOutcome() == MagCourtOutcome.SENT_FOR_TRIAL)) {
-            return Constants.REFUSED_INELIGIBLE;
-        }
+        if (null != requestDTO.getFinancialAssessment()) {
+            FullAssessmentResult fullAssessmentResult = FullAssessmentResult.getFrom(requestDTO.getFinancialAssessment().getFullResult());
+            CurrentStatus fullAssessmentStatus = requestDTO.getFinancialAssessment().getFullStatus();
+            if (fullAssessmentResult == FullAssessmentResult.INEL
+                    && fullAssessmentStatus == CurrentStatus.COMPLETE
+                    && (requestDTO.getMagCourtOutcome() == MagCourtOutcome.COMMITTED_FOR_TRIAL
+                    || requestDTO.getMagCourtOutcome() == MagCourtOutcome.SENT_FOR_TRIAL)) {
+                return Constants.REFUSED_INELIGIBLE;
+            }
 
-        InitAssessmentResult initAssessmentResult = InitAssessmentResult.getFrom(
-                requestDTO.getFinancialAssessment().getInitResult()
-        );
-        CurrentStatus initAssessmentStatus = requestDTO.getFinancialAssessment().getInitStatus();
-        ApiHardshipOverview hardshipOverview = requestDTO.getFinancialAssessment().getHardshipOverview();
+            InitAssessmentResult initAssessmentResult = InitAssessmentResult.getFrom(
+                    requestDTO.getFinancialAssessment().getInitResult()
+            );
+            CurrentStatus initAssessmentStatus = requestDTO.getFinancialAssessment().getInitStatus();
+            ApiHardshipOverview hardshipOverview = requestDTO.getFinancialAssessment().getHardshipOverview();
 
-        if (((initAssessmentResult == InitAssessmentResult.PASS && initAssessmentStatus == CurrentStatus.COMPLETE)
-                || (fullAssessmentResult == FullAssessmentResult.PASS && fullAssessmentStatus == CurrentStatus.COMPLETE)
-                || (hardshipOverview != null && (hardshipOverview.getReviewResult() == ReviewResult.PASS
-                && hardshipOverview.getAssessmentStatus() == CurrentStatus.COMPLETE)))
-                && isValidCaseType) {
-            return Constants.GRANTED_PASSED_MEANS_TEST;
-        } else if ((initAssessmentResult == InitAssessmentResult.FAIL && initAssessmentStatus == CurrentStatus.COMPLETE)
-                || (fullAssessmentResult == FullAssessmentResult.FAIL && fullAssessmentStatus == CurrentStatus.COMPLETE)) {
-            return getDecisionByCaseType(reviewResult, requestDTO.getCaseType(), requestDTO.getMagCourtOutcome());
+            if (((initAssessmentResult == InitAssessmentResult.PASS && initAssessmentStatus == CurrentStatus.COMPLETE)
+                    || (fullAssessmentResult == FullAssessmentResult.PASS && fullAssessmentStatus == CurrentStatus.COMPLETE)
+                    || (hardshipOverview != null && (hardshipOverview.getReviewResult() == ReviewResult.PASS
+                    && hardshipOverview.getAssessmentStatus() == CurrentStatus.COMPLETE)))
+                    && isValidCaseType) {
+                return Constants.GRANTED_PASSED_MEANS_TEST;
+            } else if ((initAssessmentResult == InitAssessmentResult.FAIL && initAssessmentStatus == CurrentStatus.COMPLETE)
+                    || (fullAssessmentResult == FullAssessmentResult.FAIL && fullAssessmentStatus == CurrentStatus.COMPLETE)) {
+                return getDecisionByCaseType(reviewResult, requestDTO.getCaseType(), requestDTO.getMagCourtOutcome());
+            }
         }
         return null;
     }

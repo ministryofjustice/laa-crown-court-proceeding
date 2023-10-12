@@ -28,6 +28,5 @@
       "$ref": "apiHardshipOverview.json"
     }
   },
-  "additionalProperties": false,
-  "required": ["initResult", "initStatus"]
+  "additionalProperties": false
 }
