@@ -1,0 +1,21 @@
+{
+  "id": "47c39d55-9d61-446b-a955-89cff5e9ebcf",
+  "name": "api_internal_v1_assessment_wq-hearing_cf37a5f5-97a1-4884-ae41-741c8fe2f732_maatid_6766767",
+  "request": {
+    "url": "/api/internal/v1/assessment/wq-hearing/cf37a5f5-97a1-4884-ae41-741c8fe2f732/maatId/6766767",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "[{\"txId\":8073191,\"caseId\":665561,\"hearingUUID\":\"cf37a5f5-97a1-4884-ae41-741c8fe2f732\",\"maatId\":6766767,\"wqJurisdictionType\":\"CROWN\",\"ouCourtLocation\":\"C22SR\",\"createdDateTime\":\"2022-02-21T00:19:41.589066\",\"updatedDateTime\":\"2022-02-21T00:19:41.589095\",\"caseUrn\":\"EITHERWAY\",\"resultCodes\":\"4560,3080\"}]",
+    "headers": {
+      "Date": "Tue, 19 Sep 2023 09:06:19 GMT",
+      "Content-Type": "application/json",
+      "apigw-requestid": "Lfyl6gkWrPEEPgg=",
+      "X-Amzn-Trace-Id": "Root=1-6509648b-03e35e8d7a112b9a2a69d9e3;"
+    }
+  },
+  "uuid": "47c39d55-9d61-446b-a955-89cff5e9ebcf",
+  "persistent": true,
+  "insertionIndex": 4
+}

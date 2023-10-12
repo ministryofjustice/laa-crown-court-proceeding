@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.integration;
+package integration;
 
 import cloud.localstack.awssdkv1.TestUtils;
 import com.amazonaws.services.sqs.AmazonSQS;
