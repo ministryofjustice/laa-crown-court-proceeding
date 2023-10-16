@@ -43,7 +43,6 @@ configurations {
         extendsFrom annotationProcessor
     }
     testSqsIntegrationImplementation.extendsFrom implementation
-//    testSqsIntegrationRuntimeOnly.extendsFrom runtimeOnly
 }
 
 repositories {
