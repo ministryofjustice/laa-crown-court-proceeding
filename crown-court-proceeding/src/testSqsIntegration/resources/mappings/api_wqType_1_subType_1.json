@@ -1,0 +1,21 @@
+{
+  "id": "e92dcb87-1cba-480b-950c-2ac1ec5e15fd",
+  "name": "api_internal_v1_assessment_xlat-result_wqtype_1_subtype_1",
+  "request": {
+    "url": "/api/internal/v1/assessment/xlat-result/wqType/1/subType/1",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "[4054,4001,4014,4015,4016,4017,4020,4053]",
+    "headers": {
+      "Date": "Thu, 14 Sep 2023 22:10:52 GMT",
+      "Content-Type": "application/json",
+      "apigw-requestid": "LRG08gjerPEEPgg=",
+      "X-Amzn-Trace-Id": "Root=1-650384ec-21134dd73cec6bfb0d31ab4d;"
+    }
+  },
+  "uuid": "e92dcb87-1cba-480b-950c-2ac1ec5e15fd",
+  "persistent": true,
+  "insertionIndex": 8
+}
