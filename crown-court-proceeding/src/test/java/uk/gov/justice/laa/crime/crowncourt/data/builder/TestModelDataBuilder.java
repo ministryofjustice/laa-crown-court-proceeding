@@ -343,7 +343,6 @@ public class TestModelDataBuilder {
     public static ApiCalculateEvidenceFeeRequest getApiCalculateEvidenceFeeRequest() {
         ApiCalculateEvidenceFeeRequest request = new ApiCalculateEvidenceFeeRequest();
         request.setRepId(TEST_REP_ID);
-        request.setLaaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID);
         request.setMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL.getOutcome());
         ApiEvidenceFee evidenceFee = new ApiEvidenceFee();
         evidenceFee.setFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel());
