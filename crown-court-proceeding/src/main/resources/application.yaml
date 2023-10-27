@@ -135,9 +135,9 @@ services:
       result-codes-for-cc-bench-warrant-url: ${services.maat-api.assessments-domain}/xlat-result/cc-bench-warrant
       result-codes-for-wqtype-subtype-url: ${services.maat-api.assessments-domain}/xlat-result/wqType/{wqType}/subType/{subType}
     result-endpoints:
-      result-codes-by-caseid-asnseq-url: ${services.maat-api.assessments-domain}/result/caseId/{caseId}/asnSeq/{asnSeq}
+      result-codes-by-caseid-and-asnseq-url: ${services.maat-api.assessments-domain}/result/caseId/{caseId}/asnSeq/{asnSeq}
     wq-result-endpoints:
-      result-codes-by-caseid-asnseq-url: ${services.maat-api.assessments-domain}/wq-result/caseId/{caseId}/asnSeq/{asnSeq}
+      result-codes-by-caseid-and-asnseq-url: ${services.maat-api.assessments-domain}/wq-result/caseId/{caseId}/asnSeq/{asnSeq}
     crown-court-stored-procedure-endpoints:
       update-crown-court-outcome-url: ${services.maat-api.assessments-domain}/crown-court/updateCCOutcome
     crown-court-processing-endpoints:
