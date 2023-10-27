@@ -45,11 +45,13 @@ public class CourtDataAPIService {
     }
 
     public void updateCrownCourtOutcome(UpdateCCOutcome updateCCOutcome) {
-        maatAPIClient.get(
-                new ParameterizedTypeReference<RepOrderDTO>() {},
+        maatAPIClient.put(
+                updateCCOutcome,
+                new ParameterizedTypeReference<>() {},
                 configuration.getMaatApi().getCrownCourtStoredProcedureEndpoints().getUpdateCrownCourtOutcomeUrl(),
-                updateCCOutcome
+                null
         );
+
     }
 
     public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {

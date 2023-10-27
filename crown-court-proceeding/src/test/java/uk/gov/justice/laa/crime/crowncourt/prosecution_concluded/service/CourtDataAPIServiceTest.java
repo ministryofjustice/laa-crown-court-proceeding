@@ -208,7 +208,7 @@ class CourtDataAPIServiceTest {
     @Test
     void givenAValidParameter_whenUpdateCrownCourtOutcomeIsInvoked_thenResponseIsReturned() {
         courtDataAPIService.updateCrownCourtOutcome(UpdateCCOutcome.builder().build());
-        verify(maatAPIClient).get(any(), any(), any());
+        verify(maatAPIClient).put(any(), any(), any(), any());
     }
 
     @Test
