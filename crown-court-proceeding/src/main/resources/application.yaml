@@ -127,7 +127,7 @@ services:
     wq-hearing-endpoints:
       find-url: ${services.maat-api.assessments-domain}/wq-hearing/{hearingUUID}/maatId/{maatId}
     wq-link-register-endpoints:
-      find-url: ${services.maatApi.assessments-domain}/wq-link-register/{maatId}
+      find-url: ${services.maat-api.assessments-domain}/wq-link-register/{maatId}
     wq-offence-endpoints:
       wq-offence-count-url: ${services.maat-api.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
     xlat-result-endpoints:
