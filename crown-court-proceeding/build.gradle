@@ -20,7 +20,7 @@ def versions = [
         pitest                             : "1.4.10",
         amazonSQSVersion                   : "2.1.1",
         springFrameworkCloudVersion        : "3.0.1",
-        crimeCommonsVersion                : "2.5.0",
+        crimeCommonsVersion                : "2.7.0",
         mockitoInlineVersion               : "5.2.0",
         wiremockVersion                    : "2.35.0"
 ]
