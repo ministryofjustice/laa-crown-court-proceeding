@@ -214,13 +214,13 @@ class CourtDataAPIServiceTest {
     @Test
     void givenAValidParameter_whenInvokeUpdateAppealSentenceOrderDateIsInvoked_thenResponseIsReturned() {
         courtDataAPIService.invokeUpdateAppealSentenceOrderDate(UpdateSentenceOrder.builder().build());
-        verify(maatAPIClient).get(any(), any(), any());
+        verify(maatAPIClient).put(any(), any(), any(), any());
     }
 
     @Test
     void givenAValidParameter_whenInvokeUpdateSentenceOrderDateIsInvoked_thenResponseIsReturned() {
         courtDataAPIService.invokeUpdateSentenceOrderDate(UpdateSentenceOrder.builder().build());
-        verify(maatAPIClient).get(any(), any(), any());
+        verify(maatAPIClient).put(any(), any(), any(), any());
     }
 
     @Test

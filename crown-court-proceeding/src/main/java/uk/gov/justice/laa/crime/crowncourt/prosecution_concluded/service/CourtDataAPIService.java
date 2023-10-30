@@ -185,18 +185,20 @@ public class CourtDataAPIService {
     }
 
     public void invokeUpdateAppealSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
-        maatAPIClient.get(
-                new ParameterizedTypeReference<RepOrderDTO>() {},
+        maatAPIClient.put(
+                updateSentenceOrder,
+                new ParameterizedTypeReference<>() {},
                 configuration.getMaatApi().getCrownCourtProcessingEndpoints().getUpdateAppealCcSentenceUrl(),
-                updateSentenceOrder
+                null
         );
     }
 
     public void invokeUpdateSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
-        maatAPIClient.get(
-                new ParameterizedTypeReference<RepOrderDTO>() {},
+        maatAPIClient.put(
+                updateSentenceOrder,
+                new ParameterizedTypeReference<>() {},
                 configuration.getMaatApi().getCrownCourtProcessingEndpoints().getUpdateCcSentenceUrl(),
-                updateSentenceOrder
+                null
         );
     }
 }
