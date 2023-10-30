@@ -19,7 +19,6 @@ class CrimeEvidenceBuilderTest {
     void givenAValidCrownCourtInput_whenBuildIsInvoked_thenReturnApiCalculateEvidenceFeeRequest() {
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
         ApiCalculateEvidenceFeeRequest request = CrimeEvidenceBuilder.build(crownCourtDTO);
-        softly.assertThat(request.getLaaTransactionId()).isEqualTo(crownCourtDTO.getLaaTransactionId());
         softly.assertThat(request.getRepId()).isEqualTo(crownCourtDTO.getRepId());
         softly.assertThat(request.getMagCourtOutcome()).isEqualTo(crownCourtDTO.getMagCourtOutcome().getOutcome());
         softly.assertThat(request.getEvidenceFee().getFeeLevel()).isEqualTo(crownCourtDTO.getEvidenceFeeLevel().getFeeLevel());
@@ -39,7 +38,6 @@ class CrimeEvidenceBuilderTest {
         crownCourtDTO.setCapitalEvidence(null);
         crownCourtDTO.setEvidenceFeeLevel(null);
         ApiCalculateEvidenceFeeRequest request = CrimeEvidenceBuilder.build(crownCourtDTO);
-        softly.assertThat(request.getLaaTransactionId()).isEqualTo(crownCourtDTO.getLaaTransactionId());
         softly.assertThat(request.getRepId()).isEqualTo(crownCourtDTO.getRepId());
         softly.assertThat(request.getMagCourtOutcome()).isEqualTo(crownCourtDTO.getMagCourtOutcome().getOutcome());
         softly.assertThat(request.getEvidenceFee()).isNull();
