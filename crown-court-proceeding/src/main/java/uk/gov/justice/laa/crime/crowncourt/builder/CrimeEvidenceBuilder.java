@@ -12,7 +12,6 @@ public class CrimeEvidenceBuilder {
     public static ApiCalculateEvidenceFeeRequest build(CrownCourtDTO crownCourtDTO) {
 
         ApiCalculateEvidenceFeeRequest evidenceFeeRequest = new ApiCalculateEvidenceFeeRequest();
-        evidenceFeeRequest.setLaaTransactionId(crownCourtDTO.getLaaTransactionId());
         evidenceFeeRequest.setRepId(crownCourtDTO.getRepId());
         evidenceFeeRequest.setMagCourtOutcome(crownCourtDTO.getMagCourtOutcome().getOutcome());
         if (null != crownCourtDTO.getEvidenceFeeLevel()) {

@@ -29,7 +29,7 @@ public class CrimeEvidenceDataService {
                 evidenceFeeRequest,
                 new ParameterizedTypeReference<ApiCalculateEvidenceFeeResponse>() {},
                 configuration.getEvidence().getEvidenceFeeEndpoints().getEvidenceFeeUrl(),
-                Map.of(Constants.LAA_TRANSACTION_ID, evidenceFeeRequest.getLaaTransactionId())
+                Map.of()
         );
         log.info(RESPONSE_STRING, response);
         return response;
