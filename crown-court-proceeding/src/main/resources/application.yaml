@@ -161,5 +161,6 @@ queue:
 feature:
   prosecution-concluded-listener:
     enabled: ${PROSECUTION_CONCLUDED_LISTENER_ENABLED}
+    dbUsername: ${PROSECUTION_CONCLUDED_DATABASE_NAME}
   prosecution-concluded-schedule:
     enabled: ${PROSECUTION_CONCLUDED_SCHEDULE_ENABLED}

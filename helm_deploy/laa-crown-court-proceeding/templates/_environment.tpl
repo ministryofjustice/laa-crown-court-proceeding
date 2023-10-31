@@ -32,6 +32,8 @@ env:
     value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.url }}
   - name: PROSECUTION_CONCLUDED_LISTENER_ENABLED
     value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.listenerEnabled | quote }}
+  - name: PROSECUTION_CONCLUDED_DATABASE_NAME
+    value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.dbUsername | quote }}
   - name: PROSECUTION_CONCLUDED_SCHEDULE_ENABLED
     value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.scheduleEnabled | quote }}
   - name: JWT_ISSUER_URI

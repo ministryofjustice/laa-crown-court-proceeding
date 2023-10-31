@@ -131,6 +131,7 @@ cloud-platform:
 feature:
   prosecution-concluded-listener:
     enabled: false
+    dbUsername: MLA
   prosecution-concluded-schedule:
     enabled: false
 
