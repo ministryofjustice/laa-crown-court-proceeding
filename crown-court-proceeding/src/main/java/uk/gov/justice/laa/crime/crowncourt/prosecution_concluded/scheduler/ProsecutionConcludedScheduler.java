@@ -36,7 +36,7 @@ public class ProsecutionConcludedScheduler {
     private final ProsecutionConcludedService prosecutionConcludedService;
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;
 
-    @Scheduled(cron = "* */15 * * * *")
+    @Scheduled(cron = "* * */15 * * *")
     public void process() {
 
         log.info("Prosecution Conclusion Scheduling is started");
@@ -57,28 +57,39 @@ public class ProsecutionConcludedScheduler {
 
     public void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
         try {
+            log.info("ProsecutionConcluded:processCaseConclusion:Start");
             WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
+
             if (wqHearingDTO != null) {
+                log.info("ProsecutionConcluded:processCaseConclusion:wqHearingDTO:NOT empty");
                 if (isCCConclusion(wqHearingDTO)) {
+                    log.info("ProsecutionConcluded:processCaseConclusion:Case is crown court");
                     prosecutionConcludedService.executeCCOutCome(prosecutionConcluded, wqHearingDTO);
                 } else {
+                    log.info("ProsecutionConcluded:processCaseConclusion:Case is Not crown court");
                     updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.PROCESSED);
                 }
+            } else {
+                log.info("ProsecutionConcluded:processCaseConclusion:wqHearingDTO:Is empty");
             }
         } catch (Exception exception) {
             log.error("Prosecution Conclusion failed for MAAT ID :" + prosecutionConcluded.getMaatId());
             updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.ERROR);
         }
+        log.info("ProsecutionConcluded:processCaseConclusion:End");
     }
 
     private boolean isCCConclusion(WQHearingDTO wqHearingDTO) {
+        log.info("ProsecutionConcluded:isCCConclusion:wqHearingDTO.getWqJurisdictionType() --" + wqHearingDTO.getWqJurisdictionType());
         return JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType());
     }
 
     protected ProsecutionConcluded convertToObject(byte[] caseDate) {
         try {
+            log.info("ProsecutionConcluded:convertToObject:Start");
             return objectMapper.readValue(caseDate, ProsecutionConcluded.class);
         } catch (IOException exception) {
+            log.info("ProsecutionConcluded:convertToObject:Error");
             log.error(exception.getMessage());
             return null;
         }
