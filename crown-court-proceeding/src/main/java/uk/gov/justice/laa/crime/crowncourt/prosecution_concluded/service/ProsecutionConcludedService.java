@@ -34,14 +34,18 @@ public class ProsecutionConcludedService {
         prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
 
         WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
-        if (prosecutionConcluded.isConcluded()
-                && wqHearingDTO != null
-                && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
-            if (Boolean.TRUE.equals(courtDataAPIService.isMaatRecordLocked(prosecutionConcluded.getMaatId()))) {
-                prosecutionConcludedDataService.execute(prosecutionConcluded);
-            } else {
-                executeCCOutCome(prosecutionConcluded, wqHearingDTO);
+
+        if (wqHearingDTO != null) {
+            if (prosecutionConcluded.isConcluded()
+                    && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
+                if (Boolean.TRUE.equals(courtDataAPIService.isMaatRecordLocked(prosecutionConcluded.getMaatId()))) {
+                    prosecutionConcludedDataService.execute(prosecutionConcluded);
+                } else {
+                    executeCCOutCome(prosecutionConcluded, wqHearingDTO);
+                }
             }
+        } else {
+            prosecutionConcludedDataService.execute(prosecutionConcluded);
         }
     }
 

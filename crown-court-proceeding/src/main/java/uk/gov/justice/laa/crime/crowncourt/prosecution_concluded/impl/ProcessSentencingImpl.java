@@ -19,7 +19,7 @@ public class ProcessSentencingImpl {
 
     private final CourtDataAPIService courtDataAPIService;
 
-    @Value("${spring.datasource.username}")
+    @Value("${feature.prosecution-concluded-listener.dbUsername}")
     private String dbUser;
 
     public void processSentencingDate(String ccCaseEndDate, Integer maatId, String catyType) {

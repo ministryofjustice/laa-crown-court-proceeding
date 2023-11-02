@@ -114,7 +114,7 @@ class ProsecutionListenerTest {
         prosecutionConcludedRepository.deleteAll();
         verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/wq-link-register/5635566")));
         verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/offence/case/665421")));
-        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/crown-court/update-cc-sentence")));
+        verify(exactly(1), putRequestedFor(urlEqualTo("/api/internal/v1/assessment/crown-court/update-cc-sentence")));
     }
 
     private String getSqsMessagePayload(Integer maatId, boolean isCaseConcluded) {

@@ -127,7 +127,7 @@ services:
     wq-hearing-endpoints:
       find-url: ${services.maat-api.assessments-domain}/wq-hearing/{hearingUUID}/maatId/{maatId}
     wq-link-register-endpoints:
-      find-url: ${services.maatApi.assessments-domain}/wq-link-register/{maatId}
+      find-url: ${services.maat-api.assessments-domain}/wq-link-register/{maatId}
     wq-offence-endpoints:
       wq-offence-count-url: ${services.maat-api.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
     xlat-result-endpoints:
@@ -135,9 +135,9 @@ services:
       result-codes-for-cc-bench-warrant-url: ${services.maat-api.assessments-domain}/xlat-result/cc-bench-warrant
       result-codes-for-wqtype-subtype-url: ${services.maat-api.assessments-domain}/xlat-result/wqType/{wqType}/subType/{subType}
     result-endpoints:
-      result-codes-by-caseid-asnseq-url: ${services.maat-api.assessments-domain}/result/caseId/{caseId}/asnSeq/{asnSeq}
+      result-code-by-case-id-and-asn-seq-url: ${services.maat-api.assessments-domain}/result/caseId/{caseId}/asnSeq/{asnSeq}
     wq-result-endpoints:
-      result-codes-by-caseid-asnseq-url: ${services.maat-api.assessments-domain}/wq-result/caseId/{caseId}/asnSeq/{asnSeq}
+      result-code-by-case-id-and-asn-seq-url: ${services.maat-api.assessments-domain}/wq-result/caseId/{caseId}/asnSeq/{asnSeq}
     crown-court-stored-procedure-endpoints:
       update-crown-court-outcome-url: ${services.maat-api.assessments-domain}/crown-court/updateCCOutcome
     crown-court-processing-endpoints:
@@ -161,5 +161,6 @@ queue:
 feature:
   prosecution-concluded-listener:
     enabled: ${PROSECUTION_CONCLUDED_LISTENER_ENABLED}
+    dbUsername: ${PROSECUTION_CONCLUDED_DATABASE_NAME}
   prosecution-concluded-schedule:
     enabled: ${PROSECUTION_CONCLUDED_SCHEDULE_ENABLED}
