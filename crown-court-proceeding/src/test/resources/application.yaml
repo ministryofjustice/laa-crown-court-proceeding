@@ -131,6 +131,7 @@ cloud-platform:
 feature:
   prosecution-concluded-listener:
     enabled: false
+    dbUsername: test
   prosecution-concluded-schedule:
     enabled: false
 

@@ -45,11 +45,13 @@ public class CourtDataAPIService {
     }
 
     public void updateCrownCourtOutcome(UpdateCCOutcome updateCCOutcome) {
-        maatAPIClient.get(
-                new ParameterizedTypeReference<RepOrderDTO>() {},
+        maatAPIClient.put(
+                updateCCOutcome,
+                new ParameterizedTypeReference<>() {},
                 configuration.getMaatApi().getCrownCourtStoredProcedureEndpoints().getUpdateCrownCourtOutcomeUrl(),
-                updateCCOutcome
+                null
         );
+
     }
 
     public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
@@ -183,18 +185,20 @@ public class CourtDataAPIService {
     }
 
     public void invokeUpdateAppealSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
-        maatAPIClient.get(
-                new ParameterizedTypeReference<RepOrderDTO>() {},
+        maatAPIClient.put(
+                updateSentenceOrder,
+                new ParameterizedTypeReference<>() {},
                 configuration.getMaatApi().getCrownCourtProcessingEndpoints().getUpdateAppealCcSentenceUrl(),
-                updateSentenceOrder
+                null
         );
     }
 
     public void invokeUpdateSentenceOrderDate(UpdateSentenceOrder updateSentenceOrder) {
-        maatAPIClient.get(
-                new ParameterizedTypeReference<RepOrderDTO>() {},
+        maatAPIClient.put(
+                updateSentenceOrder,
+                new ParameterizedTypeReference<>() {},
                 configuration.getMaatApi().getCrownCourtProcessingEndpoints().getUpdateCcSentenceUrl(),
-                updateSentenceOrder
+                null
         );
     }
 }
