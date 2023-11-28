@@ -22,7 +22,8 @@ def versions = [
         springFrameworkCloudVersion        : "3.0.1",
         crimeCommonsVersion                : "2.7.0",
         mockitoInlineVersion               : "5.2.0",
-        wiremockVersion                    : "2.35.0"
+        wiremockVersion                    : "2.35.0",
+        springDocWebMVCVersion             : "2.1.0"
 ]
 
 java {
@@ -71,7 +72,7 @@ dependencies {
     implementation "org.liquibase:liquibase-core"
     implementation "org.apache.commons:commons-lang3"
     implementation "io.micrometer:micrometer-registry-prometheus"
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springDocWebMVCVersion"
     implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$versions.amazonSQSVersion"
     implementation 'software.amazon.awssdk:sts:2.20.69'
 
