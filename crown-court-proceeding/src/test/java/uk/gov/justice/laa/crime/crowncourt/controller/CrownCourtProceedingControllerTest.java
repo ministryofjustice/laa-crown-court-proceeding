@@ -6,12 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
+import uk.gov.justice.laa.crime.commons.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
@@ -24,7 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DirtiesContext
 @AutoConfigureMockMvc(addFilters = false)
-@Import(CrownCourtProceedingTestConfiguration.class)
 @WebMvcTest(CrownCourtProceedingController.class)
 class CrownCourtProceedingControllerTest {
 
@@ -39,6 +37,9 @@ class CrownCourtProceedingControllerTest {
 
     @MockBean
     private ProceedingService proceedingService;
+
+    @MockBean
+    private TraceIdHandler traceIdHandler;
 
     @Test
     void processRepOrder_Success() throws Exception {

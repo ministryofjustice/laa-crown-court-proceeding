@@ -5,14 +5,13 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import config.CrownCourtProceedingTestConfiguration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -37,11 +36,11 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 
+@DirtiesContext
 @Testcontainers
 @SpringBootTest(classes = {CrownCourtProceedingApplication.class})
-@Import(CrownCourtProceedingTestConfiguration.class)
 @AutoConfigureWireMock(port = 9999)
-@DirtiesContext
+@AutoConfigureObservability
 class ProsecutionListenerTest {
 
     private static final String QUEUE_NAME = "crime-apps-dev-prosecution-concluded-queue";
