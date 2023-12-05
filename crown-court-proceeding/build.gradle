@@ -52,12 +52,13 @@ repositories {
 
 dependencies {
 
-    implementation platform("io.sentry:sentry-bom:6.15.0")
     implementation platform(SpringBootPlugin.BOM_COORDINATES)
     annotationProcessor platform(SpringBootPlugin.BOM_COORDINATES)
 
+    implementation platform("io.sentry:sentry-bom:7.0.0")
+    implementation("io.sentry:sentry-spring-boot-starter-jakarta")
     implementation "io.sentry:sentry-logback"
-    implementation "io.sentry:sentry-spring-boot-starter"
+    
     implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springFrameworkCloudVersion"
     implementation "org.springframework:spring-jms"
     implementation "org.springframework.boot:spring-boot-starter-web"
