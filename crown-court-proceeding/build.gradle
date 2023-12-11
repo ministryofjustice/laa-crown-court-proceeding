@@ -84,7 +84,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion:all"
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion"
     
     testImplementation "com.h2database:h2"
     testImplementation "org.mockito:mockito-inline:$versions.mockitoInlineVersion"

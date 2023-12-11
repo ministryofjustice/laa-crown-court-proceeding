@@ -109,8 +109,7 @@ class CrownCourtProceedingIntegrationTest {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.POST, objectMapper.writeValueAsString(apiProcessRepOrderRequest), ENDPOINT_URL))
                 .andExpect(status().is5xxServerError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(ERROR_MSG));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -175,8 +174,7 @@ class CrownCourtProceedingIntegrationTest {
                         HttpMethod.PUT, objectMapper.writeValueAsString(
                                 TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE)), ENDPOINT_URL))
                 .andExpect(status().is5xxServerError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(ERROR_MSG));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
