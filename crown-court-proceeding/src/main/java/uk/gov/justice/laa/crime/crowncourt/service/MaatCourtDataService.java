@@ -13,7 +13,10 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
+import uk.gov.justice.laa.crime.crowncourt.util.GraphqlSchemaReaderUtil;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,4 +87,29 @@ public class MaatCourtDataService {
         log.info(RESPONSE_STRING, response);
         return response.getHeaders().getContentLength();
     }
+
+    private static Map<String, Object> getGraphQLRequestBody(String repId, String sentenceOrdDate) throws IOException {
+        final String query = GraphqlSchemaReaderUtil.getSchemaFromFileName("repOrderFilter");
+
+        Map<String, Object> variablesMap = new HashMap<>();
+        variablesMap.put("repId", repId);
+        variablesMap.put("sentenceOrdDate", sentenceOrdDate);
+
+        Map<String, Object> graphQLBody = new HashMap<>();
+        graphQLBody.put("query", query);
+        graphQLBody.put("variables", variablesMap);
+        return graphQLBody;
+    }
+    public Object getRepOrderByFilter(String repId, String sentenceOrdDate) throws IOException {
+        Map<String, Object> graphQLBody = getGraphQLRequestBody(repId, sentenceOrdDate);
+        Object response = maatAPIClient.getGraphQLApiResponse(
+                Object.class,
+                configuration.getGraphQLEndpoints().getGraphqlQueryUrl(),
+                graphQLBody
+        );
+        log.info(String.format(RESPONSE_STRING, response));
+        return response;
+    }
+
+
 }

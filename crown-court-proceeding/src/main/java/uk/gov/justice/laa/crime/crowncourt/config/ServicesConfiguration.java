@@ -19,6 +19,9 @@ public class ServicesConfiguration {
     @NotNull
     private Evidence  evidence;
 
+    @NotNull
+    private GraphQLEndpoints graphQLEndpoints;
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -82,6 +85,7 @@ public class ServicesConfiguration {
 
         @NotNull
         private ReservationEndpoints reservationEndpoints;
+
 
         @Data
         @NoArgsConstructor
@@ -281,5 +285,15 @@ public class ServicesConfiguration {
             @NotNull
             private String evidenceFeeUrl;
         }
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class GraphQLEndpoints {
+
+        @NotNull
+        private String graphqlQueryUrl;
     }
 }

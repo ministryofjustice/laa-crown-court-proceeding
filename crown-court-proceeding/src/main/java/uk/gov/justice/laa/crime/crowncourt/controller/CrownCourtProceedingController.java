@@ -18,6 +18,9 @@ import uk.gov.justice.laa.crime.crowncourt.dto.ErrorDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -112,4 +115,15 @@ public class CrownCourtProceedingController {
         proceedingService.checkCCDetails(crownCourtDTO);
         return ResponseEntity.ok(proceedingService.update(crownCourtDTO));
     }
+
+    @PostMapping(value = "/graphql", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(description = "Retrieve an old means assessment")
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Object.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    @ApiResponse(responseCode = "500", description = "Server Error.", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class)))
+    public ResponseEntity<Object> graphQLQuery() throws URISyntaxException, IOException {
+        log.info("Make GraphQL Query Request");
+        return ResponseEntity.ok(proceedingService.graphQLQuery());
+    }
+
 }

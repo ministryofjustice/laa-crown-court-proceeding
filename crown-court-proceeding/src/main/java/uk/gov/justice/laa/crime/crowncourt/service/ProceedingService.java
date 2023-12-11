@@ -16,6 +16,8 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.util.SortUtils;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,5 +110,12 @@ public class ProceedingService {
             });
         }
         return repOrderCCOutcomeList;
+    }
+
+    public Object graphQLQuery() throws URISyntaxException, IOException {
+        log.info("Start");
+        Object obj = maatCourtDataService.getRepOrderByFilter("5639461", "false");
+        log.info("Response :" + obj.toString() );
+        return obj;
     }
 }
