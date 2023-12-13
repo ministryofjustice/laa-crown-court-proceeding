@@ -17,8 +17,6 @@ public class UpdateRepOrderRequestDTO {
     private Integer repId;
     private String caseId;
     private String catyCaseType;
-    private String appealTypeCode;
-    private LocalDateTime appealTypeDate;
     private String arrestSummonsNo;
     private String userModified;
     private String magsOutcome;
