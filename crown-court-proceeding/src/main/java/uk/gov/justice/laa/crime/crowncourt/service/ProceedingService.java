@@ -114,7 +114,7 @@ public class ProceedingService {
 
     public Object graphQLQuery() throws URISyntaxException, IOException {
         log.info("Start");
-        Object obj = maatCourtDataService.getRepOrderByFilter("5639461", "false");
+        Object obj = maatCourtDataService.getRepOrderByFilter(5639461, "false");
         log.info("Response :" + obj.toString() );
         return obj;
     }

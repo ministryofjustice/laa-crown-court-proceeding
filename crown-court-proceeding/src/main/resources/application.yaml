@@ -145,13 +145,14 @@ services:
       update-cc-sentence-url: ${services.maat-api.assessments-domain}/crown-court/update-cc-sentence
     reservation-endpoints:
       is-maat-record-locked-url: ${services.maat-api.assessments-domain}/reservations/{maatId}
-    graphql-endpoints:
-      graphql-query-url: ${maatApi.assessments-domain}/graphQL
 
   evidence:
     base-url: ${EVIDENCE_API_BASE_URL}
     evidence-fee-endpoints:
       evidence-fee-url: ${services.evidence.base-url}/api/internal/v1/evidence/calculate-evidence-fee
+
+  graphql-endpoints:
+    graphql-query-url: ${services.maat-api.assessments-domain}/graphql
 
 queue:
   message:

@@ -88,7 +88,7 @@ public class MaatCourtDataService {
         return response.getHeaders().getContentLength();
     }
 
-    private static Map<String, Object> getGraphQLRequestBody(String repId, String sentenceOrdDate) throws IOException {
+    private static Map<String, Object> getGraphQLRequestBody(Integer repId, String sentenceOrdDate) throws IOException {
         final String query = GraphqlSchemaReaderUtil.getSchemaFromFileName("repOrderFilter");
 
         Map<String, Object> variablesMap = new HashMap<>();
@@ -100,7 +100,7 @@ public class MaatCourtDataService {
         graphQLBody.put("variables", variablesMap);
         return graphQLBody;
     }
-    public Object getRepOrderByFilter(String repId, String sentenceOrdDate) throws IOException {
+    public Object getRepOrderByFilter(Integer repId, String sentenceOrdDate) throws IOException {
         Map<String, Object> graphQLBody = getGraphQLRequestBody(repId, sentenceOrdDate);
         Object response = maatAPIClient.getGraphQLApiResponse(
                 Object.class,
