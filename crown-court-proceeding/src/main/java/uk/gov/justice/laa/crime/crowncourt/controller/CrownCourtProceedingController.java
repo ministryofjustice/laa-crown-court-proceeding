@@ -12,9 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uk.gov.justice.laa.crime.annotation.DefaultHTTPErrorResponse;
 import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.ErrorDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 
@@ -38,18 +38,7 @@ public class CrownCourtProceedingController {
                     schema = @Schema(implementation = ApiProcessRepOrderRequest.class)
             )
     )
-    @ApiResponse(responseCode = "400",
-            description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
-            description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
+    @DefaultHTTPErrorResponse
     public ResponseEntity<ApiProcessRepOrderResponse> processRepOrder(
             @Parameter(description = "Process Crown Rep Order",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -70,18 +59,7 @@ public class CrownCourtProceedingController {
                     schema = @Schema(implementation = ApiUpdateApplicationRequest.class)
             )
     )
-    @ApiResponse(responseCode = "400",
-            description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
-            description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
+    @DefaultHTTPErrorResponse
     public ResponseEntity<ApiUpdateApplicationResponse> updateApplication(@Valid @RequestBody ApiUpdateApplicationRequest request) {
         CrownCourtDTO crownCourtDTO = preProcessRequest(request);
         return ResponseEntity.ok(proceedingService.updateApplication(crownCourtDTO));
@@ -95,18 +73,7 @@ public class CrownCourtProceedingController {
                     schema = @Schema(implementation = ApiUpdateApplicationRequest.class)
             )
     )
-    @ApiResponse(responseCode = "400",
-            description = "Bad Request.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
-    @ApiResponse(responseCode = "500",
-            description = "Server Error.",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorDTO.class)
-            )
-    )
+    @DefaultHTTPErrorResponse
     public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> update(@Valid @RequestBody ApiUpdateApplicationRequest request) {
         CrownCourtDTO crownCourtDTO = preProcessRequest(request);
         proceedingService.checkCCDetails(crownCourtDTO);

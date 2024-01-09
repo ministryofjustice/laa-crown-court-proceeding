@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.util;
 
 
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.crime.util.SortUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;

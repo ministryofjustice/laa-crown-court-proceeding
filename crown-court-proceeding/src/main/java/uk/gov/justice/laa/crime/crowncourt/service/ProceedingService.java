@@ -10,11 +10,11 @@ import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
-import uk.gov.justice.laa.crime.crowncourt.util.SortUtils;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.exception.ValidationException;
+import uk.gov.justice.laa.crime.util.SortUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
