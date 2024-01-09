@@ -5,9 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.laa.crime.crowncourt.exception.MAATCourtDataException;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.entity.CrownCourtsEntity;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.repository.CrownCourtsRepository;
+import uk.gov.justice.laa.crime.exception.MAATCourtDataException;
 
 import java.util.Optional;
 

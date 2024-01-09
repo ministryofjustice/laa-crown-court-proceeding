@@ -3,9 +3,9 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.crowncourt.exception.MAATCourtDataException;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.entity.CrownCourtsEntity;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.repository.CrownCourtsRepository;
+import uk.gov.justice.laa.crime.exception.MAATCourtDataException;
 
 import java.util.Optional;
 

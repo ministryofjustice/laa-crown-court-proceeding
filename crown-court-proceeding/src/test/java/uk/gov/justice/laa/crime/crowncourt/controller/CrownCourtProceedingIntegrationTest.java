@@ -24,8 +24,8 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.crowncourt.util.RequestBuilderUtils;
+import uk.gov.justice.laa.crime.enums.CaseType;
 
 import java.util.Map;
 import java.util.UUID;
@@ -110,7 +110,7 @@ class CrownCourtProceedingIntegrationTest {
                         HttpMethod.POST, objectMapper.writeValueAsString(apiProcessRepOrderRequest), ENDPOINT_URL))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(ERROR_MSG));
+                .andExpect(jsonPath("$.message").value("Call to service failed. Retries exhausted: 2/2."));
     }
 
     @Test
@@ -176,7 +176,7 @@ class CrownCourtProceedingIntegrationTest {
                                 TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE)), ENDPOINT_URL))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(ERROR_MSG));
+                .andExpect(jsonPath("$.message").value("Call to service failed. Retries exhausted: 2/2."));
     }
 
     @Test

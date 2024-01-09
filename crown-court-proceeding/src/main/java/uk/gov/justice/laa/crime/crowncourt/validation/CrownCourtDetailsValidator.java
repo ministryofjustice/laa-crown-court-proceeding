@@ -3,17 +3,17 @@ package uk.gov.justice.laa.crime.crowncourt.validation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
+import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome.CONVICTED;
-import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome.PART_CONVICTED;
+import static uk.gov.justice.laa.crime.enums.CrownCourtOutcome.CONVICTED;
+import static uk.gov.justice.laa.crime.enums.CrownCourtOutcome.PART_CONVICTED;
 
 @Slf4j
 @Component

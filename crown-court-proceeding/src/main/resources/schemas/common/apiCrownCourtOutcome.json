@@ -6,7 +6,7 @@
   "properties": {
     "outcome": {
       "description": "CC Outcome",
-      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome"
+      "existingJavaType": "uk.gov.justice.laa.crime.enums.CrownCourtOutcome"
     },
     "description": {
       "description": "description of outcome",

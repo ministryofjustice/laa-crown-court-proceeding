@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.staticdata.enums;
 
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
