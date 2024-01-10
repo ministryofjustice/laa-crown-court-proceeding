@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
-import uk.gov.justice.laa.crime.crowncourt.util.DateUtil;
+import uk.gov.justice.laa.crime.util.DateUtil;
 
 import java.time.LocalDate;
 
