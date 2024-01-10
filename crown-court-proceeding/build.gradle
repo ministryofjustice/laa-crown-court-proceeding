@@ -20,7 +20,7 @@ def versions = [
         pitest                             : "1.4.10",
         amazonSQSVersion                   : "2.1.1",
         springFrameworkCloudVersion        : "3.0.1",
-        crimeCommonsVersion                : "2.7.0",
+        crimeCommonsVersion                : "2.13.3",
         mockitoInlineVersion               : "5.2.0",
         wiremockVersion                    : "2.35.0",
         springDocWebMVCVersion             : "2.1.0"
@@ -82,6 +82,7 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion"
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$versions.crimeCommonsVersion"
     
     testImplementation "com.h2database:h2"
     testImplementation "org.mockito:mockito-inline:$versions.mockitoInlineVersion"

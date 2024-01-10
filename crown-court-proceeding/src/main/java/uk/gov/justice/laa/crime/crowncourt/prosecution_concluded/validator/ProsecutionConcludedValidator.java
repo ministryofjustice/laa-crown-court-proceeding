@@ -1,8 +1,8 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator;
 
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import java.util.Optional;
 

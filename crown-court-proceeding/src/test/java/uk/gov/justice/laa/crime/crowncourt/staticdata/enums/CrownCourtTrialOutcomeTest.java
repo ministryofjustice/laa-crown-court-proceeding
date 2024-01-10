@@ -2,7 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.staticdata.enums;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.*;
