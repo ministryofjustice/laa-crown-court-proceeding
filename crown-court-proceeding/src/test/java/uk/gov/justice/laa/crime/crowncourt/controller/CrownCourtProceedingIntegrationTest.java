@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CrownCourtProceedingIntegrationTest {
 
     private static final boolean IS_VALID = true;
-    private static final String ERROR_MSG = "Call to service MAAT-API failed.";
+    private static final String ERROR_MSG = "Call to service failed. Retries exhausted: 2/2.";
     private static final String ENDPOINT_URL = "/api/internal/v1/proceedings";
 
     private MockMvc mvc;
@@ -110,7 +110,7 @@ class CrownCourtProceedingIntegrationTest {
                         HttpMethod.POST, objectMapper.writeValueAsString(apiProcessRepOrderRequest), ENDPOINT_URL))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("Call to service failed. Retries exhausted: 2/2."));
+                .andExpect(jsonPath("$.message").value(ERROR_MSG));
     }
 
     @Test
@@ -176,7 +176,7 @@ class CrownCourtProceedingIntegrationTest {
                                 TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE)), ENDPOINT_URL))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("Call to service failed. Retries exhausted: 2/2."));
+                .andExpect(jsonPath("$.message").value(ERROR_MSG));
     }
 
     @Test
