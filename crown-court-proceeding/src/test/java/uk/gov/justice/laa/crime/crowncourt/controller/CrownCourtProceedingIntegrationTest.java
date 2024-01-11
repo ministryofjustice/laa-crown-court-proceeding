@@ -24,8 +24,8 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
-import uk.gov.justice.laa.crime.crowncourt.util.RequestBuilderUtils;
 import uk.gov.justice.laa.crime.enums.CaseType;
+import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
 
 import java.util.Map;
 import java.util.UUID;
