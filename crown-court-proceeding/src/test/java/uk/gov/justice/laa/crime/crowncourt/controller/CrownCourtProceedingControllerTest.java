@@ -14,7 +14,7 @@ import uk.gov.justice.laa.crime.commons.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
-import uk.gov.justice.laa.crime.crowncourt.util.RequestBuilderUtils;
+import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
