@@ -1,11 +1,10 @@
-import org.springframework.boot.gradle.plugin.SpringBootPlugin
-
 plugins {
     id "java"
     id "jacoco"
     id "org.sonarqube" version "4.0.0.2929"
     id "info.solidsoft.pitest" version "1.9.11"
-    id "org.springframework.boot" version "3.1.2"
+    id "org.springframework.boot" version "3.1.5"
+    id 'io.spring.dependency-management' version '1.1.4'
     id "org.jsonschema2dataclass" version "6.0.0"
 }
 
@@ -22,8 +21,16 @@ def versions = [
         springFrameworkCloudVersion        : "3.0.1",
         crimeCommonsVersion                : "2.13.4",
         mockitoInlineVersion               : "5.2.0",
-        wiremockVersion                    : "2.35.0",
-        springDocWebMVCVersion             : "2.1.0"
+        wmStubRunnerVersion    	           : "4.0.1",
+        springDocWebMVCVersion             : "2.1.0",
+        awsSdkStsVersion                   : "2.20.69",
+        awsJavaSdkVersion                  : "1.12.264",
+        localstackUtilsVersion             : "0.2.23",
+        testcontainersLocalstackVersion    : "1.18.3",
+        testcontainersJunitjupiterVersion  : "1.19.0"
+
+
+
 ]
 
 java {
@@ -52,53 +59,44 @@ repositories {
 
 dependencies {
 
-    implementation platform(SpringBootPlugin.BOM_COORDINATES)
-    annotationProcessor platform(SpringBootPlugin.BOM_COORDINATES)
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion:all"
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$versions.crimeCommonsVersion"
 
-    implementation platform("io.sentry:sentry-bom:7.0.0")
-    implementation("io.sentry:sentry-spring-boot-starter-jakarta")
-    implementation "io.sentry:sentry-logback"
-    
-    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springFrameworkCloudVersion"
-    implementation "org.springframework:spring-jms"
-    implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-starter-webflux"
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-    implementation "org.postgresql:postgresql"
-    implementation "com.google.code.gson:gson"
-    implementation "org.liquibase:liquibase-core"
-    implementation "org.apache.commons:commons-lang3"
-    implementation "io.micrometer:micrometer-registry-prometheus"
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springDocWebMVCVersion"
+
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springFrameworkCloudVersion"
+    implementation "org.springframework:spring-jms"
     implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$versions.amazonSQSVersion"
-    implementation 'software.amazon.awssdk:sts:2.20.69'
+    implementation "software.amazon.awssdk:sts:$versions.awsSdkStsVersion"
+
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springDocWebMVCVersion"
+
+    implementation "org.postgresql:postgresql"
+    implementation "org.liquibase:liquibase-core"
+
+    implementation "com.google.code.gson:gson"
+
+    implementation "io.micrometer:micrometer-registry-prometheus"
 
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion"
-    implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$versions.crimeCommonsVersion"
-    
     testImplementation "com.h2database:h2"
     testImplementation "org.mockito:mockito-inline:$versions.mockitoInlineVersion"
-    testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
-    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.0.1"
+    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.wmStubRunnerVersion"
     testImplementation "org.pitest:pitest:$versions.pitest"
 
     //dependencies for ProsecutionListenerTest only
-    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.12.264'
-    testSqsIntegrationImplementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.12.264'
-    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:1.19.0"
-    testSqsIntegrationImplementation 'org.testcontainers:localstack:1.18.3'
-    testSqsIntegrationImplementation 'cloud.localstack:localstack-utils:0.2.23'
+    testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk-sqs:$versions.awsJavaSdkVersion"
+    testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk:$versions.awsJavaSdkVersion"
+    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainersJunitjupiterVersion"
+    testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainersLocalstackVersion"
+    testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$versions.localstackUtilsVersion"
     testSqsIntegrationImplementation "com.h2database:h2"
-    testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.0.1"
+    testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.wmStubRunnerVersion"
 }
 
 configurations {

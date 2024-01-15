@@ -13,7 +13,6 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 import uk.gov.justice.laa.crime.enums.*;
 
 import java.time.LocalDateTime;

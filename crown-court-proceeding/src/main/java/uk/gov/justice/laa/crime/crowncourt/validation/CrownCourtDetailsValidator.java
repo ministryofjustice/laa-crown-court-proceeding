@@ -33,7 +33,7 @@ public class CrownCourtDetailsValidator {
         if (apiCrownCourtOutcome.isPresent()) {
             final CrownCourtOutcome crownCourtOutcome = apiCrownCourtOutcome.get().getOutcome();
             log.info("Validating crown court outcome " + crownCourtOutcome);
-            if ((crownCourtOutcome.getCode() == CONVICTED.getCode() || crownCourtOutcome.getCode() == PART_CONVICTED.getCode())
+            if ((CONVICTED.getCode().equals(crownCourtOutcome.getCode()) || PART_CONVICTED.getCode().equals(crownCourtOutcome.getCode()))
                     && crownCourtSummary.getIsImprisoned() == null) {
                 throw new ValidationException(MSG_INVALID_CC_OUTCOME);
             }
