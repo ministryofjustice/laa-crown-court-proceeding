@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 
 import java.time.LocalDateTime;
@@ -42,7 +41,6 @@ public class UpdateRepOrderDTOBuilder {
 
     public static UpdateRepOrderRequestDTO buildOutcome(CrownCourtDTO crownCourtDTO) {
         ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
-        ApiIOJAppeal iojAppeal = crownCourtDTO.getIojAppeal();
         return UpdateRepOrderRequestDTO.builder()
                 .repId(crownCourtDTO.getRepId())
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
