@@ -32,8 +32,9 @@
       "format": "date-time"
     },
     "evidenceFeeLevel": {
-      "type": "string",
-      "description": "The evidence fee level"
+      "type": "object",
+      "description": "The evidence fee level",
+      "existingJavaType": "uk.gov.justice.laa.crime.enums.EvidenceFeeLevel"
     },
     "isImprisoned": {
       "type": "boolean",

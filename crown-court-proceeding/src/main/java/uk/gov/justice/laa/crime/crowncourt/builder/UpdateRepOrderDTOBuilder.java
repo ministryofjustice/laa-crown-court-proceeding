@@ -16,7 +16,9 @@ import static java.util.Optional.ofNullable;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateRepOrderDTOBuilder {
 
-    public static UpdateRepOrderRequestDTO build(CrownCourtDTO crownCourtDTO, ApiProcessRepOrderResponse apiProcessRepOrderResponse) {
+    public static UpdateRepOrderRequestDTO build(CrownCourtDTO crownCourtDTO,
+                                                 ApiProcessRepOrderResponse apiProcessRepOrderResponse) {
+
         ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
         return UpdateRepOrderRequestDTO.builder()
                 .repId(crownCourtDTO.getRepId())
@@ -25,15 +27,15 @@ public class UpdateRepOrderDTOBuilder {
                 .crownRepOrderType(apiProcessRepOrderResponse.getRepType())
                 .crownRepOrderDate(
                         ofNullable(apiProcessRepOrderResponse.getRepOrderDate())
-                        .map(LocalDateTime::toLocalDate)
-                        .orElse(null))
+                                .map(LocalDateTime::toLocalDate)
+                                .orElse(null))
                 .crownWithdrawalDate(
                         ofNullable(crownCourtSummary.getWithdrawalDate())
                                 .map(LocalDateTime::toLocalDate)
                                 .orElse(null)
                 )
                 .sentenceOrderDate(crownCourtSummary.getSentenceOrderDate())
-                .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel())
+                .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel().getFeeLevel())
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
                 .build();
@@ -46,7 +48,7 @@ public class UpdateRepOrderDTOBuilder {
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
                 .isWarrantIssued(crownCourtSummary.getIsWarrantIssued())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
-                .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel())
+                .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel().getFeeLevel())
                 .build();
     }
 }
