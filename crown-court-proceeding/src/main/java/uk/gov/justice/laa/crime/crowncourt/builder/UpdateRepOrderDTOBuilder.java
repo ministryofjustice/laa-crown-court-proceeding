@@ -41,7 +41,7 @@ public class UpdateRepOrderDTOBuilder {
                 .build();
     }
 
-    public static UpdateRepOrderRequestDTO buildOutcome(CrownCourtDTO crownCourtDTO) {
+    public static UpdateRepOrderRequestDTO build(CrownCourtDTO crownCourtDTO) {
         ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
         return UpdateRepOrderRequestDTO.builder()
                 .repId(crownCourtDTO.getRepId())

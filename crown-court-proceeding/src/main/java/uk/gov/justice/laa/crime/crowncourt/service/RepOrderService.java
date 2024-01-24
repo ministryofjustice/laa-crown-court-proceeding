@@ -253,7 +253,7 @@ public class RepOrderService {
 
 
     protected RepOrderDTO update(CrownCourtDTO dto) {
-        return maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.buildOutcome(dto), dto.getLaaTransactionId());
+        return maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto), dto.getLaaTransactionId());
     }
 
     protected void createOutcome(CrownCourtDTO dto) {
