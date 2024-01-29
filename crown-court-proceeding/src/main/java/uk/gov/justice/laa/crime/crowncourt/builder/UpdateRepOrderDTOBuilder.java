@@ -7,6 +7,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 
 import java.time.LocalDateTime;
 
@@ -35,7 +36,11 @@ public class UpdateRepOrderDTOBuilder {
                                 .orElse(null)
                 )
                 .sentenceOrderDate(crownCourtSummary.getSentenceOrderDate())
-                .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel().getFeeLevel())
+                .evidenceFeeLevel(
+                        ofNullable(crownCourtSummary.getEvidenceFeeLevel())
+                                .map(EvidenceFeeLevel::getFeeLevel)
+                                .orElse(null)
+                )
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
                 .build();
@@ -48,7 +53,11 @@ public class UpdateRepOrderDTOBuilder {
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
                 .isWarrantIssued(crownCourtSummary.getIsWarrantIssued())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
-                .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel().getFeeLevel())
+                .evidenceFeeLevel(
+                        ofNullable(crownCourtSummary.getEvidenceFeeLevel())
+                                .map(EvidenceFeeLevel::getFeeLevel)
+                                .orElse(null)
+                )
                 .build();
     }
 }
