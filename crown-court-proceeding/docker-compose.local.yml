@@ -4,6 +4,7 @@ services:
   app:
     environment:
       - MAAT_API_BASE_URL=http://court-data-api:8090/
+      - EVIDENCE_API_BASE_URL=http://crime-evidence:8189/
 
     networks:
       default:
