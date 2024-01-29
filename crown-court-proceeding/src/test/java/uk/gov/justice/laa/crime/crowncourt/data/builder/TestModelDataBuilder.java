@@ -7,7 +7,6 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 import uk.gov.justice.laa.crime.enums.*;
 
 import java.nio.charset.StandardCharsets;
