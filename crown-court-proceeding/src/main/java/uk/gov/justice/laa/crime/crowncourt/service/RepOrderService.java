@@ -29,11 +29,14 @@ public class RepOrderService {
 
     List<String> grantedRepOrderDecisions = List.of(Constants.GRANTED_FAILED_MEANS_TEST,
             Constants.GRANTED_PASSED_MEANS_TEST,
-            Constants.GRANTED_PASSPORTED);
+            Constants.GRANTED_PASSPORTED
+    );
     List<String> grantedPassRepOrderDecisions = List.of(Constants.GRANTED_PASSED_MEANS_TEST,
-            Constants.GRANTED_PASSPORTED);
+            Constants.GRANTED_PASSPORTED
+    );
     List<String> failedRepOrderDecisions = List.of(Constants.FAILED_IO_J_APPEAL_FAILURE,
-            Constants.FAILED_CF_S_FAILED_MEANS_TEST);
+            Constants.FAILED_CF_S_FAILED_MEANS_TEST
+    );
 
     public ApiCrownCourtSummary getRepDecision(CrownCourtDTO requestDTO) {
 
@@ -46,7 +49,8 @@ public class RepOrderService {
         if (requestDTO.getCaseType() == CaseType.APPEAL_CC && reviewResult == ReviewResult.FAIL) {
             ccRepOrderDecision = Constants.FAILED_IO_J_APPEAL_FAILURE;
         } else {
-            boolean isValidCaseType = isValidCaseType(requestDTO.getCaseType(), requestDTO.getMagCourtOutcome(), reviewResult);
+            boolean isValidCaseType =
+                    isValidCaseType(requestDTO.getCaseType(), requestDTO.getMagCourtOutcome(), reviewResult);
             ccRepOrderDecision = getDecisionByPassportAssessment(requestDTO.getPassportAssessment(), isValidCaseType);
             if (ccRepOrderDecision == null) {
                 ccRepOrderDecision = getDecisionByFinAssessment(requestDTO, reviewResult, isValidCaseType);
@@ -62,7 +66,9 @@ public class RepOrderService {
 
     public String getDecisionByFinAssessment(CrownCourtDTO requestDTO, ReviewResult reviewResult, boolean isValidCaseType) {
 
-        FullAssessmentResult fullAssessmentResult = FullAssessmentResult.getFrom(requestDTO.getFinancialAssessment().getFullResult());
+        FullAssessmentResult fullAssessmentResult = FullAssessmentResult.getFrom(
+                requestDTO.getFinancialAssessment().getFullResult()
+        );
         CurrentStatus fullAssessmentStatus = requestDTO.getFinancialAssessment().getFullStatus();
         if (fullAssessmentResult == FullAssessmentResult.INEL
                 && fullAssessmentStatus == CurrentStatus.COMPLETE
@@ -230,9 +236,14 @@ public class RepOrderService {
         long repOrderOutcomeCount = maatCourtDataService.outcomeCount(dto.getRepId(), dto.getLaaTransactionId());
         if (repOrderOutcomeCount == 0 && null != dto.getCrownCourtSummary().getCrownCourtOutcome() &&
                 !dto.getCrownCourtSummary().getCrownCourtOutcome().isEmpty()) {
-            ApiCalculateEvidenceFeeResponse evidenceFeeResponse = crimeEvidenceDataService.getCalEvidenceFee(CrimeEvidenceBuilder.build(dto));
+
+            ApiCalculateEvidenceFeeResponse evidenceFeeResponse =
+                    crimeEvidenceDataService.getCalEvidenceFee(CrimeEvidenceBuilder.build(dto));
+
             if (null != evidenceFeeResponse.getEvidenceFee()) {
-                dto.getCrownCourtSummary().setEvidenceFeeLevel(evidenceFeeResponse.getEvidenceFee().getFeeLevel());
+                dto.getCrownCourtSummary().setEvidenceFeeLevel(
+                        EvidenceFeeLevel.getFrom(evidenceFeeResponse.getEvidenceFee().getFeeLevel())
+                );
             }
         }
         RepOrderDTO repOrderDTO = update(dto);
@@ -242,7 +253,7 @@ public class RepOrderService {
 
 
     protected RepOrderDTO update(CrownCourtDTO dto) {
-        return maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.buildOutcome(dto), dto.getLaaTransactionId());
+        return maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto), dto.getLaaTransactionId());
     }
 
     protected void createOutcome(CrownCourtDTO dto) {

@@ -35,7 +35,7 @@ class UpdateRepOrderDTOBuilderTest {
         softly.assertThat(updateRequest.getCrownWithdrawalDate())
                 .isEqualTo(dto.getCrownCourtSummary().getWithdrawalDate());
         softly.assertThat(updateRequest.getEvidenceFeeLevel())
-                .isEqualTo(dto.getCrownCourtSummary().getEvidenceFeeLevel());
+                .isEqualTo(dto.getCrownCourtSummary().getEvidenceFeeLevel().getFeeLevel());
         softly.assertThat(updateRequest.getIsImprisoned())
                 .isEqualTo(dto.getIsImprisoned());
         softly.assertThat(updateRequest.getUserModified())

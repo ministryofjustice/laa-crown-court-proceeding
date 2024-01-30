@@ -7,7 +7,6 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 import uk.gov.justice.laa.crime.enums.*;
 
 import java.nio.charset.StandardCharsets;
@@ -131,6 +130,7 @@ public class TestModelDataBuilder {
                 .withRepOrderDate(TEST_REP_ORDER_DATE)
                 .withRepId(TEST_REP_ID)
                 .withIsImprisoned(true)
+                .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
                 .withCrownCourtOutcome(List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED, TEST_SENTENCE_ORDER_DATE)));
     }
 
@@ -177,6 +177,7 @@ public class TestModelDataBuilder {
                         .withRepType("")
                         .withRepOrderDecision(MOCK_DECISION)
                         .withWithdrawalDate(TEST_WITHDRAWAL_DATE)
+                        .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
                         .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE))
                 .withUserSession(getApiUserSession(isValid))
                 .withCaseType(CaseType.EITHER_WAY)
@@ -322,7 +323,7 @@ public class TestModelDataBuilder {
                 .crownRepOrderDecision(Constants.GRANTED_PASSED_MEANS_TEST)
                 .crownRepOrderDate(TEST_CROWN_REP_ORDER_DATE.toLocalDate())
                 .crownRepOrderType(Constants.CROWN_COURT_ONLY)
-                .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
+                .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
                 .build();
     }
 
@@ -358,13 +359,10 @@ public class TestModelDataBuilder {
         ApiUpdateCrownCourtOutcomeResponse response = new ApiUpdateCrownCourtOutcomeResponse();
         response.setModifiedDateTime(TEST_DATE_MODIFIED);
         ApiCrownCourtSummary summary = new ApiCrownCourtSummary();
-        summary.setEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel());
+        summary.setEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1);
         summary.setRepOrderDate(TEST_REP_ORDER_DATE);
         summary.setRepOrderDecision("");
         summary.setRepType("");
-        ApiRepOrderCrownCourtOutcome outcome = new ApiRepOrderCrownCourtOutcome();
-        outcome.setOutcome(CrownCourtOutcome.CONVICTED);
-        outcome.setOutcomeDate(TEST_CROWN_REP_ORDER_DATE);
         response.setCrownCourtSummary(summary);
         return response;
     }
