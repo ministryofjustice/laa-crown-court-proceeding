@@ -41,8 +41,6 @@ public class TestModelDataBuilder {
     public static final Integer TEST_CASE_ID = 45673;
     public static final String TEST_OFFENCE_ID = "324234";
 
-    public static final Integer PASSPORT_ID = 23456;
-
     public static final LocalDateTime TEST_CROWN_REP_ORDER_DATE =
             LocalDateTime.of(2022, 10, 19, 0, 0, 0);
 
@@ -124,30 +122,17 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static CrownCourtDTO getCrownCourtDTOWithInvalidCCDetails() {
-        return CrownCourtDTO.builder()
-                .repId(TEST_REP_ID)
-                .laaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
-                .caseType(CaseType.SUMMARY_ONLY)
-                .magCourtOutcome(null)
-                .build();
-    }
-
-    public static CrownCourtDTO getCrownCourtDTOWithValidCCDetails(CaseType caseType) {
+    public static CrownCourtDTO getCrownCourtDTO(CaseType caseType,MagCourtOutcome magCourtOutcome) {
         return CrownCourtDTO.builder()
                 .repId(TEST_REP_ID)
                 .laaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
                 .caseType(caseType)
-                .magCourtOutcome(MagCourtOutcome.APPEAL_TO_CC)
+                .magCourtOutcome(magCourtOutcome)
                 .build();
     }
 
     public static List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeDTOList() {
         return List.of(RepOrderCCOutcomeDTO.builder().repId(TEST_REP_ID).build());
-    }
-
-    public static List<RepOrderCCOutcomeDTO> getEmptyRepOrderCCOutcomeDTOList() {
-        return List.of();
     }
 
     public static ApiCrownCourtSummary getCrownCourtSummary() {

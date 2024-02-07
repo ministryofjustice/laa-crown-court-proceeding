@@ -391,7 +391,7 @@ class ProceedingServiceTest {
         return Stream.of(
                 Arguments.of(
                         TestModelDataBuilder
-                                .getCrownCourtDTOWithInvalidCCDetails(),
+                                .getCrownCourtDTO(CaseType.SUMMARY_ONLY, null),
                         TestModelDataBuilder
                                 .getRepOrderCCOutcomeDTOList()
                 )
@@ -402,24 +402,23 @@ class ProceedingServiceTest {
         return Stream.of(
                 Arguments.of(
                         TestModelDataBuilder
-                                .getCrownCourtDTOWithValidCCDetails(CaseType.APPEAL_CC),
-                        TestModelDataBuilder
-                                .getEmptyRepOrderCCOutcomeDTOList()
+                                .getCrownCourtDTO(CaseType.APPEAL_CC, null),
+                        List.of()
                 ),
                 Arguments.of(
                         TestModelDataBuilder
-                                .getCrownCourtDTOWithValidCCDetails(null),
+                                .getCrownCourtDTO(CaseType.EITHER_WAY, MagCourtOutcome.APPEAL_TO_CC),
                         TestModelDataBuilder
-                                .getEmptyRepOrderCCOutcomeDTOList()
+                                .getRepOrderCCOutcomeDTOList()
                 ),
                 Arguments.of(
                         TestModelDataBuilder
-                                .getCrownCourtDTOWithValidCCDetails(null),
-                        null
+                                .getCrownCourtDTO(null, MagCourtOutcome.APPEAL_TO_CC),
+                        List.of()
                 ),
                 Arguments.of(
                         TestModelDataBuilder
-                                .getCrownCourtDTOWithValidCCDetails(null),
+                                .getCrownCourtDTO(CaseType.APPEAL_CC, null),
                         TestModelDataBuilder
                                 .getRepOrderCCOutcomeDTOList()
                 )
