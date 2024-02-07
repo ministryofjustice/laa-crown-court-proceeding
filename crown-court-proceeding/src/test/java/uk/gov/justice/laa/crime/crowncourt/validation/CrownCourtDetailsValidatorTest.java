@@ -2,10 +2,10 @@ package uk.gov.justice.laa.crime.crowncourt.validation;
 
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
-import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
+import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

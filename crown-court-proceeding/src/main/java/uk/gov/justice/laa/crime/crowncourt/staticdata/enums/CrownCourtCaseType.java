@@ -2,7 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.staticdata.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import java.util.Optional;
 import java.util.stream.Stream;

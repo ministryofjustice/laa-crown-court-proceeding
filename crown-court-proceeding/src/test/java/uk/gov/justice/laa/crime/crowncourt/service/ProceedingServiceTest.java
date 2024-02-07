@@ -12,14 +12,14 @@ import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateCrownCourtOutcomeResponse;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.enums.CaseType;
+import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
+import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

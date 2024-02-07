@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +17,9 @@ import static java.util.Optional.ofNullable;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateRepOrderDTOBuilder {
 
-    public static UpdateRepOrderRequestDTO build(CrownCourtDTO crownCourtDTO, ApiProcessRepOrderResponse apiProcessRepOrderResponse) {
+    public static UpdateRepOrderRequestDTO build(CrownCourtDTO crownCourtDTO,
+                                                 ApiProcessRepOrderResponse apiProcessRepOrderResponse) {
+
         ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
         return UpdateRepOrderRequestDTO.builder()
                 .repId(crownCourtDTO.getRepId())
@@ -26,29 +28,36 @@ public class UpdateRepOrderDTOBuilder {
                 .crownRepOrderType(apiProcessRepOrderResponse.getRepType())
                 .crownRepOrderDate(
                         ofNullable(apiProcessRepOrderResponse.getRepOrderDate())
-                        .map(LocalDateTime::toLocalDate)
-                        .orElse(null))
+                                .map(LocalDateTime::toLocalDate)
+                                .orElse(null))
                 .crownWithdrawalDate(
                         ofNullable(crownCourtSummary.getWithdrawalDate())
                                 .map(LocalDateTime::toLocalDate)
                                 .orElse(null)
                 )
                 .sentenceOrderDate(crownCourtSummary.getSentenceOrderDate())
-                .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel())
+                .evidenceFeeLevel(
+                        ofNullable(crownCourtSummary.getEvidenceFeeLevel())
+                                .map(EvidenceFeeLevel::getFeeLevel)
+                                .orElse(null)
+                )
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
                 .build();
     }
 
-    public static UpdateRepOrderRequestDTO buildOutcome(CrownCourtDTO crownCourtDTO) {
+    public static UpdateRepOrderRequestDTO build(CrownCourtDTO crownCourtDTO) {
         ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
-        ApiIOJAppeal iojAppeal = crownCourtDTO.getIojAppeal();
         return UpdateRepOrderRequestDTO.builder()
                 .repId(crownCourtDTO.getRepId())
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
                 .isWarrantIssued(crownCourtSummary.getIsWarrantIssued())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
-                .evidenceFeeLevel(crownCourtSummary.getEvidenceFeeLevel())
+                .evidenceFeeLevel(
+                        ofNullable(crownCourtSummary.getEvidenceFeeLevel())
+                                .map(EvidenceFeeLevel::getFeeLevel)
+                                .orElse(null)
+                )
                 .build();
     }
 }

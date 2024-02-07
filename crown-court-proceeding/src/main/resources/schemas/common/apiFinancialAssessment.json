@@ -11,7 +11,7 @@
     "initStatus": {
       "type": "object",
       "description": "Assessment Status",
-      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CurrentStatus"
+      "existingJavaType": "uk.gov.justice.laa.crime.enums.CurrentStatus"
     },
     "fullResult": {
       "type": "string",
@@ -20,7 +20,7 @@
     "fullStatus": {
       "type": "object",
       "description": "Assessment Status",
-      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CurrentStatus"
+      "existingJavaType": "uk.gov.justice.laa.crime.enums.CurrentStatus"
     },
     "hardshipOverview": {
       "type": "object",

@@ -7,12 +7,12 @@
     "reviewResult": {
       "type": "object",
       "title": "Review Result",
-      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.ReviewResult"
+      "existingJavaType": "uk.gov.justice.laa.crime.enums.ReviewResult"
     },
     "assessmentStatus": {
       "type": "object",
       "title": "Assessment Status",
-      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CurrentStatus"
+      "existingJavaType": "uk.gov.justice.laa.crime.enums.CurrentStatus"
     }
   },
   "additionalProperties": false,

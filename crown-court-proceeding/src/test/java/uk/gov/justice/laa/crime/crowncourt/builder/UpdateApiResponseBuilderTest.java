@@ -10,7 +10,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDT
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateCrownCourtOutcomeResponse;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
+import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
 
 import java.time.LocalDateTime;
 import java.util.Collections;

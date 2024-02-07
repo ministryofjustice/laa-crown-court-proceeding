@@ -9,11 +9,11 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
 import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 @Slf4j
 @Component

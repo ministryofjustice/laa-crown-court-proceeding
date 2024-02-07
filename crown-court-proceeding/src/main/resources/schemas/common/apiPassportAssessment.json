@@ -10,7 +10,7 @@
     },
     "status": {
       "description": "Passport assessment status",
-      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CurrentStatus"
+      "existingJavaType": "uk.gov.justice.laa.crime.enums.CurrentStatus"
     }
   },
   "additionalProperties": false,

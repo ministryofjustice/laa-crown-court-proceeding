@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,5 +40,5 @@ public class RepOrderDTO {
     private LocalDate crownRepOrderDate;
     private LocalDate assessmentDateCompleted;
     private LocalDate sentenceOrderDate;
-    private String evidenceFeeLevel;
+    private EvidenceFeeLevel evidenceFeeLevel;
 }

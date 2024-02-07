@@ -16,17 +16,17 @@
     "caseType": {
       "type": "object",
       "description": "The case type",
-      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType"
+      "existingJavaType": "uk.gov.justice.laa.crime.enums.CaseType"
     },
     "magCourtOutcome": {
       "type": "object",
       "description": "Magistrate Court Outcome",
-      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome"
+      "existingJavaType": "uk.gov.justice.laa.crime.enums.MagCourtOutcome"
     },
     "decisionReason": {
       "type": "object",
       "description": "Decision Reason",
-      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.staticdata.enums.DecisionReason"
+      "existingJavaType": "uk.gov.justice.laa.crime.enums.DecisionReason"
     },
     "decisionDate": {
       "type": "string",

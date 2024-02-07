@@ -9,12 +9,13 @@ import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
-import uk.gov.justice.laa.crime.crowncourt.exception.ValidationException;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseType;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtOutcome;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MagCourtOutcome;
-import uk.gov.justice.laa.crime.crowncourt.util.SortUtils;
+import uk.gov.justice.laa.crime.enums.CaseType;
+import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
+import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.exception.ValidationException;
+import uk.gov.justice.laa.crime.util.SortUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -56,8 +57,8 @@ public class ProceedingService {
 
 
     public ApiUpdateApplicationResponse updateApplication(CrownCourtDTO dto) {
-        RepOrderDTO repOrderDTO = maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto, processRepOrder(dto)), dto.getLaaTransactionId());
-
+        UpdateRepOrderRequestDTO repOrderRequest = UpdateRepOrderDTOBuilder.build(dto, processRepOrder(dto));
+        RepOrderDTO repOrderDTO = maatCourtDataService.updateRepOrder(repOrderRequest, dto.getLaaTransactionId());
         ApiUpdateApplicationResponse apiUpdateApplicationResponse = new ApiUpdateApplicationResponse();
         apiUpdateApplicationResponse.withModifiedDateTime(repOrderDTO.getDateModified());
         apiUpdateApplicationResponse.withCrownRepOrderDate(
@@ -94,7 +95,8 @@ public class ProceedingService {
     }
 
     public List<RepOrderCCOutcomeDTO> getCCOutcome(Integer repId, String laaTransactionId) {
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = maatCourtDataService.getRepOrderCCOutcomeByRepId(repId, laaTransactionId);
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList =
+                maatCourtDataService.getRepOrderCCOutcomeByRepId(repId, laaTransactionId);
         if (null != repOrderCCOutcomeList && !repOrderCCOutcomeList.isEmpty()) {
             repOrderCCOutcomeList = repOrderCCOutcomeList.stream().filter(outcome ->
                     isNotBlank(outcome.getOutcome())).collect(Collectors.toCollection(ArrayList::new));
