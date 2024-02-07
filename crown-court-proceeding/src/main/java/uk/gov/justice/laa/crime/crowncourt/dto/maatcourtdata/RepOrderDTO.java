@@ -34,8 +34,6 @@ public class RepOrderDTO {
     @JsonIgnore
     @Builder.Default
     private List<FinancialAssessmentDTO> financialAssessments = new ArrayList<>();
-    @Builder.Default
-    private List<RepOrderCCOutcomeDTO> repOrderCCOutcome = new ArrayList<>();
     private String decisionReasonCode;
     private String crownRepOrderDecision;
     private String crownRepOrderType;
