@@ -124,6 +124,32 @@ public class TestModelDataBuilder {
                 .build();
     }
 
+    public static CrownCourtDTO getCrownCourtDTOWithInvalidCCDetails() {
+        return CrownCourtDTO.builder()
+                .repId(TEST_REP_ID)
+                .laaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
+                .caseType(CaseType.SUMMARY_ONLY)
+                .magCourtOutcome(null)
+                .build();
+    }
+
+    public static CrownCourtDTO getCrownCourtDTOWithValidCCDetails(CaseType caseType) {
+        return CrownCourtDTO.builder()
+                .repId(TEST_REP_ID)
+                .laaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
+                .caseType(caseType)
+                .magCourtOutcome(MagCourtOutcome.APPEAL_TO_CC)
+                .build();
+    }
+
+    public static List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeDTOList() {
+        return List.of(RepOrderCCOutcomeDTO.builder().repId(TEST_REP_ID).build());
+    }
+
+    public static List<RepOrderCCOutcomeDTO> getEmptyRepOrderCCOutcomeDTOList() {
+        return List.of();
+    }
+
     public static ApiCrownCourtSummary getCrownCourtSummary() {
         return new ApiCrownCourtSummary()
                 .withRepOrderDecision(MOCK_DECISION)

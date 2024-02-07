@@ -3,6 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateApiResponseBuilder;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
@@ -72,6 +73,13 @@ public class ProceedingService {
 
     public Optional<Void> checkCCDetails(CrownCourtDTO dto) {
         ApiCrownCourtSummary crownCourtSummary = dto.getCrownCourtSummary();
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = maatCourtDataService.getRepOrderCCOutcomeByRepId(dto.getRepId(), null);
+        String caseType = dto.getCaseType() != null ? dto.getCaseType().getCaseType() : "X";
+        if(dto.getMagCourtOutcome() == null &&
+                CollectionUtils.isNotEmpty(repOrderCCOutcomeDTOList) &&
+                (!caseType.equals(CaseType.APPEAL_CC.getCaseType()))){
+            throw new ValidationException("Cannot have Crown Court outcome without Mags Court outcome");
+        }
         if (crownCourtSummary != null && crownCourtSummary.getCrownCourtOutcome() != null
                 && !crownCourtSummary.getCrownCourtOutcome().isEmpty()) {
             ApiCrownCourtOutcome crownCourtOutcome = crownCourtSummary.getCrownCourtOutcome()

@@ -5,6 +5,9 @@ import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,9 +28,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -47,6 +53,7 @@ class ProceedingServiceTest {
 
     @Mock
     private MaatCourtDataService maatCourtDataService;
+
 
     private void setupMockData() {
         when(repOrderService.getRepDecision(any(CrownCourtDTO.class)))
@@ -359,6 +366,64 @@ class ProceedingServiceTest {
             proceedingService.checkCCDetails(crownCourtDTO);
         }).isInstanceOf(ValidationException.class).hasMessageContaining("Check Crown Court Details-Imprisoned value must be entered " +
                 "for Crown Court Outcome of");
+    }
+
+    @ParameterizedTest
+    @MethodSource("validateCCDetails")
+    void givenCCOutcomeIsNotNullAndMagsCourtOutComeIsNull_whenCheckCCDetailsIsInvoked_thenValidationFails(final CrownCourtDTO crownCourtDTO,
+                                                                                                          final List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList) {
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(repOrderCCOutcomeDTOList);
+        ValidationException validationException = assertThrows(ValidationException.class,
+                () -> proceedingService.checkCCDetails(crownCourtDTO));
+        assertThat(validationException.getMessage()).isEqualTo("Cannot have Crown Court outcome without Mags Court outcome");
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("validateCCDetailsNoException")
+    void givenValidCCDetails_whenCheckCCDetailsIsInvoked_thenValidationPass(final CrownCourtDTO crownCourtDTO,
+                                                                                                          final List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList) {
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(repOrderCCOutcomeDTOList);
+        assertDoesNotThrow(() -> proceedingService.checkCCDetails(crownCourtDTO));
+    }
+
+    private static Stream<Arguments> validateCCDetails() {
+        return Stream.of(
+                Arguments.of(
+                        TestModelDataBuilder
+                                .getCrownCourtDTOWithInvalidCCDetails(),
+                        TestModelDataBuilder
+                                .getRepOrderCCOutcomeDTOList()
+                )
+        );
+    }
+
+    private static Stream<Arguments> validateCCDetailsNoException() {
+        return Stream.of(
+                Arguments.of(
+                        TestModelDataBuilder
+                                .getCrownCourtDTOWithValidCCDetails(CaseType.APPEAL_CC),
+                        TestModelDataBuilder
+                                .getEmptyRepOrderCCOutcomeDTOList()
+                ),
+                Arguments.of(
+                        TestModelDataBuilder
+                                .getCrownCourtDTOWithValidCCDetails(null),
+                        TestModelDataBuilder
+                                .getEmptyRepOrderCCOutcomeDTOList()
+                ),
+                Arguments.of(
+                        TestModelDataBuilder
+                                .getCrownCourtDTOWithValidCCDetails(null),
+                        null
+                ),
+                Arguments.of(
+                        TestModelDataBuilder
+                                .getCrownCourtDTOWithValidCCDetails(null),
+                        TestModelDataBuilder
+                                .getRepOrderCCOutcomeDTOList()
+                )
+        );
     }
 
     @Test
