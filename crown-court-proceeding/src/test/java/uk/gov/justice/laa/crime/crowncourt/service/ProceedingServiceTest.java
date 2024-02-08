@@ -369,7 +369,7 @@ class ProceedingServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource("validateCCDetails")
+    @MethodSource("validateCCOutcomeDetails")
     void givenCCOutcomeIsNotNullAndMagsCourtOutComeIsNull_whenCheckCCDetailsIsInvoked_thenValidationFails(final CrownCourtDTO crownCourtDTO,
                                                                                                           final List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList) {
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(repOrderCCOutcomeDTOList);
@@ -380,14 +380,14 @@ class ProceedingServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource("validateCCDetailsNoException")
+    @MethodSource("validateCCOutcomeDetailsNoException")
     void givenValidCCDetails_whenCheckCCDetailsIsInvoked_thenValidationPass(final CrownCourtDTO crownCourtDTO,
                                                                                                           final List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList) {
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(repOrderCCOutcomeDTOList);
         assertDoesNotThrow(() -> proceedingService.checkCCDetails(crownCourtDTO));
     }
 
-    private static Stream<Arguments> validateCCDetails() {
+    private static Stream<Arguments> validateCCOutcomeDetails() {
         return Stream.of(
                 Arguments.of(
                         TestModelDataBuilder
@@ -398,7 +398,7 @@ class ProceedingServiceTest {
         );
     }
 
-    private static Stream<Arguments> validateCCDetailsNoException() {
+    private static Stream<Arguments> validateCCOutcomeDetailsNoException() {
         return Stream.of(
                 Arguments.of(
                         TestModelDataBuilder

@@ -70,7 +70,6 @@ public class ProceedingService {
         return apiUpdateApplicationResponse;
     }
 
-
     public Optional<Void> checkCCDetails(CrownCourtDTO dto) {
         ApiCrownCourtSummary crownCourtSummary = dto.getCrownCourtSummary();
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = maatCourtDataService.getRepOrderCCOutcomeByRepId(dto.getRepId(), null);
