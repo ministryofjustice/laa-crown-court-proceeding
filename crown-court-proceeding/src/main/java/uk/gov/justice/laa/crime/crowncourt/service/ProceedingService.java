@@ -74,9 +74,9 @@ public class ProceedingService {
         ApiCrownCourtSummary crownCourtSummary = dto.getCrownCourtSummary();
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = maatCourtDataService.getRepOrderCCOutcomeByRepId(dto.getRepId(), null);
         String caseType = dto.getCaseType() != null ? dto.getCaseType().getCaseType() : "X";
-        if(dto.getMagCourtOutcome() == null &&
+        if (dto.getMagCourtOutcome() == null &&
                 CollectionUtils.isNotEmpty(repOrderCCOutcomeDTOList) &&
-                (!caseType.equals(CaseType.APPEAL_CC.getCaseType()))){
+                (!caseType.equals(CaseType.APPEAL_CC.getCaseType()))) {
             throw new ValidationException("Cannot have Crown Court outcome without Mags Court outcome");
         }
         if (crownCourtSummary != null && crownCourtSummary.getCrownCourtOutcome() != null

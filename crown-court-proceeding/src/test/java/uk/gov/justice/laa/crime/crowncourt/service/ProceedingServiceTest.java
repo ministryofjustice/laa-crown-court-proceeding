@@ -36,7 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
@@ -370,8 +371,9 @@ class ProceedingServiceTest {
 
     @ParameterizedTest
     @MethodSource("validateCCOutcomeDetails")
-    void givenCCOutcomeIsNotNullAndMagsCourtOutComeIsNull_whenCheckCCDetailsIsInvoked_thenValidationFails(final CrownCourtDTO crownCourtDTO,
-                                                                                                          final List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList) {
+    void givenCCOutcomeIsNotNullAndMagsCourtOutComeIsNull_whenCheckCCDetailsIsInvoked_thenValidationFails(
+            final CrownCourtDTO crownCourtDTO,
+            final List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList) {
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(repOrderCCOutcomeDTOList);
         ValidationException validationException = assertThrows(ValidationException.class,
                 () -> proceedingService.checkCCDetails(crownCourtDTO));
@@ -381,8 +383,9 @@ class ProceedingServiceTest {
 
     @ParameterizedTest
     @MethodSource("validateCCOutcomeDetailsNoException")
-    void givenValidCCDetails_whenCheckCCDetailsIsInvoked_thenValidationPass(final CrownCourtDTO crownCourtDTO,
-                                                                                                          final List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList) {
+    void givenValidCCDetails_whenCheckCCDetailsIsInvoked_thenValidationPass(
+            final CrownCourtDTO crownCourtDTO,
+            final List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList) {
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(repOrderCCOutcomeDTOList);
         assertDoesNotThrow(() -> proceedingService.checkCCDetails(crownCourtDTO));
     }
