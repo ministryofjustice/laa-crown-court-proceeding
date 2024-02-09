@@ -203,32 +203,6 @@ public class TestModelDataBuilder {
                 .withPassportAssessment(getPassportAssessment());
     }
 
-    public static ApiUpdateApplicationRequest getInvalidApiUpdateApplicationRequest() {
-        return new ApiUpdateApplicationRequest()
-                .withRepId(TEST_REP_ID)
-                .withLaaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
-                .withApplicantHistoryId(TEST_APPLICANT_HISTORY_ID)
-                .withCrownCourtSummary(new ApiCrownCourtSummary()
-                        .withRepId(TEST_REP_ID)
-                        .withRepOrderDate(TEST_REP_ORDER_DATE)
-                        .withRepType("")
-                        .withRepOrderDecision(MOCK_DECISION)
-                        .withWithdrawalDate(TEST_WITHDRAWAL_DATE)
-                        .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
-                        .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE))
-                .withUserSession(getApiUserSession(true))
-                .withCaseType(CaseType.APPEAL_CC)
-                .withMagCourtOutcome(null)
-                .withDecisionReason(DecisionReason.GRANTED)
-                .withCommittalDate(TEST_COMMITTAL_DATE)
-                .withDecisionDate(TEST_DECISION_DATE)
-                .withDateReceived(TEST_DATE_RECEIVED)
-                .withIojAppeal(getIojAppeal())
-                .withIsImprisoned(false)
-                .withFinancialAssessment(getFinancialAssessment())
-                .withPassportAssessment(getPassportAssessment());
-    }
-
     public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId, String outcome, LocalDateTime outcomeDate) {
         return RepOrderCCOutcomeDTO.builder()
                 .id(outcomeId)

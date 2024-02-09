@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class CrownCourtDetailsValidatorTest {
 
@@ -80,10 +81,9 @@ class CrownCourtDetailsValidatorTest {
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
         List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
         apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.CONVICTED);
+        apiCrownCourtOutcomes.get(0).setDateSet(null);
         crownCourtDTO.setIsImprisoned(null);
-        assertThatThrownBy(() -> {
-            crownCourtDetailsValidator.checkCCDetails(crownCourtDTO);
-        }).isInstanceOf(ValidationException.class).hasMessageContaining("Check Crown Court Details-Imprisoned value must be entered " +
+        assertThatThrownBy(() -> crownCourtDetailsValidator.checkCCDetails(crownCourtDTO)).isInstanceOf(ValidationException.class).hasMessageContaining("Check Crown Court Details-Imprisoned value must be entered " +
                 "for Crown Court Outcome of");
     }
 
@@ -153,10 +153,9 @@ class CrownCourtDetailsValidatorTest {
         apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.PART_CONVICTED);
         apiCrownCourtOutcomes.get(0).setDateSet(null);
         crownCourtDTO.setIsImprisoned(null);
-        assertThatThrownBy(() -> {
-            crownCourtDetailsValidator.checkCCDetails(crownCourtDTO);
-        }).isInstanceOf(ValidationException.class).hasMessageContaining("Check Crown Court Details-Imprisoned value must be entered " +
-                "for Crown Court Outcome of");
+        assertThatThrownBy(() -> crownCourtDetailsValidator.checkCCDetails(crownCourtDTO))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of");
     }
 
     @Test
@@ -168,6 +167,4 @@ class CrownCourtDetailsValidatorTest {
         crownCourtDTO.getCrownCourtSummary().setIsImprisoned(null);
         assertThat(crownCourtDetailsValidator.checkCCDetails(crownCourtDTO)).isEmpty();
     }
-
-
 }
