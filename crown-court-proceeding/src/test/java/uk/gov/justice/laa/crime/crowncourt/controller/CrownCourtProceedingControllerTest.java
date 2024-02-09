@@ -14,6 +14,8 @@ import uk.gov.justice.laa.crime.commons.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
+import uk.gov.justice.laa.crime.crowncourt.validation.CrownCourtDetailsValidator;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -37,6 +39,9 @@ class CrownCourtProceedingControllerTest {
 
     @MockBean
     private ProceedingService proceedingService;
+
+    @MockBean
+    private CrownCourtDetailsValidator crownCourtDetailsValidator;
 
     @MockBean
     private TraceIdHandler traceIdHandler;
@@ -136,7 +141,7 @@ class CrownCourtProceedingControllerTest {
     }
 
     @Test
-    void givenAValidInput_whenUpdateIsInvoked_RequestObjectFailsValidation() throws Exception {
+    void givenAInValidInput_whenUpdateIsInvoked_RequestObjectFailsValidation() throws Exception {
         var apiUpdateApplicationRequest =
                 TestModelDataBuilder.getApiUpdateApplicationRequest(!IS_VALID);
         var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
@@ -144,5 +149,16 @@ class CrownCourtProceedingControllerTest {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, updateApplicationRequestJson, ENDPOINT_URL + "/update-crown-court"))
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void givenAnInput_whenUpdateIsInvokedAndValidationFails_thenBadRequestResponseIsReturned() throws Exception {
+        var apiUpdateApplicationRequest =
+                TestModelDataBuilder.getApiUpdateApplicationRequest(IS_VALID);
+        var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
+        when(crownCourtDetailsValidator.checkCCDetails(any())).thenThrow(new ValidationException("Cannot have Crown Court outcome without Mags Court outcome"));
+        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+                        HttpMethod.PUT, updateApplicationRequestJson, ENDPOINT_URL + "/update-crown-court"))
+                .andExpect(status().isBadRequest());
     }
 }
