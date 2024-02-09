@@ -29,10 +29,9 @@ public class CrownCourtDetailsValidator {
     public Optional<Void> checkCCDetails(CrownCourtDTO dto) {
         ApiCrownCourtSummary crownCourtSummary = dto.getCrownCourtSummary();
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = maatCourtDataService.getRepOrderCCOutcomeByRepId(dto.getRepId(), null);
-        String caseType = dto.getCaseType() != null ? dto.getCaseType().getCaseType() : "X";
-        if (dto.getMagCourtOutcome() == null &&
+        if (null == dto.getMagCourtOutcome() &&
                 CollectionUtils.isNotEmpty(repOrderCCOutcomeDTOList) &&
-                (!caseType.equals(CaseType.APPEAL_CC.getCaseType()))) {
+                CaseType.APPEAL_CC != dto.getCaseType()) {
             throw new ValidationException(CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
         }
         if (crownCourtSummary != null && crownCourtSummary.getCrownCourtOutcome() != null

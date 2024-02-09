@@ -134,8 +134,8 @@ class CrownCourtDetailsValidatorTest {
                 ),
                 Arguments.of(
                         TestModelDataBuilder
-                                .getCrownCourtDTO(null, MagCourtOutcome.APPEAL_TO_CC),
-                        List.of()
+                                .getCrownCourtDTO(null, null),
+                        null
                 ),
                 Arguments.of(
                         TestModelDataBuilder
