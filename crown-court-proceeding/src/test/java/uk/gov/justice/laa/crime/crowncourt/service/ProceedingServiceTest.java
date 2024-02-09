@@ -12,14 +12,12 @@ import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
-import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,10 +25,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
@@ -47,6 +45,7 @@ class ProceedingServiceTest {
 
     @Mock
     private MaatCourtDataService maatCourtDataService;
+
 
     private void setupMockData() {
         when(repOrderService.getRepDecision(any(CrownCourtDTO.class)))
@@ -308,80 +307,6 @@ class ProceedingServiceTest {
 
         softly.assertAll();
 
-    }
-
-    @Test
-    void givenACrownCourtIsEmpty_whenCheckCCDetailsIsInvoked_thenValidationPass() {
-        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
-        crownCourtDTO.setCrownCourtSummary(null);
-        assertThat(proceedingService.checkCCDetails(crownCourtDTO)).isEmpty();
-    }
-
-    @Test
-    void givenACrownCourtOutcomeIsNull_whenCheckCCDetailsIsInvoked_thenValidationPass() {
-        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
-        crownCourtDTO.getCrownCourtSummary().setCrownCourtOutcome(null);
-        assertThat(proceedingService.checkCCDetails(crownCourtDTO)).isEmpty();
-    }
-
-    @Test
-    void givenACrownCourtOutcomeIsEmpty_whenCheckCCDetailsIsInvoked_thenValidationPass() {
-        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
-        crownCourtDTO.getCrownCourtSummary().setCrownCourtOutcome(new ArrayList<>());
-        assertThat(proceedingService.checkCCDetails(crownCourtDTO)).isEmpty();
-    }
-
-    @Test
-    void givenACrownCourtOutcomeIsConvicted_whenCheckCCDetailsIsInvoked_thenValidationPass() {
-        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
-        List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
-        apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.CONVICTED);
-        assertThat(proceedingService.checkCCDetails(crownCourtDTO)).isEmpty();
-    }
-
-    @Test
-    void givenACrownCourtOutcomeDateIsNull_whenCheckCCDetailsIsInvoked_thenValidationPass() {
-        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
-        List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
-        apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.CONVICTED);
-        apiCrownCourtOutcomes.get(0).setDateSet(null);
-        assertThat(proceedingService.checkCCDetails(crownCourtDTO)).isEmpty();
-    }
-
-    @Test
-    void givenACrownCourtImprisonedIsNullAndConvicted_whenCheckCCDetailsIsInvoked_thenValidationFails() {
-        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
-        List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
-        apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.CONVICTED);
-        apiCrownCourtOutcomes.get(0).setDateSet(null);
-        crownCourtDTO.setIsImprisoned(null);
-        assertThatThrownBy(() -> {
-            proceedingService.checkCCDetails(crownCourtDTO);
-        }).isInstanceOf(ValidationException.class).hasMessageContaining("Check Crown Court Details-Imprisoned value must be entered " +
-                "for Crown Court Outcome of");
-    }
-
-    @Test
-    void givenACrownCourtImprisonedIsNullAndPartConvicted_whenCheckCCDetailsIsInvoked_thenValidationFails() {
-        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
-        List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
-        apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.PART_CONVICTED);
-        apiCrownCourtOutcomes.get(0).setDateSet(null);
-        crownCourtDTO.setIsImprisoned(null);
-        assertThatThrownBy(() -> {
-            proceedingService.checkCCDetails(crownCourtDTO);
-        }).isInstanceOf(ValidationException.class).hasMessageContaining("Check Crown Court Details-Imprisoned value must be entered " +
-                "for Crown Court Outcome of");
-    }
-
-    @Test
-    void givenACrownCourtImprisonedIsNullAndOutcomeSuccess_whenCheckCCDetailsIsInvoked_thenValidationPass() {
-        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
-        List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
-        apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.SUCCESSFUL);
-        apiCrownCourtOutcomes.get(0).setDateSet(null);
-        crownCourtDTO.getCrownCourtSummary().setIsImprisoned(null);
-        assertThat(proceedingService.checkCCDetails(crownCourtDTO)).isEmpty();
     }
 
     @Test
