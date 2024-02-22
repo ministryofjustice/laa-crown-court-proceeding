@@ -17,7 +17,6 @@ import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeResponse
 import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
-import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.*;
 import uk.gov.justice.laa.crime.enums.*;
 
 import java.util.ArrayList;
