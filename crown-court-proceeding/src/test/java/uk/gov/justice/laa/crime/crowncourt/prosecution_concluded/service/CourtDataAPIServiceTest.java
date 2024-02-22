@@ -41,8 +41,6 @@ class CourtDataAPIServiceTest {
     @Spy
     private ServicesConfiguration configuration = MockServicesConfiguration.getConfiguration(1000);
 
-    private static final String LAA_TRANSACTION_ID = "laaTransactionId";
-
     @Test
     void givenAInvalidParameter_whenRetrieveHearingForCaseConclusionIsInvoked_thenEmptyIsReturned() {
         WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(

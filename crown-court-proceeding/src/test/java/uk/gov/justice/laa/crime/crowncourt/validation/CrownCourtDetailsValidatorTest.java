@@ -92,7 +92,7 @@ class CrownCourtDetailsValidatorTest {
     void givenCCOutcomeIsNotNullAndMagsCourtOutComeIsNull_whenCheckCCDetailsIsInvoked_thenValidationFails(
             final CrownCourtDTO crownCourtDTO,
             final List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList) {
-        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(repOrderCCOutcomeDTOList);
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any())).thenReturn(repOrderCCOutcomeDTOList);
         ValidationException validationException = assertThrows(ValidationException.class,
                 () -> crownCourtDetailsValidator.checkCCDetails(crownCourtDTO));
         assertThat(validationException.getMessage()).isEqualTo("Cannot have Crown Court outcome without Mags Court outcome");
@@ -104,7 +104,7 @@ class CrownCourtDetailsValidatorTest {
     void givenValidCCDetails_whenCheckCCDetailsIsInvoked_thenValidationPass(
             final CrownCourtDTO crownCourtDTO,
             final List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList) {
-        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(repOrderCCOutcomeDTOList);
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any())).thenReturn(repOrderCCOutcomeDTOList);
         assertDoesNotThrow(() -> crownCourtDetailsValidator.checkCCDetails(crownCourtDTO));
     }
 
