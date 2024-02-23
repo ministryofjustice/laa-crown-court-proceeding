@@ -9,6 +9,6 @@ jobs:
       - uses: actions/checkout@main
       - uses: ministryofjustice/github-actions/code-formatter@main
         with:
-          ignore-files: "docker-compose.override.yml,values-dev.yaml,values-test.yaml,values-staging.yaml,values-uat.yaml,values-prod.yaml,ingress.yaml"
+          ignore-files: "docker-compose.override.yml,values-dev.yaml,values-test.yaml,values-uat.yaml,values-prod.yaml,ingress.yaml"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

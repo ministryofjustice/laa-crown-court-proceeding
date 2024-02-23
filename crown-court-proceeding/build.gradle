@@ -70,7 +70,7 @@ dependencies {
     implementation "software.amazon.awssdk:sts:$versions.awsSdkStsVersion"
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springDocWebMVCVersion"
-
+    
     // Spring Boot version contains security vulnerabilities raised by Snyk
     implementation "org.postgresql:postgresql:$versions.postgresqlVersion"
     implementation "org.liquibase:liquibase-core"
