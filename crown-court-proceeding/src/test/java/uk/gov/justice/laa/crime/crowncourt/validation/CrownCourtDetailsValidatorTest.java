@@ -89,11 +89,11 @@ class CrownCourtDetailsValidatorTest {
                                               "for Crown Court Outcome of");
     }
 
-    @ParameterizedTest
-    @MethodSource("validateCCOutcomeDetails")
-    void givenCCOutcomeIsNotNullAndMagsCourtOutComeIsNull_whenCheckCCDetailsIsInvoked_thenValidationFails(
-            final CrownCourtDTO crownCourtDTO,
-            final List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList) {
+    @Test
+    void givenCCOutcomeIsNotNullAndMagsCourtOutComeIsNull_whenCheckCCDetailsIsInvoked_thenValidationFails() {
+        CrownCourtDTO crownCourtDTO =
+                TestModelDataBuilder.getCrownCourtDTO(CaseType.SUMMARY_ONLY, null);
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = TestModelDataBuilder.getRepOrderCCOutcomeDTOList();
 
         when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any()))
                 .thenReturn(repOrderCCOutcomeDTOList);
@@ -119,23 +119,18 @@ class CrownCourtDetailsValidatorTest {
                 .doesNotThrowAnyException();
     }
 
-    private static Stream<Arguments> validateCCOutcomeDetails() {
-        return Stream.of(
-                Arguments.of(
-                        TestModelDataBuilder.getCrownCourtDTO(CaseType.SUMMARY_ONLY, null),
-                        TestModelDataBuilder.getRepOrderCCOutcomeDTOList()
-                )
-        );
-    }
-
     private static Stream<Arguments> crownCourtOutcomeParameters() {
-        return Stream.of(Arguments.of(CrownCourtOutcome.CONVICTED), Arguments.of(CrownCourtOutcome.PART_CONVICTED));
+        return Stream.of(
+                Arguments.of(CrownCourtOutcome.CONVICTED),
+                Arguments.of(CrownCourtOutcome.PART_CONVICTED)
+        );
     }
 
     private static Stream<Arguments> validateCCOutcomeDetailsNoException() {
         return Stream.of(
                 Arguments.of(
-                        TestModelDataBuilder.getCrownCourtDTO(CaseType.APPEAL_CC, null), List.of()
+                        TestModelDataBuilder.getCrownCourtDTO(CaseType.APPEAL_CC, null),
+                        Collections.emptyList()
                 ),
                 Arguments.of(
                         TestModelDataBuilder.getCrownCourtDTO(CaseType.EITHER_WAY, MagCourtOutcome.APPEAL_TO_CC),
@@ -145,8 +140,7 @@ class CrownCourtDetailsValidatorTest {
                         TestModelDataBuilder.getCrownCourtDTO(null, null), null
                 ),
                 Arguments.of(
-                        TestModelDataBuilder
-                                .getCrownCourtDTO(CaseType.APPEAL_CC, null),
+                        TestModelDataBuilder.getCrownCourtDTO(CaseType.APPEAL_CC, null),
                         TestModelDataBuilder.getRepOrderCCOutcomeDTOList()
                 )
         );
