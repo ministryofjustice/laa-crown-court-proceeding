@@ -257,4 +257,3 @@ workflows:
       - deploy-uat:
           requires:
             - hold_install_on_uat
-
