@@ -28,7 +28,7 @@ def versions = [
         localstackUtilsVersion             : "0.2.23",
         testcontainersLocalstackVersion    : "1.18.3",
         testcontainersJunitjupiterVersion  : "1.19.0",
-        postgresqlVersion                  : "42.7.1"
+        postgresqlVersion                  : "42.7.2"
 ]
 
 java {
