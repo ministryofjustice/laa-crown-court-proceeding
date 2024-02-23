@@ -59,7 +59,7 @@ public class ProceedingService {
 
     public ApiUpdateApplicationResponse updateApplication(CrownCourtDTO dto) {
         UpdateRepOrderRequestDTO repOrderRequest = UpdateRepOrderDTOBuilder.build(dto, processRepOrder(dto));
-        RepOrderDTO repOrderDTO = maatCourtDataService.updateRepOrder(repOrderRequest, dto.getLaaTransactionId());
+        RepOrderDTO repOrderDTO = maatCourtDataService.updateRepOrder(repOrderRequest);
         ApiUpdateApplicationResponse apiUpdateApplicationResponse = new ApiUpdateApplicationResponse();
         apiUpdateApplicationResponse.withModifiedDateTime(repOrderDTO.getDateModified());
         apiUpdateApplicationResponse.withCrownRepOrderDate(
@@ -73,13 +73,13 @@ public class ProceedingService {
     public ApiUpdateCrownCourtOutcomeResponse update(CrownCourtDTO dto) {
         processRepOrder(dto);
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(dto);
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = getCCOutcome(dto.getRepId(), dto.getLaaTransactionId());
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = getCCOutcome(dto.getRepId());
         return UpdateApiResponseBuilder.build(repOrderDTO, repOrderCCOutcomeList);
     }
 
-    public List<RepOrderCCOutcomeDTO> getCCOutcome(Integer repId, String laaTransactionId) {
+    public List<RepOrderCCOutcomeDTO> getCCOutcome(Integer repId) {
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList =
-                maatCourtDataService.getRepOrderCCOutcomeByRepId(repId, laaTransactionId);
+                maatCourtDataService.getRepOrderCCOutcomeByRepId(repId);
         if (null != repOrderCCOutcomeList && !repOrderCCOutcomeList.isEmpty()) {
             repOrderCCOutcomeList = repOrderCCOutcomeList.stream().filter(outcome ->
                     isNotBlank(outcome.getOutcome())).collect(Collectors.toCollection(ArrayList::new));

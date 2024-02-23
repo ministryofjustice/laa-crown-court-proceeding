@@ -26,7 +26,6 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -207,23 +206,23 @@ class ProceedingServiceTest {
     @Test
     void givenCCApplication_whenUpdateApplicationIsInvoked_thenSentenceOrderDateIsPersisted() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
-        when(maatCourtDataService.updateRepOrder(any(UpdateRepOrderRequestDTO.class), anyString()))
+        when(maatCourtDataService.updateRepOrder(any(UpdateRepOrderRequestDTO.class)))
                 .thenReturn(TestModelDataBuilder.getRepOrderDTO());
         proceedingService.updateApplication(requestDTO);
-        verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class), anyString());
+        verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
     }
 
     @Test
     void givenAValidRepIdAndNoOutcomeRecord_whenGetCCOutcomeIsInvoked_thenReturnEmpty() {
-        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(Collections.emptyList());
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any())).thenReturn(Collections.emptyList());
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID);
         assertThat(0).isEqualTo(repOrderCCOutcomeDTOList.size());
     }
 
     @Test
     void givenAInvalidRepId_whenGetCCOutcomeIsInvoked_thenReturnNull() {
-        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(null);
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any())).thenReturn(null);
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID);
         assertThat(repOrderCCOutcomeDTOList).isNull();
     }
 
@@ -236,9 +235,9 @@ class ProceedingServiceTest {
                 LocalDateTime.of(2022, 2, 7, 9, 1, 25)));
         outcomeList.add(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1, CrownCourtOutcome.SUCCESSFUL.getCode(),
                 LocalDateTime.of(2022, 3, 7, 10, 1, 25)));
-        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(outcomeList);
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any())).thenReturn(outcomeList);
 
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID);
         softly.assertThat(repOrderCCOutcomeDTOList.size()).isEqualTo(3);
 
         softly.assertThat(repOrderCCOutcomeDTOList.get(0).getOutcome()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getCode());
@@ -267,9 +266,9 @@ class ProceedingServiceTest {
 
         outcomeList.add(TestModelDataBuilder.getRepOrderCCOutcomeDTO(3, CrownCourtOutcome.PART_CONVICTED.getCode(),
                 LocalDateTime.of(2022, 2, 7, 9, 1, 25)));
-        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(outcomeList);
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any())).thenReturn(outcomeList);
 
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID);
 
         softly.assertThat(repOrderCCOutcomeDTOList.size()).isEqualTo(1);
 
@@ -290,9 +289,9 @@ class ProceedingServiceTest {
                 LocalDateTime.of(2022, 2, 7, 9, 1, 25)));
         outcomeList.add(TestModelDataBuilder.getRepOrderCCOutcomeDTO(1, CrownCourtOutcome.SUCCESSFUL.getCode(),
                 LocalDateTime.of(2022, 3, 7, 10, 1, 25)));
-        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(outcomeList);
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any())).thenReturn(outcomeList);
 
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID, "1234");
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = proceedingService.getCCOutcome(TestModelDataBuilder.TEST_REP_ID);
         softly.assertThat(repOrderCCOutcomeDTOList.size()).isEqualTo(2);
 
         softly.assertThat(repOrderCCOutcomeDTOList.get(0).getOutcome()).isEqualTo(CrownCourtOutcome.PART_CONVICTED.getCode());
@@ -316,7 +315,7 @@ class ProceedingServiceTest {
         List<RepOrderCCOutcomeDTO> outcomeList = new ArrayList<>();
         outcomeList.add(TestModelDataBuilder.getRepOrderCCOutcomeDTO(2, CrownCourtOutcome.CONVICTED.getCode(),
                 LocalDateTime.of(2023, 2, 7, 15, 1, 25)));
-        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any(), any())).thenReturn(outcomeList);
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(any())).thenReturn(outcomeList);
         ApiUpdateCrownCourtOutcomeResponse response = proceedingService.update(crownCourtDTO);
         ApiCrownCourtSummary summary = response.getCrownCourtSummary();
         assertThat(response.getModifiedDateTime()).isEqualTo(TestModelDataBuilder.TEST_DATE_MODIFIED);

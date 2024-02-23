@@ -36,8 +36,6 @@ class MaatCourtDataServiceTest {
     @Spy
     private ServicesConfiguration configuration = MockServicesConfiguration.getConfiguration(1000);
 
-    private static final String LAA_TRANSACTION_ID = "laaTransactionId";
-
     @Test
     void givenRepId_whenGetCurrentPassedIojAppealFromRepIdIsInvoked_thenResponseIsReturned() {
         IOJAppealDTO expected = new IOJAppealDTO();
@@ -46,7 +44,7 @@ class MaatCourtDataServiceTest {
 
         IOJAppealDTO response =
                 maatCourtDataService.getCurrentPassedIOJAppealFromRepId(
-                        TestModelDataBuilder.TEST_REP_ID, LAA_TRANSACTION_ID
+                        TestModelDataBuilder.TEST_REP_ID
                 );
 
         assertThat(response).isEqualTo(expected);
@@ -54,7 +52,7 @@ class MaatCourtDataServiceTest {
 
     @Test
     void givenUpdateRepOrderRequest_whenUpdateRepOrderIsInvoked_thenResponseIsReturned() {
-        maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build(), LAA_TRANSACTION_ID);
+        maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build());
         verify(maatAPIClient).put(
                 any(UpdateRepOrderRequestDTO.class),
                 any(),
@@ -65,7 +63,7 @@ class MaatCourtDataServiceTest {
 
     @Test
     void givenAValidRequest_whenUpdateRepOrderIsInvoked_thenResponseIsReturned() {
-        maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build(), LAA_TRANSACTION_ID);
+        maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build());
         verify(maatAPIClient).put(
                 any(UpdateRepOrderRequestDTO.class),
                 any(),
@@ -76,13 +74,13 @@ class MaatCourtDataServiceTest {
 
     @Test
     void givenAValidRepId_whenGetRepOrderCCOutcomeByRepIdIsInvoked_thenReturnOutcome() {
-        maatCourtDataService.getRepOrderCCOutcomeByRepId(TestModelDataBuilder.TEST_REP_ID, LAA_TRANSACTION_ID);
+        maatCourtDataService.getRepOrderCCOutcomeByRepId(TestModelDataBuilder.TEST_REP_ID);
         verify(maatAPIClient, atLeastOnce()).get(any(), anyString(), anyMap(), any());
     }
 
     @Test
     void givenAValidRequest_whenCreateOutcomeIsInvoked_thenResponseIsReturned() {
-        maatCourtDataService.createOutcome(RepOrderCCOutcomeDTO.builder().build(), LAA_TRANSACTION_ID);
+        maatCourtDataService.createOutcome(RepOrderCCOutcomeDTO.builder().build());
         verify(maatAPIClient).post(
                 any(RepOrderCCOutcomeDTO.class),
                 any(),
@@ -95,7 +93,7 @@ class MaatCourtDataServiceTest {
     void givenAInvalidParameter_whenGetRepOrderCCOutcomeByRepIdIsInvoked_thenReturnError() {
         when(maatAPIClient.get(any(), anyString(), anyMap(), any())).thenThrow(new APIClientException());
         assertThatThrownBy(() -> maatCourtDataService.getRepOrderCCOutcomeByRepId(
-                TestModelDataBuilder.TEST_REP_ID, LAA_TRANSACTION_ID)
+                TestModelDataBuilder.TEST_REP_ID)
         ).isInstanceOf(APIClientException.class);
     }
 
@@ -103,7 +101,7 @@ class MaatCourtDataServiceTest {
     void givenAValidParameter_whenOutcomeCountIsInvoked_thenResponseIsReturned() {
         ResponseEntity<Void> response = new ResponseEntity<>(HttpStatus.OK);
         when(maatAPIClient.head(any(), any(), any())).thenReturn(response);
-        maatCourtDataService.outcomeCount(TestModelDataBuilder.TEST_REP_ID, TestModelDataBuilder.MEANS_ASSESSMENT_TRANSACTION_ID);
+        maatCourtDataService.outcomeCount(TestModelDataBuilder.TEST_REP_ID);
         verify(maatAPIClient).head(any(), any(), any());
     }
 
@@ -113,7 +111,7 @@ class MaatCourtDataServiceTest {
         when(maatAPIClient.head(any(), any(), any())).thenThrow(new APIClientException());
 
         assertThatThrownBy(() -> maatCourtDataService.outcomeCount(
-                TestModelDataBuilder.TEST_REP_ID, TestModelDataBuilder.MEANS_ASSESSMENT_TRANSACTION_ID)
+                TestModelDataBuilder.TEST_REP_ID)
         ).isInstanceOf(APIClientException.class);
     }
 }

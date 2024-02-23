@@ -29,9 +29,6 @@ def versions = [
         testcontainersLocalstackVersion    : "1.18.3",
         testcontainersJunitjupiterVersion  : "1.19.0",
         postgresqlVersion                  : "42.7.2"
-
-
-
 ]
 
 java {
@@ -73,7 +70,8 @@ dependencies {
     implementation "software.amazon.awssdk:sts:$versions.awsSdkStsVersion"
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springDocWebMVCVersion"
-
+    
+    // Spring Boot version contains security vulnerabilities raised by Snyk
     implementation "org.postgresql:postgresql:$versions.postgresqlVersion"
     implementation "org.liquibase:liquibase-core"
 

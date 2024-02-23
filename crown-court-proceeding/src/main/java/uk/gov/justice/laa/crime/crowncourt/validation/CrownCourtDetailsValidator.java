@@ -20,15 +20,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CrownCourtDetailsValidator {
 
-    private static final String CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME = "Cannot have Crown Court outcome without Mags Court outcome";
-    private static final String CHECK_CROWN_COURT_DETAILS_IMPRISONED_VALUE_MUST_BE_ENTERED_FOR_CROWN_COURT_OUTCOME = "Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of ";
+    private static final String CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME =
+            "Cannot have Crown Court outcome without Mags Court outcome";
+    private static final String CHECK_CROWN_COURT_DETAILS_IMPRISONED_VALUE_MUST_BE_ENTERED_FOR_CROWN_COURT_OUTCOME =
+            "Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of ";
     private static final String CONVICTED_PART_CONVICTED_REGEX = "CONVICTED|PART CONVICTED";
 
     private final MaatCourtDataService maatCourtDataService;
 
     public Optional<Void> checkCCDetails(CrownCourtDTO dto) {
         ApiCrownCourtSummary crownCourtSummary = dto.getCrownCourtSummary();
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = maatCourtDataService.getRepOrderCCOutcomeByRepId(dto.getRepId(), null);
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList =
+                maatCourtDataService.getRepOrderCCOutcomeByRepId(dto.getRepId());
         if (null == dto.getMagCourtOutcome() &&
                 CollectionUtils.isNotEmpty(repOrderCCOutcomeDTOList) &&
                 CaseType.APPEAL_CC != dto.getCaseType()) {
@@ -39,11 +42,10 @@ public class CrownCourtDetailsValidator {
             ApiCrownCourtOutcome crownCourtOutcome = crownCourtSummary.getCrownCourtOutcome()
                     .get(crownCourtSummary.getCrownCourtOutcome().size() - 1);
             if (crownCourtOutcome.getOutcome().getCode().matches(CONVICTED_PART_CONVICTED_REGEX)
-                    && dto.getIsImprisoned() == null
-                    && crownCourtOutcome.getDateSet() == null
-            ) {
-                throw new ValidationException(CHECK_CROWN_COURT_DETAILS_IMPRISONED_VALUE_MUST_BE_ENTERED_FOR_CROWN_COURT_OUTCOME
-                        + crownCourtOutcome.getOutcome().getDescription());
+                    && dto.getIsImprisoned() == null && crownCourtOutcome.getDateSet() == null) {
+                throw new ValidationException(
+                        CHECK_CROWN_COURT_DETAILS_IMPRISONED_VALUE_MUST_BE_ENTERED_FOR_CROWN_COURT_OUTCOME
+                                + crownCourtOutcome.getOutcome().getDescription());
             }
         }
         return Optional.empty();

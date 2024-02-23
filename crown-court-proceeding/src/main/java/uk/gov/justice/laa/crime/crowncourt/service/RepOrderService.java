@@ -203,7 +203,7 @@ public class RepOrderService {
                 case CC_ALREADY, COMMITAL -> crownCourtSummary.setRepOrderDate(requestDTO.getDateReceived());
                 case APPEAL_CC -> {
                     IOJAppealDTO iojAppealDTO = maatCourtDataService
-                            .getCurrentPassedIOJAppealFromRepId(requestDTO.getRepId(), requestDTO.getLaaTransactionId());
+                            .getCurrentPassedIOJAppealFromRepId(requestDTO.getRepId());
                     if (iojAppealDTO != null) {
                         crownCourtSummary.setRepOrderDate(iojAppealDTO.getDecisionDate());
                     } else {
@@ -233,7 +233,7 @@ public class RepOrderService {
     }
 
     public RepOrderDTO updateCCOutcome(CrownCourtDTO dto) {
-        long repOrderOutcomeCount = maatCourtDataService.outcomeCount(dto.getRepId(), dto.getLaaTransactionId());
+        long repOrderOutcomeCount = maatCourtDataService.outcomeCount(dto.getRepId());
         if (repOrderOutcomeCount == 0 && null != dto.getCrownCourtSummary().getCrownCourtOutcome() &&
                 !dto.getCrownCourtSummary().getCrownCourtOutcome().isEmpty()) {
 
@@ -253,15 +253,13 @@ public class RepOrderService {
 
 
     protected RepOrderDTO update(CrownCourtDTO dto) {
-        return maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto), dto.getLaaTransactionId());
+        return maatCourtDataService.updateRepOrder(UpdateRepOrderDTOBuilder.build(dto));
     }
 
     protected void createOutcome(CrownCourtDTO dto) {
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = OutcomeDTOBuilder.build(dto);
         if (null != repOrderCCOutcomeDTOList) {
-            repOrderCCOutcomeDTOList.forEach(repOrderCCOutcomeDTO ->
-                    maatCourtDataService.createOutcome(repOrderCCOutcomeDTO, dto.getLaaTransactionId())
-            );
+            repOrderCCOutcomeDTOList.forEach(maatCourtDataService::createOutcome);
         }
     }
 }
