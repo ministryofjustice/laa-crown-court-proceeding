@@ -75,11 +75,12 @@ class CrownCourtDetailsValidatorTest {
         assertThat(crownCourtDetailsValidator.checkCCDetails(crownCourtDTO)).isEmpty();
     }
 
-    @Test
-    void givenACrownCourtImprisonedIsNullAndConvicted_whenCheckCCDetailsIsInvoked_thenValidationFails() {
+    @ParameterizedTest
+    @MethodSource("crownCourtOutcomeParameters")
+    void givenACrownCourtImprisonedIsNullAndConvicted_whenCheckCCDetailsIsInvoked_thenValidationFails(CrownCourtOutcome outcome) {
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
         List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
-        apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.CONVICTED);
+        apiCrownCourtOutcomes.get(0).withOutcome(outcome);
         apiCrownCourtOutcomes.get(0).setDateSet(null);
         crownCourtDTO.setIsImprisoned(null);
         assertThatThrownBy(() -> crownCourtDetailsValidator.checkCCDetails(crownCourtDTO))
@@ -127,6 +128,10 @@ class CrownCourtDetailsValidatorTest {
         );
     }
 
+    private static Stream<Arguments> crownCourtOutcomeParameters() {
+        return Stream.of(Arguments.of(CrownCourtOutcome.CONVICTED), Arguments.of(CrownCourtOutcome.PART_CONVICTED));
+    }
+
     private static Stream<Arguments> validateCCOutcomeDetailsNoException() {
         return Stream.of(
                 Arguments.of(
@@ -145,21 +150,6 @@ class CrownCourtDetailsValidatorTest {
                         TestModelDataBuilder.getRepOrderCCOutcomeDTOList()
                 )
         );
-    }
-
-    @Test
-    void givenACrownCourtImprisonedIsNullAndPartConvicted_whenCheckCCDetailsIsInvoked_thenValidationFails() {
-        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
-        List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
-        apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.PART_CONVICTED);
-        apiCrownCourtOutcomes.get(0).setDateSet(null);
-        crownCourtDTO.setIsImprisoned(null);
-
-        assertThatThrownBy(() -> crownCourtDetailsValidator.checkCCDetails(crownCourtDTO))
-                .isInstanceOf(ValidationException.class)
-                .hasMessageContaining(
-                        "Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of"
-                );
     }
 
     @Test
