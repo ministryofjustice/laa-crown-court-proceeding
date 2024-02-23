@@ -19,6 +19,7 @@ import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -75,9 +76,20 @@ class CrownCourtDetailsValidatorTest {
         assertThat(crownCourtDetailsValidator.checkCCDetails(crownCourtDTO)).isEmpty();
     }
 
+    @Test
+    void givenACrownCourtOutcomeAndImprisonedIsTrue_whenCheckCCDetailsIsInvoked_thenValidationPass() {
+        CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
+        List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
+        crownCourtDTO.setIsImprisoned(null);
+        apiCrownCourtOutcomes.get(0).withOutcome(CrownCourtOutcome.CONVICTED);
+        assertThat(crownCourtDetailsValidator.checkCCDetails(crownCourtDTO)).isEmpty();
+    }
+
     @ParameterizedTest
     @MethodSource("crownCourtOutcomeParameters")
-    void givenACrownCourtImprisonedIsNullAndConvicted_whenCheckCCDetailsIsInvoked_thenValidationFails(CrownCourtOutcome outcome) {
+    void givenACrownCourtImprisonedIsNullAndConvicted_whenCheckCCDetailsIsInvoked_thenValidationFails(
+            CrownCourtOutcome outcome) {
+
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
         List<ApiCrownCourtOutcome> apiCrownCourtOutcomes = crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
         apiCrownCourtOutcomes.get(0).withOutcome(outcome);
@@ -100,7 +112,7 @@ class CrownCourtDetailsValidatorTest {
 
         ValidationException validationException =
                 assertThrows(ValidationException.class, () -> crownCourtDetailsValidator.checkCCDetails(crownCourtDTO)
-        );
+                );
         assertThat(validationException.getMessage())
                 .isEqualTo("Cannot have Crown Court outcome without Mags Court outcome");
 
