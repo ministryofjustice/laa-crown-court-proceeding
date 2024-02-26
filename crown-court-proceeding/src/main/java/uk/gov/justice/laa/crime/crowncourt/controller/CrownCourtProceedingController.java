@@ -17,6 +17,7 @@ import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
+import uk.gov.justice.laa.crime.crowncourt.validation.CrownCourtDetailsValidator;
 
 @Slf4j
 @RestController
@@ -26,6 +27,8 @@ import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 public class CrownCourtProceedingController {
 
     private final ProceedingService proceedingService;
+
+    private final CrownCourtDetailsValidator crownCourtDetailsValidator;
 
     private CrownCourtDTO preProcessRequest(ApiProcessRepOrderRequest request) {
         return CrownCourtDTOBuilder.build(request);
@@ -76,7 +79,7 @@ public class CrownCourtProceedingController {
     @DefaultHTTPErrorResponse
     public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> update(@Valid @RequestBody ApiUpdateApplicationRequest request) {
         CrownCourtDTO crownCourtDTO = preProcessRequest(request);
-        proceedingService.checkCCDetails(crownCourtDTO);
+        crownCourtDetailsValidator.checkCCDetails(crownCourtDTO);
         return ResponseEntity.ok(proceedingService.update(crownCourtDTO));
     }
 }

@@ -10,17 +10,18 @@ import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.*;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
-import uk.gov.justice.laa.crime.exception.ValidationException;
 import uk.gov.justice.laa.crime.util.SortUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,7 @@ public class ProceedingService {
 
     public ApiUpdateApplicationResponse updateApplication(CrownCourtDTO dto) {
         UpdateRepOrderRequestDTO repOrderRequest = UpdateRepOrderDTOBuilder.build(dto, processRepOrder(dto));
-        RepOrderDTO repOrderDTO = maatCourtDataService.updateRepOrder(repOrderRequest, dto.getLaaTransactionId());
+        RepOrderDTO repOrderDTO = maatCourtDataService.updateRepOrder(repOrderRequest);
         ApiUpdateApplicationResponse apiUpdateApplicationResponse = new ApiUpdateApplicationResponse();
         apiUpdateApplicationResponse.withModifiedDateTime(repOrderDTO.getDateModified());
         apiUpdateApplicationResponse.withCrownRepOrderDate(
@@ -69,34 +70,16 @@ public class ProceedingService {
         return apiUpdateApplicationResponse;
     }
 
-
-    public Optional<Void> checkCCDetails(CrownCourtDTO dto) {
-        ApiCrownCourtSummary crownCourtSummary = dto.getCrownCourtSummary();
-        if (crownCourtSummary != null && crownCourtSummary.getCrownCourtOutcome() != null
-                && !crownCourtSummary.getCrownCourtOutcome().isEmpty()) {
-            ApiCrownCourtOutcome crownCourtOutcome = crownCourtSummary.getCrownCourtOutcome()
-                    .get(crownCourtSummary.getCrownCourtOutcome().size() - 1);
-            if (crownCourtOutcome.getOutcome().getCode().matches("CONVICTED|PART CONVICTED")
-                    && dto.getIsImprisoned() == null
-                    && crownCourtOutcome.getDateSet() == null
-            ) {
-                throw new ValidationException("Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of "
-                        + crownCourtOutcome.getOutcome().getDescription());
-            }
-        }
-        return Optional.empty();
-    }
-
     public ApiUpdateCrownCourtOutcomeResponse update(CrownCourtDTO dto) {
         processRepOrder(dto);
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(dto);
-        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = getCCOutcome(dto.getRepId(), dto.getLaaTransactionId());
+        List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = getCCOutcome(dto.getRepId());
         return UpdateApiResponseBuilder.build(repOrderDTO, repOrderCCOutcomeList);
     }
 
-    public List<RepOrderCCOutcomeDTO> getCCOutcome(Integer repId, String laaTransactionId) {
+    public List<RepOrderCCOutcomeDTO> getCCOutcome(Integer repId) {
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList =
-                maatCourtDataService.getRepOrderCCOutcomeByRepId(repId, laaTransactionId);
+                maatCourtDataService.getRepOrderCCOutcomeByRepId(repId);
         if (null != repOrderCCOutcomeList && !repOrderCCOutcomeList.isEmpty()) {
             repOrderCCOutcomeList = repOrderCCOutcomeList.stream().filter(outcome ->
                     isNotBlank(outcome.getOutcome())).collect(Collectors.toCollection(ArrayList::new));
