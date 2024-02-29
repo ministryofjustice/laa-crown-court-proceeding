@@ -21,16 +21,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
 import uk.gov.justice.laa.crime.enums.CaseType;
+import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
+import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static io.netty.handler.codec.rtsp.RtspResponseStatuses.INTERNAL_SERVER_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,6 +53,11 @@ class CrownCourtProceedingIntegrationTest {
     private static final boolean IS_VALID = true;
     private static final String ERROR_MSG = "Call to service failed. Retries exhausted: 2/2.";
     private static final String ENDPOINT_URL = "/api/internal/v1/proceedings";
+
+    private static final String UPDATE_CC_URL = "/update-crown-court";
+
+    private static final String CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME =
+            "Cannot have Crown Court outcome without Mags Court outcome";
 
     private MockMvc mvc;
 
@@ -201,6 +212,109 @@ class CrownCourtProceedingIntegrationTest {
 
         assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(updateApplicationResponse));
     }
+
+
+    @Test
+    void givenAEmptyOAuthToken_whenUpdateIsInvoked_thenFailsUnauthorizedAccess() throws Exception {
+        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+                        HttpMethod.PUT, "{}", ENDPOINT_URL + UPDATE_CC_URL, Boolean.FALSE))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void givenAIndictableCaseTypeAndMagistratesOutcomeIsEmpty_whenUpdateIsInvoked_thenFailsBadRequest() throws Exception {
+        ApiUpdateApplicationRequest apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
+        apiUpdateApplicationRequest.setCaseType(CaseType.INDICTABLE);
+        apiUpdateApplicationRequest.setMagCourtOutcome(null);
+        stubForOAuth();
+
+        wiremock.stubFor(get(urlMatching("/api/internal/v1/assessment/rep-orders/cc-outcome/.*"))
+                .willReturn(
+                        WireMock.ok()
+                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
+                                .withBody(objectMapper.writeValueAsString(List.of(
+                                        TestModelDataBuilder.getRepOrderCCOutcomeDTO(1, CrownCourtOutcome.SUCCESSFUL.getCode(),
+                                                LocalDateTime.of(2022, 3, 7, 10, 1, 25)
+                                        )))
+                                ))
+        );
+        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+                        HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateApplicationRequest), ENDPOINT_URL + UPDATE_CC_URL))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME));
+    }
+
+    @Test
+    void givenAValidContent_whenApiResponseIsError_thenUpdateIsFails() throws Exception {
+        ApiUpdateApplicationRequest apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
+        stubForOAuth();
+
+        wiremock.stubFor(get(urlMatching("/api/internal/v1/assessment/rep-orders/cc-outcome/.*"))
+                .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR.code())
+                        .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
+                ));
+        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+                        HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateApplicationRequest), ENDPOINT_URL + UPDATE_CC_URL))
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("$.message").value(ERROR_MSG));
+    }
+
+    @Test
+    void givenAValidContent_whenUpdateIsInvoked_thenUpdateIsSuccess() throws Exception {
+
+        ApiUpdateApplicationRequest apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
+        apiUpdateApplicationRequest.setCaseType(CaseType.APPEAL_CC);
+        stubForUpdateCC();
+        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+                        HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateApplicationRequest), ENDPOINT_URL + UPDATE_CC_URL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.crownCourtSummary.repOrderDecision").value(Constants.GRANTED_PASSED_MEANS_TEST))
+                .andExpect(jsonPath("$.crownCourtSummary.repType").value(Constants.CROWN_COURT_ONLY))
+                .andExpect(jsonPath("$.crownCourtSummary.evidenceFeeLevel").value(EvidenceFeeLevel.LEVEL1.getFeeLevel()))
+                .andExpect(jsonPath("$.crownCourtSummary.repOrderCrownCourtOutcome[0].outcome").value(CrownCourtOutcome.SUCCESSFUL.getCode()))
+                .andExpect(jsonPath("$.modifiedDateTime").isNotEmpty());
+
+    }
+
+    private void stubForUpdateCC() throws Exception {
+
+        stubForOAuth();
+
+        wiremock.stubFor(get(urlMatching("/api/internal/v1/assessment/rep-orders/cc-outcome/.*"))
+                .willReturn(
+                        WireMock.ok()
+                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
+                                .withBody(objectMapper.writeValueAsString(List.of(
+                                        TestModelDataBuilder.getRepOrderCCOutcomeDTO(1, CrownCourtOutcome.SUCCESSFUL.getCode(),
+                                                LocalDateTime.of(2022, 3, 7, 10, 1, 25)
+                                        )))
+                                ))
+        );
+        wiremock.stubFor(put("/api/internal/v1/assessment/rep-orders")
+                .willReturn(
+                        WireMock.ok()
+                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
+                                .withBody(objectMapper.writeValueAsString(TestModelDataBuilder.getRepOrderDTO()))
+                )
+        );
+
+        wiremock.stubFor(head(anyUrl())
+                .willReturn(
+                        WireMock.ok()
+                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
+                                .withHeader("Content-Length", "0")
+                )
+        );
+
+        wiremock.stubFor(post("/api/internal/v1/evidence/calculate-evidence-fee")
+                .willReturn(
+                        WireMock.ok()
+                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
+                                .withBody(objectMapper.writeValueAsString(TestModelDataBuilder.getApiCalculateEvidenceFeeResponse()))
+                )
+        );
+    }
+
 
     private void stubForIoJAppeal() throws JsonProcessingException {
         wiremock.stubFor(get("/api/internal/v1/assessment/ioj-appeal/repId/91919/current-passed")

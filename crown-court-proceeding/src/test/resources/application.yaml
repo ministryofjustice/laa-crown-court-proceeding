@@ -102,9 +102,10 @@ services:
     reservation-endpoints:
       is-maat-record-locked-url: ${services.maat-api.assessments-domain}/reservations/{maatId}
   evidence:
-    baseUrl: http://localhost:9999
+    baseUrl: http://localhost:${wiremock.server.port}
+    evidence-domain: ${services.maat-api.baseUrl}/api/internal/v1/evidence
     evidence-fee-endpoints:
-      evidence-fee-url: /api/internal/v1/evidence/calculate-evidence-fee
+      evidence-fee-url: ${services.evidence.evidence-domain}/calculate-evidence-fee
 
 retry-config:
   max-retries: 2
