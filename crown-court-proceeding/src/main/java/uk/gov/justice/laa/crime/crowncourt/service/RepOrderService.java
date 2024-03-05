@@ -86,7 +86,7 @@ public class RepOrderService {
         if (((initAssessmentResult == InitAssessmentResult.PASS && initAssessmentStatus == CurrentStatus.COMPLETE)
                 || (fullAssessmentResult == FullAssessmentResult.PASS && fullAssessmentStatus == CurrentStatus.COMPLETE)
                 || (hardshipOverview != null && (hardshipOverview.getReviewResult() == ReviewResult.PASS
-                && hardshipOverview.getAssessmentStatus() == CurrentStatus.COMPLETE)))
+                    && hardshipOverview.getAssessmentStatus() == CurrentStatus.COMPLETE)))
                 && isValidCaseType) {
             return Constants.GRANTED_PASSED_MEANS_TEST;
         } else if ((initAssessmentResult == InitAssessmentResult.FAIL && initAssessmentStatus == CurrentStatus.COMPLETE)
