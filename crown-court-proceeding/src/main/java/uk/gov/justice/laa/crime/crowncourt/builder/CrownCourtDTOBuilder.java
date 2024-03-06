@@ -13,7 +13,6 @@ public class CrownCourtDTOBuilder {
 
     public static CrownCourtDTO build(final ApiProcessRepOrderRequest request) {
         CrownCourtDTO.CrownCourtDTOBuilder builder = CrownCourtDTO.builder()
-                .laaTransactionId(request.getLaaTransactionId())
                 .repId(request.getRepId())
                 .caseType(request.getCaseType())
                 .magCourtOutcome(request.getMagCourtOutcome())
