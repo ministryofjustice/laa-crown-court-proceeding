@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.config.MockServicesConfiguration;
@@ -63,6 +62,25 @@ class CourtDataAPIServiceTest {
         );
         assertThat(wqHearingDTO).isNull();
         verify(courtDataAdapterService, times(1)).triggerHearingProcessing(any());
+    }
+
+    @Test
+    void givenProsecutionNotConcluded_whenRetrieveHearingForCaseConclusionIsInvoked_thenHearingDetailsAreReturnedAndHearingProcessingIsNotTriggered() {
+        when(maatAPIClient.get(any(), anyString(), anyMap(), anyString(), anyInt()))
+                .thenReturn(
+                        List.of(WQHearingDTO.builder()
+                                .caseId(TestModelDataBuilder.TEST_CASE_ID)
+                                .build()
+                        )
+                );
+        WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(
+                ProsecutionConcluded.builder().hearingIdWhereChangeOccurred(UUID.randomUUID())
+                        .maatId(TestModelDataBuilder.TEST_REP_ID)
+                        .isConcluded(false)
+                        .build()
+        );
+        assertThat(wqHearingDTO).isNotNull();
+        verify(courtDataAdapterService, never()).triggerHearingProcessing(any());
     }
 
     @Test
