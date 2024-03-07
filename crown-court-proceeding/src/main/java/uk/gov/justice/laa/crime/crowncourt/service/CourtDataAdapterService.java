@@ -9,9 +9,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 
-import java.util.Map;
+import java.util.Collections;
 import java.util.UUID;
 
 @Slf4j
@@ -19,23 +18,24 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CourtDataAdapterService {
 
-    @Qualifier("cdaApiClient")
-    private final RestAPIClient cdaAPIClient;
+    @Qualifier("cdaApiNonServletClient")
+    private final RestAPIClient cdaApiNonServletClient;
     private final ServicesConfiguration configuration;
 
 
-    public void triggerHearingProcessing(UUID hearingId, String laaTransactionId) {
+    public void triggerHearingProcessing(UUID hearingId) {
         log.info("Triggering processing for hearing '{}' via court data adapter.", hearingId);
 
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("publish_to_queue", "true");
 
-        cdaAPIClient.get(
+        cdaApiNonServletClient.get(
                 new ParameterizedTypeReference<Void>() {},
                 configuration.getCourtDataAdapter().getHearingUrl(),
-                Map.of("X-Request-ID", laaTransactionId),
+                Collections.emptyMap(),
                 queryParams,
                 hearingId
         );
+        log.info("Completed triggering processing for hearing '{}' via court data adapter.", hearingId);
     }
 }
