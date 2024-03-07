@@ -13,10 +13,7 @@ import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiIOJAppeal;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiPassportAssessment;
+import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.enums.*;
 
 import java.util.ArrayList;
@@ -361,13 +358,28 @@ class RepOrderServiceTest {
     }
 
     @Test
-    void givenHardshipOverviewResultIsNull_whenGetDecisionByFinAssessmentIsInvoked_thenNullIsReturned() {
+    void givenHardshipOverviewIsNull_whenGetDecisionByFinAssessmentIsInvoked_thenNullIsReturned() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         setUpFinAssessment(
                 requestDTO, CurrentStatus.COMPLETE, null,
                 InitAssessmentResult.FULL.getResult(), null, null
         );
         requestDTO.getFinancialAssessment().setHardshipOverview(null);
+
+        assertThat(repOrderService.getDecisionByFinAssessment(requestDTO, null, true))
+                .isNull();
+    }
+
+    @Test
+    void givenHardshipOverviewResultIsNull_whenGetDecisionByFinAssessmentIsInvoked_thenNullIsReturned() {
+        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
+        setUpFinAssessment(
+                requestDTO, CurrentStatus.COMPLETE, null,
+                InitAssessmentResult.FULL.getResult(), null, null
+        );
+        ApiHardshipOverview hardshipOverview = new ApiHardshipOverview().withAssessmentStatus(CurrentStatus.COMPLETE);
+        requestDTO.getFinancialAssessment().setHardshipOverview(hardshipOverview);
+
         assertThat(repOrderService.getDecisionByFinAssessment(requestDTO, null, true))
                 .isNull();
     }
