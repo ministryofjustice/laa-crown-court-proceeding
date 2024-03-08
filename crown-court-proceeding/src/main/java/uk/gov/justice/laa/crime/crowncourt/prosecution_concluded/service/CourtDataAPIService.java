@@ -2,12 +2,12 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
-import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.OffenceDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
@@ -16,10 +16,10 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQLinkRegisterDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.service.CourtDataAdapterService;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import static java.util.Collections.emptyMap;
 
@@ -31,6 +31,7 @@ public class CourtDataAPIService {
     @Qualifier("maatApiNonServletClient")
     private final RestAPIClient maatAPIClient;
     private final ServicesConfiguration configuration;
+    private final CourtDataAdapterService courtDataAdapterService;
     public static final String RESPONSE_STRING = "Response from Court Data API: {}";
 
 
@@ -56,16 +57,20 @@ public class CourtDataAPIService {
 
     public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
 
-        WQHearingDTO wqHearingDTO = null;
         List<WQHearingDTO> wqHearingList = maatAPIClient.get(
                 new ParameterizedTypeReference<List<WQHearingDTO>>() {},
                 configuration.getMaatApi().getWqHearingEndpoints().getFindUrl(),
-                Map.of(Constants.LAA_TRANSACTION_ID, UUID.randomUUID().toString()),
+                Collections.emptyMap(),
                 prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(),
                 prosecutionConcluded.getMaatId()
         );
-        if (wqHearingList != null && !wqHearingList.isEmpty()) {
-            wqHearingDTO = wqHearingList.get(0);
+        WQHearingDTO wqHearingDTO = CollectionUtils.isNotEmpty(wqHearingList) ? wqHearingList.get(0) : null;
+        if (wqHearingDTO == null
+                && prosecutionConcluded.isConcluded()) {
+            courtDataAdapterService.
+                    triggerHearingProcessing(
+                            prosecutionConcluded.getHearingIdWhereChangeOccurred()
+                    );
         }
         return wqHearingDTO;
     }
