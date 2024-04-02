@@ -3,23 +3,23 @@
 {{- $svcPort := .Values.service.port -}}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+  {{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
   {{- else -}}
 apiVersion: extensions/v1beta1
   {{- end }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullName }}-external
   labels:
     {{- include "laa-crown-court-proceeding.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- if .Values.ingress.internal_whitelist_source_range }}
-    nginx.ingress.kubernetes.io/whitelist-source-range: {{ $.Values.ingress.internal_whitelist_source_range }}
-    external-dns.alpha.kubernetes.io/set-identifier: {{ $fullName }}-{{ $.Values.ingress.environmentName}}-green
+  {{- if .Values.ingress.external_whitelist_source_range }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ $.Values.ingress.external_whitelist_source_range }}
+    external-dns.alpha.kubernetes.io/set-identifier: {{ $fullName }}-external-{{ $.Values.ingress.environmentName}}-green
   {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
@@ -34,16 +34,30 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- if .Values.ingress.internalHost }}
-    - host: {{ $.Values.ingress.internalHost.host | quote }}
+    {{- if .Values.ingress.externalHost }}
+    - host: {{ $.Values.ingress.externalHost.host | quote }}
       http:
         paths:
-          - path: {{ $.Values.ingress.internalHost.path }}
+          - path: {{ $.Values.ingress.externalHost.paths.swaggerPath }}
             pathType: "Prefix"
             backend:
               service:
                 name: {{ $fullName }}
                 port:
                   number: {{ $svcPort }}
+          - path: {{ $.Values.ingress.externalHost.paths.openApiPath }}
+            pathType: "Prefix"
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+          - path: {{ $.Values.actuator.health.path }}
+            pathType: "Exact"
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $.Values.actuator.port }}
     {{- end }}
   {{- end }}
