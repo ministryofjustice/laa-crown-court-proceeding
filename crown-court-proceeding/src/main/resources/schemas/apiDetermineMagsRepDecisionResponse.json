@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "apiDetermineMagsRepDecisionResponse.json",
+  "type": "object",
+  "title": "Determine Mags Rep Decision Response Schema",
+  "properties": {
+    "decisionDate": {
+      "type": "string",
+      "description": "The date the decision was made",
+      "format": "date-time"
+    },
+    "decisionReason": {
+      "type": "object",
+      "description": "Decision Reason",
+      "existingJavaType": "uk.gov.justice.laa.crime.enums.DecisionReason"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["decisionDate", "decisionReason"]
+}
