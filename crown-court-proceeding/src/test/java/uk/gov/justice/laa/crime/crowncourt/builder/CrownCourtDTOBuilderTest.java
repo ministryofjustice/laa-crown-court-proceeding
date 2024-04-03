@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
 
 @ExtendWith(SoftAssertionsExtension.class)
 class CrownCourtDTOBuilderTest {

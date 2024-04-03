@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtSummary;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.common.ApiCrownCourtSummary;
+import uk.gov.justice.laa.crime.crowncourt.model.response.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 
 import java.time.LocalDateTime;

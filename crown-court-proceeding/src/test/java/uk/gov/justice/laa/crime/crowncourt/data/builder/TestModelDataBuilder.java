@@ -5,7 +5,14 @@ import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
-import uk.gov.justice.laa.crime.crowncourt.model.*;
+import uk.gov.justice.laa.crime.crowncourt.model.common.*;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiCalculateEvidenceFeeRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.response.ApiCalculateEvidenceFeeResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.response.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateApplicationResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
 import uk.gov.justice.laa.crime.enums.*;
 

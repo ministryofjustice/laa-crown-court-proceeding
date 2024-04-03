@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

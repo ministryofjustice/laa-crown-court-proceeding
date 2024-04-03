@@ -24,7 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
@@ -193,7 +193,8 @@ class CrownCourtProceedingIntegrationTest {
     @Test
     void givenAValidContent_whenUpdateApplicationIsInvoked_thenUpdateApplicationIsSuccess() throws Exception {
         var updateApplicationResponse = TestModelDataBuilder.getApiUpdateApplicationResponse();
-        ApiUpdateApplicationRequest apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
+        ApiUpdateApplicationRequest
+                apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
         apiUpdateApplicationRequest.setCaseType(CaseType.APPEAL_CC);
         stubForOAuth();
         stubForIoJAppeal();

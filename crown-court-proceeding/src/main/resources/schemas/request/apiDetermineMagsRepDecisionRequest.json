@@ -12,17 +12,17 @@
     "iojAppeal": {
       "type": "object",
       "description": "IOJ Appeal",
-      "$ref": "common/apiIOJAppeal.json"
+      "$ref": "../common/apiIOJAppeal.json"
     },
     "financialAssessment": {
       "type": "object",
       "description": "Current financial assessment information",
-      "$ref": "common/apiFinancialAssessment.json"
+      "$ref": "../common/apiFinancialAssessment.json"
     },
     "passportAssessment": {
       "type": "object",
       "description": "passport assessment",
-      "$ref": "common/apiPassportAssessment.json"
+      "$ref": "../common/apiPassportAssessment.json"
     }
   },
   "additionalProperties": false,

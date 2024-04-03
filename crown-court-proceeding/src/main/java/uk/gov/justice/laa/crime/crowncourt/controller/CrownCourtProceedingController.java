@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import uk.gov.justice.laa.crime.annotation.DefaultHTTPErrorResponse;
 import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.*;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.response.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateApplicationResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
 import uk.gov.justice.laa.crime.crowncourt.validation.CrownCourtDetailsValidator;
 

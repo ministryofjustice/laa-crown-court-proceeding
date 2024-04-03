@@ -13,7 +13,11 @@ import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.*;
+import uk.gov.justice.laa.crime.crowncourt.model.common.ApiCrownCourtSummary;
+import uk.gov.justice.laa.crime.crowncourt.model.common.ApiHardshipOverview;
+import uk.gov.justice.laa.crime.crowncourt.model.common.ApiIOJAppeal;
+import uk.gov.justice.laa.crime.crowncourt.model.common.ApiPassportAssessment;
+import uk.gov.justice.laa.crime.crowncourt.model.response.ApiCalculateEvidenceFeeResponse;
 import uk.gov.justice.laa.crime.enums.*;
 
 import java.util.ArrayList;

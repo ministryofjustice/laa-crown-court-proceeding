@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtOutcome;
+import uk.gov.justice.laa.crime.crowncourt.model.common.ApiCrownCourtOutcome;
 import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
