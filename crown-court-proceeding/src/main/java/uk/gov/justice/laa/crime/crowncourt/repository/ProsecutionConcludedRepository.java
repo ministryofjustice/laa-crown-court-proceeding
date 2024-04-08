@@ -17,4 +17,6 @@ public interface ProsecutionConcludedRepository extends JpaRepository<Prosecutio
     List<ProsecutionConcludedEntity> getByMaatId(Integer maatId);
 
     List<ProsecutionConcludedEntity> getByHearingId(String hearingId);
+
+    long countByMaatIdAndStatus(Integer maatId, String status);
 }

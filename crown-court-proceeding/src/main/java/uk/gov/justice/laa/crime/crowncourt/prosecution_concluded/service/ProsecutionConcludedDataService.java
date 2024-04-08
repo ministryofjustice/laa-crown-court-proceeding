@@ -74,4 +74,8 @@ public class ProsecutionConcludedDataService {
         prosecutionConcludedRepository.saveAll(processedCases);
     }
 
+    public long getCountByMaatIdAndStatus(Integer maatId, String status) {
+        return prosecutionConcludedRepository.countByMaatIdAndStatus(maatId, status);
+    }
+
 }
