@@ -13,8 +13,13 @@
       "type": "object",
       "description": "Decision Reason",
       "existingJavaType": "uk.gov.justice.laa.crime.enums.DecisionReason"
+    },
+    "timestamp": {
+      "type": "string",
+      "title": "Indicates when the rep order was last updated",
+      "format": "date-time"
     }
   },
   "additionalProperties": false,
-  "required": ["decisionDate", "decisionReason"]
+  "required": ["decisionDate", "decisionReason", "timestamp"]
 }
