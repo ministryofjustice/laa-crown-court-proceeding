@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CrownCourtProceedingIntegrationTest {
 
     private static final boolean IS_VALID = true;
-    private static final String ERROR_MSG = "Call to service failed. Retries exhausted: 2/2.";
+    private static final String ERROR_MSG = "Call to service MAAT-API failed.";
     private static final String ENDPOINT_URL = "/api/internal/v1/proceedings";
 
     private static final String UPDATE_CC_URL = "/update-crown-court";
