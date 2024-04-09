@@ -14,9 +14,7 @@ import uk.gov.justice.laa.crime.crowncourt.model.common.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateCrownCourtOutcomeResponse;
-import uk.gov.justice.laa.crime.enums.CaseType;
-import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
-import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.enums.*;
 import uk.gov.justice.laa.crime.util.SortUtils;
 
 import java.time.LocalDate;
@@ -31,18 +29,18 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ProceedingService {
+public class CrownProceedingService {
 
     private final RepOrderService repOrderService;
     private final MaatCourtDataService maatCourtDataService;
 
-    private final Set<CaseType> caseTypes = Set.of(
+    private final Set<CaseType> crownCourtCaseTypes = Set.of(
             CaseType.INDICTABLE, CaseType.CC_ALREADY, CaseType.APPEAL_CC, CaseType.COMMITAL
     );
 
     public ApiProcessRepOrderResponse processRepOrder(CrownCourtDTO dto) {
         ApiProcessRepOrderResponse apiProcessRepOrderResponse = new ApiProcessRepOrderResponse();
-        if (caseTypes.contains(dto.getCaseType()) ||
+        if (crownCourtCaseTypes.contains(dto.getCaseType()) ||
                 (CaseType.EITHER_WAY == dto.getCaseType() &&
                         MagCourtOutcome.RESOLVED_IN_MAGS != dto.getMagCourtOutcome())) {
             repOrderService.getRepDecision(dto);
@@ -55,7 +53,6 @@ public class ProceedingService {
         }
         return apiProcessRepOrderResponse;
     }
-
 
     public ApiUpdateApplicationResponse updateApplication(CrownCourtDTO dto) {
         UpdateRepOrderRequestDTO repOrderRequest = UpdateRepOrderDTOBuilder.build(dto, processRepOrder(dto));
@@ -81,10 +78,12 @@ public class ProceedingService {
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList =
                 maatCourtDataService.getRepOrderCCOutcomeByRepId(repId);
         if (null != repOrderCCOutcomeList && !repOrderCCOutcomeList.isEmpty()) {
-            repOrderCCOutcomeList = repOrderCCOutcomeList.stream().filter(outcome ->
-                    isNotBlank(outcome.getOutcome())).collect(Collectors.toCollection(ArrayList::new));
+            repOrderCCOutcomeList = repOrderCCOutcomeList.stream()
+                    .filter(outcome -> isNotBlank(outcome.getOutcome()))
+                    .collect(Collectors.toCollection(ArrayList::new));
             SortUtils.sortListWithComparing(repOrderCCOutcomeList, RepOrderCCOutcomeDTO::getOutcomeDate,
-                    RepOrderCCOutcomeDTO::getId, SortUtils.getComparator());
+                                            RepOrderCCOutcomeDTO::getId, SortUtils.getComparator()
+            );
             repOrderCCOutcomeList.forEach(outcome -> {
                 CrownCourtOutcome crownCourtOutcome = CrownCourtOutcome.getFrom(outcome.getOutcome());
                 if (crownCourtOutcome != null) {

@@ -26,7 +26,7 @@ import uk.gov.justice.laa.crime.crowncourt.validation.CrownCourtDetailsValidator
 @Tag(name = "Crown Court Proceeding", description = "Rest API for Crown Court Proceeding.")
 public class ProceedingsController implements ProceedingsApi {
 
-    private final ProceedingService proceedingService;
+    private final CrownProceedingService crownProceedingService;
     private final CrownCourtDetailsValidator crownCourtDetailsValidator;
 
     private CrownCourtDTO preProcessRequest(ApiProcessRepOrderRequest request) {
