@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiDetermineMagsRepDecisionRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
 
@@ -38,5 +39,16 @@ public class CrownCourtDTOBuilder {
         } else {
             return builder.build();
         }
+    }
+
+    public static CrownCourtDTO build(final ApiDetermineMagsRepDecisionRequest request) {
+        return CrownCourtDTO.builder()
+                .repId(request.getRepId())
+                .caseType(request.getCaseType())
+                .passportAssessment(request.getPassportAssessment())
+                .iojAppeal(request.getIojAppeal())
+                .financialAssessment(request.getFinancialAssessment())
+                .userSession(request.getUserSession())
+                .build();
     }
 }
