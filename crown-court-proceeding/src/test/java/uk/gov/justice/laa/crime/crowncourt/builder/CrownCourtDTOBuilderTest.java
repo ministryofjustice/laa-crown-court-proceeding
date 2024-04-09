@@ -19,8 +19,6 @@ class CrownCourtDTOBuilderTest {
     private void checkCommonFields(ApiProcessRepOrderRequest request, CrownCourtDTO dto) {
         softly.assertThat(dto.getRepId())
                 .isEqualTo(request.getRepId());
-        softly.assertThat(dto.getLaaTransactionId())
-                .isEqualTo(request.getLaaTransactionId());
         softly.assertThat(dto.getCaseType())
                 .isEqualTo(request.getCaseType());
         softly.assertThat(dto.getMagCourtOutcome())

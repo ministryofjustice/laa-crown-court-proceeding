@@ -33,8 +33,7 @@ class CourtDataAdapterServiceTest {
     @Test
     void givenAValidHearingId_whenTriggerHearingProcessingIsInvoked_thenTheRequestIsSentCorrectly() {
         UUID testHearingId = UUID.randomUUID();
-        String testTransactionId = UUID.randomUUID().toString();
-        courtDataAdapterService.triggerHearingProcessing(testHearingId, testTransactionId);
+        courtDataAdapterService.triggerHearingProcessing(testHearingId);
 
         verify(cdaAPIClient).get(
                 any(),
@@ -49,7 +48,6 @@ class CourtDataAdapterServiceTest {
     void givenAValidHearingId_whenTriggerHearingProcessingIsInvokedAndTheCallFails_thenFailureIsHandled() {
 
         UUID testHearingId = UUID.randomUUID();
-        String testTransactionId = UUID.randomUUID().toString();
 
         when(cdaAPIClient.get(
                 any(),
@@ -59,7 +57,7 @@ class CourtDataAdapterServiceTest {
                 any(UUID.class)
         )).thenThrow(new APIClientException());
 
-        assertThatThrownBy(() -> courtDataAdapterService.triggerHearingProcessing(testHearingId, testTransactionId))
+        assertThatThrownBy(() -> courtDataAdapterService.triggerHearingProcessing(testHearingId))
                 .isInstanceOf(APIClientException.class);
     }
 }

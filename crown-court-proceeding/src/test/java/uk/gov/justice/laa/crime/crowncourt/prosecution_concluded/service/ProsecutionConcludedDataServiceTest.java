@@ -11,6 +11,7 @@ import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,5 +79,12 @@ class ProsecutionConcludedDataServiceTest {
                 .build());
         //then
         verify(prosecutionConcludedRepository, times(0)).save(any());
+    }
+
+
+    @Test
+    void givenAValidParameter_whenGetCountByMaatIdAndStatusIsInvoked_thenCountIsReturned() {
+        prosecutionConcludedDataService.getCountByMaatIdAndStatus(TestModelDataBuilder.TEST_REP_ID, CaseConclusionStatus.PENDING.name());
+        verify(prosecutionConcludedRepository).countByMaatIdAndStatus(TestModelDataBuilder.TEST_REP_ID, CaseConclusionStatus.PENDING.name());
     }
 }

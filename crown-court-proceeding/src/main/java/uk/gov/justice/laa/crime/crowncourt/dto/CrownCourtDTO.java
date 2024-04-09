@@ -15,7 +15,6 @@ import java.util.List;
 @Builder
 public class CrownCourtDTO {
 
-    private String laaTransactionId;
     private Integer repId;
     private ApiUserSession userSession;
     private Integer applicantHistoryId;

@@ -7,6 +7,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.model.*;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.enums.*;
 
 import java.nio.charset.StandardCharsets;
@@ -31,8 +32,6 @@ public class TestModelDataBuilder {
     public static final LocalDateTime TEST_SENTENCE_ORDER_DATE =
             LocalDateTime.of(2022, 2, 19, 15, 1, 25);
     public static final LocalDateTime TEST_DATE_MODIFIED = LocalDateTime.now();
-
-    public static final String MEANS_ASSESSMENT_TRANSACTION_ID = "7c49ebfe-fe3a-4f2f-8dad-f7b8f03b8327";
     public static final String MOCK_DECISION = "MOCK_DECISION";
     public static final Integer TEST_REP_ID = 91919;
     public static final String TEST_USER = "TEST_USER";
@@ -56,7 +55,6 @@ public class TestModelDataBuilder {
                 .withCommittalDate(TEST_COMMITTAL_DATE)
                 .withDecisionDate(TEST_DECISION_DATE)
                 .withDateReceived(TEST_DATE_RECEIVED)
-                .withLaaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
                 .withCrownCourtSummary(new ApiCrownCourtSummary()
                         .withRepId(isValid ? TEST_REP_ID : null)
                         .withRepOrderDate(TEST_REP_ORDER_DATE)
@@ -103,7 +101,6 @@ public class TestModelDataBuilder {
     public static CrownCourtDTO getCrownCourtDTO() {
         return CrownCourtDTO.builder()
                 .repId(TEST_REP_ID)
-                .laaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
                 .caseType(CaseType.SUMMARY_ONLY)
                 .magCourtOutcome(MagCourtOutcome.APPEAL_TO_CC)
                 .decisionDate(TEST_DECISION_DATE)
@@ -125,7 +122,6 @@ public class TestModelDataBuilder {
     public static CrownCourtDTO getCrownCourtDTO(CaseType caseType,MagCourtOutcome magCourtOutcome) {
         return CrownCourtDTO.builder()
                 .repId(TEST_REP_ID)
-                .laaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
                 .caseType(caseType)
                 .magCourtOutcome(magCourtOutcome)
                 .build();
@@ -180,7 +176,6 @@ public class TestModelDataBuilder {
     public static ApiUpdateApplicationRequest getApiUpdateApplicationRequest(boolean isValid) {
         return new ApiUpdateApplicationRequest()
                 .withRepId(isValid ? TEST_REP_ID : null)
-                .withLaaTransactionId(MEANS_ASSESSMENT_TRANSACTION_ID)
                 .withApplicantHistoryId(TEST_APPLICANT_HISTORY_ID)
                 .withCrownCourtSummary(new ApiCrownCourtSummary()
                         .withRepId(isValid ? TEST_REP_ID : null)
@@ -258,6 +253,7 @@ public class TestModelDataBuilder {
                 .builder()
                 .maatId(TEST_REP_ID)
                 .caseData(getCaseData().getBytes(StandardCharsets.UTF_8))
+                .status(CaseConclusionStatus.PENDING.name())
                 .build();
     }
 
