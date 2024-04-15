@@ -5,9 +5,8 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,12 +23,12 @@ import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
+import uk.gov.justice.laa.crime.util.FileUtils;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -43,10 +42,14 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 @AutoConfigureObservability
 class ProsecutionListenerTest {
 
+    private static final String CC_OUTCOME_URL = "/api/internal/v1/assessment/crown-court/updateCCOutcome";
+    private static final String CONVICTED = "CONVICTED";
+    private static final String AQUITTED = "AQUITTED";
+    private static final String PART_CONVICTED = "PART CONVICTED";
     private static final String QUEUE_NAME = "crime-apps-dev-prosecution-concluded-queue";
     @Container
     static LocalStackContainer localStack = new LocalStackContainer(DockerImageName.parse("localstack/localstack"))
-            .withServices(LocalStackContainer.Service.SQS);
+            .withServices(LocalStackContainer.Service.SQS).withEnv("LOCALSTACK_HOST", "127.0.0.1");
     private static AmazonSQS amazonSQS;
     private static String queueUrl;
 
@@ -84,11 +87,11 @@ class ProsecutionListenerTest {
     }
 
     @Test
-    @Order(1)
-    void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldCreateWithPending() {
+    void givenAValidMessage_whenListenerIsInvoked_thenShouldCreateWithPending() {
         prosecutionConcludedRepository.deleteAll();
-        amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(5635566, true));
-        with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(60, SECONDS)
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaAndVerdict.json"));
+        setScenarioState("reservations", "Started");
+        with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(30, SECONDS)
                 .until(() -> !prosecutionConcludedRepository.getByMaatId(5635566).isEmpty());
         List<ProsecutionConcludedEntity> prosecutionConcludedEntities = prosecutionConcludedRepository.getByMaatId(5635566);
 
@@ -100,58 +103,145 @@ class ProsecutionListenerTest {
     }
 
     @Test
-    @Order(2)
-    void givenAValidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldUpdateCaseConclusion() {
-        amazonSQS.sendMessage(queueUrl, getSqsMessagePayload(5635566, true));
-        with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(60, SECONDS)
-                .until(() -> prosecutionConcludedRepository.getByMaatId(5635566).get(0).getStatus(),
-                        Predicate.isEqual(CaseConclusionStatus.PROCESSED.name()));
-        List<ProsecutionConcludedEntity> prosecutionConcludedEntities = prosecutionConcludedRepository.getByMaatId(5635566);
+    void givenPleaIsGuiltyAndNoVerdict_whenListenerIsInvoked_thenOutcomeIsConvicted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaWithGuilty.json"));
+        setScenarioState("reservations", "State 2");
 
-        assertThat(prosecutionConcludedEntities).isNotEmpty();
-        assertThat(prosecutionConcludedEntities.get(0).getStatus()).isEqualTo(CaseConclusionStatus.PROCESSED.name());
-        prosecutionConcludedRepository.deleteAll();
-        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/wq-link-register/5635566")));
-        verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/offence/case/665421")));
-        verify(exactly(1), putRequestedFor(urlEqualTo("/api/internal/v1/assessment/crown-court/update-cc-sentence")));
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedRequest(CONVICTED));
     }
 
-    private String getSqsMessagePayload(Integer maatId, boolean isCaseConcluded) {
-        return """
-                {
-                   prosecutionCaseId : 998984a0-ae53-466c-9c13-e0c84c1fd581,
-                   defendantId: aa07e234-7e80-4be1-a076-5ab8a8f49df5,
-                   isConcluded: """ + isCaseConcluded + """
-                ,hearingIdWhereChangeOccurred : 908ad01e-5a38-4158-957a-0c1d1a783862,
-                offenceSummary: [
-                        {
-                            offenceId: ed0e9d59-cc1c-4869-8fcd-464caf770744,
-                            offenceCode: PT00011,
-                            proceedingsConcluded: true,
-                            proceedingsConcludedChangedDate: 2022-02-01,
-                            plea: {
-                                originatingHearingId: 908ad01e-5a38-4158-957a-0c1d1a783862,
-                                value: GUILTY,
-                                pleaDate: 2022-02-01
-                            },
-                            verdict: {
-                                verdictDate: 2022-02-01,
-                                originatingHearingId: 908ad01e-5a38-4158-957a-0c1d1a783862,
-                                verdictType: {
-                                    description: GUILTY,
-                                    category: GUILTY,
-                                    categoryType: GUILTY,
-                                    sequence: 4126,
-                                    verdictTypeId: null
-                                }
-                            }
-                        }
-                    ],
-                    maatId: """ + maatId + """
-                    ,metadata: {
-                        laaTransactionId: 61600a90-89e2-4717-aa9b-a01fc66130c1
-                    }
-                }""";
+    @Test
+    void givenAPleaNotGuiltyAndNoVerdict_whenListenerIsInvoked_thenOutcomeIsAquitted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaWithNotGuilty.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+    }
+
+    @Test
+    void givenAVerdictIsGuiltyAndNoPlea_whenListenerIsInvoked_thenOutcomeIsAConvicted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadVerdictWithGuilty.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedRequest(CONVICTED));
+    }
+
+
+    @Test
+    void givenAVerdictIsNotGuiltyAndNoPlea_whenListenerIsInvoked_thenOutcomeIsAAquitted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadVerdictWithNotGuilty.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+    }
+
+    @Test
+    void givenAPleaIsGuiltyAndVerdictIsGuilty_whenListenerIsInvoked_thenOutcomeIsConvicted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaAndVerdictWithGuilty.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedRequest(CONVICTED));
+    }
+
+    @Test
+    void givenAPleaIsNotGuiltyAndVerdictIsNotGuilty_whenListenerIsInvoked_thenOutcomeIsAquitted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaAndVerdictWithNotGuilty.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+    }
+
+    @Test
+    void givenAPleaIsNotGuiltyAndVerdictIsGuilty_whenListenerIsInvoked_thenOutcomeIsConvicted() {
+       /* amazonSQS.sendMessage(queueUrl, getSqsMessagePayloadWithPleaAndVerdict(5635567, "" +
+                NOT_GUILTY, GUILTY));*/
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaIsNotGuiltyAndVerdictIsGuilty.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedRequest(CONVICTED));
+    }
+
+
+    @Test
+    void givenAMultipleOffenceWithPleaAndNoVerdict_whenListenerIsInvoked_thenOutcomeIsAConvicted() {
+        /*amazonSQS.sendMessage(queueUrl, getSqsMessagePayloadWithMultiplePlea(5635567, GUILTY));*/
+
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithPleaIsGuilty.json"));
+
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedRequest(CONVICTED));
+    }
+
+    @Test
+    void givenAMultipleOffence_whenPleaIsGuiltyAndVerdictIsNotGuilty_thenOutcomeIsAPartConvicted() {
+        /*amazonSQS.sendMessage(queueUrl, getPayloadWithMultiplePleaAndVerdict(5635567, GUILTY));*/
+
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithPleaAndVerdictIsNotGuilty.json"));
+
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        LoggedRequest request = requests.get(requests.size() - 1);
+        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(PART_CONVICTED));
+    }
+
+    @Test
+    void givenAMultipleOffence_withPleaIsNotGuiltyAndVerdictIsNotGuilty_thenOutcomeIsAquitted() {
+        /*amazonSQS.sendMessage(queueUrl, getPayloadWithMultiplePleaAndVerdict(5635567, NOT_GUILTY));*/
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNotGuilty.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        LoggedRequest request = requests.get(requests.size() - 1);
+        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+    }
+
+    private String getExpectedRequest(String outcome, String imprisoned) {
+        return "{\"repId\":5635567,\"ccOutcome\":\"" + outcome + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":" + imprisoned + ",\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":\"433\"}";
+    }
+
+    private String getExpectedRequest(String outcome) {
+        return "{\"repId\":5635567,\"ccOutcome\":\"" + outcome + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":\"N\",\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":\"433\"}";
     }
 }
+
 
