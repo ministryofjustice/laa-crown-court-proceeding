@@ -15,20 +15,21 @@ jacoco {
 }
 
 def versions = [
-        okhttpVersion                      : "4.9.3",
-        pitest                             : "1.4.10",
-        amazonSQSVersion                   : "2.1.1",
-        springFrameworkCloudVersion        : "3.0.1",
-        crimeCommonsVersion                : "2.13.4",
-        mockitoInlineVersion               : "5.2.0",
-        wmStubRunnerVersion    	           : "4.0.1",
-        springDocWebMVCVersion             : "2.1.0",
-        awsSdkStsVersion                   : "2.20.69",
-        awsJavaSdkVersion                  : "1.12.264",
-        localstackUtilsVersion             : "0.2.23",
-        testcontainersLocalstackVersion    : "1.18.3",
-        testcontainersJunitjupiterVersion  : "1.19.0",
-        postgresqlVersion                  : "42.7.2"
+        okhttpVersion                    : "4.9.3",
+        pitest                           : "1.4.10",
+        amazonSQSVersion                 : "2.1.1",
+        springFrameworkCloudVersion      : "3.0.1",
+        crimeCommonsClasses              : "3.4.0",
+        commonsRestClient                : "3.4.0",
+        mockitoInlineVersion             : "5.2.0",
+        wmStubRunnerVersion              : "4.0.1",
+        springDocWebMVCVersion           : "2.1.0",
+        awsSdkStsVersion                 : "2.20.69",
+        awsJavaSdkVersion                : "1.12.264",
+        localstackUtilsVersion           : "0.2.23",
+        testcontainersLocalstackVersion  : "1.18.3",
+        testcontainersJunitjupiterVersion: "1.19.0",
+        postgresqlVersion                : "42.7.2"
 ]
 
 java {
@@ -57,8 +58,8 @@ repositories {
 
 dependencies {
 
-    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.crimeCommonsVersion:all"
-    implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$versions.crimeCommonsVersion"
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.commonsRestClient:all"
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$versions.crimeCommonsClasses"
 
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
@@ -70,7 +71,7 @@ dependencies {
     implementation "software.amazon.awssdk:sts:$versions.awsSdkStsVersion"
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springDocWebMVCVersion"
-    
+
     // Spring Boot version contains security vulnerabilities raised by Snyk
     implementation "org.postgresql:postgresql:$versions.postgresqlVersion"
     implementation "org.liquibase:liquibase-core"
@@ -135,7 +136,7 @@ jacocoTestReport {
 }
 
 pitest {
-    targetClasses = ["uk.gov.justice.laa.crime.crowncourt.*","uk.gov.justice.laa.crime.crowncourt.controller.*","uk.gov.justice.laa.crime.crowncourt.validation.*"]
+    targetClasses = ["uk.gov.justice.laa.crime.crowncourt.*", "uk.gov.justice.laa.crime.crowncourt.controller.*", "uk.gov.justice.laa.crime.crowncourt.validation.*"]
     excludedClasses = ["uk.gov.justice.laa.crime.crowncourt.dto.*", "uk.gov.justice.laa.crime.crowncourt.mapper.*", "uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication"]
     threads = 5
     outputFormats = ["XML", "HTML"]

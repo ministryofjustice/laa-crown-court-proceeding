@@ -2,7 +2,7 @@
   "id": "fc0fc3de-1167-487e-9492-2d17f98bb14f",
   "name": "api_internal_v1_assessment_wq-link-register_5635566",
   "request": {
-    "url": "/api/internal/v1/assessment/wq-link-register/5635566",
+    "urlPattern": "/api/internal/v1/assessment/wq-link-register/([0-9]*)",
     "method": "GET"
   },
   "response": {
