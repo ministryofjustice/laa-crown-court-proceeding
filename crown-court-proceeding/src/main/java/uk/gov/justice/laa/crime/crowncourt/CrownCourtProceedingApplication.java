@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import reactor.core.publisher.Hooks;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
@@ -14,6 +15,7 @@ public class CrownCourtProceedingApplication {
 
     public static void main(String[] args) {
         log.info("********** CrownCourtProceedingApplication start **************");
+        Hooks.enableAutomaticContextPropagation();
         SpringApplication.run(CrownCourtProceedingApplication.class);
     }
 
