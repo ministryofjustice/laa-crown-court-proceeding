@@ -7,7 +7,7 @@
       "requiredScenarioState": "Started",
       "newScenarioState": "State 2",
       "request": {
-        "urlPattern": "/api/internal/v1/assessment/reservations/5635566",
+        "urlPattern": "/api/internal/v1/assessment/reservations/([0-9]*)",
         "method": "GET"
       },
       "response": {
@@ -31,7 +31,7 @@
       "scenarioName": "reservations",
       "requiredScenarioState": "State 2",
       "request": {
-        "urlPattern": "/api/internal/v1/assessment/reservations/5635566",
+        "urlPattern": "/api/internal/v1/assessment/reservations/([0-9]*)",
         "method": "GET"
       },
       "response": {

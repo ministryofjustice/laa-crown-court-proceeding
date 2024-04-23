@@ -2,7 +2,7 @@
   "id": "d1e8e869-6248-4178-896d-df359af9067c",
   "name": "api_internal_v1_assessment_rep-orders_5635566",
   "request": {
-    "url": "/api/internal/v1/assessment/rep-orders/5635566",
+    "urlPattern": "/api/internal/v1/assessment/rep-orders/([0-9]*)",
     "method": "GET"
   },
   "response": {

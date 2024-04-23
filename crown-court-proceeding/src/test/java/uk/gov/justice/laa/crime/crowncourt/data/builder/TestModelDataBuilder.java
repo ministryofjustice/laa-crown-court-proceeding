@@ -16,6 +16,7 @@ import uk.gov.justice.laa.crime.crowncourt.model.response.ApiProcessRepOrderResp
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.enums.*;
 
 import java.nio.charset.StandardCharsets;
@@ -274,6 +275,7 @@ public class TestModelDataBuilder {
                 .builder()
                 .maatId(TEST_REP_ID)
                 .caseData(getCaseData().getBytes(StandardCharsets.UTF_8))
+                .status(CaseConclusionStatus.PENDING.name())
                 .build();
     }
 

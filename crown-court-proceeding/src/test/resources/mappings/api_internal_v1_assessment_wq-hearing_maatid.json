@@ -2,7 +2,7 @@
   "id": "f824bfd7-01d0-405f-b394-97424179e7cd",
   "name": "api_internal_v1_assessment_wq-hearing_908ad01e-5a38-4158-957a-0c1d1a783862_maatid_5635566",
   "request": {
-    "url": "/api/internal/v1/assessment/wq-hearing/908ad01e-5a38-4158-957a-0c1d1a783862/maatId/5635566",
+    "urlPattern": "/api/internal/v1/assessment/wq-hearing/908ad01e-5a38-4158-957a-0c1d1a783862/maatId/([0-9]*)",
     "method": "GET"
   },
   "response": {
