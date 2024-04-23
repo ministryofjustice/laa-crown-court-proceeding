@@ -4,15 +4,10 @@
   "type": "object",
   "title": "Determine Mags Rep Decision Response Schema",
   "properties": {
-    "decisionDate": {
-      "type": "string",
-      "description": "The date the decision was made",
-      "format": "date-time"
-    },
-    "decisionReason": {
+    "decisionResult": {
       "type": "object",
-      "description": "Decision Reason",
-      "existingJavaType": "uk.gov.justice.laa.crime.enums.DecisionReason"
+      "description": "The result of the decision",
+      "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult"
     },
     "timestamp": {
       "type": "string",

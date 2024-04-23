@@ -5,6 +5,7 @@ import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
+import uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult;
 import uk.gov.justice.laa.crime.crowncourt.model.common.*;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiCalculateEvidenceFeeRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
@@ -91,7 +92,7 @@ public class TestModelDataBuilder {
                         .withReviewResult(ReviewResult.PASS));
     }
 
-    private static ApiPassportAssessment getPassportAssessment() {
+    public static ApiPassportAssessment getPassportAssessment() {
         return new ApiPassportAssessment()
                 .withResult(PassportAssessmentResult.FAIL.getResult())
                 .withStatus(CurrentStatus.COMPLETE);
@@ -109,7 +110,11 @@ public class TestModelDataBuilder {
                 .repId(TEST_REP_ID)
                 .caseType(CaseType.SUMMARY_ONLY)
                 .magCourtOutcome(MagCourtOutcome.APPEAL_TO_CC)
-                .decisionDate(TEST_DECISION_DATE)
+                .magsDecisionResult(
+                        MagsDecisionResult.builder()
+                                .decisionDate(TEST_DECISION_DATE.toLocalDate())
+                                .build()
+                )
                 .crownCourtSummary(getCrownCourtSummary())
                 .passportAssessment(getPassportAssessment())
                 .financialAssessment(getFinancialAssessment())

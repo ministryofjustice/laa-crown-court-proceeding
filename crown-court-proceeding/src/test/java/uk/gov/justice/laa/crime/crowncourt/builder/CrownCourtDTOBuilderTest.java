@@ -23,10 +23,10 @@ class CrownCourtDTOBuilderTest {
                 .isEqualTo(request.getCaseType());
         softly.assertThat(dto.getMagCourtOutcome())
                 .isEqualTo(request.getMagCourtOutcome());
-        softly.assertThat(dto.getDecisionReason())
+        softly.assertThat(dto.getMagsDecisionResult().getDecisionReason())
                 .isEqualTo(request.getDecisionReason());
-        softly.assertThat(dto.getDecisionDate())
-                .isEqualTo(request.getDecisionDate());
+        softly.assertThat(dto.getMagsDecisionResult().getDecisionDate())
+                .isEqualTo(request.getDecisionDate().toLocalDate());
         softly.assertThat(dto.getCommittalDate())
                 .isEqualTo(request.getCommittalDate());
         softly.assertThat(dto.getDateReceived())

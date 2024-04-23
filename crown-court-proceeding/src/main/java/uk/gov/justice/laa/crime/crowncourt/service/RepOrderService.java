@@ -185,12 +185,13 @@ public class RepOrderService {
     }
 
     public void determineRepTypeByDecisionReason(CrownCourtDTO requestDTO, ApiCrownCourtSummary crownCourtSummary) {
-        if (requestDTO.getDecisionReason() == DecisionReason.GRANTED) {
+        DecisionReason decisionReason = requestDTO.getMagsDecisionResult().getDecisionReason();
+        if (decisionReason == DecisionReason.GRANTED) {
             crownCourtSummary.setRepType(Constants.THROUGH_ORDER);
             crownCourtSummary.setRepId(requestDTO.getRepId());
-        } else if (requestDTO.getDecisionReason() == DecisionReason.FAILIOJ
-                || requestDTO.getDecisionReason() == DecisionReason.FAILMEANS
-                || requestDTO.getDecisionReason() == DecisionReason.FAILMEIOJ) {
+        } else if (decisionReason == DecisionReason.FAILIOJ
+                || decisionReason == DecisionReason.FAILMEANS
+                || decisionReason == DecisionReason.FAILMEIOJ) {
             crownCourtSummary.setRepType(Constants.CROWN_COURT_ONLY);
         }
     }
@@ -200,7 +201,9 @@ public class RepOrderService {
         String repOrderDecision = crownCourtSummary.getRepOrderDecision();
         if (StringUtils.isNotBlank(repOrderDecision) && crownCourtSummary.getRepOrderDate() == null) {
             switch (requestDTO.getCaseType()) {
-                case INDICTABLE -> crownCourtSummary.setRepOrderDate(requestDTO.getDecisionDate());
+                case INDICTABLE -> crownCourtSummary.setRepOrderDate(
+                        requestDTO.getMagsDecisionResult().getDecisionDate().atStartOfDay()
+                );
                 case EITHER_WAY -> crownCourtSummary.setRepOrderDate(
                         determineMagsRepOrderDate(requestDTO, repOrderDecision)
                 );
@@ -221,13 +224,13 @@ public class RepOrderService {
     }
 
     private LocalDateTime determineMagsRepOrderDate(CrownCourtDTO requestDTO, String repOrderDecision) {
-        DecisionReason decisionReason = requestDTO.getDecisionReason();
+        DecisionReason decisionReason = requestDTO.getMagsDecisionResult().getDecisionReason();
         List<DecisionReason> failedDecisionReasons =
                 List.of(DecisionReason.FAILIOJ, DecisionReason.FAILMEANS, DecisionReason.FAILMEIOJ);
 
         if (MagCourtOutcome.COMMITTED_FOR_TRIAL.equals(requestDTO.getMagCourtOutcome())) {
             if (DecisionReason.GRANTED.equals(decisionReason)) {
-                return requestDTO.getDecisionDate();
+                return requestDTO.getMagsDecisionResult().getDecisionDate().atStartOfDay();
             } else if ((decisionReason != null && failedDecisionReasons.contains(decisionReason)) ||
                     Constants.REFUSED_INELIGIBLE.equals(repOrderDecision)) {
                 return requestDTO.getCommittalDate();

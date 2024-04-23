@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
+import uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiDetermineMagsRepDecisionRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
@@ -17,8 +18,12 @@ public class CrownCourtDTOBuilder {
                 .repId(request.getRepId())
                 .caseType(request.getCaseType())
                 .magCourtOutcome(request.getMagCourtOutcome())
-                .decisionReason(request.getDecisionReason())
-                .decisionDate(request.getDecisionDate())
+                .magsDecisionResult(
+                        MagsDecisionResult.builder()
+                                .decisionReason(request.getDecisionReason())
+                                .decisionDate(request.getDecisionDate().toLocalDate())
+                                .build()
+                )
                 .committalDate(request.getCommittalDate())
                 .dateReceived(request.getDateReceived())
                 .crownCourtSummary(request.getCrownCourtSummary())

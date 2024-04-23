@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
-import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
+import uk.gov.justice.laa.crime.crowncourt.config.IntegrationTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
 import uk.gov.justice.laa.crime.enums.CaseType;
@@ -44,8 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DirtiesContext
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Import(CrownCourtProceedingTestConfiguration.class)
-@SpringBootTest(classes = CrownCourtProceedingTestConfiguration.class, webEnvironment = DEFINED_PORT)
+@Import(IntegrationTestConfiguration.class)
+@SpringBootTest(classes = IntegrationTestConfiguration.class, webEnvironment = DEFINED_PORT)
 @AutoConfigureWireMock(port = 9998)
 @AutoConfigureObservability
 class CrownCourtProceedingIntegrationTest {
@@ -110,6 +110,7 @@ class CrownCourtProceedingIntegrationTest {
         var apiProcessRepOrderRequest = TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE);
         apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
 
+        stubForOAuth();
         wiremock.stubFor(get("/api/internal/v1/assessment/ioj-appeal/repId/91919/current-passed")
                 .willReturn(
                         WireMock.serverError()
