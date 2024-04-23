@@ -8,6 +8,7 @@ import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult;
 import uk.gov.justice.laa.crime.crowncourt.model.common.*;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiCalculateEvidenceFeeRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiDetermineMagsRepDecisionRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiCalculateEvidenceFeeResponse;
@@ -65,19 +66,19 @@ public class TestModelDataBuilder {
                 .withDecisionDate(TEST_DECISION_DATE)
                 .withDateReceived(TEST_DATE_RECEIVED)
                 .withCrownCourtSummary(new ApiCrownCourtSummary()
-                        .withRepId(isValid ? TEST_REP_ID : null)
-                        .withRepOrderDate(TEST_REP_ORDER_DATE)
-                        .withRepType("")
-                        .withRepOrderDecision(MOCK_DECISION)
-                        .withWithdrawalDate(TEST_WITHDRAWAL_DATE))
-                .withIojAppeal(getIojAppeal())
+                                               .withRepId(isValid ? TEST_REP_ID : null)
+                                               .withRepOrderDate(TEST_REP_ORDER_DATE)
+                                               .withRepType("")
+                                               .withRepOrderDecision(MOCK_DECISION)
+                                               .withWithdrawalDate(TEST_WITHDRAWAL_DATE))
+                .withIojAppeal(getIojSummary())
                 .withFinancialAssessment(getFinancialAssessment())
                 .withPassportAssessment(getPassportAssessment());
     }
 
-    public static ApiIOJSummary getIojAppeal() {
+    public static ApiIOJSummary getIojSummary() {
         return new ApiIOJSummary()
-                .withIojResult(ReviewResult.FAIL.getResult())
+                .withIojResult(ReviewResult.PASS.getResult())
                 .withDecisionResult("PASS")
                 .withAppealTypeCode("Test")
                 .withAppealTypeDate(TEST_IOJ_APPEAL_DECISION_DATE);
@@ -90,8 +91,8 @@ public class TestModelDataBuilder {
                 .withFullResult(FullAssessmentResult.PASS.getResult())
                 .withFullStatus(CurrentStatus.COMPLETE)
                 .withHardshipOverview(new ApiHardshipOverview()
-                        .withAssessmentStatus(CurrentStatus.COMPLETE)
-                        .withReviewResult(ReviewResult.PASS));
+                                              .withAssessmentStatus(CurrentStatus.COMPLETE)
+                                              .withReviewResult(ReviewResult.PASS));
     }
 
     public static ApiPassportAssessment getPassportAssessment() {
@@ -121,7 +122,7 @@ public class TestModelDataBuilder {
                 .passportAssessment(getPassportAssessment())
                 .financialAssessment(getFinancialAssessment())
                 .dateReceived(TEST_DATE_RECEIVED)
-                .iojSummary(getIojAppeal())
+                .iojSummary(getIojSummary())
                 .isImprisoned(false)
                 .userSession(getApiUserSession(true))
                 .applicantHistoryId(TEST_APPLICANT_HISTORY_ID)
@@ -132,7 +133,7 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static CrownCourtDTO getCrownCourtDTO(CaseType caseType,MagCourtOutcome magCourtOutcome) {
+    public static CrownCourtDTO getCrownCourtDTO(CaseType caseType, MagCourtOutcome magCourtOutcome) {
         return CrownCourtDTO.builder()
                 .repId(TEST_REP_ID)
                 .caseType(caseType)
@@ -151,10 +152,12 @@ public class TestModelDataBuilder {
                 .withRepId(TEST_REP_ID)
                 .withIsImprisoned(true)
                 .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
-                .withCrownCourtOutcome(List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED, TEST_SENTENCE_ORDER_DATE)));
+                .withCrownCourtOutcome(
+                        List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED, TEST_SENTENCE_ORDER_DATE)));
     }
 
-    public static ApiCrownCourtSummary getCrownCourtSummaryWithOutcome(Boolean isImprisoned, List<ApiCrownCourtOutcome> crownCourtOutcomes) {
+    public static ApiCrownCourtSummary getCrownCourtSummaryWithOutcome(Boolean isImprisoned,
+                                                                       List<ApiCrownCourtOutcome> crownCourtOutcomes) {
         return new ApiCrownCourtSummary()
                 .withRepOrderDecision(MOCK_DECISION)
                 .withRepOrderDate(TEST_REP_ORDER_DATE)
@@ -163,7 +166,8 @@ public class TestModelDataBuilder {
                 .withIsImprisoned(isImprisoned);
     }
 
-    public static ApiCrownCourtOutcome getApiCrownCourtOutcome(CrownCourtOutcome crownCourtOutcome, LocalDateTime dateSet) {
+    public static ApiCrownCourtOutcome getApiCrownCourtOutcome(CrownCourtOutcome crownCourtOutcome,
+                                                               LocalDateTime dateSet) {
         return new ApiCrownCourtOutcome()
                 .withOutcome(crownCourtOutcome)
                 .withDateSet(dateSet)
@@ -191,14 +195,17 @@ public class TestModelDataBuilder {
                 .withRepId(isValid ? TEST_REP_ID : null)
                 .withApplicantHistoryId(TEST_APPLICANT_HISTORY_ID)
                 .withCrownCourtSummary(new ApiCrownCourtSummary()
-                        .withRepId(isValid ? TEST_REP_ID : null)
-                        .withRepOrderDate(TEST_REP_ORDER_DATE)
-                        .withRepType("")
-                        .withRepOrderDecision(MOCK_DECISION)
-                        .withWithdrawalDate(TEST_WITHDRAWAL_DATE)
-                        .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
-                        .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE)
-                        .withCrownCourtOutcome(List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED, LocalDateTime.now()))))
+                                               .withRepId(isValid ? TEST_REP_ID : null)
+                                               .withRepOrderDate(TEST_REP_ORDER_DATE)
+                                               .withRepType("")
+                                               .withRepOrderDecision(MOCK_DECISION)
+                                               .withWithdrawalDate(TEST_WITHDRAWAL_DATE)
+                                               .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
+                                               .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE)
+                                               .withCrownCourtOutcome(
+                                                       List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED,
+                                                                                       LocalDateTime.now()
+                                                       ))))
                 .withUserSession(getApiUserSession(isValid))
                 .withCaseType(CaseType.EITHER_WAY)
                 .withMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL)
@@ -206,13 +213,14 @@ public class TestModelDataBuilder {
                 .withCommittalDate(TEST_COMMITTAL_DATE)
                 .withDecisionDate(TEST_DECISION_DATE)
                 .withDateReceived(TEST_DATE_RECEIVED)
-                .withIojAppeal(getIojAppeal())
+                .withIojAppeal(getIojSummary())
                 .withIsImprisoned(false)
                 .withFinancialAssessment(getFinancialAssessment())
                 .withPassportAssessment(getPassportAssessment());
     }
 
-    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId, String outcome, LocalDateTime outcomeDate) {
+    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId, String outcome,
+                                                               LocalDateTime outcomeDate) {
         return RepOrderCCOutcomeDTO.builder()
                 .id(outcomeId)
                 .outcome(outcome)
@@ -351,7 +359,7 @@ public class TestModelDataBuilder {
     public static ApiCalculateEvidenceFeeResponse getApiCalculateEvidenceFeeResponse() {
         ApiCalculateEvidenceFeeResponse response = new ApiCalculateEvidenceFeeResponse();
         response.setEvidenceFee(new ApiEvidenceFee().withFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
-                .withDescription(EvidenceFeeLevel.LEVEL1.getDescription()));
+                                        .withDescription(EvidenceFeeLevel.LEVEL1.getDescription()));
         return response;
     }
 
@@ -386,5 +394,23 @@ public class TestModelDataBuilder {
         summary.setRepType("");
         response.setCrownCourtSummary(summary);
         return response;
+    }
+    
+    public static ApiDetermineMagsRepDecisionRequest getApiDetermineMagsRepDecisionRequest(boolean isValid) {
+        return new ApiDetermineMagsRepDecisionRequest()
+                .withCaseType(CaseType.INDICTABLE)
+                .withRepId(isValid ? TEST_REP_ID : null)
+                .withUserSession(getApiUserSession(true))
+                .withIojAppeal(getIojSummary())
+                .withPassportAssessment(getPassportAssessment())
+                .withFinancialAssessment(getFinancialAssessment());
+    }
+
+    public static MagsDecisionResult getMagsDecisionResult() {
+        return MagsDecisionResult.builder()
+                .decisionReason(DecisionReason.GRANTED)
+                .decisionDate(TEST_DECISION_DATE.toLocalDate())
+                .timestamp(TestModelDataBuilder.TEST_DATE_MODIFIED)
+                .build();
     }
 }

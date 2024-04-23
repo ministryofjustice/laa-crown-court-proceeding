@@ -13,16 +13,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.crime.commons.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult;
 import uk.gov.justice.laa.crime.crowncourt.model.common.ApiIOJSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiDetermineMagsRepDecisionRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiDetermineMagsRepDecisionResponse;
 import uk.gov.justice.laa.crime.crowncourt.service.MagsProceedingService;
 import uk.gov.justice.laa.crime.enums.CaseType;
-import uk.gov.justice.laa.crime.enums.DecisionReason;
 import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
-
-import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -53,21 +49,10 @@ class MagsProceedingControllerTest {
         var determineMagsRepDecisionRequestJson = BuildRequestJson();
 
         var determineMagsRepDecisionResponse = new ApiDetermineMagsRepDecisionResponse()
-                .withDecisionResult(
-                        MagsDecisionResult.builder()
-                                .decisionDate(LocalDate.now())
-                                .decisionReason(DecisionReason.GRANTED)
-                                .timestamp(TestModelDataBuilder.TEST_DATE_MODIFIED)
-                                .build()
-                );
+                .withDecisionResult(TestModelDataBuilder.getMagsDecisionResult());
 
         when(magsProceedingService.determineMagsRepDecision(any(CrownCourtDTO.class)))
-                .thenReturn(MagsDecisionResult.builder()
-                                    .decisionReason(DecisionReason.GRANTED)
-                                    .decisionDate(LocalDate.now())
-                                    .timestamp(TestModelDataBuilder.TEST_DATE_MODIFIED)
-                                    .build()
-                );
+                .thenReturn(TestModelDataBuilder.getMagsDecisionResult());
 
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.POST, determineMagsRepDecisionRequestJson, ENDPOINT_URL))
@@ -96,7 +81,6 @@ class MagsProceedingControllerTest {
                 .withPassportAssessment(TestModelDataBuilder.getPassportAssessment())
                 .withFinancialAssessment(TestModelDataBuilder.getFinancialAssessment())
                 .withUserSession(TestModelDataBuilder.getApiUserSession(true));
-
         return objectMapper.writeValueAsString(apiDetermineMagsRepDecisionRequest);
     }
 
