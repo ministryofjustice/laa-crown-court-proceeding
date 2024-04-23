@@ -35,5 +35,11 @@
     }
   },
   "additionalProperties": false,
-  "required": ["caseType", "iojAppeal","financialAssessment", "passportAssessment"]
+  "required": [
+    "repId",
+    "caseType",
+    "iojAppeal",
+    "financialAssessment",
+    "passportAssessment"
+  ]
 }
