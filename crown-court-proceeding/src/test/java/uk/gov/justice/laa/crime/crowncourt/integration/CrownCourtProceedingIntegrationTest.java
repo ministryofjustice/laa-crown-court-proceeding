@@ -1,28 +1,19 @@
-package uk.gov.justice.laa.crime.crowncourt.controller;
+package uk.gov.justice.laa.crime.crowncourt.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.FilterChainProxy;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
-import uk.gov.justice.laa.crime.crowncourt.config.IntegrationTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
 import uk.gov.justice.laa.crime.enums.CaseType;
@@ -32,23 +23,14 @@ import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.netty.handler.codec.rtsp.RtspResponseStatuses.INTERNAL_SERVER_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DirtiesContext
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Import(IntegrationTestConfiguration.class)
-@SpringBootTest(classes = IntegrationTestConfiguration.class, webEnvironment = DEFINED_PORT)
-@AutoConfigureWireMock(port = 9998)
-@AutoConfigureObservability
-class CrownCourtProceedingIntegrationTest {
+class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
 
     private static final boolean IS_VALID = true;
     private static final String ERROR_MSG = "Call to service failed. Retries exhausted: 2/2.";
@@ -69,14 +51,6 @@ class CrownCourtProceedingIntegrationTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private WireMockServer wiremock;
-
-    @AfterEach
-    void clean() {
-        wiremock.resetAll();
-    }
 
     @BeforeEach
     public void setup() {
@@ -212,7 +186,8 @@ class CrownCourtProceedingIntegrationTest {
                         HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateApplicationRequest), ENDPOINT_URL))
                 .andExpect(status().isOk()).andReturn();
 
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(updateApplicationResponse));
+        assertThat(result.getResponse().getContentAsString())
+                .isEqualTo(objectMapper.writeValueAsString(updateApplicationResponse));
     }
 
 
@@ -327,22 +302,4 @@ class CrownCourtProceedingIntegrationTest {
                 )
         );
     }
-
-    private void stubForOAuth() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> token = Map.of(
-                "expires_in", 3600,
-                "token_type", "Bearer",
-                "access_token", UUID.randomUUID()
-        );
-
-        wiremock.stubFor(
-                post("/oauth2/token").willReturn(
-                        WireMock.ok()
-                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
-                                .withBody(mapper.writeValueAsString(token))
-                )
-        );
-    }
-
 }
