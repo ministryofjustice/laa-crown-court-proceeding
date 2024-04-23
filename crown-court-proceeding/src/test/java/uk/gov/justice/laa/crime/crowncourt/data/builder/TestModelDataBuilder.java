@@ -27,7 +27,8 @@ public class TestModelDataBuilder {
 
     public static final LocalDateTime TEST_COMMITTAL_DATE =
             LocalDateTime.of(2020, 10, 5, 0, 0, 0);
-    public static final LocalDateTime TEST_DECISION_DATE = LocalDateTime.of(2021, 6, 5, 15, 0, 0);
+    public static final LocalDateTime TEST_DECISION_DATE =
+            LocalDateTime.of(2021, 6, 5, 0, 0, 0);
     public static final LocalDateTime TEST_DATE_RECEIVED =
             LocalDateTime.of(2022, 10, 9, 15, 1, 25);
     public static final LocalDateTime TEST_REP_ORDER_DATE =
@@ -38,20 +39,21 @@ public class TestModelDataBuilder {
             LocalDateTime.of(2022, 1, 19, 15, 1, 25);
     public static final LocalDateTime TEST_SENTENCE_ORDER_DATE =
             LocalDateTime.of(2022, 2, 19, 15, 1, 25);
-    public static final LocalDateTime TEST_DATE_MODIFIED = LocalDateTime.now();
+    public static final LocalDateTime TEST_DATE_MODIFIED =
+            LocalDateTime.of(2023, 1, 10, 11, 1, 25);
+    public static final LocalDateTime TEST_CROWN_REP_ORDER_DATE =
+            LocalDateTime.of(2022, 10, 19, 0, 0, 0);
+    public static final LocalDateTime INCOME_EVIDENCE_DATE =
+            LocalDateTime.of(2023, 6, 5, 15, 0, 0);
+    public static final LocalDateTime CAPITAL_EVIDENCE_DATE =
+            LocalDateTime.of(2023, 6, 5, 15, 0, 0);
+
+    public static final Integer TEST_CASE_ID = 45673;
+    public static final String TEST_OFFENCE_ID = "324234";
     public static final String MOCK_DECISION = "MOCK_DECISION";
     public static final Integer TEST_REP_ID = 91919;
     public static final String TEST_USER = "TEST_USER";
     public static final Integer TEST_APPLICANT_HISTORY_ID = 12449721;
-
-    public static final Integer TEST_CASE_ID = 45673;
-    public static final String TEST_OFFENCE_ID = "324234";
-
-    public static final LocalDateTime TEST_CROWN_REP_ORDER_DATE =
-            LocalDateTime.of(2022, 10, 19, 0, 0, 0);
-
-    public static final LocalDateTime INCOME_EVIDENCE_DATE = LocalDateTime.of(2023, 6, 5, 15, 0, 0);
-    public static final LocalDateTime CAPITAL_EVIDENCE_DATE = LocalDateTime.of(2023, 6, 5, 15, 0, 0);
 
     public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
         return new ApiProcessRepOrderRequest()
@@ -342,6 +344,7 @@ public class TestModelDataBuilder {
                 .crownRepOrderDate(TEST_CROWN_REP_ORDER_DATE.toLocalDate())
                 .crownRepOrderType(Constants.CROWN_COURT_ONLY)
                 .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
+                .decisionReasonCode("PASS")
                 .build();
     }
 
