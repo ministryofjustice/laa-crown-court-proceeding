@@ -32,15 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
 
-    private static final boolean IS_VALID = true;
-    private static final String ERROR_MSG = "Call to service MAAT-API failed.";
-    private static final String ENDPOINT_URL = "/api/internal/v1/proceedings";
-
-    private static final String UPDATE_CC_URL = "/update-crown-court";
-
-    private static final String CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME =
-            "Cannot have Crown Court outcome without Mags Court outcome";
-
     private MockMvc mvc;
 
     @Autowired
@@ -51,6 +42,13 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    private static final boolean IS_VALID = true;
+    private static final String ERROR_MSG = "Call to service MAAT-API failed.";
+    private static final String ENDPOINT_URL = "/api/internal/v1/proceedings";
+    private static final String UPDATE_CC_URL = "/update-crown-court";
+    private static final String CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME =
+            "Cannot have Crown Court outcome without Mags Court outcome";
 
     @BeforeEach
     public void setup() {
