@@ -33,7 +33,7 @@ class CrownCourtDTOBuilderTest {
                 .isEqualTo(request.getDateReceived());
         softly.assertThat(dto.getCrownCourtSummary())
                 .isEqualTo(request.getCrownCourtSummary());
-        softly.assertThat(dto.getIojAppeal())
+        softly.assertThat(dto.getIojSummary())
                 .isEqualTo(request.getIojAppeal());
         softly.assertThat(dto.getFinancialAssessment())
                 .isEqualTo(request.getFinancialAssessment());

@@ -16,7 +16,7 @@
     "iojAppeal": {
       "type": "object",
       "description": "IOJ Appeal",
-      "$ref": "../common/apiIOJAppeal.json"
+      "$ref": "../common/apiIOJSummary.json"
     },
     "financialAssessment": {
       "type": "object",

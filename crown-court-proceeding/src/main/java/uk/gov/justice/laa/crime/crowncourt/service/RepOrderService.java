@@ -14,7 +14,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDT
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.common.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.common.ApiHardshipOverview;
-import uk.gov.justice.laa.crime.crowncourt.model.common.ApiIOJAppeal;
+import uk.gov.justice.laa.crime.crowncourt.model.common.ApiIOJSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.common.ApiPassportAssessment;
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiCalculateEvidenceFeeResponse;
 import uk.gov.justice.laa.crime.enums.*;
@@ -48,7 +48,7 @@ public class RepOrderService {
         String prevRepOrderDecision = apiCrownCourtSummary.getRepOrderDecision();
         String ccRepOrderDecision;
 
-        ReviewResult reviewResult = getReviewResult(requestDTO.getIojAppeal());
+        ReviewResult reviewResult = getReviewResult(requestDTO.getIojSummary());
 
         if (requestDTO.getCaseType() == CaseType.APPEAL_CC && reviewResult == ReviewResult.FAIL) {
             ccRepOrderDecision = Constants.FAILED_IO_J_APPEAL_FAILURE;
@@ -143,11 +143,11 @@ public class RepOrderService {
                 || (caseType == CaseType.APPEAL_CC && reviewResult == ReviewResult.PASS);
     }
 
-    public ReviewResult getReviewResult(ApiIOJAppeal apiIOJAppeal) {
-        if (StringUtils.isNotBlank(apiIOJAppeal.getDecisionResult())) {
-            return ReviewResult.getFrom(apiIOJAppeal.getDecisionResult());
-        } else if (StringUtils.isNotBlank(apiIOJAppeal.getIojResult())) {
-            return ReviewResult.getFrom(apiIOJAppeal.getIojResult());
+    public ReviewResult getReviewResult(ApiIOJSummary iojSummary) {
+        if (StringUtils.isNotBlank(iojSummary.getDecisionResult())) {
+            return ReviewResult.getFrom(iojSummary.getDecisionResult());
+        } else if (StringUtils.isNotBlank(iojSummary.getIojResult())) {
+            return ReviewResult.getFrom(iojSummary.getIojResult());
         }
         return null;
     }

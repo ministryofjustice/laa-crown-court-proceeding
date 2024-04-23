@@ -22,7 +22,7 @@ public class CrownCourtDTOBuilder {
                 .committalDate(request.getCommittalDate())
                 .dateReceived(request.getDateReceived())
                 .crownCourtSummary(request.getCrownCourtSummary())
-                .iojAppeal(request.getIojAppeal())
+                .iojSummary(request.getIojAppeal())
                 .financialAssessment(request.getFinancialAssessment())
                 .passportAssessment(request.getPassportAssessment());
 
@@ -46,7 +46,7 @@ public class CrownCourtDTOBuilder {
                 .repId(request.getRepId())
                 .caseType(request.getCaseType())
                 .passportAssessment(request.getPassportAssessment())
-                .iojAppeal(request.getIojAppeal())
+                .iojSummary(request.getIojAppeal())
                 .financialAssessment(request.getFinancialAssessment())
                 .userSession(request.getUserSession())
                 .build();

@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "IOJAppeal.json",
+  "id": "IOJSummary.json",
   "type": "object",
-  "description": "IOJ Appeal Data Contract",
+  "description": "Summary of IOJ Data for an Application",
   "properties": {
     "decisionResult": {
       "type": "string",
@@ -23,5 +23,5 @@
     }
   },
   "additionalProperties": false,
-  "required": ["decisionResult", "iojResult"]
+  "required": ["iojResult"]
 }

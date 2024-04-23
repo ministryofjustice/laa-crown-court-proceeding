@@ -15,7 +15,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.common.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.common.ApiHardshipOverview;
-import uk.gov.justice.laa.crime.crowncourt.model.common.ApiIOJAppeal;
+import uk.gov.justice.laa.crime.crowncourt.model.common.ApiIOJSummary;
 import uk.gov.justice.laa.crime.crowncourt.model.common.ApiPassportAssessment;
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiCalculateEvidenceFeeResponse;
 import uk.gov.justice.laa.crime.enums.*;
@@ -46,22 +46,22 @@ class RepOrderServiceTest {
 
     @Test
     void givenValidIoJResult_whenGetReviewResultIsInvoked_reviewResultIsReturned() {
-        ApiIOJAppeal apiIOJAppeal = new ApiIOJAppeal().withIojResult(ReviewResult.PASS.getResult());
-        assertThat(repOrderService.getReviewResult(apiIOJAppeal))
+        ApiIOJSummary iojSummary = new ApiIOJSummary().withIojResult(ReviewResult.PASS.getResult());
+        assertThat(repOrderService.getReviewResult(iojSummary))
                 .isEqualTo(ReviewResult.PASS);
     }
 
     @Test
     void givenNullIoJResultAndValidDecisionResult_whenGetReviewResultIsInvoked_reviewResultIsReturned() {
-        ApiIOJAppeal apiIOJAppeal = new ApiIOJAppeal().withDecisionResult(ReviewResult.FAIL.getResult());
-        assertThat(repOrderService.getReviewResult(apiIOJAppeal))
+        ApiIOJSummary iojSummary = new ApiIOJSummary().withDecisionResult(ReviewResult.FAIL.getResult());
+        assertThat(repOrderService.getReviewResult(iojSummary))
                 .isEqualTo(ReviewResult.FAIL);
     }
 
     @Test
     void givenNullIoJResultAndNullDecisionResult_whenGetReviewResultIsInvoked_nullIsReturned() {
-        ApiIOJAppeal apiIOJAppeal = new ApiIOJAppeal();
-        assertThat(repOrderService.getReviewResult(apiIOJAppeal))
+        ApiIOJSummary iojSummary = new ApiIOJSummary();
+        assertThat(repOrderService.getReviewResult(iojSummary))
                 .isNull();
     }
 
@@ -193,7 +193,7 @@ class RepOrderServiceTest {
     void givenCaseTypeIsAppealCCAndIOJDecisionFail_whenGetRepDecisionIsInvoked_validResponseIsReturned() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         requestDTO.setCaseType(CaseType.APPEAL_CC);
-        requestDTO.getIojAppeal().setDecisionResult(ReviewResult.FAIL.getResult());
+        requestDTO.getIojSummary().setDecisionResult(ReviewResult.FAIL.getResult());
         ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
         assertThat(apiCrownCourtSummary.getRepOrderDecision())
                 .isEqualTo(Constants.FAILED_IO_J_APPEAL_FAILURE);
@@ -203,7 +203,7 @@ class RepOrderServiceTest {
     void givenPrevDecisionMatchesNewDecision_whenGetRepDecisionIsInvoked_repDateIsMatched() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         requestDTO.setCaseType(CaseType.APPEAL_CC);
-        requestDTO.getIojAppeal().setDecisionResult(ReviewResult.FAIL.getResult());
+        requestDTO.getIojSummary().setDecisionResult(ReviewResult.FAIL.getResult());
         requestDTO.getCrownCourtSummary().setRepOrderDecision(Constants.FAILED_IO_J_APPEAL_FAILURE);
         ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
 
@@ -219,7 +219,7 @@ class RepOrderServiceTest {
     void givenIndictableCaseWithPassportAssessmentIsTempAndStatusIsComplete_whenGetRepDecisionIsInvoked_decisionIsReturned() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         requestDTO.setCaseType(CaseType.INDICTABLE);
-        requestDTO.getIojAppeal().setDecisionResult(ReviewResult.FAIL.getResult());
+        requestDTO.getIojSummary().setDecisionResult(ReviewResult.FAIL.getResult());
         requestDTO.getPassportAssessment().setResult(PassportAssessmentResult.TEMP.getResult());
         ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
         assertThat(apiCrownCourtSummary.getRepOrderDecision())

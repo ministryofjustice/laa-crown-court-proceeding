@@ -72,8 +72,8 @@ public class TestModelDataBuilder {
                 .withPassportAssessment(getPassportAssessment());
     }
 
-    public static ApiIOJAppeal getIojAppeal() {
-        return new ApiIOJAppeal()
+    public static ApiIOJSummary getIojAppeal() {
+        return new ApiIOJSummary()
                 .withIojResult(ReviewResult.FAIL.getResult())
                 .withDecisionResult("PASS")
                 .withAppealTypeCode("Test")
@@ -114,7 +114,7 @@ public class TestModelDataBuilder {
                 .passportAssessment(getPassportAssessment())
                 .financialAssessment(getFinancialAssessment())
                 .dateReceived(TEST_DATE_RECEIVED)
-                .iojAppeal(getIojAppeal())
+                .iojSummary(getIojAppeal())
                 .isImprisoned(false)
                 .userSession(getApiUserSession(true))
                 .applicantHistoryId(TEST_APPLICANT_HISTORY_ID)
