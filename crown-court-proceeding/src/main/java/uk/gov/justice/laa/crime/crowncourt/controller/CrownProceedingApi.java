@@ -16,7 +16,7 @@ import uk.gov.justice.laa.crime.crowncourt.model.response.ApiProcessRepOrderResp
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateCrownCourtOutcomeResponse;
 
-public interface ProceedingsApi {
+public interface CrownProceedingApi {
 
     @Operation(description = "Process Rep Order")
     @ApiResponse(responseCode = "200",
@@ -65,5 +65,4 @@ public interface ProceedingsApi {
                             schema = @Schema(implementation = ApiUpdateApplicationRequest.class)
                     )
             ) @Valid @RequestBody ApiUpdateApplicationRequest request);
-
 }

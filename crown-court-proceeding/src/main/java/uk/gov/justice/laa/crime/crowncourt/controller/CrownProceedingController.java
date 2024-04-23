@@ -16,7 +16,7 @@ import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationReq
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateCrownCourtOutcomeResponse;
-import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
+import uk.gov.justice.laa.crime.crowncourt.service.CrownProceedingService;
 import uk.gov.justice.laa.crime.crowncourt.validation.CrownCourtDetailsValidator;
 
 @Slf4j
@@ -24,33 +24,29 @@ import uk.gov.justice.laa.crime.crowncourt.validation.CrownCourtDetailsValidator
 @RequiredArgsConstructor
 @RequestMapping("api/internal/v1/proceedings")
 @Tag(name = "Crown Court Proceeding", description = "Rest API for Crown Court Proceeding.")
-public class ProceedingsController implements ProceedingsApi {
+public class CrownProceedingController implements CrownProceedingApi {
 
     private final CrownProceedingService crownProceedingService;
     private final CrownCourtDetailsValidator crownCourtDetailsValidator;
 
-    private CrownCourtDTO preProcessRequest(ApiProcessRepOrderRequest request) {
-        return CrownCourtDTOBuilder.build(request);
-    }
-
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiProcessRepOrderResponse> processRepOrder(ApiProcessRepOrderRequest request) {
-        CrownCourtDTO requestDTO = preProcessRequest(request);
+        CrownCourtDTO requestDTO = CrownCourtDTOBuilder.build(request);
         return ResponseEntity.ok(
-                proceedingService.processRepOrder(requestDTO)
+                crownProceedingService.processRepOrder(requestDTO)
         );
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiUpdateApplicationResponse> updateApplication(ApiUpdateApplicationRequest request) {
-        CrownCourtDTO crownCourtDTO = preProcessRequest(request);
-        return ResponseEntity.ok(proceedingService.updateApplication(crownCourtDTO));
+        CrownCourtDTO crownCourtDTO = CrownCourtDTOBuilder.build(request);
+        return ResponseEntity.ok(crownProceedingService.updateApplication(crownCourtDTO));
     }
 
     @PutMapping(value = "/update-crown-court", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> update(ApiUpdateApplicationRequest request) {
-        CrownCourtDTO crownCourtDTO = preProcessRequest(request);
+        CrownCourtDTO crownCourtDTO = CrownCourtDTOBuilder.build(request);
         crownCourtDetailsValidator.checkCCDetails(crownCourtDTO);
-        return ResponseEntity.ok(proceedingService.update(crownCourtDTO));
+        return ResponseEntity.ok(crownProceedingService.update(crownCourtDTO));
     }
 }

@@ -25,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DirtiesContext
 @AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(ProceedingsController.class)
-class ProceedingsControllerTest {
+@WebMvcTest(CrownProceedingController.class)
+class CrownProceedingControllerTest {
 
     private static final boolean IS_VALID = true;
     private static final String ENDPOINT_URL = "/api/internal/v1/proceedings";
