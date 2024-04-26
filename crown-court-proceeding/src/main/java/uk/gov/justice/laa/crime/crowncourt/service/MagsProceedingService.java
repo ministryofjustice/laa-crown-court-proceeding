@@ -13,7 +13,6 @@ import uk.gov.justice.laa.crime.crowncourt.model.common.ApiIOJSummary;
 import uk.gov.justice.laa.crime.enums.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 import static java.util.Optional.ofNullable;
@@ -58,9 +57,9 @@ public class MagsProceedingService {
         boolean isIojPassed = (iojResult == ReviewResult.PASS);
         PassportAssessmentResult passportResult =
                 PassportAssessmentResult.getFrom(dto.getPassportAssessment().getResult());
-        boolean isPassported = passportResult != null &&
-                List.of(PassportAssessmentResult.PASS, PassportAssessmentResult.TEMP)
-                        .contains(passportResult);
+        boolean isPassported =
+                PassportAssessmentResult.PASS.equals(passportResult)
+                        || PassportAssessmentResult.TEMP.equals(passportResult);
 
         ApiFinancialAssessment financialAssessment = dto.getFinancialAssessment();
         InitAssessmentResult initResult = InitAssessmentResult.getFrom(financialAssessment.getInitResult());
