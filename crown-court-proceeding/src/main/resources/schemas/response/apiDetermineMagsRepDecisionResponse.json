@@ -8,13 +8,10 @@
       "type": "object",
       "description": "The result of the decision",
       "existingJavaType": "uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult"
-    },
-    "timestamp": {
-      "type": "string",
-      "title": "Indicates when the rep order was last updated",
-      "format": "date-time"
     }
   },
   "additionalProperties": false,
-  "required": ["decisionDate", "decisionReason", "timestamp"]
+  "required": [
+    "decisionResult"
+  ]
 }

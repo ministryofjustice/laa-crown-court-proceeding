@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MagsDecisionResult {
+    @NotNull
     private LocalDate decisionDate;
-    private DecisionReason decisionReason;
+    @NotNull
     private LocalDateTime timestamp;
+    @NotNull
+    private DecisionReason decisionReason;
 }
