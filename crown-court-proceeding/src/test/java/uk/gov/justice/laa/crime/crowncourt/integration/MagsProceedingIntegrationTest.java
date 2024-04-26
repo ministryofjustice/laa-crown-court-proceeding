@@ -34,6 +34,7 @@ class MagsProceedingIntegrationTest extends WiremockIntegrationTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    private static final String REP_ORDERS_ENDPOINT_URL = "/api/internal/v1/assessment/rep-orders";
     private static final String ENDPOINT_URL = "/api/internal/v1/proceedings/determine-mags-rep-decision";
 
     @BeforeEach
@@ -60,7 +61,9 @@ class MagsProceedingIntegrationTest extends WiremockIntegrationTest {
                 TestModelDataBuilder.getApiDetermineMagsRepDecisionRequest(false);
 
         var applicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
-        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.POST, applicationRequestJson, ENDPOINT_URL))
+        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.POST, applicationRequestJson,
+                                                                 ENDPOINT_URL
+                ))
                 .andExpect(status().isBadRequest());
     }
 
@@ -70,7 +73,7 @@ class MagsProceedingIntegrationTest extends WiremockIntegrationTest {
                 TestModelDataBuilder.getApiDetermineMagsRepDecisionRequest(true);
 
         stubForOAuth();
-        wiremock.stubFor(put("/api/internal/v1/assessment/rep-orders")
+        wiremock.stubFor(put(REP_ORDERS_ENDPOINT_URL)
                                  .willReturn(
                                          WireMock.serverError()
                                                  .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
@@ -89,7 +92,7 @@ class MagsProceedingIntegrationTest extends WiremockIntegrationTest {
                 TestModelDataBuilder.getApiDetermineMagsRepDecisionRequest(true);
 
         stubForOAuth();
-        wiremock.stubFor(put("/api/internal/v1/assessment/rep-orders")
+        wiremock.stubFor(put(REP_ORDERS_ENDPOINT_URL)
                                  .willReturn(
                                          WireMock.ok()
                                                  .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
