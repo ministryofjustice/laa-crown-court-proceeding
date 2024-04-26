@@ -195,7 +195,7 @@ class MagsProceedingServiceTest {
                                 null,
                                 null,
                                 null
-                        ), DecisionReason.FAILIOJ
+                        ), DecisionReason.FAILMEIOJ
                 ),
                 Arguments.of(
                         new Scenario(
@@ -204,7 +204,7 @@ class MagsProceedingServiceTest {
                                 null,
                                 null,
                                 PassportAssessmentResult.FAIL.getResult()
-                        ), DecisionReason.FAILIOJ
+                        ), DecisionReason.FAILMEIOJ
                 ),
                 Arguments.of(
                         new Scenario(
@@ -222,7 +222,7 @@ class MagsProceedingServiceTest {
                                 FullAssessmentResult.FAIL,
                                 ReviewResult.FAIL,
                                 null
-                        ), DecisionReason.FAILIOJ
+                        ), DecisionReason.FAILMEIOJ
                 ),
                 Arguments.of(
                         new Scenario(

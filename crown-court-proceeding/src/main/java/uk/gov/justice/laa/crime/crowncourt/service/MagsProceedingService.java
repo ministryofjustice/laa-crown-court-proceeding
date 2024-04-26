@@ -73,7 +73,7 @@ public class MagsProceedingService {
             return isIojPassed ? DecisionReason.GRANTED : DecisionReason.FAILIOJ;
         } else if (initResult == InitAssessmentResult.FAIL || passportResult == PassportAssessmentResult.FAIL
                 || ((hardshipResult == null || hardshipResult == ReviewResult.FAIL) && fullResult == FullAssessmentResult.FAIL)) {
-            return isIojPassed ? DecisionReason.FAILMEANS : DecisionReason.FAILIOJ;
+            return isIojPassed ? DecisionReason.FAILMEANS : DecisionReason.FAILMEIOJ;
         }
         return null;
     }
