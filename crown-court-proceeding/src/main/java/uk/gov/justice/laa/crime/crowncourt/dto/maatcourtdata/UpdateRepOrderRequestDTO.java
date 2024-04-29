@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.justice.laa.crime.enums.DecisionReason;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +24,8 @@ public class UpdateRepOrderRequestDTO {
     private String magsOutcomeDate;
     private LocalDate magsOutcomeDateSet;
     private LocalDate committalDate;
-    private String decisionReasonCode;
+    private DecisionReason decisionReasonCode;
+    private LocalDate decisionDate;
     private Integer crownRepId;
     private String crownRepOrderDecision;
     private String crownRepOrderType;

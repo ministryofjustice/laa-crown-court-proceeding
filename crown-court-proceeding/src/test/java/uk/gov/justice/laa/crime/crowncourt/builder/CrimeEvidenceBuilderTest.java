@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiCalculateEvidenceFeeRequest;
 
 @ExtendWith(SoftAssertionsExtension.class)
 class CrimeEvidenceBuilderTest {

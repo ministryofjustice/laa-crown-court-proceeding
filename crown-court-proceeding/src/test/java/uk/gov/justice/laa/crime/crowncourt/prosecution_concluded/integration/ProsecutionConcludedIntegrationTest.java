@@ -1,43 +1,26 @@
-package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.controller;
+package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.web.FilterChainProxy;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import uk.gov.justice.laa.crime.crowncourt.config.CrownCourtProceedingTestConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
+import uk.gov.justice.laa.crime.crowncourt.integration.WiremockIntegrationTest;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DirtiesContext
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Import(CrownCourtProceedingTestConfiguration.class)
-@SpringBootTest(classes = CrownCourtProceedingTestConfiguration.class, webEnvironment = DEFINED_PORT)
-@AutoConfigureWireMock(port = 9998)
-@AutoConfigureObservability
-class ProsecutionConcludedIntegrationTest {
+class ProsecutionConcludedIntegrationTest extends WiremockIntegrationTest {
 
-    private static final String ENDPOINT_URL = "/api/internal/v1/proceedings/prosecution/scheduler";
-
-    private static final Integer INVAID_MAAT_ID = 1111;
     private MockMvc mvc;
 
     @Autowired
@@ -50,14 +33,10 @@ class ProsecutionConcludedIntegrationTest {
     private WebApplicationContext webApplicationContext;
 
     @Autowired
-    private WireMockServer wiremock;
-    @Autowired
     private ProsecutionConcludedRepository repository;
 
-    @AfterEach
-    void clean() {
-        wiremock.resetAll();
-    }
+    private static final String ENDPOINT_URL = "/api/internal/v1/proceedings/prosecution/scheduler";
+    private static final Integer INVAID_MAAT_ID = 1111;
 
     @BeforeEach
     public void setup() {
