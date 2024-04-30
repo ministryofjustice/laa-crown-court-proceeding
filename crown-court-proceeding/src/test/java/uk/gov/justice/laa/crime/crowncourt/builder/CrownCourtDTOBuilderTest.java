@@ -25,8 +25,6 @@ class CrownCourtDTOBuilderTest {
                 .isEqualTo(request.getMagCourtOutcome());
         softly.assertThat(dto.getMagsDecisionResult().getDecisionReason())
                 .isEqualTo(request.getDecisionReason());
-        softly.assertThat(dto.getMagsDecisionResult().getDecisionDate())
-                .isEqualTo(request.getDecisionDate().toLocalDate());
         softly.assertThat(dto.getCommittalDate())
                 .isEqualTo(request.getCommittalDate());
         softly.assertThat(dto.getDateReceived())
@@ -43,9 +41,19 @@ class CrownCourtDTOBuilderTest {
     }
 
     @Test
-    void givenApiProcessRepOrderRequest_whenBuildIsInvoked_thenCorrectCrownCourtDTOFieldsArePopulated() {
+    void givenApiProcessRepOrderRequestWithMagsDecision_whenBuildIsInvoked_thenCorrectCrownCourtDTOFieldsArePopulated() {
         ApiProcessRepOrderRequest request = TestModelDataBuilder.getApiProcessRepOrderRequest(true);
         CrownCourtDTO dto = CrownCourtDTOBuilder.build(request);
+        softly.assertThat(dto.getMagsDecisionResult().getDecisionDate())
+                .isEqualTo(request.getDecisionDate().toLocalDate());
+        checkCommonFields(request, dto);
+    }
+    @Test
+    void givenApiProcessRepOrderRequest_whenBuildIsInvoked_thenCorrectCrownCourtDTOFieldsArePopulated() {
+        ApiProcessRepOrderRequest request = TestModelDataBuilder.getApiProcessRepOrderRequest(true);
+        request.setDecisionDate(null);
+        CrownCourtDTO dto = CrownCourtDTOBuilder.build(request);
+        softly.assertThat(dto.getMagsDecisionResult().getDecisionDate()).isNull();
         checkCommonFields(request, dto);
     }
 
@@ -56,6 +64,8 @@ class CrownCourtDTOBuilderTest {
 
         checkCommonFields(request, dto);
 
+        softly.assertThat(dto.getMagsDecisionResult().getDecisionDate())
+                .isEqualTo(request.getDecisionDate().toLocalDate());
         softly.assertThat(dto.getUserSession())
                 .isEqualTo(request.getUserSession());
         softly.assertThat(dto.getCrownRepId())

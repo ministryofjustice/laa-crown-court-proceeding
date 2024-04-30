@@ -9,6 +9,9 @@ import uk.gov.justice.laa.crime.crowncourt.model.request.ApiDetermineMagsRepDeci
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
 import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CrownCourtDTOBuilder {
@@ -21,7 +24,7 @@ public class CrownCourtDTOBuilder {
                 .magsDecisionResult(
                         MagsDecisionResult.builder()
                                 .decisionReason(request.getDecisionReason())
-                                .decisionDate(request.getDecisionDate().toLocalDate())
+                                .decisionDate(Optional.ofNullable(request.getDecisionDate()).map(LocalDateTime::toLocalDate).orElse(null))
                                 .build()
                 )
                 .committalDate(request.getCommittalDate())
