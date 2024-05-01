@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCrownCourtOutcome;
+import uk.gov.justice.laa.crime.crowncourt.model.common.ApiCrownCourtOutcome;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

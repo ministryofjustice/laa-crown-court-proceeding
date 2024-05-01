@@ -7,8 +7,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeResponse;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiCalculateEvidenceFeeRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.response.ApiCalculateEvidenceFeeResponse;
 
 import java.util.Map;
 

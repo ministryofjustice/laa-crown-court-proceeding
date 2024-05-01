@@ -4,8 +4,13 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiDetermineMagsRepDecisionRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,12 +21,16 @@ public class CrownCourtDTOBuilder {
                 .repId(request.getRepId())
                 .caseType(request.getCaseType())
                 .magCourtOutcome(request.getMagCourtOutcome())
-                .decisionReason(request.getDecisionReason())
-                .decisionDate(request.getDecisionDate())
+                .magsDecisionResult(
+                        MagsDecisionResult.builder()
+                                .decisionReason(request.getDecisionReason())
+                                .decisionDate(Optional.ofNullable(request.getDecisionDate()).map(LocalDateTime::toLocalDate).orElse(null))
+                                .build()
+                )
                 .committalDate(request.getCommittalDate())
                 .dateReceived(request.getDateReceived())
                 .crownCourtSummary(request.getCrownCourtSummary())
-                .iojAppeal(request.getIojAppeal())
+                .iojSummary(request.getIojAppeal())
                 .financialAssessment(request.getFinancialAssessment())
                 .passportAssessment(request.getPassportAssessment());
 
@@ -38,5 +47,16 @@ public class CrownCourtDTOBuilder {
         } else {
             return builder.build();
         }
+    }
+
+    public static CrownCourtDTO build(final ApiDetermineMagsRepDecisionRequest request) {
+        return CrownCourtDTO.builder()
+                .repId(request.getRepId())
+                .caseType(request.getCaseType())
+                .passportAssessment(request.getPassportAssessment())
+                .iojSummary(request.getIojAppeal())
+                .financialAssessment(request.getFinancialAssessment())
+                .userSession(request.getUserSession())
+                .build();
     }
 }

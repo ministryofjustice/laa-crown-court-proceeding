@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.crime.commons.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.service.ProceedingService;
+import uk.gov.justice.laa.crime.crowncourt.service.CrownProceedingService;
 import uk.gov.justice.laa.crime.crowncourt.validation.CrownCourtDetailsValidator;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
@@ -25,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DirtiesContext
 @AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(CrownCourtProceedingController.class)
-class CrownCourtProceedingControllerTest {
+@WebMvcTest(CrownProceedingController.class)
+class CrownProceedingControllerTest {
 
     private static final boolean IS_VALID = true;
     private static final String ENDPOINT_URL = "/api/internal/v1/proceedings";
@@ -38,7 +38,7 @@ class CrownCourtProceedingControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ProceedingService proceedingService;
+    private CrownProceedingService crownProceedingService;
 
     @MockBean
     private CrownCourtDetailsValidator crownCourtDetailsValidator;
@@ -54,7 +54,7 @@ class CrownCourtProceedingControllerTest {
         var processRepOrderResponse =
                 TestModelDataBuilder.getApiProcessRepOrderResponse();
 
-        when(proceedingService.processRepOrder(any(CrownCourtDTO.class)))
+        when(crownProceedingService.processRepOrder(any(CrownCourtDTO.class)))
                 .thenReturn(processRepOrderResponse);
 
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
@@ -91,7 +91,7 @@ class CrownCourtProceedingControllerTest {
                 TestModelDataBuilder.getApiUpdateApplicationRequest(IS_VALID);
         var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
         var updateApplicationResponse = TestModelDataBuilder.getApiUpdateApplicationResponse();
-        when(proceedingService.updateApplication(any(CrownCourtDTO.class)))
+        when(crownProceedingService.updateApplication(any(CrownCourtDTO.class)))
                 .thenReturn(updateApplicationResponse);
 
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
@@ -131,7 +131,7 @@ class CrownCourtProceedingControllerTest {
                 TestModelDataBuilder.getApiUpdateApplicationRequest(IS_VALID);
         var updateRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
         var updateResponse = TestModelDataBuilder.getApiUpdateCrownCourtOutcomeResponse();
-        when(proceedingService.update(any(CrownCourtDTO.class)))
+        when(crownProceedingService.update(any(CrownCourtDTO.class)))
                 .thenReturn(updateResponse);
 
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(

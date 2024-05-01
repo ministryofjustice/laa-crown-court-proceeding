@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiProcessRepOrderRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
 
 @ExtendWith(SoftAssertionsExtension.class)
 class CrownCourtDTOBuilderTest {
@@ -23,17 +23,15 @@ class CrownCourtDTOBuilderTest {
                 .isEqualTo(request.getCaseType());
         softly.assertThat(dto.getMagCourtOutcome())
                 .isEqualTo(request.getMagCourtOutcome());
-        softly.assertThat(dto.getDecisionReason())
+        softly.assertThat(dto.getMagsDecisionResult().getDecisionReason())
                 .isEqualTo(request.getDecisionReason());
-        softly.assertThat(dto.getDecisionDate())
-                .isEqualTo(request.getDecisionDate());
         softly.assertThat(dto.getCommittalDate())
                 .isEqualTo(request.getCommittalDate());
         softly.assertThat(dto.getDateReceived())
                 .isEqualTo(request.getDateReceived());
         softly.assertThat(dto.getCrownCourtSummary())
                 .isEqualTo(request.getCrownCourtSummary());
-        softly.assertThat(dto.getIojAppeal())
+        softly.assertThat(dto.getIojSummary())
                 .isEqualTo(request.getIojAppeal());
         softly.assertThat(dto.getFinancialAssessment())
                 .isEqualTo(request.getFinancialAssessment());
@@ -43,9 +41,19 @@ class CrownCourtDTOBuilderTest {
     }
 
     @Test
-    void givenApiProcessRepOrderRequest_whenBuildIsInvoked_thenCorrectCrownCourtDTOFieldsArePopulated() {
+    void givenApiProcessRepOrderRequestWithMagsDecision_whenBuildIsInvoked_thenCorrectCrownCourtDTOFieldsArePopulated() {
         ApiProcessRepOrderRequest request = TestModelDataBuilder.getApiProcessRepOrderRequest(true);
         CrownCourtDTO dto = CrownCourtDTOBuilder.build(request);
+        softly.assertThat(dto.getMagsDecisionResult().getDecisionDate())
+                .isEqualTo(request.getDecisionDate().toLocalDate());
+        checkCommonFields(request, dto);
+    }
+    @Test
+    void givenApiProcessRepOrderRequest_whenBuildIsInvoked_thenCorrectCrownCourtDTOFieldsArePopulated() {
+        ApiProcessRepOrderRequest request = TestModelDataBuilder.getApiProcessRepOrderRequest(true);
+        request.setDecisionDate(null);
+        CrownCourtDTO dto = CrownCourtDTOBuilder.build(request);
+        softly.assertThat(dto.getMagsDecisionResult().getDecisionDate()).isNull();
         checkCommonFields(request, dto);
     }
 
@@ -56,6 +64,8 @@ class CrownCourtDTOBuilderTest {
 
         checkCommonFields(request, dto);
 
+        softly.assertThat(dto.getMagsDecisionResult().getDecisionDate())
+                .isEqualTo(request.getDecisionDate().toLocalDate());
         softly.assertThat(dto.getUserSession())
                 .isEqualTo(request.getUserSession());
         softly.assertThat(dto.getCrownRepId())

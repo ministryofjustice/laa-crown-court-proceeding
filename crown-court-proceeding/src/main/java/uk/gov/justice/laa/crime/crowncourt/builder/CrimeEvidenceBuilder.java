@@ -2,9 +2,9 @@ package uk.gov.justice.laa.crime.crowncourt.builder;
 
 import lombok.experimental.UtilityClass;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCalculateEvidenceFeeRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiCapitalEvidence;
-import uk.gov.justice.laa.crime.crowncourt.model.ApiEvidenceFee;
+import uk.gov.justice.laa.crime.crowncourt.model.common.ApiCapitalEvidence;
+import uk.gov.justice.laa.crime.crowncourt.model.common.ApiEvidenceFee;
+import uk.gov.justice.laa.crime.crowncourt.model.request.ApiCalculateEvidenceFeeRequest;
 
 @UtilityClass
 public class CrimeEvidenceBuilder {

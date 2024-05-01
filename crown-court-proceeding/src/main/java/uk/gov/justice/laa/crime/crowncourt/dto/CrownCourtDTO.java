@@ -2,9 +2,9 @@ package uk.gov.justice.laa.crime.crowncourt.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import uk.gov.justice.laa.crime.crowncourt.model.*;
+import uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult;
+import uk.gov.justice.laa.crime.crowncourt.model.common.*;
 import uk.gov.justice.laa.crime.enums.CaseType;
-import uk.gov.justice.laa.crime.enums.DecisionReason;
 import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
 
@@ -22,8 +22,7 @@ public class CrownCourtDTO {
     private CaseType caseType;
     private MagCourtOutcome magCourtOutcome;
     private Integer crownRepId;
-    private DecisionReason decisionReason;
-    private LocalDateTime decisionDate;
+    private MagsDecisionResult magsDecisionResult;
     private LocalDateTime committalDate;
     private LocalDateTime dateReceived;
     private EvidenceFeeLevel evidenceFeeLevel;
@@ -32,7 +31,7 @@ public class CrownCourtDTO {
     private LocalDateTime capitalEvidenceReceivedDate;
     private String emstCode;
     private List<ApiCapitalEvidence> capitalEvidence;
-    private ApiIOJAppeal iojAppeal;
+    private ApiIOJSummary iojSummary;
     private ApiFinancialAssessment financialAssessment;
     private ApiPassportAssessment passportAssessment;
 }

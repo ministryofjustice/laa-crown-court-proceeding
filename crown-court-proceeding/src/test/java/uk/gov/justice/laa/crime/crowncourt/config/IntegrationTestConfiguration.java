@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.Map;
 
 @TestConfiguration
-public class CrownCourtProceedingTestConfiguration {
+public class IntegrationTestConfiguration {
 
     static final String SUB = "sub";
     static final String AUTH0_TOKEN = "token";
@@ -17,13 +17,7 @@ public class CrownCourtProceedingTestConfiguration {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-
-        return new JwtDecoder() {
-            @Override
-            public Jwt decode(String token) {
-                return jwt();
-            }
-        };
+        return token -> jwt();
     }
 
     public Jwt jwt() {
