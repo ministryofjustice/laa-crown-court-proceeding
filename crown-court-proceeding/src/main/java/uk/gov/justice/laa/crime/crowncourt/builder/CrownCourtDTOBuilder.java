@@ -3,11 +3,11 @@ package uk.gov.justice.laa.crime.crowncourt.builder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiDetermineMagsRepDecisionRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult;
-import uk.gov.justice.laa.crime.crowncourt.model.request.ApiDetermineMagsRepDecisionRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

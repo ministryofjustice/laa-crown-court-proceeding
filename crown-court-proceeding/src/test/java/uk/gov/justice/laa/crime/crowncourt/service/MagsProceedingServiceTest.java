@@ -11,13 +11,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.*;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult;
-import uk.gov.justice.laa.crime.crowncourt.model.common.*;
 import uk.gov.justice.laa.crime.enums.*;
+import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 import java.util.stream.Stream;
 

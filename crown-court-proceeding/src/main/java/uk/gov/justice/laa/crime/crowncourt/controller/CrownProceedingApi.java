@@ -10,11 +10,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import uk.gov.justice.laa.crime.annotation.DefaultHTTPErrorResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiProcessRepOrderResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateApplicationResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateCrownCourtOutcomeResponse;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplicationResponse;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
+
 
 public interface CrownProceedingApi {
 
@@ -32,9 +33,6 @@ public interface CrownProceedingApi {
                     )
             ) @Valid @RequestBody ApiProcessRepOrderRequest request);
 
-
-
-
     @Operation(description = "Update Crown Court Application")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -48,9 +46,6 @@ public interface CrownProceedingApi {
                             schema = @Schema(implementation = ApiUpdateApplicationRequest.class)
                     )
             ) @Valid @RequestBody ApiUpdateApplicationRequest request);
-
-
-
 
     @Operation(description = "Update Crown Court")
     @ApiResponse(responseCode = "200",

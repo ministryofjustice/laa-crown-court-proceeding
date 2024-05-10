@@ -1,20 +1,20 @@
 package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.*;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiCalculateEvidenceFeeRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiDetermineMagsRepDecisionRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiCalculateEvidenceFeeResponse;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplicationResponse;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
-import uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult;
-import uk.gov.justice.laa.crime.crowncourt.model.common.*;
-import uk.gov.justice.laa.crime.crowncourt.model.request.ApiCalculateEvidenceFeeRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.request.ApiDetermineMagsRepDecisionRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiCalculateEvidenceFeeResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiProcessRepOrderResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateApplicationResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateCrownCourtOutcomeResponse;
+import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.enums.*;
@@ -69,7 +69,7 @@ public class TestModelDataBuilder {
                 .withCrownCourtSummary(new ApiCrownCourtSummary()
                                                .withRepId(isValid ? TEST_REP_ID : null)
                                                .withRepOrderDate(TEST_REP_ORDER_DATE)
-                                               .withRepType("")
+                                               .withRepType("test")
                                                .withRepOrderDecision(MOCK_DECISION)
                                                .withWithdrawalDate(TEST_WITHDRAWAL_DATE))
                 .withIojAppeal(getIojSummary())
@@ -187,7 +187,7 @@ public class TestModelDataBuilder {
     public static ApiUserSession getApiUserSession(boolean isValid) {
         return new ApiUserSession()
                 .withUserName(isValid ? TEST_USER : null)
-                .withSessionId("");
+                .withSessionId("test");
     }
 
 
@@ -198,7 +198,7 @@ public class TestModelDataBuilder {
                 .withCrownCourtSummary(new ApiCrownCourtSummary()
                                                .withRepId(isValid ? TEST_REP_ID : null)
                                                .withRepOrderDate(TEST_REP_ORDER_DATE)
-                                               .withRepType("")
+                                               .withRepType("TEST")
                                                .withRepOrderDecision(MOCK_DECISION)
                                                .withWithdrawalDate(TEST_WITHDRAWAL_DATE)
                                                .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)

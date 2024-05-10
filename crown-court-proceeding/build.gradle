@@ -19,8 +19,9 @@ def versions = [
         pitest                           : "1.4.10",
         amazonSQSVersion                 : "2.1.1",
         springFrameworkCloudVersion      : "3.0.1",
-        crimeCommonsClasses              : "3.4.0",
+        crimeCommonsClasses              : "3.18.0",
         commonsRestClient                : "3.4.0",
+        commonsModSchemas                : "0.7.0",
         mockitoInlineVersion             : "5.2.0",
         wmStubRunnerVersion              : "4.0.1",
         springDocWebMVCVersion           : "2.1.0",
@@ -60,6 +61,7 @@ dependencies {
 
     implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.commonsRestClient:all"
     implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$versions.crimeCommonsClasses"
+    implementation "uk.gov.justice.service.laa-crime:crime-commons-mod-schemas:$versions.commonsModSchemas"
 
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
