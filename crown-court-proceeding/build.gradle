@@ -5,7 +5,6 @@ plugins {
     id "info.solidsoft.pitest" version "1.9.11"
     id "org.springframework.boot" version "3.1.5"
     id 'io.spring.dependency-management' version '1.1.4'
-    id "org.jsonschema2dataclass" version "6.0.0"
 }
 
 group = "uk.gov.justice.laa.crime"
@@ -159,21 +158,6 @@ sonar {
         property "sonar.projectName", "Crime Apps :: crown-court-proceeding"
         property "sonar.pitest.mode", "reuseReport"
         property "sonar.pitest.reportsDirectory", "build/reports/pitest"
-    }
-}
-
-jsonSchema2Pojo {
-    executions {
-        main {
-            methods.builders = true
-            methods.buildersDynamic = true
-            methods.annotateJsr303Jakarta = true
-            fields.floatUseBigDecimal = true
-            dateTime.dateType = "java.time.LocalDate"
-            dateTime.dateTimeType = "java.time.LocalDateTime"
-            klass.targetPackage = "uk.gov.justice.laa.crime.crowncourt.model"
-            io.source.setFrom files("${project.rootDir}/src/main/resources/schemas")
-        }
     }
 }
 
