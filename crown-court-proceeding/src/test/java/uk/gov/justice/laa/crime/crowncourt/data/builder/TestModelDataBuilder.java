@@ -56,6 +56,7 @@ public class TestModelDataBuilder {
     public static final Integer TEST_REP_ID = 91919;
     public static final String TEST_USER = "TEST_USER";
     public static final Integer TEST_APPLICANT_HISTORY_ID = 12449721;
+    public static final String TEST_REP_TYPE = "TEST_REP_TYPE";
 
     public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
         return new ApiProcessRepOrderRequest()
@@ -69,7 +70,7 @@ public class TestModelDataBuilder {
                 .withCrownCourtSummary(new ApiCrownCourtSummary()
                                                .withRepId(isValid ? TEST_REP_ID : null)
                                                .withRepOrderDate(TEST_REP_ORDER_DATE)
-                                               .withRepType("test")
+                                               .withRepType(TEST_REP_TYPE)
                                                .withRepOrderDecision(MOCK_DECISION)
                                                .withWithdrawalDate(TEST_WITHDRAWAL_DATE))
                 .withIojAppeal(getIojSummary())
@@ -187,7 +188,7 @@ public class TestModelDataBuilder {
     public static ApiUserSession getApiUserSession(boolean isValid) {
         return new ApiUserSession()
                 .withUserName(isValid ? TEST_USER : null)
-                .withSessionId("test");
+                .withSessionId(UUID.randomUUID().toString());
     }
 
 
@@ -198,7 +199,7 @@ public class TestModelDataBuilder {
                 .withCrownCourtSummary(new ApiCrownCourtSummary()
                                                .withRepId(isValid ? TEST_REP_ID : null)
                                                .withRepOrderDate(TEST_REP_ORDER_DATE)
-                                               .withRepType("TEST")
+                                               .withRepType(TEST_REP_TYPE)
                                                .withRepOrderDecision(MOCK_DECISION)
                                                .withWithdrawalDate(TEST_WITHDRAWAL_DATE)
                                                .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
