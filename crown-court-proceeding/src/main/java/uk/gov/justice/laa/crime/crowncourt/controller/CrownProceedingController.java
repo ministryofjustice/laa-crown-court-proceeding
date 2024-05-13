@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplicationResponse;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.request.ApiProcessRepOrderRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.request.ApiUpdateApplicationRequest;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiProcessRepOrderResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateApplicationResponse;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.service.CrownProceedingService;
 import uk.gov.justice.laa.crime.crowncourt.validation.CrownCourtDetailsValidator;
 

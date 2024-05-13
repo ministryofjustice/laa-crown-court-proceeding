@@ -5,11 +5,11 @@ import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiProcessRepOrderResponse;
+import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 @ExtendWith(SoftAssertionsExtension.class)
 class UpdateRepOrderDTOBuilderTest {
