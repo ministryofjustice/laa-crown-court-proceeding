@@ -155,7 +155,7 @@ queue:
   message:
     log:
       cron:
-        expression: * /5 0 0 * * *
+        expression: 0 0 0 * * *
       expiryInDays: 30
 
 feature:
