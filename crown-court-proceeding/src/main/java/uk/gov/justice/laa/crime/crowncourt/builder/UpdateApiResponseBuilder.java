@@ -1,11 +1,11 @@
 package uk.gov.justice.laa.crime.crowncourt.builder;
 
 import lombok.experimental.UtilityClass;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCrownCourtSummary;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiRepOrderCrownCourtOutcome;
+import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
-import uk.gov.justice.laa.crime.crowncourt.model.common.ApiCrownCourtSummary;
-import uk.gov.justice.laa.crime.crowncourt.model.common.ApiRepOrderCrownCourtOutcome;
-import uk.gov.justice.laa.crime.crowncourt.model.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
 
 import java.util.List;

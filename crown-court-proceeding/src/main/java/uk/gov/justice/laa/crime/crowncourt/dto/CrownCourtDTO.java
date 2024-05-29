@@ -2,11 +2,11 @@ package uk.gov.justice.laa.crime.crowncourt.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import uk.gov.justice.laa.crime.crowncourt.model.MagsDecisionResult;
-import uk.gov.justice.laa.crime.crowncourt.model.common.*;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.*;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 import java.time.LocalDateTime;
 import java.util.List;
