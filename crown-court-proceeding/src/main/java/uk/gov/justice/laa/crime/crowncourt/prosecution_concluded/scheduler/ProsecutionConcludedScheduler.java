@@ -12,6 +12,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
@@ -35,6 +36,7 @@ public class ProsecutionConcludedScheduler {
     private final CourtDataAPIService courtDataAPIService;
     private final ProsecutionConcludedService prosecutionConcludedService;
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;
+    private final ProsecutionConcludedDataService prosecutionConcludedDataService;
 
     @Scheduled(cron = "${queue.message.log.cron.expression}")
     public void process() {
@@ -65,7 +67,7 @@ public class ProsecutionConcludedScheduler {
                     updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.PROCESSED);
                 }
             } else {
-                prosecutionConcludedService.execute(prosecutionConcluded);
+                prosecutionConcludedDataService.execute(prosecutionConcluded);
             }
         } catch (Exception exception) {
             log.error("Prosecution Conclusion failed for MAAT ID :" + prosecutionConcluded.getMaatId());
