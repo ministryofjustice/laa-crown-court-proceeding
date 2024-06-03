@@ -11,6 +11,7 @@ import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
@@ -32,6 +33,9 @@ class ProsecutionConcludedSchedulerTest {
     private ProsecutionConcludedService prosecutionConcludedService;
     @Mock
     private ProsecutionConcludedRepository prosecutionConcludedRepository;
+
+    @Mock
+    private ProsecutionConcludedDataService prosecutionConcludedDataService;
 
     @InjectMocks
     private ProsecutionConcludedScheduler prosecutionConcludedScheduler;
@@ -111,5 +115,6 @@ class ProsecutionConcludedSchedulerTest {
         prosecutionConcludedScheduler.process();
 
         verify(prosecutionConcludedService, times(0)).executeCCOutCome(any(), any());
+        verify(prosecutionConcludedDataService).execute(any());
     }
 }
