@@ -61,7 +61,7 @@ public class RepOrderService {
             }
         }
 
-        if (!prevRepOrderDecision.equals(ccRepOrderDecision)) {
+        if (prevRepOrderDecision != null && !prevRepOrderDecision.equals(ccRepOrderDecision)) {
             apiCrownCourtSummary.setRepOrderDate(null);
         }
         apiCrownCourtSummary.setRepOrderDecision(ccRepOrderDecision);
