@@ -65,13 +65,17 @@ public class CourtDataAPIService {
                 prosecutionConcluded.getMaatId()
         );
         WQHearingDTO wqHearingDTO = CollectionUtils.isNotEmpty(wqHearingList) ? wqHearingList.get(0) : null;
+        log.info("retrieveHearingForCaseConclusion started");
         if (wqHearingDTO == null
                 && prosecutionConcluded.isConcluded()) {
+            log.info("triggerHearingProcessing started");
             courtDataAdapterService.
                     triggerHearingProcessing(
                             prosecutionConcluded.getHearingIdWhereChangeOccurred()
                     );
+            log.info("triggerHearingProcessing completed");
         }
+        log.info("retrieveHearingForCaseConclusion done");
         return wqHearingDTO;
     }
 
