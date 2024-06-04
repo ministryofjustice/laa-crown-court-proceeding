@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 public class EmailNotificationService implements NotificationService {
 
   @Override
-  public void send() {
+  public void send(String message) {
     // TODO send notification email to LAA business.
   }
 }
