@@ -2,13 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "laa-crown-court-proceeding.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "laa-crown-court-proceeding.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
       name: http
     {{- if not (eq (toString .Values.actuator.port) "http") }}
