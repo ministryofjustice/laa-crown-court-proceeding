@@ -16,7 +16,6 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSu
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Plea;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
-import uk.gov.justice.laa.crime.crowncourt.service.CourtDataAdapterService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 
 import java.util.List;
@@ -51,6 +50,9 @@ class ProsecutionConcludedServiceTest {
     private ProsecutionConcludedDataService prosecutionConcludedDataService;
     @Mock
     private CourtDataAPIService courtDataAPIService;
+
+    @Mock
+    private ReactivatedCaseDetectionService reactivatedCaseDetectionService;
 
     @Test
     void test_whenMaatIsLocked_thenPublishMessageToSQS() {

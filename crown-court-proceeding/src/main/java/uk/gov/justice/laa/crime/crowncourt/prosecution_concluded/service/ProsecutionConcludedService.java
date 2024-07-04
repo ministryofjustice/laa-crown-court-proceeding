@@ -28,10 +28,13 @@ public class ProsecutionConcludedService {
     private final OffenceHelper offenceHelper;
     private final ProsecutionConcludedDataService prosecutionConcludedDataService;
     private final CourtDataAPIService courtDataAPIService;
+    private final ReactivatedCaseDetectionService reactivatedCaseDetectionService;
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
         log.info("CC Outcome process is kicked off for  maat-id {}", prosecutionConcluded.getMaatId());
         prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
+
+        reactivatedCaseDetectionService.processCase(prosecutionConcluded);
 
         WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
 
