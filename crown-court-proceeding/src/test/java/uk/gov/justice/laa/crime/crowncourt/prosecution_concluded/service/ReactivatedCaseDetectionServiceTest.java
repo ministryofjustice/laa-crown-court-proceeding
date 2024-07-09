@@ -12,7 +12,6 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSu
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Plea;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.repository.ReactivatedProsecutionCaseRepository;
-import uk.gov.justice.laa.crime.crowncourt.service.MaatCourtDataService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,7 +29,7 @@ class ReactivatedCaseDetectionServiceTest {
     @InjectMocks
     ReactivatedCaseDetectionService reactivatedCaseDetectionService;
     @Mock
-    private MaatCourtDataService maatCourtDataService;
+    private CourtDataAPIService maatCourtDataService;
     @Mock
     private ReactivatedProsecutionCaseRepository reactivatedProsecutionCaseRepository;
 
