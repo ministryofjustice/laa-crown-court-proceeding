@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
 import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.OffenceDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQLinkRegisterDTO;
@@ -205,5 +206,17 @@ public class CourtDataAPIService {
                 configuration.getMaatApi().getCrownCourtProcessingEndpoints().getUpdateCcSentenceUrl(),
                 null
         );
+    }
+
+    public List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(Integer repId) {
+        List<RepOrderCCOutcomeDTO> response = maatAPIClient.get(
+                new ParameterizedTypeReference<List<RepOrderCCOutcomeDTO>>() {
+                },
+                configuration.getMaatApi().getRepOrderEndpoints().getFindOutcomeUrl(),
+                Collections.emptyMap(),
+                repId
+        );
+        log.info(RESPONSE_STRING, response);
+        return response;
     }
 }

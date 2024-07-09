@@ -22,7 +22,7 @@ public class ReactivatedCaseDetectionService {
 
     private static final String PENDING = "PENDING";
     private static final String SUPERSEDED = "SUPERSEDED";
-    private final MaatCourtDataService maatCourtDataService;
+    private final CourtDataAPIService courtDataAPIService;
     private final ReactivatedProsecutionCaseRepository reactivatedProsecutionCaseRepository;
 
     public void processCase(ProsecutionConcluded prosecutionConcluded) {
@@ -39,7 +39,7 @@ public class ReactivatedCaseDetectionService {
     private void createReactivatedCaseRecord(ProsecutionConcluded prosecutionConcluded) {
         Integer maatId = prosecutionConcluded.getMaatId();
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList =
-                maatCourtDataService.getRepOrderCCOutcomeByRepId(maatId);
+                courtDataAPIService.getRepOrderCCOutcomeByRepId(maatId);
 
         if (!CollectionUtils.isEmpty(repOrderCCOutcomeList)) {
             RepOrderCCOutcomeDTO repOrderCCOutcome = repOrderCCOutcomeList
