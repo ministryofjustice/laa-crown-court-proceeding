@@ -29,7 +29,8 @@ def versions = [
         localstackUtilsVersion           : "0.2.23",
         testcontainersLocalstackVersion  : "1.18.3",
         testcontainersJunitjupiterVersion: "1.19.0",
-        postgresqlVersion                : "42.7.2"
+        postgresqlVersion                : "42.7.2",
+        notifyClientVersion              : "5.1.0-RELEASE"
 ]
 
 java {
@@ -80,6 +81,8 @@ dependencies {
     implementation "com.google.code.gson:gson"
 
     implementation "io.micrometer:micrometer-registry-prometheus"
+
+    implementation "uk.gov.service.notify:notifications-java-client:$versions.notifyClientVersion"
 
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"

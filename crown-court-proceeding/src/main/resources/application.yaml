@@ -151,12 +151,23 @@ services:
     evidence-fee-endpoints:
       evidence-fee-url: ${services.evidence.base-url}/api/internal/v1/evidence/calculate-evidence-fee
 
+emailClient:
+  notify:
+    key: ${NOTIFY_KEY}
+    template-id: ${NOTIFY_TEMPLATE_ID}
+    recipient: ${NOTIFY_RECIPIENT}
+
 queue:
   message:
     log:
       cron:
         expression: 0 0 0 * * *
       expiryInDays: 30
+
+reports:
+  reactivated_cases:
+    cron:
+      expression: 0 0 0 * * *
 
 feature:
   prosecution-concluded-listener:

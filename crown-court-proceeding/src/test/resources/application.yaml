@@ -142,3 +142,14 @@ queue:
       cron:
         expression: 0 0 0 * * *
       expiryInDays: 15
+
+reports:
+  reactivated_cases:
+    cron:
+      expression: 0 0 0 * * *
+
+emailClient:
+  notify:
+    key: api_key
+    template-id: template_id
+    recipient: test_recipient
