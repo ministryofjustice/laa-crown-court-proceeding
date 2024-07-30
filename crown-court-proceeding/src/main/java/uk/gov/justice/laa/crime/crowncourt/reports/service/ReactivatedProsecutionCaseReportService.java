@@ -11,6 +11,7 @@ import uk.gov.service.notify.NotificationClientException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class ReactivatedProsecutionCaseReportService {
     private static final String FILE_NAME_TEMPLATE = "Reactivated_Prosecution_Cases_Report_%s";
     private static final String PENDING = "PENDING";
+    private static final String PROCESSED = "PROCESSED";
 
     private final ReactivatedProsecutionCaseRepository reactivatedProsecutionCaseRepository;
     private final EmailNotificationService emailNotificationService;
@@ -33,6 +35,13 @@ public class ReactivatedProsecutionCaseReportService {
             File reportFile = GenerateCsvUtil.generateCsvFile(reactivatedCaseList, fileName);
             log.info("CSV file is generated for reactivated cases");
             emailNotificationService.send(reportFile, fileName);
+            //Update reporting status with PROCESSED for reported cases back to business
+            updateReportStatus();
+            Files.delete(reportFile.toPath());
         }
+    }
+
+    private void updateReportStatus() {
+        reactivatedProsecutionCaseRepository.updateReportingStatus(PROCESSED, PENDING);
     }
 }

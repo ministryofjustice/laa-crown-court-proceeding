@@ -11,13 +11,16 @@ import uk.gov.service.notify.NotificationClientException;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class EmailNotificationService {
+
+    private static final String DATE = "date";
+    private static final String LINK_TO_FILE = "link_to_file";
 
     private final NotificationClient client;
 
@@ -31,24 +34,24 @@ public class EmailNotificationService {
         log.info("Sending email with CSV file");
         byte[] fileContents = FileUtils.readFileToByteArray(reportFile);
 
-        HashMap<String, Object> personalisation = new HashMap<>();
-        personalisation.put("date", LocalDate.now());
-        personalisation.put("link_to_file", NotificationClient.prepareUpload(fileContents, fileName+".csv"));
+        Map<String, Object> personalisation = Map.of(
+                DATE, LocalDate.now(),
+                LINK_TO_FILE, NotificationClient.prepareUpload(fileContents, fileName + ".csv")
+        );
 
         sendEmailToMultipleRecipients(emailAddresses, personalisation);
         log.info("Email sent successfully");
     }
 
-    private void sendEmailToMultipleRecipients(List<String> emailAddresses, HashMap<String, Object> personalisation) {
-        emailAddresses.forEach(emailAddress -> {
-            try {
-                client.sendEmail(templateId,
-                        emailAddress,
-                        personalisation,
-                        null);
-            } catch (NotificationClientException clientException) {
-                log.error("Failed sending email to recipient with error: {}", clientException.getMessage());
-            }
-        });
+    private void sendEmailToMultipleRecipients(List<String> emailAddresses, Map<String, Object> personalisation) {
+        emailAddresses.forEach(emailAddress -> sendEmailToRecipient(templateId, emailAddress, personalisation));
+    }
+
+    private void sendEmailToRecipient(String templateId, String emailAddress, Map<String, Object> personalisation) {
+        try {
+            client.sendEmail(templateId, emailAddress, personalisation, null);
+        } catch (NotificationClientException clientException) {
+            log.error("Failed sending email to recipient '{}' with error: {}", emailAddress, clientException.getMessage());
+        }
     }
 }

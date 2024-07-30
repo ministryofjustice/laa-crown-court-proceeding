@@ -24,10 +24,10 @@ public class GenerateCsvUtil {
     public File generateCsvFile(List<ReactivatedProsecutionCase> reactivatedCaseList, String fileName) throws IOException {
         File targetFile = createCsvFile(fileName);
         try (FileWriter fw = new FileWriter(targetFile, true)) {
-            // Write the header
+            // Write the CSV header
             fw.append(FILE_HEADER);
             // Write each ReactivatedProsecutionCase to the CSV file
-            writeReactivatedCase(reactivatedCaseList, fw);
+            writeCsvRows(reactivatedCaseList, fw);
 
         } catch (IOException exception) {
             log.error("Error creating CSV file - {}", exception.getMessage());
@@ -35,7 +35,7 @@ public class GenerateCsvUtil {
         return targetFile;
     }
 
-    private void writeReactivatedCase(List<ReactivatedProsecutionCase> reactivatedCaseList, FileWriter fw){
+    private void writeCsvRows(List<ReactivatedProsecutionCase> reactivatedCaseList, FileWriter fw){
         reactivatedCaseList.stream()
                 .map(reactivatedProsecutionCase -> reactivatedProsecutionCase.getMaatId() + ","
                         + reactivatedProsecutionCase.getCaseUrn() + ","
