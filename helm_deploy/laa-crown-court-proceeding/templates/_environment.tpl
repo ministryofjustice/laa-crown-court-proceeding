@@ -88,4 +88,11 @@ env:
         secretKeyRef:
             name: evidence-oauth-client-secret
             key: EVIDENCE_API_OAUTH_CLIENT_SECRET
+  - name: NOTIFY_KEY
+    value: {{ .Values.emailClient.notify_key }}
+  - name: NOTIFY_TEMPLATE_ID
+    value: {{ .Values.emailClient.notify_template_id }}
+  - name: NOTIFY_RECIPIENT
+    value: {{ .Values.emailClient.notify_recipient }}
+
 {{- end -}}
