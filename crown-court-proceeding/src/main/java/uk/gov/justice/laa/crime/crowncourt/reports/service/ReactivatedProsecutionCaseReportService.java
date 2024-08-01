@@ -33,7 +33,7 @@ public class ReactivatedProsecutionCaseReportService {
         } else {
             String fileName = String.format(FILE_NAME_TEMPLATE, LocalDate.now());
             File reportFile = GenerateCsvUtil.generateCsvFile(reactivatedCaseList, fileName);
-            log.info("CSV file is generated for reactivated cases");
+            log.info("CSV file is generated for reactivated cases - {}", fileName);
             emailNotificationService.send(reportFile, fileName);
             //Update reporting status with PROCESSED for reported cases back to business
             updateReportStatus();

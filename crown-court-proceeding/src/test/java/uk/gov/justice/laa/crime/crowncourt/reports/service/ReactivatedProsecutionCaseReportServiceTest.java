@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ReactivatedProsecutionCaseReportServiceTest {
+class ReactivatedProsecutionCaseReportServiceTest {
 
     private static final String PENDING = "PENDING";
     private static final String PROCESSED = "PROCESSED";
