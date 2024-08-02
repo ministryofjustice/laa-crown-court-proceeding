@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -31,7 +32,7 @@ public class ReactivatedProsecutionCaseReportService {
         if (CollectionUtils.isEmpty(reactivatedCaseList)) {
             log.info("No reactivated cases found on {}", LocalDate.now());
         } else {
-            String fileName = String.format(FILE_NAME_TEMPLATE, LocalDate.now());
+            String fileName = String.format(FILE_NAME_TEMPLATE, LocalDateTime.now());
             File reportFile = GenerateCsvUtil.generateCsvFile(reactivatedCaseList, fileName);
             log.info("CSV file is generated for reactivated cases - {}", fileName);
             emailNotificationService.send(reportFile, fileName);

@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.reports.scheduler;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -10,7 +9,7 @@ import uk.gov.service.notify.NotificationClientException;
 
 import java.io.IOException;
 
-@Getter
+
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
@@ -18,7 +17,7 @@ public class ReactivatedProsecutionCaseReportScheduler {
 
     private final ReactivatedProsecutionCaseReportService reactivatedProsecutionCaseReportService;
 
-    @Scheduled(cron = "${reports.reactivated_cases.cron.expression}")
+    @Scheduled(cron = "-")
     public void process() throws NotificationClientException, IOException {
         reactivatedProsecutionCaseReportService.generateReport();
     }
