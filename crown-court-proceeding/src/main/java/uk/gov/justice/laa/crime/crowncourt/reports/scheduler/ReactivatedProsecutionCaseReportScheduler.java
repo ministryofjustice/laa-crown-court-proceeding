@@ -17,7 +17,7 @@ public class ReactivatedProsecutionCaseReportScheduler {
 
     private final ReactivatedProsecutionCaseReportService reactivatedProsecutionCaseReportService;
 
-    @Scheduled(cron = "-")
+    @Scheduled(cron = "${reports.reactivated_cases.cron.expression}")
     public void process() throws NotificationClientException, IOException {
         reactivatedProsecutionCaseReportService.generateReport();
     }

@@ -167,7 +167,7 @@ queue:
 reports:
   reactivated_cases:
     cron:
-      expression: 0 0 0 * * *
+      expression: 0 0 9 * * *
 
 feature:
   prosecution-concluded-listener:
