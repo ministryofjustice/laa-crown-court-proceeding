@@ -94,5 +94,7 @@ env:
     value: {{ .Values.emailClient.notify_template_id }}
   - name: NOTIFY_RECIPIENT
     value: {{ .Values.emailClient.notify_recipient }}
+  - name: REPORT_CRON_REACTIVATED_CASES
+    value: {{ .Values.cron.report_reactivated_cases }}
 
 {{- end -}}
