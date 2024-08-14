@@ -167,7 +167,7 @@ queue:
 reports:
   reactivated_cases:
     cron:
-      expression: ${REPORT_CRON_REACTIVATED_CASES} # 0 0 8 * * * `everyday at 9AM
+      expression: ${REPORT_CRON_REACTIVATED_CASES} # 0 0 8 * * * every day at 9AM
 
 feature:
   prosecution-concluded-listener:
