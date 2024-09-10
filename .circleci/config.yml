@@ -213,11 +213,6 @@ jobs:
       - deploy-to:
           environment: dev
           token: ${CIRCLE_CI_TOKEN_DEV}
-      - slack/notify:
-          channel: laa-crimeapps-ci
-          event: fail
-          template: basic_fail_1
-          branch_pattern: main
       - slack_successful_deployment_notify
 
   deploy-test:
@@ -226,11 +221,6 @@ jobs:
       - deploy-to:
           environment: test
           token: ${CIRCLE_CI_TOKEN_TEST}
-      - slack/notify:
-          channel: laa-crimeapps-ci
-          event: fail
-          template: basic_fail_1
-          branch_pattern: main
       - slack_successful_deployment_notify
 
   deploy-uat:
@@ -239,11 +229,6 @@ jobs:
       - deploy-to:
           environment: uat
           token: ${CIRCLE_CI_TOKEN_UAT}
-      - slack/notify:
-          channel: laa-crimeapps-ci
-          event: fail
-          template: basic_fail_1
-          branch_pattern: main
       - slack_successful_deployment_notify
 
   deploy-prod:
@@ -252,11 +237,6 @@ jobs:
       - deploy-to:
           environment: prod
           token: ${CIRCLE_CI_TOKEN_PROD}
-      - slack/notify:
-          channel: laa-crimeapps-ci
-          event: fail
-          template: basic_fail_1
-          branch_pattern: main
       - slack_successful_deployment_notify
 
 # ------------------
