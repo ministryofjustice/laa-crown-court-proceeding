@@ -18,6 +18,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.enums.*;
+import uk.gov.justice.laa.crime.util.DateUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -202,7 +203,7 @@ public class RepOrderService {
         if (StringUtils.isNotBlank(repOrderDecision) && crownCourtSummary.getRepOrderDate() == null) {
             switch (requestDTO.getCaseType()) {
                 case INDICTABLE -> crownCourtSummary.setRepOrderDate(
-                        requestDTO.getMagsDecisionResult().getDecisionDate().atStartOfDay()
+                        DateUtil.convertDateToDateTime(requestDTO.getMagsDecisionResult().getDecisionDate())
                 );
                 case EITHER_WAY -> crownCourtSummary.setRepOrderDate(
                         determineMagsRepOrderDate(requestDTO, repOrderDecision)
@@ -230,7 +231,7 @@ public class RepOrderService {
 
         if (MagCourtOutcome.COMMITTED_FOR_TRIAL.equals(requestDTO.getMagCourtOutcome())) {
             if (DecisionReason.GRANTED.equals(decisionReason)) {
-                return requestDTO.getMagsDecisionResult().getDecisionDate().atStartOfDay();
+                return DateUtil.convertDateToDateTime(requestDTO.getMagsDecisionResult().getDecisionDate());
             } else if ((decisionReason != null && failedDecisionReasons.contains(decisionReason)) ||
                     Constants.REFUSED_INELIGIBLE.equals(repOrderDecision)) {
                 return requestDTO.getCommittalDate();
