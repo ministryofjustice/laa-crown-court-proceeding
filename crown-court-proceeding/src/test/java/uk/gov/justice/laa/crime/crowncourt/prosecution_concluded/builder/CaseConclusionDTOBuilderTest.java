@@ -39,6 +39,22 @@ class CaseConclusionDTOBuilderTest {
     }
 
     @Test
+    void givenANullChangeDate_whenGetMostRecentCaseEndDateIsInvoked_thenNullIsReturn() {
+
+        List<OffenceSummary> offenceSummaryList = new ArrayList<>();
+        offenceSummaryList.add(TestModelDataBuilder.getOffenceSummary(UUID.randomUUID(), null));
+        assertThat(caseConclusionDTOBuilder.getMostRecentCaseEndDate(offenceSummaryList)).isNull();
+    }
+
+    @Test
+    void givenAEmptyChangeDate_whenGetMostRecentCaseEndDateIsInvoked_thenNullIsReturn() {
+
+        List<OffenceSummary> offenceSummaryList = new ArrayList<>();
+        offenceSummaryList.add(TestModelDataBuilder.getOffenceSummary(UUID.randomUUID(), ""));
+        assertThat(caseConclusionDTOBuilder.getMostRecentCaseEndDate(offenceSummaryList)).isNull();
+    }
+
+    @Test
     void givenAValidOffenceSummary_whenGetMostRecentCaseEndDateIsInvoked_thenCorrectDateIsReturn() {
 
         List<OffenceSummary> offenceSummaryList = new ArrayList<>();

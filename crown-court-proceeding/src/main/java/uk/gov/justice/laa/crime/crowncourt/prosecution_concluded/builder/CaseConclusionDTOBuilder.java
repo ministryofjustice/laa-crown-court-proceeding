@@ -1,12 +1,15 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.builder;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.util.DateUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
@@ -30,13 +33,17 @@ public class CaseConclusionDTOBuilder {
         if (offenceSummaryList == null || offenceSummaryList.isEmpty()) {
             return null;
         }
-        return offenceSummaryList.stream()
+        Optional<LocalDate> caseEndDate = offenceSummaryList.stream()
+                .filter(offenceSummary -> StringUtils.isNotBlank(offenceSummary.getProceedingsConcludedChangedDate()))
                 .map(offenceSummary -> LocalDate.parse(offenceSummary.getProceedingsConcludedChangedDate()))
                 .distinct().toList()
                 .stream()
                 .sorted(Comparator.reverseOrder())
-                .toList().get(0).toString();
+                .findFirst();
+
+        return caseEndDate.isPresent() ? caseEndDate.get().toString() : null;
     }
+
 
     protected List<String> buildResultCodeList(WQHearingDTO wqHearingDTO) {
         String results = wqHearingDTO.getResultCodes() != null ? wqHearingDTO.getResultCodes() : "";
