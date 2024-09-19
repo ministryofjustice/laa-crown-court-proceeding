@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.common.model.common.ApiCrownCourtOutcome;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.*;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiCalculateEvidenceFeeRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiDetermineMagsRepDecisionRequest;
@@ -158,23 +159,13 @@ public class TestModelDataBuilder {
                         List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED, TEST_SENTENCE_ORDER_DATE)));
     }
 
-    public static ApiCrownCourtSummary getCrownCourtSummaryWithOutcome(Boolean isImprisoned,
-                                                                       List<ApiCrownCourtOutcome> crownCourtOutcomes) {
-        return new ApiCrownCourtSummary()
-                .withRepOrderDecision(MOCK_DECISION)
-                .withRepOrderDate(TEST_REP_ORDER_DATE)
-                .withRepId(TEST_REP_ID)
-                .withCrownCourtOutcome(crownCourtOutcomes)
-                .withIsImprisoned(isImprisoned);
-    }
-
     public static ApiCrownCourtOutcome getApiCrownCourtOutcome(CrownCourtOutcome crownCourtOutcome,
                                                                LocalDateTime dateSet) {
         return new ApiCrownCourtOutcome()
                 .withOutcome(crownCourtOutcome)
                 .withDateSet(dateSet)
                 .withDescription(crownCourtOutcome.getDescription())
-                .withOutComeType(crownCourtOutcome.getType());
+                .withOutcomeType(crownCourtOutcome.getType());
     }
 
     public static IOJAppealDTO getIOJAppealDTO() {
@@ -331,13 +322,6 @@ public class TestModelDataBuilder {
                    }
                 }
                           """;
-    }
-
-    public static FinancialAssessmentDTO getFinancialAssessmentDTO() {
-        return FinancialAssessmentDTO.builder()
-                .id(1)
-                .assessmentType("Full")
-                .build();
     }
 
     public static ApiUpdateApplicationResponse getApiUpdateApplicationResponse() {
