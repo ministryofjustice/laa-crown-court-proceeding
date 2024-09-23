@@ -8,6 +8,7 @@ import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCrownCourtSumm
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiHardshipOverview;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiIOJSummary;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiPassportAssessment;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiCalculateEvidenceFeeRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiCalculateEvidenceFeeResponse;
 import uk.gov.justice.laa.crime.crowncourt.builder.CrimeEvidenceBuilder;
 import uk.gov.justice.laa.crime.crowncourt.builder.OutcomeDTOBuilder;
@@ -241,6 +242,8 @@ public class RepOrderService {
     }
 
     public RepOrderDTO updateCCOutcome(CrownCourtDTO dto) {
+        log.info("calling updateCCOutcome()");
+        log.info("CrownCourtDTO --+"+ dto.toString());
         long repOrderOutcomeCount = maatCourtDataService.outcomeCount(dto.getRepId());
         if (repOrderOutcomeCount == 0 && null != dto.getCrownCourtSummary().getCrownCourtOutcome() &&
                 !dto.getCrownCourtSummary().getCrownCourtOutcome().isEmpty()) {
