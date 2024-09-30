@@ -12,6 +12,8 @@ env:
     value: {{ .Values.java.host_env }}
   - name: SENTRY_SAMPLE_RATE
     value: {{ .Values.sentry.sampleRate | quote }}
+  - name: LOG_LEVEL
+    value: {{ .Values.logging.level }}
   - name: MAAT_API_BASE_URL
     value: {{ .Values.maatApi.baseUrl }}
   - name: MAAT_API_OAUTH_URL
