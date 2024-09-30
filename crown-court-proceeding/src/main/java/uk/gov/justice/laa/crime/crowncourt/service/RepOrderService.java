@@ -248,13 +248,18 @@ public class RepOrderService {
         if (repOrderOutcomeCount == 0 && null != dto.getCrownCourtSummary().getCrownCourtOutcome() &&
                 !dto.getCrownCourtSummary().getCrownCourtOutcome().isEmpty()) {
 
-            ApiCalculateEvidenceFeeResponse evidenceFeeResponse =
-                    crimeEvidenceDataService.getCalEvidenceFee(CrimeEvidenceBuilder.build(dto));
+            ApiCalculateEvidenceFeeRequest request = CrimeEvidenceBuilder.build(dto);
+            if (null != request.getMagCourtOutcome() && null != request.getEmstCode()
+                    && null != request.getCapitalEvidence()) {
 
-            if (null != evidenceFeeResponse.getEvidenceFee()) {
-                dto.getCrownCourtSummary().setEvidenceFeeLevel(
-                        EvidenceFeeLevel.getFrom(evidenceFeeResponse.getEvidenceFee().getFeeLevel())
-                );
+                ApiCalculateEvidenceFeeResponse evidenceFeeResponse =
+                        crimeEvidenceDataService.getCalEvidenceFee(request);
+
+                if (null != evidenceFeeResponse.getEvidenceFee()) {
+                    dto.getCrownCourtSummary().setEvidenceFeeLevel(
+                            EvidenceFeeLevel.getFrom(evidenceFeeResponse.getEvidenceFee().getFeeLevel())
+                    );
+                }
             }
         }
         RepOrderDTO repOrderDTO = update(dto);

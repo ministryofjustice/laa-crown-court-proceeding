@@ -133,6 +133,7 @@ public class TestModelDataBuilder {
                 .capitalEvidenceReceivedDate(CAPITAL_EVIDENCE_DATE)
                 .evidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
                 .capitalEvidence(List.of(getCapitalEvidenceDTO(TEST_DATE_RECEIVED, "Type")))
+                .emstCode("Testing")
                 .build();
     }
 
