@@ -26,6 +26,47 @@ We're using [Gradle](https://gradle.org/) to build the application. This also in
 
 ## Documentation
 
+### Obtaining environment variables for running locally
+
+To run the app locally, you will need to download the appropriate environment variables from the team
+vault in 1Password. These environment variables are stored as a .env file, which docker-compose uses
+when starting up the service. If you don't see the team vault, speak to your tech lead to get access.
+
+To begin with, make sure that you have the 1Password CLI installed:
+
+```sh
+op version
+```
+
+If the command is not found, [follow the steps on the 1Password developer docs to get the CLI set-up](https://developer.1password.com/docs/cli/get-started/).
+
+Once you're ready to run the application:
+
+```sh
+./startup-local.sh
+```
+
+### Decrypting values files
+
+The values YAML files are encrypted using [git-crypt](https://github.com/AGWA/git-crypt).
+
+To be able to view and/or edit these files, you will need to decrypt them first.
+
+You will first need to create a GPG key. See [Create a GPG Key](https://docs.publishing.service.gov.uk/manual/create-a-gpg-key.html) for details on how to do this with `GPGTools` (GUI) or `gpg` (command line).
+You can install either from a terminal or just download the UI version.
+
+```
+brew update
+brew install gpg
+brew install git-crypt
+```
+
+Once you have done this, a team member who already has access can add your key by running `git-crypt add-gpg-user USER_ID`\* and creating a pull request to this repo.
+
+Once this has been merged you can decrypt your local copy of the repository by running `git-crypt unlock`.
+
+\*`USER_ID` can be your key ID, a full fingerprint, an email address, or anything else that uniquely identifies a public key to GPG (see "HOW TO SPECIFY A USER ID" in the gpg man page).
+
 ### Open API
 
 OpenAPI 3 specification is available [here](http://localhost:8087/open-api/api-docs/) and Swagger UI
