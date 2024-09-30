@@ -37,3 +37,6 @@ out/
 .vscode/
 **/pgdata
 *.java-version
+
+# Local environment variables for testing
+*.env
