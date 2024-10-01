@@ -31,10 +31,6 @@ public class CrownProceedingController implements CrownProceedingApi {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiProcessRepOrderResponse> processRepOrder(ApiProcessRepOrderRequest request) {
-        log.info("INFO - Processing Rep Order for Crown Court Proceeding");
-        log.warn("WARN - Processing Rep Order for Crown Court Proceeding");
-        log.error("ERROR - Processing Rep Order for Crown Court Proceeding");
-        log.debug("DEBUG - Processing Rep Order for Crown Court Proceeding");
         CrownCourtDTO requestDTO = CrownCourtDTOBuilder.build(request);
         return ResponseEntity.ok(
                 crownProceedingService.processRepOrder(requestDTO)
