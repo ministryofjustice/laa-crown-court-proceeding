@@ -7,6 +7,10 @@ env:
   - name: AWS_REGION
     value: {{ .Values.aws_region }}
   - name: SENTRY_DSN
+    valueFrom:
+      secretKeyRef:
+        name: sentry-dsn
+        key: SENTRY_DSN
     value: {{ .Values.sentry.dsn }}
   - name: SENTRY_ENV
     value: {{ .Values.java.host_env }}
@@ -33,7 +37,10 @@ env:
   - name: PROSECUTION_CONCLUDED_LISTENER_ENABLED
     value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.listenerEnabled | quote }}
   - name: PROSECUTION_CONCLUDED_DATABASE_NAME
-    value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.dbUsername | quote }}
+    valueFrom:
+      secretKeyRef:
+        name: sqs-prosecution-concluded-db-username
+        key: PROSECUTION_CONCLUDED_DB_USERNAME
   - name: PROSECUTION_CONCLUDED_SCHEDULE_ENABLED
     value: {{ .Values.cloudPlatform.aws.sqs.queue.prosecutionConcluded.scheduleEnabled | quote }}
   - name: JWT_ISSUER_URI
@@ -89,6 +96,10 @@ env:
             name: evidence-oauth-client-secret
             key: EVIDENCE_API_OAUTH_CLIENT_SECRET
   - name: NOTIFY_KEY
+    valueFrom:
+      secretKeyRef:
+        name: email-client-notify-key
+        key: EMAIL_CLIENT_NOTIFY_KEY
     value: {{ .Values.emailClient.notify_key }}
   - name: NOTIFY_TEMPLATE_ID
     value: {{ .Values.emailClient.notify_template_id }}
