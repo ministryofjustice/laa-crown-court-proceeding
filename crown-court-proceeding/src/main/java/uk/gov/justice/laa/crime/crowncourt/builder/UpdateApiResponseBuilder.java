@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.builder;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiRepOrderCrownCourtOutcome;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
@@ -13,6 +14,7 @@ import java.util.List;
 import static java.util.Optional.ofNullable;
 
 @UtilityClass
+@Slf4j
 public class UpdateApiResponseBuilder {
 
 
@@ -36,6 +38,7 @@ public class UpdateApiResponseBuilder {
             );
             apiUpdateOutcomeResponse.setCrownCourtSummary(summary);
         }
+        log.info("apiUpdateOutcomeResponse-->" + apiUpdateOutcomeResponse);
         return apiUpdateOutcomeResponse;
     }
 }
