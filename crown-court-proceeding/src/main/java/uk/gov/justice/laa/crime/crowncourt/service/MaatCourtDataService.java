@@ -39,6 +39,7 @@ public class MaatCourtDataService {
     }
 
     public RepOrderDTO updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO) {
+        log.info(RESPONSE_STRING, updateRepOrderRequestDTO);
         RepOrderDTO response = maatAPIClient.put(
                 updateRepOrderRequestDTO,
                 new ParameterizedTypeReference<RepOrderDTO>() {

@@ -273,8 +273,11 @@ public class RepOrderService {
     }
 
     protected void createOutcome(CrownCourtDTO dto) {
+        log.info("before createOutcome--"+ dto);
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeDTOList = OutcomeDTOBuilder.build(dto);
+        log.info("before createOutcome--"+ repOrderCCOutcomeDTOList);
         if (null != repOrderCCOutcomeDTOList) {
+            log.info("createOutcome.count()--"+ repOrderCCOutcomeDTOList.size());
             repOrderCCOutcomeDTOList.forEach(maatCourtDataService::createOutcome);
         }
     }
