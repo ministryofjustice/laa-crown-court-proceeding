@@ -46,22 +46,22 @@ class CrownProceedingControllerTest {
     @MockBean
     private TraceIdHandler traceIdHandler;
 
-//    @Test
-//    void processRepOrder_Success() throws Exception {
-//        var apiProcessRepOrderRequest =
-//                TestModelDataBuilder.getApiProcessRepOrderRequest(IS_VALID);
-//        var processRepOrderRequestJson = objectMapper.writeValueAsString(apiProcessRepOrderRequest);
-//        var processRepOrderResponse =
-//                TestModelDataBuilder.getApiProcessRepOrderResponse();
-//
-//        when(crownProceedingService.processRepOrder(any(CrownCourtDTO.class)))
-//                .thenReturn(processRepOrderResponse);
-//
-//        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-//                        HttpMethod.POST, processRepOrderRequestJson, ENDPOINT_URL))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-//    }
+    @Test
+    void processRepOrder_Success() throws Exception {
+        var apiProcessRepOrderRequest =
+                TestModelDataBuilder.getApiProcessRepOrderRequest(IS_VALID);
+        var processRepOrderRequestJson = objectMapper.writeValueAsString(apiProcessRepOrderRequest);
+        var processRepOrderResponse =
+                TestModelDataBuilder.getApiProcessRepOrderResponse();
+
+        when(crownProceedingService.processRepOrder(any(CrownCourtDTO.class)))
+                .thenReturn(processRepOrderResponse);
+
+        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+                        HttpMethod.POST, processRepOrderRequestJson, ENDPOINT_URL))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
 
     @Test
     void processRepOrder_RequestObjectFailsValidation() throws Exception {

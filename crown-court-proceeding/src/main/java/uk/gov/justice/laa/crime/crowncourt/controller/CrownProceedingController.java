@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -32,9 +31,6 @@ public class CrownProceedingController implements CrownProceedingApi {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiProcessRepOrderResponse> processRepOrder(ApiProcessRepOrderRequest request) {
-        if(Objects.nonNull(request)) {
-            throw new RuntimeException();
-        }
         CrownCourtDTO requestDTO = CrownCourtDTOBuilder.build(request);
         return ResponseEntity.ok(
                 crownProceedingService.processRepOrder(requestDTO)
