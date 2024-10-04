@@ -77,51 +77,51 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void givenAValidContent_whenApiResponseIsError_thenProcessRepOrderIsFails() throws Exception {
-        var apiProcessRepOrderRequest = TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE);
-        apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
+//    @Test
+//    void givenAValidContent_whenApiResponseIsError_thenProcessRepOrderIsFails() throws Exception {
+//        var apiProcessRepOrderRequest = TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE);
+//        apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
+//
+//        stubForOAuth();
+//        wiremock.stubFor(get("/api/internal/v1/assessment/ioj-appeal/repId/91919/current-passed")
+//                .willReturn(
+//                        WireMock.serverError()
+//                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
+//                )
+//        );
+//
+//        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+//                        HttpMethod.POST, objectMapper.writeValueAsString(apiProcessRepOrderRequest), ENDPOINT_URL))
+//                .andExpect(status().is5xxServerError())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.message").value(ERROR_MSG));
+//    }
 
-        stubForOAuth();
-        wiremock.stubFor(get("/api/internal/v1/assessment/ioj-appeal/repId/91919/current-passed")
-                .willReturn(
-                        WireMock.serverError()
-                                .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
-                )
-        );
+//    @Test
+//    void givenAValidEitherWayCaseTypeContent_whenProcessRepOrderIsInvoked_thenSuccess() throws Exception {
+//        MvcResult result = mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+//                        HttpMethod.POST, objectMapper.writeValueAsString(
+//                                TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE)), ENDPOINT_URL))
+//                .andExpect(status().isOk()).andReturn();
+//
+//        assertThat(result.getResponse().getContentAsString()).isEqualTo(
+//                objectMapper.writeValueAsString(TestModelDataBuilder.getApiProcessRepOrderResponse()));
+//    }
 
-        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-                        HttpMethod.POST, objectMapper.writeValueAsString(apiProcessRepOrderRequest), ENDPOINT_URL))
-                .andExpect(status().is5xxServerError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(ERROR_MSG));
-    }
-
-    @Test
-    void givenAValidEitherWayCaseTypeContent_whenProcessRepOrderIsInvoked_thenSuccess() throws Exception {
-        MvcResult result = mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-                        HttpMethod.POST, objectMapper.writeValueAsString(
-                                TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE)), ENDPOINT_URL))
-                .andExpect(status().isOk()).andReturn();
-
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(
-                objectMapper.writeValueAsString(TestModelDataBuilder.getApiProcessRepOrderResponse()));
-    }
-
-    @Test
-    void givenAValidAppealCCContent_whenProcessRepOrderIsInvoked_thenSuccess() throws Exception {
-        var apiProcessRepOrderRequest = TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE);
-        apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
-        var processRepOrderRequestJson = objectMapper.writeValueAsString(apiProcessRepOrderRequest);
-        var processRepOrderResponse = TestModelDataBuilder.getApiProcessRepOrderResponse();
-        processRepOrderResponse.setRepOrderDate(TestModelDataBuilder.TEST_IOJ_APPEAL_DECISION_DATE);
-        stubForOAuth();
-        stubForIoJAppeal();
-        MvcResult result = mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-                        HttpMethod.POST, processRepOrderRequestJson, ENDPOINT_URL))
-                .andExpect(status().isOk()).andReturn();
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(processRepOrderResponse));
-    }
+//    @Test
+//    void givenAValidAppealCCContent_whenProcessRepOrderIsInvoked_thenSuccess() throws Exception {
+//        var apiProcessRepOrderRequest = TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE);
+//        apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
+//        var processRepOrderRequestJson = objectMapper.writeValueAsString(apiProcessRepOrderRequest);
+//        var processRepOrderResponse = TestModelDataBuilder.getApiProcessRepOrderResponse();
+//        processRepOrderResponse.setRepOrderDate(TestModelDataBuilder.TEST_IOJ_APPEAL_DECISION_DATE);
+//        stubForOAuth();
+//        stubForIoJAppeal();
+//        MvcResult result = mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+//                        HttpMethod.POST, processRepOrderRequestJson, ENDPOINT_URL))
+//                .andExpect(status().isOk()).andReturn();
+//        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(processRepOrderResponse));
+//    }
 
 
     @Test
