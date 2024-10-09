@@ -11,7 +11,6 @@ env:
       secretKeyRef:
         name: sentry-dsn
         key: SENTRY_DSN
-    value: {{ .Values.sentry.dsn }}
   - name: SENTRY_ENV
     value: {{ .Values.java.host_env }}
   - name: SENTRY_SAMPLE_RATE
@@ -102,7 +101,6 @@ env:
       secretKeyRef:
         name: email-client-notify-key
         key: EMAIL_CLIENT_NOTIFY_KEY
-    value: {{ .Values.emailClient.notify_key }}
   - name: NOTIFY_TEMPLATE_ID
     value: {{ .Values.emailClient.notify_template_id }}
   - name: NOTIFY_RECIPIENT
