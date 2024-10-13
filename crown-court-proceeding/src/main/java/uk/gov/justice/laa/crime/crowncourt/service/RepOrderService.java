@@ -8,6 +8,7 @@ import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCrownCourtSumm
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiHardshipOverview;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiIOJSummary;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiPassportAssessment;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiCalculateEvidenceFeeRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiCalculateEvidenceFeeResponse;
 import uk.gov.justice.laa.crime.crowncourt.builder.CrimeEvidenceBuilder;
 import uk.gov.justice.laa.crime.crowncourt.builder.OutcomeDTOBuilder;
@@ -245,13 +246,18 @@ public class RepOrderService {
         if (repOrderOutcomeCount == 0 && null != dto.getCrownCourtSummary().getCrownCourtOutcome() &&
                 !dto.getCrownCourtSummary().getCrownCourtOutcome().isEmpty()) {
 
-            ApiCalculateEvidenceFeeResponse evidenceFeeResponse =
-                    crimeEvidenceDataService.getCalEvidenceFee(CrimeEvidenceBuilder.build(dto));
+            ApiCalculateEvidenceFeeRequest request = CrimeEvidenceBuilder.build(dto);
+            if (null != request.getMagCourtOutcome() && null != request.getEmstCode()
+                    && null != request.getCapitalEvidence()) {
 
-            if (null != evidenceFeeResponse.getEvidenceFee()) {
-                dto.getCrownCourtSummary().setEvidenceFeeLevel(
-                        EvidenceFeeLevel.getFrom(evidenceFeeResponse.getEvidenceFee().getFeeLevel())
-                );
+                ApiCalculateEvidenceFeeResponse evidenceFeeResponse =
+                        crimeEvidenceDataService.getCalEvidenceFee(request);
+
+                if (null != evidenceFeeResponse.getEvidenceFee()) {
+                    dto.getCrownCourtSummary().setEvidenceFeeLevel(
+                            EvidenceFeeLevel.getFrom(evidenceFeeResponse.getEvidenceFee().getFeeLevel())
+                    );
+                }
             }
         }
         RepOrderDTO repOrderDTO = update(dto);
