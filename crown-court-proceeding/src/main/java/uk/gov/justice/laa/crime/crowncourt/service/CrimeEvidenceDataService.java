@@ -23,13 +23,14 @@ public class CrimeEvidenceDataService {
     private static final String RESPONSE_STRING = "Response from the Evidence service: {}";
 
     public ApiCalculateEvidenceFeeResponse getCalEvidenceFee(ApiCalculateEvidenceFeeRequest evidenceFeeRequest) {
+        log.debug("Request to calculate evidence fee: {}", evidenceFeeRequest);
         ApiCalculateEvidenceFeeResponse response = evidenceAPIClient.post(
                 evidenceFeeRequest,
                 new ParameterizedTypeReference<ApiCalculateEvidenceFeeResponse>() {},
                 configuration.getEvidence().getEvidenceFeeEndpoints().getEvidenceFeeUrl(),
                 Map.of()
         );
-        log.info(RESPONSE_STRING, response);
+        log.debug(RESPONSE_STRING, response);
         return response;
     }
 }

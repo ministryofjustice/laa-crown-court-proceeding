@@ -27,6 +27,7 @@ public class MaatCourtDataService {
     public static final String RESPONSE_STRING = "Response from Court Data API: {}";
 
     public IOJAppealDTO getCurrentPassedIOJAppealFromRepId(Integer repId) {
+        log.debug("Request to get current passed IOJ appeal for repId: {}", repId);
         IOJAppealDTO response = maatAPIClient.get(
                 new ParameterizedTypeReference<IOJAppealDTO>() {
                 },
@@ -34,11 +35,12 @@ public class MaatCourtDataService {
                 Collections.emptyMap(),
                 repId
         );
-        log.info(RESPONSE_STRING, response);
+        log.debug(RESPONSE_STRING, response);
         return response;
     }
 
     public RepOrderDTO updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO) {
+        log.debug("Request to update rep order: {}", updateRepOrderRequestDTO);
         RepOrderDTO response = maatAPIClient.put(
                 updateRepOrderRequestDTO,
                 new ParameterizedTypeReference<RepOrderDTO>() {
@@ -46,11 +48,12 @@ public class MaatCourtDataService {
                 configuration.getMaatApi().getRepOrderEndpoints().getUpdateUrl(),
                 Collections.emptyMap()
         );
-        log.info(RESPONSE_STRING, response);
+        log.debug(RESPONSE_STRING, response);
         return response;
     }
 
     public List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(Integer repId) {
+        log.debug("Request to get rep order CC outcome for repId: {}", repId);
         List<RepOrderCCOutcomeDTO> response = maatAPIClient.get(
                 new ParameterizedTypeReference<List<RepOrderCCOutcomeDTO>>() {
                 },
@@ -58,11 +61,12 @@ public class MaatCourtDataService {
                 Collections.emptyMap(),
                 repId
         );
-        log.info(RESPONSE_STRING, response);
+        log.debug(RESPONSE_STRING, response);
         return response;
     }
 
     public RepOrderCCOutcomeDTO createOutcome(RepOrderCCOutcomeDTO outcomeDTO) {
+        log.debug("Request to create rep order CC outcome: {}", outcomeDTO);
         RepOrderCCOutcomeDTO response = maatAPIClient.post(
                 outcomeDTO,
                 new ParameterizedTypeReference<RepOrderCCOutcomeDTO>() {
@@ -70,17 +74,18 @@ public class MaatCourtDataService {
                 configuration.getMaatApi().getRepOrderEndpoints().getCreateOutcomeUrl(),
                 Collections.emptyMap()
         );
-        log.info(RESPONSE_STRING, response);
+        log.debug(RESPONSE_STRING, response);
         return response;
     }
 
     public long outcomeCount(Integer repId) {
+        log.debug("Request to get outcome count for repId: {}", repId);
         ResponseEntity<Void> response = maatAPIClient.head(
                 configuration.getMaatApi().getRepOrderEndpoints().getFindOutcomeUrl(),
                 Collections.emptyMap(),
                 repId
         );
-        log.info(RESPONSE_STRING, response);
+        log.debug(RESPONSE_STRING, response);
         return response.getHeaders().getContentLength();
     }
 }
