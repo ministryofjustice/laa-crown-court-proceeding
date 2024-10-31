@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.commons.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
+import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 
 import static org.mockito.Mockito.when;
@@ -34,6 +35,8 @@ class ProsecutionConcludedControllerTest {
     @MockBean
     private TraceIdHandler traceIdHandler;
 
+    @MockBean
+    private DeadLetterMessageService deadLetterMessageService;
 
     @Test
     void givenIncorrectParameters_whenGetCountByMaatIdAndStatusIsInvoked_thenErrorIsThrown() throws Exception {

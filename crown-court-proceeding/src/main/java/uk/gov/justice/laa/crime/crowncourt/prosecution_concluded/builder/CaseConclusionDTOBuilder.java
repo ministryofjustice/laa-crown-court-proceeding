@@ -13,12 +13,12 @@ import java.util.*;
 @Component
 public class CaseConclusionDTOBuilder {
 
-    public ConcludedDTO build(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, String calculatedOutcome) {
+    public ConcludedDTO build(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, String calculatedOutcome, String crownCourtCode) {
         return ConcludedDTO.
                 builder()
                 .prosecutionConcluded(prosecutionConcluded)
                 .calculatedOutcome(calculatedOutcome)
-                .ouCourtLocation(wqHearingDTO.getOuCourtLocation())
+                .crownCourtCode(crownCourtCode)
                 .wqJurisdictionType(wqHearingDTO.getWqJurisdictionType())
                 .caseEndDate(getMostRecentCaseEndDate(prosecutionConcluded.getOffenceSummary()))
                 .caseUrn(wqHearingDTO.getCaseUrn())

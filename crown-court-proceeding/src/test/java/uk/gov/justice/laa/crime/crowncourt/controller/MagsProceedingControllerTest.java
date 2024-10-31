@@ -16,6 +16,7 @@ import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiDetermineMag
 import uk.gov.justice.laa.crime.commons.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
+import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.service.MagsProceedingService;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
@@ -38,6 +39,9 @@ class MagsProceedingControllerTest {
 
     @MockBean
     private MagsProceedingService magsProceedingService;
+
+    @MockBean
+    private DeadLetterMessageService deadLetterMessageService;
 
     @MockBean
     private TraceIdHandler traceIdHandler;

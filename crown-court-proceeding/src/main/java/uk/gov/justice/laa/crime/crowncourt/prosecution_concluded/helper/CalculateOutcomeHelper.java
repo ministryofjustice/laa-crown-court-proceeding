@@ -19,18 +19,13 @@ import java.util.Set;
 public class CalculateOutcomeHelper {
 
     public String calculate(List<OffenceSummary> offenceSummaryList) {
-
-
         List<String> outcomes = buildOffenceOutComes(offenceSummaryList);
 
         log.info("Offence count: " + outcomes.size());
         return outcomes.size() == 1 ? outcomes.get(0) : CrownCourtTrialOutcome.PART_CONVICTED.getValue();
-
-
     }
 
     private List<String> buildOffenceOutComes(List<OffenceSummary> offenceSummaryList) {
-
         List<String> offenceOutcomeList = new ArrayList<>();
         offenceSummaryList
                 .forEach(offence -> {
