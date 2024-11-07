@@ -3,8 +3,8 @@ plugins {
     id "jacoco"
     id "org.sonarqube" version "4.0.0.2929"
     id "info.solidsoft.pitest" version "1.9.11"
-    id "org.springframework.boot" version "3.1.5"
-    id 'io.spring.dependency-management' version '1.1.4'
+    id "org.springframework.boot" version "3.3.5"
+    id "io.spring.dependency-management" version "1.1.6"
 }
 
 group = "uk.gov.justice.laa.crime"
@@ -18,9 +18,9 @@ def versions = [
         pitest                           : "1.4.10",
         amazonSQSVersion                 : "2.1.1",
         springFrameworkCloudVersion      : "3.0.1",
-        crimeCommonsClasses              : "3.29.0",
-        commonsRestClient                : "3.4.0",
-        commonsModSchemas                : "1.10.0",
+        crimeCommonsClasses              : "3.33.0",
+        commonsRestClient                : "3.18.0",
+        commonsModSchemas                : "1.17.0",
         mockitoInlineVersion             : "5.2.0",
         wmStubRunnerVersion              : "4.0.1",
         springDocWebMVCVersion           : "2.1.0",
