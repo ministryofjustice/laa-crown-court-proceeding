@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.*;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
