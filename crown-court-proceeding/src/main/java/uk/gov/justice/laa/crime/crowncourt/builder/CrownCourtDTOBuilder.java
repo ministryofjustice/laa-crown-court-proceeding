@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiDetermineMagsRepDecisionRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiProcessRepOrderRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateCrownCourtRequest;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
@@ -57,6 +58,34 @@ public class CrownCourtDTOBuilder {
                 .iojSummary(request.getIojAppeal())
                 .financialAssessment(request.getFinancialAssessment())
                 .userSession(request.getUserSession())
+                .build();
+    }
+
+    public static CrownCourtDTO buildCrownCourt(final ApiUpdateCrownCourtRequest request) {
+        return  CrownCourtDTO.builder()
+                .repId(request.getRepId())
+                .caseType(request.getCaseType())
+                .magCourtOutcome(request.getMagCourtOutcome())
+                .magsDecisionResult(
+                        MagsDecisionResult.builder()
+                                .decisionReason(request.getDecisionReason())
+                                .decisionDate(Optional.ofNullable(request.getDecisionDate()).map(LocalDateTime::toLocalDate).orElse(null))
+                                .build()
+                )
+                .committalDate(request.getCommittalDate())
+                .dateReceived(request.getDateReceived())
+                .crownCourtSummary(request.getCrownCourtSummary())
+                .iojSummary(request.getIojAppeal())
+                .financialAssessment(request.getFinancialAssessment())
+                .passportAssessment(request.getPassportAssessment())
+                .userSession(request.getUserSession())
+                .crownRepId(request.getCrownRepId())
+                .applicantHistoryId(request.getApplicantHistoryId())
+                .isImprisoned(request.getIsImprisoned())
+                .capitalEvidence(request.getCapitalEvidence())
+                .incomeEvidenceReceivedDate(request.getIncomeEvidenceReceivedDate())
+                .capitalEvidenceReceivedDate(request.getCapitalEvidenceReceivedDate())
+                .emstCode(request.getEmstCode())
                 .build();
     }
 }

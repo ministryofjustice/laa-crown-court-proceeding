@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiProcessRepOrderRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateCrownCourtRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
@@ -44,8 +45,8 @@ public class CrownProceedingController implements CrownProceedingApi {
     }
 
     @PutMapping(value = "/update-crown-court", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> update(ApiUpdateApplicationRequest request) {
-        CrownCourtDTO crownCourtDTO = CrownCourtDTOBuilder.build(request);
+    public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> update(ApiUpdateCrownCourtRequest request) {
+        CrownCourtDTO crownCourtDTO = CrownCourtDTOBuilder.buildCrownCourt(request);
         crownCourtDetailsValidator.checkCCDetails(crownCourtDTO);
         return ResponseEntity.ok(crownProceedingService.update(crownCourtDTO));
     }
