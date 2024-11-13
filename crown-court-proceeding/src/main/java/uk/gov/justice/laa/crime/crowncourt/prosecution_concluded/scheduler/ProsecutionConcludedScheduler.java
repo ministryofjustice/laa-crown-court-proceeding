@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.scheduler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDa
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
+import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 @Slf4j
 @Getter
@@ -32,11 +35,13 @@ import java.util.stream.Collectors;
 @ConditionalOnProperty(value = "feature.prosecution-concluded-schedule.enabled", havingValue = "true")
 public class ProsecutionConcludedScheduler {
 
+    private final Gson gson;
     private final ObjectMapper objectMapper;
     private final CourtDataAPIService courtDataAPIService;
     private final ProsecutionConcludedService prosecutionConcludedService;
     private final ProsecutionConcludedRepository prosecutionConcludedRepository;
     private final ProsecutionConcludedDataService prosecutionConcludedDataService;
+    private final DeadLetterMessageService deadLetterMessageService;
 
     @Scheduled(cron = "${queue.message.log.cron.expression}")
     public void process() {
@@ -69,6 +74,11 @@ public class ProsecutionConcludedScheduler {
             } else {
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
             }
+        } catch (ValidationException exception) {
+            log.error("Prosecution Conclusion failed for MAAT ID :" + prosecutionConcluded.getMaatId());
+            deadLetterMessageService.logDeadLetterMessage(exception.getMessage(), prosecutionConcluded);
+
+            updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.ERROR);
         } catch (Exception exception) {
             log.error("Prosecution Conclusion failed for MAAT ID :" + prosecutionConcluded.getMaatId());
             updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.ERROR);

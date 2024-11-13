@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.commons.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.crowncourt.reports.service.ReactivatedProsecutionCaseReportService;
+import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,6 +26,9 @@ class ReactivatedProsecutionCaseReportControllerTest {
 
     @MockBean
     private ReactivatedProsecutionCaseReportService reactivatedProsecutionCaseReportService;
+
+    @MockBean
+    private DeadLetterMessageService deadLetterMessageService;
 
     @MockBean
     private TraceIdHandler traceIdHandler;

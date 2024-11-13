@@ -16,7 +16,7 @@ public class ConcludedDTO {
     ProsecutionConcluded prosecutionConcluded;
     String calculatedOutcome;
     String wqJurisdictionType;
-    String ouCourtLocation;
+    String crownCourtCode;
     List<String> hearingResultCodeList;
     String caseUrn;
     String caseEndDate;

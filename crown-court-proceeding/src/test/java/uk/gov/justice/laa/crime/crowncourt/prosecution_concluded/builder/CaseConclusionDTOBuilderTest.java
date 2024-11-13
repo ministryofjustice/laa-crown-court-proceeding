@@ -77,10 +77,10 @@ class CaseConclusionDTOBuilderTest {
     @Test
     void givenAValidProsecutionConcluded_whenBuildIsInvoked_thenReturnConcludedDTO() {
         ConcludedDTO concludedDTO = caseConclusionDTOBuilder.build(TestModelDataBuilder.getProsecutionConcluded(),
-                TestModelDataBuilder.getWQHearingDTO(), "2022-01-01");
+                TestModelDataBuilder.getWQHearingDTO(), "2022-01-01", "121");
 
         softly.assertThat(concludedDTO.getCalculatedOutcome()).isEqualTo("2022-01-01");
-        softly.assertThat(concludedDTO.getOuCourtLocation()).isEqualTo("loc1");
+        softly.assertThat(concludedDTO.getCrownCourtCode()).isEqualTo("121");
         softly.assertThat(concludedDTO.getWqJurisdictionType()).isEqualTo("Type");
         softly.assertThat(concludedDTO.getCaseUrn()).isEqualTo("45673");
         softly.assertThat(concludedDTO.getCaseEndDate()).isEqualTo("2021-11-12");

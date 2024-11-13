@@ -6,7 +6,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.*;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +22,11 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
+import uk.gov.justice.laa.crime.crowncourt.entity.DeadLetterMessageEntity;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
+import uk.gov.justice.laa.crime.crowncourt.repository.DeadLetterMessageRepository;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.util.FileUtils;
@@ -54,7 +60,13 @@ class ProsecutionListenerTest {
     private static String queueUrl;
 
     @Autowired
+    private Gson gson;
+
+    @Autowired
     private ProsecutionConcludedRepository prosecutionConcludedRepository;
+
+    @Autowired
+    private DeadLetterMessageRepository deadLetterMessageRepository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -99,7 +111,39 @@ class ProsecutionListenerTest {
         assertThat(prosecutionConcludedEntities.get(0).getStatus()).isEqualTo(CaseConclusionStatus.PENDING.name());
         verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/wq-hearing/908ad01e-5a38-4158-957a-0c1d1a783862/maatId/5635566")));
         verify(exactly(1), getRequestedFor(urlEqualTo("/api/internal/v1/assessment/reservations/5635566")));
+    }
 
+    @Test
+    void givenAnInvalidMessageWithMissingMaatId_whenListenerIsInvoked_thenMessageIsSavedAsADeadLetterMessage() {
+        deadLetterMessageRepository.deleteAll();
+        String queueMessage = FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaWithMissingMaatId.json");
+        ProsecutionConcluded expectedMessage = gson.fromJson(queueMessage, ProsecutionConcluded.class);
+
+        amazonSQS.sendMessage(queueUrl, queueMessage);
+        setScenarioState("reservations", "Started");
+        with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(30, SECONDS)
+            .until(() -> !deadLetterMessageRepository.findAll().isEmpty());
+
+        List<DeadLetterMessageEntity> deadLetterMessages = deadLetterMessageRepository.findAll();
+        assertThat(deadLetterMessages).hasSize(1);
+
+        DeadLetterMessageEntity deadLetterMessageEntity = deadLetterMessages.get(0);
+        ProsecutionConcluded actualMessage = deadLetterMessageEntity.getMessage();
+        assertThat(actualMessage).isEqualTo(expectedMessage);
+        assertThat(deadLetterMessageEntity.getDeadLetterReason()).isEqualTo(ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL);
+    }
+
+    @Test
+    void givenAnInvalidMessageWithInvalidMaatId_whenListenerIsInvoked_thenMessageIsNotSaved() {
+        deadLetterMessageRepository.deleteAll();
+        String queueMessage = FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaWithInvalidMaatId.json");
+        amazonSQS.sendMessage(queueUrl, queueMessage);
+        setScenarioState("reservations", "Started");
+        with().pollDelay(10, SECONDS).pollInterval(10, SECONDS).await().atMost(30, SECONDS)
+            .until(() -> deadLetterMessageRepository.findAll().isEmpty());
+
+        List<DeadLetterMessageEntity> deadLetterMessages = deadLetterMessageRepository.findAll();
+        assertThat(deadLetterMessages).isEmpty();
     }
 
     @Test
@@ -188,7 +232,6 @@ class ProsecutionListenerTest {
         List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
         assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedRequest(CONVICTED));
     }
-
 
     @Test
     void givenAMultipleOffenceWithPleaAndNoVerdict_whenListenerIsInvoked_thenOutcomeIsAConvicted() {

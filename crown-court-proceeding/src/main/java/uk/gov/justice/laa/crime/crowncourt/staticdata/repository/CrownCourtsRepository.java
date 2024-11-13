@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface CrownCourtsRepository extends JpaRepository<CrownCourtsEntity, String> {
 
     Optional<CrownCourtsEntity> findByOuCode(String ouCode);
+    boolean existsByOuCode(String ouCode);
 }

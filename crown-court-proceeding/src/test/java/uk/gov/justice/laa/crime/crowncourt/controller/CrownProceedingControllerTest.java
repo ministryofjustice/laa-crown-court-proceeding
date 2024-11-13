@@ -14,6 +14,7 @@ import uk.gov.justice.laa.crime.commons.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.service.CrownProceedingService;
+import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.validation.CrownCourtDetailsValidator;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
@@ -42,6 +43,9 @@ class CrownProceedingControllerTest {
 
     @MockBean
     private CrownCourtDetailsValidator crownCourtDetailsValidator;
+
+    @MockBean
+    private DeadLetterMessageService deadLetterMessageService;
 
     @MockBean
     private TraceIdHandler traceIdHandler;
