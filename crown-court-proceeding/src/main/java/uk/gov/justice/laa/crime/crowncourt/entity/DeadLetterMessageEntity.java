@@ -25,7 +25,7 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Prosecuti
 @Table(name = "DEAD_LETTER_MESSAGE", schema = "crown_court_proceeding")
 public class DeadLetterMessageEntity {
     @Id
-    @SequenceGenerator(name = "dead_letter_seq", sequenceName = "DEAD_LETTER", allocationSize = 1)
+    @SequenceGenerator(name = "dead_letter_seq", schema = "crown_court_proceeding", sequenceName = "DEAD_LETTER", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dead_letter_seq")
     @Column(name = "ID")
     private Integer id;
