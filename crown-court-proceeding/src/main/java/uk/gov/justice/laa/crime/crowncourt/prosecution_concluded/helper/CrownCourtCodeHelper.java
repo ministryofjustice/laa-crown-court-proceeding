@@ -8,6 +8,7 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.repository.CrownCourtsRepo
 import uk.gov.justice.laa.crime.exception.MAATCourtDataException;
 
 import java.util.Optional;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import static java.lang.String.format;
 
@@ -23,8 +24,11 @@ public class CrownCourtCodeHelper {
 
         Optional<CrownCourtsEntity> optCrownCourtCode = crownCourtCodeRepository.findByOuCode(ouCode);
         CrownCourtsEntity crownCourtCode = optCrownCourtCode.orElseThrow(()
-                -> new MAATCourtDataException(format("Crown Court Code Look Up Failed for %s", ouCode)));
+                -> new ValidationException(format("Crown Court Code Look Up Failed for %s", ouCode)));
 
         return crownCourtCode.getId();
+    }
+    public boolean isValidCode(String ouCode) {
+        return crownCourtCodeRepository.existsByOuCode(ouCode);
     }
 }

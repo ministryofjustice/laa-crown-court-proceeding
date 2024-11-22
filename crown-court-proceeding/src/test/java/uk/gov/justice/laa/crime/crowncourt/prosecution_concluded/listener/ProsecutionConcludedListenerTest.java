@@ -12,6 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.MessageHeaders;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
+import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.PleaTrialOutcome;
@@ -33,7 +35,11 @@ class ProsecutionConcludedListenerTest {
     @InjectMocks
     private ProsecutionConcludedListener prosecutionConcludedListener;
     @Mock
+    private DeadLetterMessageService deadLetterMessageService;
+    @Mock
     private ProsecutionConcludedService prosecutionConcludedService;
+    @Mock
+    private ProsecutionConcludedValidator prosecutionConcludedValidator;
     @Mock
     private QueueMessageLogService queueMessageLogService;
 
@@ -97,10 +103,13 @@ class ProsecutionConcludedListenerTest {
     @Test
     void givenInvalidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldNotCallService() {
         String message = getSqsMessagePayload();
-        when(gson.fromJson(message, ProsecutionConcluded.class)).thenThrow(new ValidationException());
+        ProsecutionConcluded prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
+
+        doThrow(new ValidationException(ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL)).when(prosecutionConcludedValidator).validateMaatId(any());
         prosecutionConcludedListener.receive(message, new MessageHeaders(new HashMap<>()));
         verify(prosecutionConcludedService, times(0)).execute(any());
-
+        verify(deadLetterMessageService, times(1)).logDeadLetterMessage(
+            ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL, prosecutionConcluded);
     }
 
     private String getSqsMessagePayload() {

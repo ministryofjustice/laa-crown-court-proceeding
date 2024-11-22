@@ -356,7 +356,7 @@ public class TestModelDataBuilder {
                       "laaTransactionId":"ea0af85c36b17113389bb9aae924e9ad"
                    }
                 }
-                          """;
+                """;
     }
 
     public static ApiUpdateApplicationResponse getApiUpdateApplicationResponse() {

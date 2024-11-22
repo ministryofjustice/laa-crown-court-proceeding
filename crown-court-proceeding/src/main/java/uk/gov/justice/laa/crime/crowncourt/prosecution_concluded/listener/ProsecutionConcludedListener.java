@@ -11,6 +11,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
+import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.exception.ValidationException;
@@ -24,19 +26,29 @@ public class ProsecutionConcludedListener {
     private final Gson gson;
     private final QueueMessageLogService queueMessageLogService;
     private final ProsecutionConcludedService prosecutionConcludedService;
-
+    private final ProsecutionConcludedValidator prosecutionConcludedValidator;
+    private final DeadLetterMessageService deadLetterMessageService;
 
     @SqsListener(value = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
     public void receive(@Payload final String message,
                         final @Headers MessageHeaders headers) {
+        ProsecutionConcluded prosecutionConcluded = null;
+
         try {
             log.debug("message-id {}", headers.get("MessageId"));
+
+            prosecutionConcludedValidator.validateMaatId(message);
+
             queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
-            ProsecutionConcluded prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
+            prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
             prosecutionConcludedService.execute(prosecutionConcluded);
             log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
         } catch (ValidationException exception) {
             log.warn(exception.getMessage());
+
+            if (!exception.getMessage().equalsIgnoreCase(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT)) {
+                deadLetterMessageService.logDeadLetterMessage(exception.getMessage(), prosecutionConcluded);
+            }
         }
     }
 }

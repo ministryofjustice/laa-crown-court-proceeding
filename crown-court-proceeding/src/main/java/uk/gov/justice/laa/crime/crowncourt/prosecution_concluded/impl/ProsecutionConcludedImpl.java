@@ -21,18 +21,12 @@ import static uk.gov.justice.laa.crime.enums.CrownCourtAppealOutcome.isAppeal;
 @RequiredArgsConstructor
 public class ProsecutionConcludedImpl {
 
+    private final CourtDataAPIService courtDataAPIService;
     private final CrownCourtCodeHelper crownCourtCodeHelper;
-
     private final ProcessSentencingImpl processSentencingHelper;
-
     private final ResultCodeHelper resultCodeHelper;
 
-    private final CourtDataAPIService courtDataAPIService;
-
-    public void execute(ConcludedDTO concludedDTO) {
-
-        Integer maatId = concludedDTO.getProsecutionConcluded().getMaatId();
-        final RepOrderDTO repOrderDTO = courtDataAPIService.getRepOrder(maatId);
+    public void execute(ConcludedDTO concludedDTO, RepOrderDTO repOrderDTO) {
         if (repOrderDTO != null) {
             log.debug("Maat-id found and processing ProsecutionConcluded");
 
@@ -41,33 +35,29 @@ public class ProsecutionConcludedImpl {
             courtDataAPIService
                     .updateCrownCourtOutcome(
                             UpdateCCOutcome.builder()
-                                    .repId(maatId)
+                                    .repId(repOrderDTO.getId())
                                     .ccOutcome(concludedDTO.getCalculatedOutcome())
                                     .benchWarrantIssued(resultCodeHelper.isBenchWarrantIssued(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCodeList()))
                                     .appealType(repOrderDTO.getAppealTypeCode())
                                     .imprisoned(resultCodeHelper.isImprisoned(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCodeList()))
                                     .caseNumber(concludedDTO.getCaseUrn())
-                                    .crownCourtCode(crownCourtCodeHelper.getCode(concludedDTO.getOuCourtLocation())).build()
+                                    .crownCourtCode(concludedDTO.getCrownCourtCode()).build()
                     );
 
-            processSentencingHelper.processSentencingDate(concludedDTO.getCaseEndDate(), maatId, repOrderDTO.getCatyCaseType());
+            processSentencingHelper.processSentencingDate(concludedDTO.getCaseEndDate(), repOrderDTO.getId(), repOrderDTO.getCatyCaseType());
         }
     }
 
     private void verifyCaseTypeValidator(RepOrderDTO repOrderDTO, String calculatedOutcome) {
-
         log.debug("Crown Court - verifying case Type validator");
         String caseType = repOrderDTO.getCatyCaseType();
 
         if (isTrial(calculatedOutcome) && !caseTypeForTrial(caseType)) {
-
             throw new ValidationException("Crown Court - Case type not valid for Trial.");
         }
 
         if (isAppeal(calculatedOutcome) && !caseTypeForAppeal(caseType)) {
-
             throw new ValidationException("Crown Court  - Case type not valid for Appeal.");
         }
     }
-
 }
