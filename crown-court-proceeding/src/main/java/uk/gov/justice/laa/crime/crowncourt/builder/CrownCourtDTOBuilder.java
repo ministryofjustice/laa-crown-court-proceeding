@@ -18,7 +18,16 @@ import java.util.Optional;
 public class CrownCourtDTOBuilder {
 
     public static CrownCourtDTO build(final ApiProcessRepOrderRequest request) {
-        CrownCourtDTO.CrownCourtDTOBuilder builder = CrownCourtDTO.builder()
+        CrownCourtDTO.CrownCourtDTOBuilder builder = mapToCrownCourtDTO(request);
+
+        if (request instanceof ApiUpdateApplicationRequest updateRequest) {
+            mapUpdateApplicationRequestToCrownCourtDTO(updateRequest, builder);
+        }
+        return builder.build();
+    }
+
+    private static CrownCourtDTO.CrownCourtDTOBuilder mapToCrownCourtDTO(final ApiProcessRepOrderRequest request) {
+        return CrownCourtDTO.builder()
                 .repId(request.getRepId())
                 .caseType(request.getCaseType())
                 .magCourtOutcome(request.getMagCourtOutcome())
@@ -35,19 +44,15 @@ public class CrownCourtDTOBuilder {
                 .financialAssessment(request.getFinancialAssessment())
                 .passportAssessment(request.getPassportAssessment());
 
-        if (request instanceof ApiUpdateApplicationRequest updateRequest) {
-            return builder.userSession(updateRequest.getUserSession())
-                    .crownRepId(updateRequest.getCrownRepId())
-                    .applicantHistoryId(updateRequest.getApplicantHistoryId())
-                    .isImprisoned(updateRequest.getIsImprisoned())
-                    .capitalEvidence(updateRequest.getCapitalEvidence())
-                    .incomeEvidenceReceivedDate(updateRequest.getIncomeEvidenceReceivedDate())
-                    .capitalEvidenceReceivedDate(updateRequest.getCapitalEvidenceReceivedDate())
-                    .emstCode(updateRequest.getEmstCode())
-                    .build();
-        } else {
-            return builder.build();
-        }
+    }
+
+    private static void mapUpdateApplicationRequestToCrownCourtDTO(ApiUpdateApplicationRequest updateRequest
+            , CrownCourtDTO.CrownCourtDTOBuilder builder) {
+
+        builder.userSession(updateRequest.getUserSession())
+                .crownRepId(updateRequest.getCrownRepId())
+                .applicantHistoryId(updateRequest.getApplicantHistoryId())
+                .isImprisoned(updateRequest.getIsImprisoned());
     }
 
     public static CrownCourtDTO build(final ApiDetermineMagsRepDecisionRequest request) {
@@ -62,30 +67,16 @@ public class CrownCourtDTOBuilder {
     }
 
     public static CrownCourtDTO buildCrownCourt(final ApiUpdateCrownCourtRequest request) {
-        return  CrownCourtDTO.builder()
-                .repId(request.getRepId())
-                .caseType(request.getCaseType())
-                .magCourtOutcome(request.getMagCourtOutcome())
-                .magsDecisionResult(
-                        MagsDecisionResult.builder()
-                                .decisionReason(request.getDecisionReason())
-                                .decisionDate(Optional.ofNullable(request.getDecisionDate()).map(LocalDateTime::toLocalDate).orElse(null))
-                                .build()
-                )
-                .committalDate(request.getCommittalDate())
-                .dateReceived(request.getDateReceived())
-                .crownCourtSummary(request.getCrownCourtSummary())
-                .iojSummary(request.getIojAppeal())
-                .financialAssessment(request.getFinancialAssessment())
-                .passportAssessment(request.getPassportAssessment())
-                .userSession(request.getUserSession())
-                .crownRepId(request.getCrownRepId())
-                .applicantHistoryId(request.getApplicantHistoryId())
-                .isImprisoned(request.getIsImprisoned())
-                .capitalEvidence(request.getCapitalEvidence())
+
+        CrownCourtDTO.CrownCourtDTOBuilder builder = mapToCrownCourtDTO(request);
+        mapUpdateApplicationRequestToCrownCourtDTO(request, builder);
+
+        builder.capitalEvidence(request.getCapitalEvidence())
                 .incomeEvidenceReceivedDate(request.getIncomeEvidenceReceivedDate())
                 .capitalEvidenceReceivedDate(request.getCapitalEvidenceReceivedDate())
                 .emstCode(request.getEmstCode())
                 .build();
+
+        return builder.build();
     }
 }
