@@ -55,8 +55,8 @@ public interface CrownProceedingApi {
             )
     )
     @DefaultHTTPErrorResponse
-    ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> update(
-            @Parameter(description = "Updated Application Data",
+    ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> updateCrownCourt(
+            @Parameter(description = "Updated crown court",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ApiUpdateCrownCourtRequest.class)
                     )

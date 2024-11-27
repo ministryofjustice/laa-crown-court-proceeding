@@ -45,8 +45,8 @@ public class CrownProceedingController implements CrownProceedingApi {
     }
 
     @PutMapping(value = "/update-crown-court", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> update(ApiUpdateCrownCourtRequest request) {
-        CrownCourtDTO crownCourtDTO = CrownCourtDTOBuilder.buildCrownCourt(request);
+    public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> updateCrownCourt(ApiUpdateCrownCourtRequest request) {
+        CrownCourtDTO crownCourtDTO = CrownCourtDTOBuilder.build(request);
         crownCourtDetailsValidator.checkCCDetails(crownCourtDTO);
         return ResponseEntity.ok(crownProceedingService.update(crownCourtDTO));
     }

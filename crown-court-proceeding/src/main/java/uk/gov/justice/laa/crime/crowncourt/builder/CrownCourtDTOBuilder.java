@@ -23,6 +23,9 @@ public class CrownCourtDTOBuilder {
         if (request instanceof ApiUpdateApplicationRequest updateRequest) {
             mapUpdateApplicationRequestToCrownCourtDTO(updateRequest, builder);
         }
+        if (request instanceof ApiUpdateCrownCourtRequest crownCourtRequest) {
+            mapUpdateCrownCourtRequestToCrownCourtDTO(crownCourtRequest, builder);
+        }
         return builder.build();
     }
 
@@ -66,17 +69,13 @@ public class CrownCourtDTOBuilder {
                 .build();
     }
 
-    public static CrownCourtDTO buildCrownCourt(final ApiUpdateCrownCourtRequest request) {
-
-        CrownCourtDTO.CrownCourtDTOBuilder builder = mapToCrownCourtDTO(request);
-        mapUpdateApplicationRequestToCrownCourtDTO(request, builder);
-
+    private static void mapUpdateCrownCourtRequestToCrownCourtDTO(final ApiUpdateCrownCourtRequest request,
+                                                                  CrownCourtDTO.CrownCourtDTOBuilder builder) {
         builder.capitalEvidence(request.getCapitalEvidence())
                 .incomeEvidenceReceivedDate(request.getIncomeEvidenceReceivedDate())
                 .capitalEvidenceReceivedDate(request.getCapitalEvidenceReceivedDate())
                 .emstCode(request.getEmstCode())
                 .build();
 
-        return builder.build();
     }
 }

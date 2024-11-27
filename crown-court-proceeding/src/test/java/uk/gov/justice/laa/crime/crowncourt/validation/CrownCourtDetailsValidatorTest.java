@@ -114,7 +114,7 @@ class CrownCourtDetailsValidatorTest {
                 assertThrows(ValidationException.class, () -> crownCourtDetailsValidator.checkCCDetails(crownCourtDTO)
                 );
         assertThat(validationException.getMessage())
-                .isEqualTo("Cannot have Crown Court outcome without Mags Court outcome");
+                .isEqualTo(CrownCourtDetailsValidator.CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
 
     }
 

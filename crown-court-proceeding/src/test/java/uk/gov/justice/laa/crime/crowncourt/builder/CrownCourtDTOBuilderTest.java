@@ -85,7 +85,7 @@ class CrownCourtDTOBuilderTest {
     @Test
     void givenApiUpdateCrownCourtRequest_whenBuildIsInvoked_thenCorrectCrownCourtDTOFieldsArePopulated() {
         ApiUpdateCrownCourtRequest request = TestModelDataBuilder.getApiUpdateCrownCourtRequest(true);
-        CrownCourtDTO dto = CrownCourtDTOBuilder.buildCrownCourt(request);
+        CrownCourtDTO dto = CrownCourtDTOBuilder.build(request);
         checkCommonFields(request, dto);
 
         softly.assertThat(dto.getMagsDecisionResult().getDecisionDate())

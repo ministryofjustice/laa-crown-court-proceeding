@@ -334,6 +334,14 @@ class RepOrderServiceTest {
     }
 
     @Test
+    void givenAEmptyFinancial_whenGetDecisionByFinAssessmentIsInvoked_ThenNullIsReturned() {
+        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
+        requestDTO.setFinancialAssessment(null);
+        assertThat(repOrderService.getDecisionByFinAssessment(requestDTO, null, false))
+                .isNull();
+    }
+
+    @Test
     void givenInvalidCaseType_whenGetDecisionByFinAssessmentIsInvoked_ThenNullIsReturned() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         assertThat(repOrderService.getDecisionByFinAssessment(requestDTO, null, false))
