@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiDetermineMagsRepDecisionRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiProcessRepOrderRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateCrownCourtRequest;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
@@ -17,7 +18,19 @@ import java.util.Optional;
 public class CrownCourtDTOBuilder {
 
     public static CrownCourtDTO build(final ApiProcessRepOrderRequest request) {
-        CrownCourtDTO.CrownCourtDTOBuilder builder = CrownCourtDTO.builder()
+        CrownCourtDTO.CrownCourtDTOBuilder builder = mapToCrownCourtDTO(request);
+
+        if (request instanceof ApiUpdateApplicationRequest updateRequest) {
+            mapUpdateApplicationRequestToCrownCourtDTO(updateRequest, builder);
+        }
+        if (request instanceof ApiUpdateCrownCourtRequest crownCourtRequest) {
+            mapUpdateCrownCourtRequestToCrownCourtDTO(crownCourtRequest, builder);
+        }
+        return builder.build();
+    }
+
+    private static CrownCourtDTO.CrownCourtDTOBuilder mapToCrownCourtDTO(final ApiProcessRepOrderRequest request) {
+        return CrownCourtDTO.builder()
                 .repId(request.getRepId())
                 .caseType(request.getCaseType())
                 .magCourtOutcome(request.getMagCourtOutcome())
@@ -34,19 +47,15 @@ public class CrownCourtDTOBuilder {
                 .financialAssessment(request.getFinancialAssessment())
                 .passportAssessment(request.getPassportAssessment());
 
-        if (request instanceof ApiUpdateApplicationRequest updateRequest) {
-            return builder.userSession(updateRequest.getUserSession())
-                    .crownRepId(updateRequest.getCrownRepId())
-                    .applicantHistoryId(updateRequest.getApplicantHistoryId())
-                    .isImprisoned(updateRequest.getIsImprisoned())
-                    .capitalEvidence(updateRequest.getCapitalEvidence())
-                    .incomeEvidenceReceivedDate(updateRequest.getIncomeEvidenceReceivedDate())
-                    .capitalEvidenceReceivedDate(updateRequest.getCapitalEvidenceReceivedDate())
-                    .emstCode(updateRequest.getEmstCode())
-                    .build();
-        } else {
-            return builder.build();
-        }
+    }
+
+    private static void mapUpdateApplicationRequestToCrownCourtDTO(ApiUpdateApplicationRequest updateRequest
+            , CrownCourtDTO.CrownCourtDTOBuilder builder) {
+
+        builder.userSession(updateRequest.getUserSession())
+                .crownRepId(updateRequest.getCrownRepId())
+                .applicantHistoryId(updateRequest.getApplicantHistoryId())
+                .isImprisoned(updateRequest.getIsImprisoned());
     }
 
     public static CrownCourtDTO build(final ApiDetermineMagsRepDecisionRequest request) {
@@ -58,5 +67,15 @@ public class CrownCourtDTOBuilder {
                 .financialAssessment(request.getFinancialAssessment())
                 .userSession(request.getUserSession())
                 .build();
+    }
+
+    private static void mapUpdateCrownCourtRequestToCrownCourtDTO(final ApiUpdateCrownCourtRequest request,
+                                                                  CrownCourtDTO.CrownCourtDTOBuilder builder) {
+        builder.capitalEvidence(request.getCapitalEvidence())
+                .incomeEvidenceReceivedDate(request.getIncomeEvidenceReceivedDate())
+                .capitalEvidenceReceivedDate(request.getCapitalEvidenceReceivedDate())
+                .emstCode(request.getEmstCode())
+                .build();
+
     }
 }

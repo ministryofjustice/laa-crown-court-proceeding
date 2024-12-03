@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CrownCourtDetailsValidator {
 
-    private static final String CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME =
+    public static final String CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME =
             "Cannot have Crown Court outcome without Mags Court outcome";
     private static final String CHECK_CROWN_COURT_DETAILS_IMPRISONED_VALUE_MUST_BE_ENTERED_FOR_CROWN_COURT_OUTCOME =
             "Check Crown Court Details-Imprisoned value must be entered for Crown Court Outcome of ";

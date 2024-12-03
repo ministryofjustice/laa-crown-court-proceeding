@@ -7,8 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiProcessRepOrderRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateCrownCourtRequest;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
+
+import java.util.List;
 
 
 @ExtendWith(SoftAssertionsExtension.class)
@@ -49,6 +52,7 @@ class CrownCourtDTOBuilderTest {
                 .isEqualTo(request.getDecisionDate().toLocalDate());
         checkCommonFields(request, dto);
     }
+
     @Test
     void givenApiProcessRepOrderRequest_whenBuildIsInvoked_thenCorrectCrownCourtDTOFieldsArePopulated() {
         ApiProcessRepOrderRequest request = TestModelDataBuilder.getApiProcessRepOrderRequest(true);
@@ -75,6 +79,32 @@ class CrownCourtDTOBuilderTest {
                 .isEqualTo(request.getApplicantHistoryId());
         softly.assertThat(dto.getIsImprisoned())
                 .isEqualTo(request.getIsImprisoned());
+        softly.assertAll();
+    }
+
+    @Test
+    void givenApiUpdateCrownCourtRequest_whenBuildIsInvoked_thenCorrectCrownCourtDTOFieldsArePopulated() {
+        ApiUpdateCrownCourtRequest request = TestModelDataBuilder.getApiUpdateCrownCourtRequest(true);
+        CrownCourtDTO dto = CrownCourtDTOBuilder.build(request);
+        checkCommonFields(request, dto);
+
+        softly.assertThat(dto.getMagsDecisionResult().getDecisionDate())
+                .isEqualTo(request.getDecisionDate().toLocalDate());
+        softly.assertThat(dto.getUserSession())
+                .isEqualTo(request.getUserSession());
+        softly.assertThat(dto.getCrownRepId())
+                .isEqualTo(request.getCrownRepId());
+        softly.assertThat(dto.getApplicantHistoryId())
+                .isEqualTo(request.getApplicantHistoryId());
+        softly.assertThat(dto.getIsImprisoned())
+                .isEqualTo(request.getIsImprisoned());
+
+        softly.assertThat(dto.getCapitalEvidence())
+                .isEqualTo(List.of(TestModelDataBuilder.getCapitalEvidenceDTO(TestModelDataBuilder.TEST_DATE_RECEIVED, "Type")));
+        softly.assertThat(dto.getIncomeEvidenceReceivedDate()).isEqualTo(TestModelDataBuilder.INCOME_EVIDENCE_DATE);
+        softly.assertThat(dto.getCapitalEvidenceReceivedDate()).isEqualTo(TestModelDataBuilder.CAPITAL_EVIDENCE_DATE);
+        softly.assertThat(dto.getEmstCode()).isEqualTo(TestModelDataBuilder.EMST_CODE);
+
         softly.assertAll();
     }
 }

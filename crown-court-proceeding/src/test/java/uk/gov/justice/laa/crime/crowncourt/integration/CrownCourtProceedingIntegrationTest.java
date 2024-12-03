@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateCrownCourtRequest;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.enums.CaseType;
@@ -198,9 +199,9 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
 
     @Test
     void givenAIndictableCaseTypeAndMagistratesOutcomeIsEmpty_whenUpdateIsInvoked_thenFailsBadRequest() throws Exception {
-        ApiUpdateApplicationRequest apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
-        apiUpdateApplicationRequest.setCaseType(CaseType.INDICTABLE);
-        apiUpdateApplicationRequest.setMagCourtOutcome(null);
+        ApiUpdateCrownCourtRequest apiUpdateCrownCourtRequest = TestModelDataBuilder.getApiUpdateCrownCourtRequest(Boolean.TRUE);
+        apiUpdateCrownCourtRequest.setCaseType(CaseType.INDICTABLE);
+        apiUpdateCrownCourtRequest.setMagCourtOutcome(null);
         stubForOAuth();
 
         wiremock.stubFor(get(urlMatching("/api/internal/v1/assessment/rep-orders/cc-outcome/.*"))
@@ -214,14 +215,14 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
                                 ))
         );
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-                        HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateApplicationRequest), ENDPOINT_URL + UPDATE_CC_URL))
+                        HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateCrownCourtRequest), ENDPOINT_URL + UPDATE_CC_URL))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value(CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME));
     }
 
     @Test
     void givenAValidContent_whenApiResponseIsError_thenUpdateIsFails() throws Exception {
-        ApiUpdateApplicationRequest apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
+        ApiUpdateCrownCourtRequest apiUpdateCrownCourtRequest = TestModelDataBuilder.getApiUpdateCrownCourtRequest(Boolean.TRUE);
         stubForOAuth();
 
         wiremock.stubFor(get(urlMatching("/api/internal/v1/assessment/rep-orders/cc-outcome/.*"))
@@ -229,7 +230,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
                         .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
                 ));
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-                        HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateApplicationRequest), ENDPOINT_URL + UPDATE_CC_URL))
+                        HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateCrownCourtRequest), ENDPOINT_URL + UPDATE_CC_URL))
                 .andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("$.message").value(ERROR_MSG));
     }
@@ -237,11 +238,11 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
     @Test
     void givenAValidContent_whenUpdateIsInvoked_thenUpdateIsSuccess() throws Exception {
 
-        ApiUpdateApplicationRequest apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
-        apiUpdateApplicationRequest.setCaseType(CaseType.APPEAL_CC);
+        ApiUpdateCrownCourtRequest apiUpdateCrownCourtRequest = TestModelDataBuilder.getApiUpdateCrownCourtRequest(Boolean.TRUE);
+        apiUpdateCrownCourtRequest.setCaseType(CaseType.APPEAL_CC);
         stubForUpdateCC();
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-                        HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateApplicationRequest), ENDPOINT_URL + UPDATE_CC_URL))
+                        HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateCrownCourtRequest), ENDPOINT_URL + UPDATE_CC_URL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.crownCourtSummary.repOrderDecision").value(Constants.GRANTED_PASSED_MEANS_TEST))
                 .andExpect(jsonPath("$.crownCourtSummary.repType").value(Constants.CROWN_COURT_ONLY))

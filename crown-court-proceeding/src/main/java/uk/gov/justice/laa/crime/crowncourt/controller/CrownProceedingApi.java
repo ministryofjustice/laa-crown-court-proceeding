@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import uk.gov.justice.laa.crime.annotation.DefaultHTTPErrorResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiProcessRepOrderRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateCrownCourtRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
@@ -50,14 +51,14 @@ public interface CrownProceedingApi {
     @Operation(description = "Update Crown Court")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ApiUpdateApplicationResponse.class)
+                    schema = @Schema(implementation = ApiUpdateCrownCourtOutcomeResponse.class)
             )
     )
     @DefaultHTTPErrorResponse
-    ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> update(
-            @Parameter(description = "Updated Application Data",
+    ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> updateCrownCourt(
+            @Parameter(description = "Updated crown court",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiUpdateApplicationRequest.class)
+                            schema = @Schema(implementation = ApiUpdateCrownCourtRequest.class)
                     )
-            ) @Valid @RequestBody ApiUpdateApplicationRequest request);
+            ) @Valid @RequestBody ApiUpdateCrownCourtRequest request);
 }
