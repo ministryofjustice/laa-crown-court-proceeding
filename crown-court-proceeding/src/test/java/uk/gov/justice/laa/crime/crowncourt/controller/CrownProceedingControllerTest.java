@@ -32,6 +32,8 @@ class CrownProceedingControllerTest {
     private static final boolean IS_VALID = true;
     private static final String ENDPOINT_URL = "/api/internal/v1/proceedings";
 
+    private static final String UPDATE_CC_ENDPOINT_URL = ENDPOINT_URL + "/update-crown-court";
+
     @Autowired
     private MockMvc mvc;
 
@@ -129,40 +131,56 @@ class CrownProceedingControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+
     @Test
-    void givenAValidInput_whenUpdateIsInvoked_thenSuccess() throws Exception {
-        var apiUpdateApplicationRequest =
-                TestModelDataBuilder.getApiUpdateApplicationRequest(IS_VALID);
-        var updateRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
+    void givenARequestBodyIsMissing_whenUpdateCrownCourtIsInvoked_thenReturnServerError() throws Exception {
+        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+                        HttpMethod.PUT, "", UPDATE_CC_ENDPOINT_URL))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void givenAEmptyContent_whenUpdateCrownCourtIsInvoked_thenFailsBadRequest() throws Exception {
+        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
+                        HttpMethod.PUT, "{}", UPDATE_CC_ENDPOINT_URL))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenAValidInput_whenUpdateCrownCourtIsInvoked_thenSuccessIsReturned() throws Exception {
+        var apiUpdateCrownCourtRequest =
+                TestModelDataBuilder.getApiUpdateCrownCourtRequest(IS_VALID);
+        var updateRequestJson = objectMapper.writeValueAsString(apiUpdateCrownCourtRequest);
         var updateResponse = TestModelDataBuilder.getApiUpdateCrownCourtOutcomeResponse();
         when(crownProceedingService.update(any(CrownCourtDTO.class)))
                 .thenReturn(updateResponse);
 
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-                        HttpMethod.PUT, updateRequestJson, ENDPOINT_URL + "/update-crown-court"))
+                        HttpMethod.PUT, updateRequestJson, UPDATE_CC_ENDPOINT_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    void givenAInValidInput_whenUpdateIsInvoked_RequestObjectFailsValidation() throws Exception {
-        var apiUpdateApplicationRequest =
-                TestModelDataBuilder.getApiUpdateApplicationRequest(!IS_VALID);
-        var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
+    void givenAInValidInput_whenUpdateCrownCourtIsInvoked_RequestObjectFailsValidation() throws Exception {
+        var apiUpdateCrownCourtRequest =
+                TestModelDataBuilder.getApiUpdateCrownCourtRequest(!IS_VALID);
+        var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateCrownCourtRequest);
 
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-                        HttpMethod.PUT, updateApplicationRequestJson, ENDPOINT_URL + "/update-crown-court"))
+                        HttpMethod.PUT, updateApplicationRequestJson, UPDATE_CC_ENDPOINT_URL))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void givenAnInput_whenUpdateIsInvokedAndValidationFails_thenBadRequestResponseIsReturned() throws Exception {
-        var apiUpdateApplicationRequest =
-                TestModelDataBuilder.getApiUpdateApplicationRequest(IS_VALID);
-        var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
-        when(crownCourtDetailsValidator.checkCCDetails(any())).thenThrow(new ValidationException("Cannot have Crown Court outcome without Mags Court outcome"));
+    void givenAnInput_whenUpdateCrownCourIsInvokedAndValidationFails_thenBadRequestResponseIsReturned() throws Exception {
+        var apiUpdateCrownCourtRequest =
+                TestModelDataBuilder.getApiUpdateCrownCourtRequest(IS_VALID);
+        var updateApplicationRequestJson = objectMapper.writeValueAsString(apiUpdateCrownCourtRequest);
+        when(crownCourtDetailsValidator.checkCCDetails(any()))
+                .thenThrow(new ValidationException(CrownCourtDetailsValidator.CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME));
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-                        HttpMethod.PUT, updateApplicationRequestJson, ENDPOINT_URL + "/update-crown-court"))
+                        HttpMethod.PUT, updateApplicationRequestJson, UPDATE_CC_ENDPOINT_URL))
                 .andExpect(status().isBadRequest());
     }
 }
