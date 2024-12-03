@@ -1,6 +1,0 @@
-# don't mess with Windows batch files (gradlew.bat, for example)
-*.bat text eol=crlf
-docker-compose.override.yml filter=git-crypt diff=git-crypt
-# git-crypt kubernetes secrets
-helm_deploy/**/values-*.yaml filter=git-crypt diff=git-crypt
-.gitattributes !filter !diff
