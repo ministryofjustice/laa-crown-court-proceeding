@@ -8,8 +8,7 @@ This is a Java based Spring Boot Application which will be hosted on Cloud Platf
 
 1. Go through with this [Java Developer On-boarding Check List](https://dsdmoj.atlassian.net/wiki/spaces/ASLST/pages/3738468667/Java+Developer+Onboarding+Check+List/) and complete all tasks.
 2. Request a team member to be added to the repository.
-3. Create a GPG (more detail further down on the page) key and create a PR. Someone from the team will approve the PR.
-4. This is a document to outline the general guideline [Developer Guidelines](https://dsdmoj.atlassian.net/wiki/spaces/ASLST/pages/3896049821/Developer+Guidelines).
+3. This is a document to outline the general guideline [Developer Guidelines](https://dsdmoj.atlassian.net/wiki/spaces/ASLST/pages/3896049821/Developer+Guidelines).
 
 ### Pre-requisites
 
@@ -35,7 +34,7 @@ when starting up the service. If you don't see the team vault, speak to your tec
 To begin with, make sure that you have the 1Password CLI installed:
 
 ```sh
-op version
+op --version
 ```
 
 If the command is not found, [follow the steps on the 1Password developer docs to get the CLI set-up](https://developer.1password.com/docs/cli/get-started/).
@@ -43,29 +42,8 @@ If the command is not found, [follow the steps on the 1Password developer docs t
 Once you're ready to run the application:
 
 ```sh
-./startup-local.sh
+./start-local.sh
 ```
-
-### Decrypting values files
-
-The values YAML files are encrypted using [git-crypt](https://github.com/AGWA/git-crypt).
-
-To be able to view and/or edit these files, you will need to decrypt them first.
-
-You will first need to create a GPG key. See [Create a GPG Key](https://docs.publishing.service.gov.uk/manual/create-a-gpg-key.html) for details on how to do this with `GPGTools` (GUI) or `gpg` (command line).
-You can install either from a terminal or just download the UI version.
-
-```
-brew update
-brew install gpg
-brew install git-crypt
-```
-
-Once you have done this, a team member who already has access can add your key by running `git-crypt add-gpg-user USER_ID`\* and creating a pull request to this repo.
-
-Once this has been merged you can decrypt your local copy of the repository by running `git-crypt unlock`.
-
-\*`USER_ID` can be your key ID, a full fingerprint, an email address, or anything else that uniquely identifies a public key to GPG (see "HOW TO SPECIFY A USER ID" in the gpg man page).
 
 ### Open API
 
