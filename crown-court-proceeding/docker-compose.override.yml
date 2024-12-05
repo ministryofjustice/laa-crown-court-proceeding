@@ -22,4 +22,3 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=crown_court_proceeding
-
