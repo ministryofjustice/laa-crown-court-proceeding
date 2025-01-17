@@ -2,7 +2,6 @@ package uk.gov.justice.laa.crime.crowncourt.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.justice.laa.crime.crowncourt.entity.ReactivatedProsecutionCase;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -17,17 +16,16 @@ import java.util.Set;
 @UtilityClass
 @Slf4j
 public class GenerateCsvUtil {
-
-    private static final String FILE_HEADER = "maat id, case URN, hearing id, previous outcome, previous outcome date, date of status change" + System.lineSeparator();
+    
     private static final String FILE_PERMISSIONS = "rwx------";
 
-    public File generateCsvFile(List<ReactivatedProsecutionCase> reactivatedCaseList, String fileName) throws IOException {
+    public File generateCsvFile(String headings, List<String> lines, String fileName) throws IOException {
         File targetFile = createCsvFile(fileName);
         try (FileWriter fw = new FileWriter(targetFile, true)) {
             // Write the CSV header
-            fw.append(FILE_HEADER);
-            // Write each ReactivatedProsecutionCase to the CSV file
-            writeCsvRows(reactivatedCaseList, fw);
+            fw.append(headings);
+            // Write each line to the CSV file
+            writeCsvRows(lines, fw);
 
         } catch (IOException exception) {
             log.error("Error creating CSV file - {}", exception.getMessage());
@@ -35,21 +33,14 @@ public class GenerateCsvUtil {
         return targetFile;
     }
 
-    private void writeCsvRows(List<ReactivatedProsecutionCase> reactivatedCaseList, FileWriter fw){
-        reactivatedCaseList.stream()
-                .map(reactivatedProsecutionCase -> reactivatedProsecutionCase.getMaatId() + ","
-                        + reactivatedProsecutionCase.getCaseUrn() + ","
-                        + reactivatedProsecutionCase.getHearingId() + ","
-                        + reactivatedProsecutionCase.getPreviousOutcome() + ","
-                        + reactivatedProsecutionCase.getPreviousOutcomeDate() + ","
-                        + reactivatedProsecutionCase.getDateOfStatusChange() + System.lineSeparator())
-                .forEach(reactivatedCase -> {
-                    try {
-                        fw.append(reactivatedCase);
-                    } catch (IOException ioException) {
-                        log.error("Error writing reactivated case to file  - {}", ioException.getMessage());
-                    }
-                });
+    private void writeCsvRows(List<String> lines, FileWriter fw){
+        lines.forEach(line -> {
+                try {
+                    fw.append(line + System.lineSeparator());
+                } catch (IOException ioException) {
+                    log.error("Error writing line to file  - {}", ioException.getMessage());
+                }
+            });
     }
 
     private File createCsvFile(String fileName) throws IOException {

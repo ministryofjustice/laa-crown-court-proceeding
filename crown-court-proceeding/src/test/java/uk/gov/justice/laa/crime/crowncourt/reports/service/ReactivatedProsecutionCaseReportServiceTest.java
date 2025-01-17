@@ -79,7 +79,7 @@ class ReactivatedProsecutionCaseReportServiceTest {
                 .thenReturn(reactivatedCases);
 
         try (MockedStatic<GenerateCsvUtil> mockedGenerateCsvUtil = Mockito.mockStatic(GenerateCsvUtil.class)) {
-            mockedGenerateCsvUtil.when(() -> GenerateCsvUtil.generateCsvFile(anyList(), anyString())).thenThrow(new IOException("File generation failed"));
+            mockedGenerateCsvUtil.when(() -> GenerateCsvUtil.generateCsvFile(anyString(), anyList(), anyString())).thenThrow(new IOException("File generation failed"));
             assertThrows(IOException.class, () -> reactivatedProsecutionCaseReportService.generateReport());
         }
 
