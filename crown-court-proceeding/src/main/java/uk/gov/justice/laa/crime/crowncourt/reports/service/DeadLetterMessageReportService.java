@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -73,10 +74,7 @@ public class DeadLetterMessageReportService {
     if (CollectionUtils.isEmpty(deadLetterMessageList)) {
       log.info("No dead letter messages found on {}", LocalDate.now());
     } else {
-      
-      List<String> lines = prepareLinesForCsv(deadLetterMessageList);
-
-      return lines;
+      return prepareLinesForCsv(deadLetterMessageList);
     }
     
     return Collections.emptyList();
@@ -99,13 +97,13 @@ public class DeadLetterMessageReportService {
         .map(deadLetterMessage -> deadLetterMessage.getMessage().getMaatId() + ","
             + deadLetterMessage.getDeadLetterReason() + ","
             + deadLetterMessage.getReceivedTime().format(dateFormatter))
-        .collect(Collectors.toList()));
+        .toList());
     
     // Append a blank line between the list and summary
     lines.add(System.lineSeparator());
     
     // Append the summary to the end
-    List summary = generateSummary(deadLetterMessageList);
+    List<String> summary = generateSummary(deadLetterMessageList);
     lines.addAll(summary);
     
     return lines;
@@ -114,17 +112,23 @@ public class DeadLetterMessageReportService {
   private List<String> generateSummary(List<DeadLetterMessageEntity> deadLetterMessageList) {
     long totalCount = deadLetterMessageList.size();
 
+    if (CollectionUtils.isEmpty(deadLetterMessageList)) {
+      return Collections.emptyList();
+    }
+    
     // Get the timestamp of the first dead letter message
-    startTime = deadLetterMessageList.stream()
+    Optional<LocalDateTime> optionalStartTime = deadLetterMessageList.stream()
         .map(DeadLetterMessageEntity::getReceivedTime)
-        .reduce((timestamp1, timestamp2) -> timestamp1.isBefore(timestamp2) ? timestamp1 : timestamp2)
-        .get();
+        .reduce((timestamp1, timestamp2) -> timestamp1.isBefore(timestamp2) ? timestamp1 : timestamp2);
 
+    optionalStartTime.ifPresent(localDateTime -> startTime = localDateTime);
+        
     // Get the timestamp of the last dead letter message
-    endTime = deadLetterMessageList.stream()
+    Optional<LocalDateTime> optionalEndTime = deadLetterMessageList.stream()
         .map(DeadLetterMessageEntity::getReceivedTime)
-        .reduce((timestamp1, timestamp2) -> timestamp1.isAfter(timestamp2) ? timestamp1 : timestamp2)
-        .get();
+        .reduce((timestamp1, timestamp2) -> timestamp1.isAfter(timestamp2) ? timestamp1 : timestamp2);
+
+    optionalEndTime.ifPresent(localDateTime -> endTime = localDateTime);
     
     List<String> summary = new ArrayList<>();
 
@@ -140,7 +144,7 @@ public class DeadLetterMessageReportService {
           Double percentage = (entry.getValue() * 100.0) / totalCount;
           return String.format("%s,%d,%.0f%%", reason, count, percentage);
         })
-        .collect(Collectors.toList()));
+        .toList());
 
     summary.add(String.format("(Of Total),%d,", deadLetterMessageList.size()));
 

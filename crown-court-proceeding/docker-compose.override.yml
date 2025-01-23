@@ -8,6 +8,7 @@ services:
       - DATASOURCE_USERNAME=postgres
       - DATASOURCE_PASSWORD=postgres
       - REPORT_CRON_REACTIVATED_CASES=0 0 8 * * *
+      - REPORT_CRON_DROPPED_PROSECUTION=0 0 8 * * *
       - SENTRY_ENV=development
       - SENTRY_SAMPLE_RATE=0.0
       - LOG_LEVEL=DEBUG

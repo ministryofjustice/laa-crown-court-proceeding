@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.reports.service;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +69,7 @@ public class ReactivatedProsecutionCaseReportService {
                 + reactivatedProsecutionCase.getPreviousOutcome() + ","
                 + reactivatedProsecutionCase.getPreviousOutcomeDate() + ","
                 + reactivatedProsecutionCase.getDateOfStatusChange())
-            .collect(Collectors.toList()));
+            .toList());
         
         return lines;
     }

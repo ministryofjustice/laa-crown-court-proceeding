@@ -111,5 +111,7 @@ env:
     value: {{ .Values.emailClient.notify_dropped_prosecution_recipient }}
   - name: REPORT_CRON_REACTIVATED_CASES
     value: {{ .Values.cron.report_reactivated_cases }}
+  - name: REPORT_CRON_DROPPED_PROSECUTION
+    value: {{ .Values.cron.report_dropped_prosecution }}
 
 {{- end -}}

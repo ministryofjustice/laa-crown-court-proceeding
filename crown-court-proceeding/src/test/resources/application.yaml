@@ -147,6 +147,9 @@ reports:
   reactivated_cases:
     cron:
       expression: 0 0 9 * * *
+  dropped_prosecution:
+    cron:
+      expression: 0 0 9 * * *
 
 emailClient:
   notify:
