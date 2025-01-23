@@ -150,5 +150,9 @@ reports:
 emailClient:
   notify:
     key: api_key
-    template-id: template_id
-    recipient: test_recipient
+    reactivated_prosecution:
+      template-id: template_id
+      recipient: test_recipient
+    dropped_prosecution:
+      template-id: template_id
+      recipient: test_recipient

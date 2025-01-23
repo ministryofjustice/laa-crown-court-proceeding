@@ -19,11 +19,9 @@ public class GenerateCsvUtil {
     
     private static final String FILE_PERMISSIONS = "rwx------";
 
-    public File generateCsvFile(String headings, List<String> lines, String fileName) throws IOException {
+    public File generateCsvFile(List<String> lines, String fileName) throws IOException {
         File targetFile = createCsvFile(fileName);
         try (FileWriter fw = new FileWriter(targetFile, true)) {
-            // Write the CSV header
-            fw.append(headings);
             // Write each line to the CSV file
             writeCsvRows(lines, fw);
 

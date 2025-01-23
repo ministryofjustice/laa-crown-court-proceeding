@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.reports.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,6 +43,12 @@ class ReactivatedProsecutionCaseReportServiceTest {
     @InjectMocks
     private ReactivatedProsecutionCaseReportService reactivatedProsecutionCaseReportService;
 
+    @BeforeEach
+    public void setUp() {
+        reactivatedProsecutionCaseReportService.setTemplateId("test-template-id");
+        reactivatedProsecutionCaseReportService.setEmailAddresses(List.of("test1@example.com", "test2@example.com"));
+    }
+    
     @Test
     void testGenerateReport_NoReactivatedCasesFound() throws IOException, NotificationClientException {
 
@@ -51,7 +58,7 @@ class ReactivatedProsecutionCaseReportServiceTest {
         reactivatedProsecutionCaseReportService.generateReport();
 
         verify(reactivatedProsecutionCaseRepository, times(1)).findByReportingStatus(PENDING);
-        verify(emailNotificationService, never()).send(any(File.class), anyString());
+        verify(emailNotificationService, never()).send(anyString(), anyList(), any(File.class), anyString());
     }
 
     @Test
@@ -65,7 +72,7 @@ class ReactivatedProsecutionCaseReportServiceTest {
         reactivatedProsecutionCaseReportService.generateReport();
 
         verify(reactivatedProsecutionCaseRepository, times(1)).findByReportingStatus(PENDING);
-        verify(emailNotificationService, times(1)).send(any(File.class), anyString());
+        verify(emailNotificationService, times(1)).send(anyString(), anyList(), any(File.class), anyString());
         verify(reactivatedProsecutionCaseRepository, times(1)).updateReportingStatus(PROCESSED, PENDING);
 
         Files.deleteIfExists(mockFile.toPath());
@@ -79,12 +86,12 @@ class ReactivatedProsecutionCaseReportServiceTest {
                 .thenReturn(reactivatedCases);
 
         try (MockedStatic<GenerateCsvUtil> mockedGenerateCsvUtil = Mockito.mockStatic(GenerateCsvUtil.class)) {
-            mockedGenerateCsvUtil.when(() -> GenerateCsvUtil.generateCsvFile(anyString(), anyList(), anyString())).thenThrow(new IOException("File generation failed"));
+            mockedGenerateCsvUtil.when(() -> GenerateCsvUtil.generateCsvFile(anyList(), anyString())).thenThrow(new IOException("File generation failed"));
             assertThrows(IOException.class, () -> reactivatedProsecutionCaseReportService.generateReport());
         }
 
         verify(reactivatedProsecutionCaseRepository, times(1)).findByReportingStatus(PENDING);
-        verify(emailNotificationService, never()).send(any(File.class), anyString());
+        verify(emailNotificationService, never()).send(anyString(), anyList(), any(File.class), anyString());
         verify(reactivatedProsecutionCaseRepository, never()).updateReportingStatus(PROCESSED, PENDING);
     }
 
@@ -95,12 +102,12 @@ class ReactivatedProsecutionCaseReportServiceTest {
         when(reactivatedProsecutionCaseRepository.findByReportingStatus(PENDING))
                 .thenReturn(reactivatedCases);
         File mockFile = Files.createTempFile("temp", ".csv").toFile();
-        doThrow(new NotificationClientException("Email sending failed")).when(emailNotificationService).send(any(File.class), anyString());
+        doThrow(new NotificationClientException("Email sending failed")).when(emailNotificationService).send(anyString(), anyList(), any(File.class), anyString());
 
         assertThrows(NotificationClientException.class, () -> reactivatedProsecutionCaseReportService.generateReport());
 
         verify(reactivatedProsecutionCaseRepository, times(1)).findByReportingStatus(PENDING);
-        verify(emailNotificationService, times(1)).send(any(File.class), anyString());
+        verify(emailNotificationService, times(1)).send(anyString(), anyList(), any(File.class), anyString());
         verify(reactivatedProsecutionCaseRepository, never()).updateReportingStatus(PROCESSED, PENDING);
 
         Files.deleteIfExists(mockFile.toPath());

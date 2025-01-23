@@ -22,18 +22,17 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
 class GenerateCsvUtilTest {
-
-    private static final String HEADINGS = "maat id, case URN, hearing id, previous outcome, previous outcome date, date of status change" + System.lineSeparator();
     
     @Test
     void testGenerateCsvFile() throws IOException {
         // Create mock data
+        String headings = "maat id, case URN, hearing id, previous outcome, previous outcome date, date of status change";
         String case1 = "123,URN123,HID123,Outcome1,2024-05-05T05:05,2024-06-05T05:05";
         String case2 = "456,URN456,HID456,Outcome2,2024-02-01T05:05,2024-06-05T05:05";
-        List<String> caseList = List.of(case1, case2);
+        List<String> lines = List.of(headings, case1, case2);
 
         // Call the method to test
-        File csvFile = GenerateCsvUtil.generateCsvFile(HEADINGS, caseList,"testfile");
+        File csvFile = GenerateCsvUtil.generateCsvFile(lines,"testfile");
 
         // Verify file exists
         assertTrue(csvFile.exists(), "CSV file should exist");
@@ -55,8 +54,8 @@ class GenerateCsvUtilTest {
 
     @Test
     void testGenerateCsvFileWithIOException() {
-        Mockito.mockStatic(GenerateCsvUtil.class).when(() -> GenerateCsvUtil.generateCsvFile(anyString(), anyList(), anyString())).thenThrow(new IOException("Error creating CSV file - Test IO Exception"));
-        assertThatThrownBy(() -> GenerateCsvUtil.generateCsvFile(anyString(), anyList(), anyString()))
+        Mockito.mockStatic(GenerateCsvUtil.class).when(() -> GenerateCsvUtil.generateCsvFile(anyList(), anyString())).thenThrow(new IOException("Error creating CSV file - Test IO Exception"));
+        assertThatThrownBy(() -> GenerateCsvUtil.generateCsvFile(anyList(), anyString()))
                 .isInstanceOf(IOException.class)
                 .hasMessage("Error creating CSV file - Test IO Exception");
     }

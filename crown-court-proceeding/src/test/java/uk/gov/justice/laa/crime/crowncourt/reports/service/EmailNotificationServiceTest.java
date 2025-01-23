@@ -62,14 +62,11 @@ class EmailNotificationServiceTest {
                 "date", date,
                 "link_to_file", NotificationClient.prepareUpload(fileContents, fileName + ".csv"));
 
-        emailNotificationService.setTemplateId("test-template-id");
-        emailNotificationService.setEmailAddresses(emailAddresses);
-
         try (MockedStatic<NotificationClient> mockedNotificationClient = Mockito.mockStatic(NotificationClient.class)) {
             mockedNotificationClient.when(() -> NotificationClient.prepareUpload(fileContents, fileName + ".csv")).thenReturn(expectedJsonFileObject);
         }
 
-        emailNotificationService.send(mockFile, fileName);
+        emailNotificationService.send("test-template-id", emailAddresses, mockFile, fileName);
 
         verify(client, times(noOfInvokes)).sendEmail(anyString(), anyString(), anyMap(), isNull());
         assertEquals(date, mockPersonalisation.get("date"));
@@ -102,7 +99,7 @@ class EmailNotificationServiceTest {
 
         try (MockedStatic<FileUtils> mockedFileUtils = Mockito.mockStatic(FileUtils.class)) {
             mockedFileUtils.when(() -> FileUtils.readFileToByteArray(reportFile)).thenThrow(new IOException("Test IOException"));
-            IOException exception = assertThrows(IOException.class, () -> emailNotificationService.send(reportFile, fileName));
+            IOException exception = assertThrows(IOException.class, () -> emailNotificationService.send("test-template-id", List.of("test"), reportFile, fileName));
 
             assertEquals("Test IOException", exception.getMessage());
         }

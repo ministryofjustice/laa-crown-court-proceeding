@@ -118,8 +118,10 @@ securityContext:
     type: RuntimeDefault
 
 emailClient:
-  notify_template_id: 7ca95ad3-6e57-47fe-96e2-eaaf038e64ed
-  notify_recipient: gangadhar.nitta@digital.justice.gov.uk
+  notify_reactivated_prosecution_template_id: 7ca95ad3-6e57-47fe-96e2-eaaf038e64ed
+  notify_reactivated_prosecution_recipient: gangadhar.nitta@digital.justice.gov.uk
+  notify_dropped_prosecution_template_id: 2ce9c2c4-9c87-47f7-9df9-684c14ebc0df
+  notify_dropped_prosecution_recipient: josh.hunt@digital.justice.gov.uk
 
 cron:
   report_reactivated_cases: '0 0 8 * * *'

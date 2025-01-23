@@ -154,8 +154,12 @@ services:
 emailClient:
   notify:
     key: ${NOTIFY_KEY}
-    template-id: ${NOTIFY_TEMPLATE_ID}
-    recipient: ${NOTIFY_RECIPIENT}
+    reactivated_prosecution:
+      template-id: ${NOTIFY_REACTIVATED_PROSECUTION_TEMPLATE_ID}
+      recipient: ${NOTIFY_REACTIVATED_PROSECUTION_RECIPIENT}
+    dropped_prosecution:
+      template-id: ${NOTIFY_DROPPED_PROSECUTION_TEMPLATE_ID}
+      recipient: ${NOTIFY_DROPPED_PROSECUTION_RECIPIENT}
 
 queue:
   message:

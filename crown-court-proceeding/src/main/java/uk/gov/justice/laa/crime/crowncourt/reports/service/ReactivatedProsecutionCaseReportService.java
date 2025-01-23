@@ -1,8 +1,11 @@
 package uk.gov.justice.laa.crime.crowncourt.reports.service;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import uk.gov.justice.laa.crime.crowncourt.entity.ReactivatedProsecutionCase;
@@ -21,8 +24,17 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ReactivatedProsecutionCaseReportService {
+
+    @Setter
+    @Value("${emailClient.notify.reactivated_prosecution.template-id}")
+    private String templateId;
+
+    @Setter
+    @Value("#{'${emailClient.notify.reactivated_prosecution.recipient}'.split(',')}")
+    private List<String> emailAddresses;
+    
     private static final String FILE_NAME_TEMPLATE = "Reactivated_Prosecution_Cases_Report_%s";
-    private static final String HEADINGS = "maat id, case URN, hearing id, previous outcome, previous outcome date, date of status change" + System.lineSeparator();
+    private static final String HEADINGS = "maat id, case URN, hearing id, previous outcome, previous outcome date, date of status change";
     private static final String PENDING = "PENDING";
     private static final String PROCESSED = "PROCESSED";
 
@@ -36,9 +48,9 @@ public class ReactivatedProsecutionCaseReportService {
         } else {
             String fileName = String.format(FILE_NAME_TEMPLATE, LocalDateTime.now());
             List<String> lines = prepareLinesForCsv(reactivatedCaseList);
-            File reportFile = GenerateCsvUtil.generateCsvFile(HEADINGS, lines, fileName);
+            File reportFile = GenerateCsvUtil.generateCsvFile(lines, fileName);
             log.info("CSV file is generated for reactivated cases - {}", fileName);
-            emailNotificationService.send(reportFile, fileName);
+            emailNotificationService.send(templateId, emailAddresses, reportFile, fileName);
             //Update reporting status with PROCESSED for reported cases back to business
             updateReportStatus();
             Files.delete(reportFile.toPath());
@@ -46,14 +58,21 @@ public class ReactivatedProsecutionCaseReportService {
     }
     
     private List<String> prepareLinesForCsv(List<ReactivatedProsecutionCase> reactivatedCaseList) {
-        return reactivatedCaseList.stream()
+
+        List<String> lines = new ArrayList<>();
+        
+        lines.add(HEADINGS);
+        
+        lines.addAll(reactivatedCaseList.stream()
             .map(reactivatedProsecutionCase -> reactivatedProsecutionCase.getMaatId() + ","
                 + reactivatedProsecutionCase.getCaseUrn() + ","
                 + reactivatedProsecutionCase.getHearingId() + ","
                 + reactivatedProsecutionCase.getPreviousOutcome() + ","
                 + reactivatedProsecutionCase.getPreviousOutcomeDate() + ","
                 + reactivatedProsecutionCase.getDateOfStatusChange())
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()));
+        
+        return lines;
     }
 
     private void updateReportStatus() {
