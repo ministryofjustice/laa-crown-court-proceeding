@@ -30,6 +30,7 @@ def versions = [
         testcontainersLocalstackVersion  : "1.18.3",
         testcontainersJunitjupiterVersion: "1.19.0",
         postgresqlVersion                : "42.7.2",
+        tomcatEmbedCoreVersion           : "10.1.34",
         notifyClientVersion              : "5.1.0-RELEASE"
 ]
 
@@ -62,6 +63,7 @@ dependencies {
     implementation "uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:$versions.commonsRestClient:all"
     implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$versions.crimeCommonsClasses"
     implementation "uk.gov.justice.service.laa-crime:crime-commons-mod-schemas:$versions.commonsModSchemas"
+    implementation "org.apache.tomcat.embed:tomcat-embed-core:$versions.tomcatEmbedCoreVersion"
 
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
