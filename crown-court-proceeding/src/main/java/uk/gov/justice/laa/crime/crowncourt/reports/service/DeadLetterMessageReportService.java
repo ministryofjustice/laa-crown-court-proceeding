@@ -132,7 +132,7 @@ public class DeadLetterMessageReportService {
     
     List<String> summary = new ArrayList<>();
 
-    summary.add("Reason for failure,,");
+    summary.add("Reason for failure, Count, Percentage");
     
     Map<String, Long> reasonCounts = deadLetterMessageList.stream()
         .collect(Collectors.groupingBy(DeadLetterMessageEntity::getDeadLetterReason, Collectors.counting()));

@@ -172,7 +172,7 @@ class DeadLetterMessageReportServiceTest {
             new String("456,Crown Court - Case type not valid for Trial.,2025-01-01 11:20:20"),
             new String("789,Cannot have Crown Court outcome without Mags Court outcome.,2025-01-12 12:35:37"),
             new String(System.lineSeparator()),
-            new String("Reason for failure,,"),
+            new String("Reason for failure, Count, Percentage"),
             new String("Crown Court - Case type not valid for Trial.,2,67%"),
             new String("Cannot have Crown Court outcome without Mags Court outcome.,1,33%"),
             new String("(Of Total),3,"),
