@@ -8,10 +8,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -113,35 +112,37 @@ public class DeadLetterMessageReportService {
   private List<String> generateSummary(List<DeadLetterMessageEntity> deadLetterMessageList) {
     long totalCount = deadLetterMessageList.size();
 
-    if (CollectionUtils.isEmpty(deadLetterMessageList)) {
+    if (totalCount == 0) {
       return Collections.emptyList();
     }
     
-    // Get the timestamp of the first dead letter message
-    Optional<LocalDateTime> optionalStartTime = deadLetterMessageList.stream()
-        .map(DeadLetterMessageEntity::getReceivedTime)
-        .reduce((timestamp1, timestamp2) -> timestamp1.isBefore(timestamp2) ? timestamp1 : timestamp2);
-
-    optionalStartTime.ifPresent(localDateTime -> startTime = localDateTime);
+    Map<String, Integer> reasonCounts = new HashMap<>();;
         
-    // Get the timestamp of the last dead letter message
-    Optional<LocalDateTime> optionalEndTime = deadLetterMessageList.stream()
-        .map(DeadLetterMessageEntity::getReceivedTime)
-        .reduce((timestamp1, timestamp2) -> timestamp1.isAfter(timestamp2) ? timestamp1 : timestamp2);
+    for (DeadLetterMessageEntity deadLetterMessage : deadLetterMessageList) {
+      // Determine start and end times
+      LocalDateTime receivedTime = deadLetterMessage.getReceivedTime();
 
-    optionalEndTime.ifPresent(localDateTime -> endTime = localDateTime);
+      if (startTime == null || receivedTime.isBefore(startTime)) {
+        startTime = receivedTime;
+      }
+
+      if (endTime == null || receivedTime.isAfter(endTime)) {
+        endTime = receivedTime;
+      }
+
+      // Update counts for each reason
+      reasonCounts.put(deadLetterMessage.getDeadLetterReason(), 
+          reasonCounts.getOrDefault(deadLetterMessage.getDeadLetterReason(), 0) + 1);
+    }
     
     List<String> summary = new ArrayList<>();
 
     summary.add("Reason for failure, Count, Percentage");
     
-    Map<String, Long> reasonCounts = deadLetterMessageList.stream()
-        .collect(Collectors.groupingBy(DeadLetterMessageEntity::getDeadLetterReason, Collectors.counting()));
-
     summary.addAll(reasonCounts.entrySet().stream()
         .map(entry -> {
           String reason = entry.getKey();
-          Long count = entry.getValue();
+          Integer count = entry.getValue();
           Double percentage = (entry.getValue() * 100.0) / totalCount;
           return String.format("%s,%d,%.0f%%", reason, count, percentage);
         })

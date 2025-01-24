@@ -158,14 +158,14 @@ class DeadLetterMessageReportServiceTest {
         prosecutionConcluded2.setMaatId(456);
         DeadLetterMessageEntity deadLetterMessageEntity2 = new DeadLetterMessageEntity();
         deadLetterMessageEntity2.setDeadLetterReason("Crown Court - Case type not valid for Trial.");
-        deadLetterMessageEntity2.setReceivedTime(LocalDateTime.of(2025, 01, 01, 11, 20, 20));
+        deadLetterMessageEntity2.setReceivedTime(LocalDateTime.of(2025, 01, 12, 11, 20, 20));
         deadLetterMessageEntity2.setMessage(prosecutionConcluded2);
 
         ProsecutionConcluded prosecutionConcluded3 = new ProsecutionConcluded();
         prosecutionConcluded3.setMaatId(789);
         DeadLetterMessageEntity deadLetterMessageEntity3 = new DeadLetterMessageEntity();
         deadLetterMessageEntity3.setDeadLetterReason("Cannot have Crown Court outcome without Mags Court outcome.");
-        deadLetterMessageEntity3.setReceivedTime(LocalDateTime.of(2025, 01, 12, 12, 35, 37));
+        deadLetterMessageEntity3.setReceivedTime(LocalDateTime.of(2025, 01, 01, 12, 35, 37));
         deadLetterMessageEntity3.setMessage(prosecutionConcluded3);
 
         List<DeadLetterMessageEntity> deadLetterMessageList = List.of(deadLetterMessageEntity1, 
@@ -179,8 +179,8 @@ class DeadLetterMessageReportServiceTest {
         List<String> expected = List.of(
             new String("MAAT ID, Reason, Received time"),
             new String("123,Crown Court - Case type not valid for Trial.,2025-01-14 10:20:00"),
-            new String("456,Crown Court - Case type not valid for Trial.,2025-01-01 11:20:20"),
-            new String("789,Cannot have Crown Court outcome without Mags Court outcome.,2025-01-12 12:35:37"),
+            new String("456,Crown Court - Case type not valid for Trial.,2025-01-12 11:20:20"),
+            new String("789,Cannot have Crown Court outcome without Mags Court outcome.,2025-01-01 12:35:37"),
             new String(System.lineSeparator()),
             new String("Reason for failure, Count, Percentage"),
             new String("Crown Court - Case type not valid for Trial.,2,67%"),
