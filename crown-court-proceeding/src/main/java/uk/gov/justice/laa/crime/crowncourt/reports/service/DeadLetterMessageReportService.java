@@ -38,6 +38,7 @@ public class DeadLetterMessageReportService {
   private List<String> emailAddresses;
   private LocalDateTime startTime;
   private LocalDateTime endTime;
+  private List<DeadLetterMessageEntity> deadLetterMessageList;
   
   private static final String FILE_NAME_TEMPLATE = "Dropped_Prosecution_Concluded_Messages_Report_%s-%s";
   private static final String HEADINGS = "MAAT ID, Reason, Received time";
@@ -69,7 +70,7 @@ public class DeadLetterMessageReportService {
   
   public List<String> generateReportContents() {
     Sort sort = Sort.by("deadLetterReason").ascending().and(Sort.by("receivedTime").descending());
-    List<DeadLetterMessageEntity> deadLetterMessageList = deadLetterMessageRepository.findByReportingStatus(PENDING, sort);
+    deadLetterMessageList = deadLetterMessageRepository.findByReportingStatus(PENDING, sort);
 
     if (CollectionUtils.isEmpty(deadLetterMessageList)) {
       log.info("No dead letter messages found on {}", LocalDate.now());
@@ -157,6 +158,10 @@ public class DeadLetterMessageReportService {
   }
   
   private void updateReportStatus() {
-    deadLetterMessageRepository.updateReportingStatus(PROCESSED, PENDING);
+    List<Integer> deadLetterIds = deadLetterMessageList.stream()
+        .map(DeadLetterMessageEntity::getId)
+        .toList();
+    
+    deadLetterMessageRepository.updateReportingStatusForIds(deadLetterIds, PROCESSED);
   }
 }

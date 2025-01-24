@@ -14,6 +14,6 @@ public interface DeadLetterMessageRepository extends JpaRepository<DeadLetterMes
   List<DeadLetterMessageEntity> findByReportingStatus(String reportingStatus, Sort sort);
   @Modifying
   @Transactional
-  @Query("UPDATE DeadLetterMessageEntity DLM SET DLM.reportingStatus = :processed WHERE DLM.reportingStatus =:pending")
-  void updateReportingStatus(String processed, String pending);
+  @Query("UPDATE DeadLetterMessageEntity DLM SET DLM.reportingStatus = :newStatus WHERE DLM.id IN (:ids)")
+  void updateReportingStatusForIds(List<Integer> ids, String newStatus);
 }

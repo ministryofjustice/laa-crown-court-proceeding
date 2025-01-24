@@ -58,6 +58,7 @@ class DeadLetterMessageReportServiceTest {
         ProsecutionConcluded prosecutionConcluded = new ProsecutionConcluded();
         prosecutionConcluded.setMaatId(123);
         DeadLetterMessageEntity deadLetterMessageEntity = new DeadLetterMessageEntity();
+        deadLetterMessageEntity.setId(1);
         deadLetterMessageEntity.setDeadLetterReason("Crown Court - Case type not valid for Trial.");
         deadLetterMessageEntity.setReceivedTime(LocalDateTime.of(2025, 01, 01, 10, 20, 0));
         deadLetterMessageEntity.setMessage(prosecutionConcluded);
@@ -83,6 +84,9 @@ class DeadLetterMessageReportServiceTest {
         DeadLetterMessageEntity deadLetterMessageEntity = createDeadLetterMessage();
         
         List<DeadLetterMessageEntity> deadLetterMessageList = List.of(deadLetterMessageEntity);
+        List<Integer> deadLetterIds = deadLetterMessageList.stream()
+            .map(DeadLetterMessageEntity::getId)
+            .toList();
         File mockFile = Files.createTempFile("temp", ".csv").toFile();
         when(deadLetterMessageRepository.findByReportingStatus(PENDING, DEAD_LETTER_SORT))
                 .thenReturn(deadLetterMessageList);
@@ -91,7 +95,7 @@ class DeadLetterMessageReportServiceTest {
 
         verify(deadLetterMessageRepository, times(1)).findByReportingStatus(PENDING, DEAD_LETTER_SORT);
         verify(emailNotificationService, times(1)).send(anyString(), anyList(), any(File.class), anyString());
-        verify(deadLetterMessageRepository, times(1)).updateReportingStatus(PROCESSED, PENDING);
+        verify(deadLetterMessageRepository, times(1)).updateReportingStatusForIds(deadLetterIds, PROCESSED);
 
         Files.deleteIfExists(mockFile.toPath());
     }
@@ -102,6 +106,9 @@ class DeadLetterMessageReportServiceTest {
         DeadLetterMessageEntity deadLetterMessageEntity = createDeadLetterMessage();
         
         List<DeadLetterMessageEntity> deadLetterMessageList = List.of(deadLetterMessageEntity);
+        List<Integer> deadLetterIds = deadLetterMessageList.stream()
+            .map(DeadLetterMessageEntity::getId)
+            .toList();
         when(deadLetterMessageRepository.findByReportingStatus(PENDING, DEAD_LETTER_SORT))
                 .thenReturn(deadLetterMessageList);
 
@@ -112,7 +119,7 @@ class DeadLetterMessageReportServiceTest {
 
         verify(deadLetterMessageRepository, times(1)).findByReportingStatus(PENDING, DEAD_LETTER_SORT);
         verify(emailNotificationService, never()).send(anyString(), anyList(), any(File.class), anyString());
-        verify(deadLetterMessageRepository, never()).updateReportingStatus(PROCESSED, PENDING);
+        verify(deadLetterMessageRepository, never()).updateReportingStatusForIds(deadLetterIds, PROCESSED);
     }
 
     @Test
@@ -121,6 +128,9 @@ class DeadLetterMessageReportServiceTest {
         DeadLetterMessageEntity deadLetterMessageEntity = createDeadLetterMessage();
         
         List<DeadLetterMessageEntity> deadLetterMessageList = List.of(deadLetterMessageEntity);
+        List<Integer> deadLetterIds = deadLetterMessageList.stream()
+            .map(DeadLetterMessageEntity::getId)
+            .toList();
         when(deadLetterMessageRepository.findByReportingStatus(PENDING, DEAD_LETTER_SORT))
                 .thenReturn(deadLetterMessageList);
         File mockFile = Files.createTempFile("temp", ".csv").toFile();
@@ -130,7 +140,7 @@ class DeadLetterMessageReportServiceTest {
 
         verify(deadLetterMessageRepository, times(1)).findByReportingStatus(PENDING, DEAD_LETTER_SORT);
         verify(emailNotificationService, times(1)).send(anyString(), anyList(), any(File.class), anyString());
-        verify(deadLetterMessageRepository, never()).updateReportingStatus(PROCESSED, PENDING);
+        verify(deadLetterMessageRepository, never()).updateReportingStatusForIds(deadLetterIds, PROCESSED);
 
         Files.deleteIfExists(mockFile.toPath());
     }
