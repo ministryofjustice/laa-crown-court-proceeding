@@ -4,14 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.laa.crime.crowncourt.entity.ReactivatedProsecutionCase;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -24,30 +22,17 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
 class GenerateCsvUtilTest {
-
-
+    
     @Test
     void testGenerateCsvFile() throws IOException {
         // Create mock data
-        ReactivatedProsecutionCase case1 = ReactivatedProsecutionCase.builder()
-                .maatId(123)
-                .caseUrn("URN123")
-                .hearingId("HID123")
-                .previousOutcome("Outcome1")
-                .previousOutcomeDate(LocalDateTime.of(2024, 5, 5, 5, 5))
-                .dateOfStatusChange(LocalDateTime.of(2024, 6, 5, 5, 5)).build();
-        ReactivatedProsecutionCase case2 = ReactivatedProsecutionCase.builder()
-                .maatId(456)
-                .caseUrn("URN456")
-                .hearingId("HID456")
-                .previousOutcome("Outcome2")
-                .previousOutcomeDate(LocalDateTime.of(2024, 2, 1, 5, 5))
-                .dateOfStatusChange(LocalDateTime.of(2024, 6, 5, 5, 5)).build();
-
-        List<ReactivatedProsecutionCase> caseList = List.of(case1, case2);
+        String headings = "maat id, case URN, hearing id, previous outcome, previous outcome date, date of status change";
+        String case1 = "123,URN123,HID123,Outcome1,2024-05-05T05:05,2024-06-05T05:05";
+        String case2 = "456,URN456,HID456,Outcome2,2024-02-01T05:05,2024-06-05T05:05";
+        List<String> lines = List.of(headings, case1, case2);
 
         // Call the method to test
-        File csvFile = GenerateCsvUtil.generateCsvFile(caseList, "testfile");
+        File csvFile = GenerateCsvUtil.generateCsvFile(lines,"testfile");
 
         // Verify file exists
         assertTrue(csvFile.exists(), "CSV file should exist");

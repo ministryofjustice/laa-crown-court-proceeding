@@ -101,11 +101,17 @@ env:
       secretKeyRef:
         name: email-client-notify-key
         key: EMAIL_CLIENT_NOTIFY_KEY
-  - name: NOTIFY_TEMPLATE_ID
-    value: {{ .Values.emailClient.notify_template_id }}
-  - name: NOTIFY_RECIPIENT
-    value: {{ .Values.emailClient.notify_recipient }}
+  - name: NOTIFY_REACTIVATED_PROSECUTION_TEMPLATE_ID
+    value: {{ .Values.emailClient.notify_reactivated_prosecution_template_id }}
+  - name: NOTIFY_REACTIVATED_PROSECUTION_RECIPIENT
+    value: {{ .Values.emailClient.notify_reactivated_prosecution_recipient }}
+  - name: NOTIFY_DROPPED_PROSECUTION_TEMPLATE_ID
+    value: {{ .Values.emailClient.notify_dropped_prosecution_template_id }}
+  - name: NOTIFY_DROPPED_PROSECUTION_RECIPIENT
+    value: {{ .Values.emailClient.notify_dropped_prosecution_recipient }}
   - name: REPORT_CRON_REACTIVATED_CASES
     value: {{ .Values.cron.report_reactivated_cases }}
+  - name: REPORT_CRON_DROPPED_PROSECUTION
+    value: {{ .Values.cron.report_dropped_prosecution }}
 
 {{- end -}}

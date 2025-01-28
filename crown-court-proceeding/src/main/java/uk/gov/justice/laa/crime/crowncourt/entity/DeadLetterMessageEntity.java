@@ -36,4 +36,6 @@ public class DeadLetterMessageEntity {
     private String deadLetterReason;
     @Column(name = "RECEIVED_TIME")
     private LocalDateTime receivedTime;
+    @Column(name = "REPORTING_STATUS")
+    private String reportingStatus;
 }
