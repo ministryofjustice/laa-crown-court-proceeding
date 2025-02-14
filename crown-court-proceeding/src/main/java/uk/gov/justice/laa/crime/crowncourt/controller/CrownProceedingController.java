@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -17,8 +18,10 @@ import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplic
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.builder.CrownCourtDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
+import uk.gov.justice.laa.crime.crowncourt.reports.service.DeadLetterMessageReportService;
 import uk.gov.justice.laa.crime.crowncourt.service.CrownProceedingService;
 import uk.gov.justice.laa.crime.crowncourt.validation.CrownCourtDetailsValidator;
+import uk.gov.service.notify.NotificationClientException;
 
 @Slf4j
 @RestController
@@ -29,6 +32,7 @@ public class CrownProceedingController implements CrownProceedingApi {
 
     private final CrownProceedingService crownProceedingService;
     private final CrownCourtDetailsValidator crownCourtDetailsValidator;
+    private final DeadLetterMessageReportService deadLetterMessageService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiProcessRepOrderResponse> processRepOrder(ApiProcessRepOrderRequest request) {
@@ -39,7 +43,10 @@ public class CrownProceedingController implements CrownProceedingApi {
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiUpdateApplicationResponse> updateApplication(ApiUpdateApplicationRequest request) {
+    public ResponseEntity<ApiUpdateApplicationResponse> updateApplication(ApiUpdateApplicationRequest request)
+        throws NotificationClientException, IOException {
+        deadLetterMessageService.generateReport();
+
         CrownCourtDTO crownCourtDTO = CrownCourtDTOBuilder.build(request);
         return ResponseEntity.ok(crownProceedingService.updateApplication(crownCourtDTO));
     }

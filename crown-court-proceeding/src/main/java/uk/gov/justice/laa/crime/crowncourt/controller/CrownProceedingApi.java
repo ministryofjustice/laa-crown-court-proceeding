@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateCrownCo
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
+import uk.gov.service.notify.NotificationClientException;
 
 
 public interface CrownProceedingApi {
@@ -46,7 +48,8 @@ public interface CrownProceedingApi {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ApiUpdateApplicationRequest.class)
                     )
-            ) @Valid @RequestBody ApiUpdateApplicationRequest request);
+            ) @Valid @RequestBody ApiUpdateApplicationRequest request)
+        throws NotificationClientException, IOException;
 
     @Operation(description = "Update Crown Court")
     @ApiResponse(responseCode = "200",
