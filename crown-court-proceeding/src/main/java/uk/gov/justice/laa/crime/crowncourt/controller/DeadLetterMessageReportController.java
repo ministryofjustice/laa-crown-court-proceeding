@@ -16,7 +16,7 @@ import uk.gov.service.notify.NotificationClientException;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/internal/v1/dead-letter-message/send-report")
+@RequestMapping("api/internal/v1/send-dead-letter-report")
 @Tag(name = "Dead Letter Message Report", description = "Rest API for Dead Letter Message Report.")
 public class DeadLetterMessageReportController {
 
