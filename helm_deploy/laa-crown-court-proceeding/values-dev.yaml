@@ -125,7 +125,7 @@ emailClient:
 
 cron:
   report_reactivated_cases: '0 0 8 * * *'
-  report_dropped_prosecution: '0 25 14 * * *'
+  report_dropped_prosecution: '0 30 14 * * *'
 
 logging:
   level: DEBUG
