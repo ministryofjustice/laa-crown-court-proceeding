@@ -27,7 +27,7 @@ import uk.gov.service.notify.NotificationClientException;
 @RequiredArgsConstructor
 @Slf4j
 public class DeadLetterMessageReportService {
-  
+
   @Setter
   @Value("${emailClient.notify.dropped_prosecution.template-id}")
   private String templateId;
@@ -43,11 +43,12 @@ public class DeadLetterMessageReportService {
   private static final String HEADINGS = "MAAT ID, Reason, Received time";
   private static final String PENDING = "PENDING";
   private static final String PROCESSED = "PROCESSED";
+  private static final String PROCESSING = "PROCESSING";
   private final DeadLetterMessageRepository deadLetterMessageRepository;
   private final EmailNotificationService emailNotificationService;
   
   public void generateReport() throws IOException, NotificationClientException {
-    
+    log.info("Generating dead letter report");
     List<String> reportContents = generateReportContents();
     
     if (reportContents.isEmpty()) {
@@ -62,7 +63,7 @@ public class DeadLetterMessageReportService {
 
     emailNotificationService.send(templateId, emailAddresses, reportFile, fileName);
     // Update reporting status with PROCESSED for reported cases back to business
-    updateReportStatus();
+    updateReportStatus(PROCESSED);
     log.info(String.valueOf(reportFile.toPath()));
     Files.delete(reportFile.toPath());
   }
@@ -70,6 +71,7 @@ public class DeadLetterMessageReportService {
   public List<String> generateReportContents() {
     Sort sort = Sort.by("deadLetterReason").ascending().and(Sort.by("receivedTime").descending());
     deadLetterMessageList = deadLetterMessageRepository.findByReportingStatus(PENDING, sort);
+    updateReportStatus(PROCESSING);
 
     if (CollectionUtils.isEmpty(deadLetterMessageList)) {
       log.info("No dead letter messages found on {}", LocalDate.now());
@@ -158,11 +160,11 @@ public class DeadLetterMessageReportService {
     return summary;
   }
   
-  private void updateReportStatus() {
+  private void updateReportStatus(String status) {
     List<Integer> deadLetterIds = deadLetterMessageList.stream()
         .map(DeadLetterMessageEntity::getId)
         .toList();
     
-    deadLetterMessageRepository.updateReportingStatusForIds(deadLetterIds, PROCESSED);
+    deadLetterMessageRepository.updateReportingStatusForIds(deadLetterIds, status);
   }
 }
