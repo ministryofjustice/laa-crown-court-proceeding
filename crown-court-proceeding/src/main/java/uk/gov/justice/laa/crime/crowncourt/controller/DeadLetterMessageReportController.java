@@ -26,7 +26,7 @@ public class DeadLetterMessageReportController {
   @Operation(description = "Generate Dead Letter Message Report and send it by email")
   @ApiResponse(responseCode = "200")
   public void sendReport() throws NotificationClientException, IOException {
-
+    log.info("Sending Dead Letter Message Report and send it by email");
     deadLetterMessageService.generateReport();
   }
 }
