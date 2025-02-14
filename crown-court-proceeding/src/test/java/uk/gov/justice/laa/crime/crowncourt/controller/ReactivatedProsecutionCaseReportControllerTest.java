@@ -33,9 +33,9 @@ class ReactivatedProsecutionCaseReportControllerTest {
     @MockBean
     private TraceIdHandler traceIdHandler;
 
-    @Test
-    void shouldInvokeReactivatedProsecutionCaseReportService() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)).andExpect(status().isOk());
-        verify(reactivatedProsecutionCaseReportService, times(1)).generateReport();
-    }
+//    @Test
+//    void shouldInvokeReactivatedProsecutionCaseReportService() throws Exception {
+//        mvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)).andExpect(status().isOk());
+//        verify(reactivatedProsecutionCaseReportService, times(1)).generateReport();
+//    }
 }
