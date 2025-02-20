@@ -33,6 +33,7 @@ class DeadLetterMessageServiceTest {
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
                 .maatId(123456)
                 .build();
+        String reportingStatus = "PENDING";
 
         deadLetterMessageService.logDeadLetterMessage(errorReason, prosecutionConcluded);
 
@@ -41,5 +42,6 @@ class DeadLetterMessageServiceTest {
 
         assertThat(deadLetterMessageEntity.getDeadLetterReason()).isEqualTo(errorReason);
         assertThat(deadLetterMessageEntity.getMessage()).isEqualTo(prosecutionConcluded);
+        assertThat(deadLetterMessageEntity.getReportingStatus()).isEqualTo(reportingStatus);
     }
 }

@@ -12,6 +12,7 @@ import uk.gov.justice.laa.crime.crowncourt.repository.DeadLetterMessageRepositor
 @Slf4j
 @RequiredArgsConstructor
 public class DeadLetterMessageService {
+    private static final String PENDING = "PENDING";
     private final DeadLetterMessageRepository deadLetterMessageRepository;
 
     public void logDeadLetterMessage(String deadLetterReason, ProsecutionConcluded prosecutionConcluded) {
@@ -19,6 +20,7 @@ public class DeadLetterMessageService {
             .deadLetterReason(deadLetterReason)
             .message(prosecutionConcluded)
             .receivedTime(LocalDateTime.now())
+            .reportingStatus(PENDING)
             .build();
 
         deadLetterMessageRepository.save(entity);
