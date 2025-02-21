@@ -55,7 +55,7 @@ ingress:
   externalAnnotations: {}
   internalHost:
     host: laa-crown-court-proceeding-dev.apps.live.cloud-platform.service.justice.gov.uk
-    path: /api/internal/v1/proceedings
+    path: /api/internal/v1/send-dead-letter-report
   externalHost:
     host: laa-crown-court-proceeding-dev.apps.live.cloud-platform.service.justice.gov.uk
     paths:
@@ -125,7 +125,20 @@ emailClient:
 
 cron:
   report_reactivated_cases: '0 0 8 * * *'
-  report_dropped_prosecution: '0 0 16 * * *'
+  report_dropped_prosecution: '0 20 15 * * *'
+
+none-reporting:
+  replicaCount: 1
+  scheduling:
+    enabled: false
+
+reporting:
+  replicaCount: 1
+  scheduling:
+    enabled: true
+    cron:
+      report_reactivated_cases: '0 0 8 * * *'
+      report_dropped_prosecution: '0 20 15 * * *'
 
 logging:
   level: DEBUG
