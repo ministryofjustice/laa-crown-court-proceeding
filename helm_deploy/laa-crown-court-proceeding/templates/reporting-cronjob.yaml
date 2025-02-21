@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: trigger-rest-report
+spec:
+  schedule: "0 0 14 * *"
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 345600
+      template:
+        spec:
+          containers:
+            - name: rest-trigger
+              image: curlimages/curl:latest
+              command: ["/bin/sh", "-c", "ACCESS_TOKEN=$(curl -s -X POST -d 'client_id=${CCP_OAUTH_CLIENT_ID}&client_secret=${CCP_OAUTH_CLIENT_SECRET}&grant_type=client_credentials' https://laa-crime-auth-ccp.auth.eu-west-2.amazoncognito.com/oauth2/token | jq -r '.access_token'); curl -H 'Authorization: Bearer $ACCESS_TOKEN' -X GET https://laa-crown-court-proceeding-dev.apps.live.cloud-platform.service.justice.gov.uk/api/internal/v1/send-dead-letter-report"]
+          restartPolicy: OnFailure

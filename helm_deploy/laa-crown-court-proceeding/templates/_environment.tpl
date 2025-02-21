@@ -96,6 +96,16 @@ env:
         secretKeyRef:
             name: evidence-oauth-client-secret
             key: EVIDENCE_API_OAUTH_CLIENT_SECRET
+  - name: CCP_OAUTH_CLIENT_ID
+    valueFrom:
+        secretKeyRef:
+            name: ccp-oauth-client-id
+            key: CCP_OAUTH_CLIENT_ID
+  - name: CCP_OAUTH_CLIENT_SECRET
+    valueFrom:
+        secretKeyRef:
+            name: ccp-oauth-client-secret
+            key: CCP_OAUTH_CLIENT_SECRET
   - name: NOTIFY_KEY
     valueFrom:
       secretKeyRef:
