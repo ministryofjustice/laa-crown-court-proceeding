@@ -6,7 +6,8 @@ metadata:
     {{- include "laa-crown-court-proceeding.labels" . | nindent 4 }}
 spec:
 {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas:
+  {{ if eq .Values.profile "reporting" }}{{ .Values.profile.reporting.replicaCount }}{{ else }}{{ .Values.profile.nonereporting.replicaCount }}{{ end }}
 {{- end }}
   selector:
     matchLabels:
@@ -69,6 +70,9 @@ spec:
           {{ include "laa-crown-court-proceeding.env-vars" . | nindent 10 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: SCHEDULING_ENABLED
+              value: {{ if eq .Values.profile "reporting" }}{{ .Values.profile.reporting.scheduling.enabled | quote }}{{ else }}{{ .Values.profile.nonereporting.scheduling.enabled | quote }}{{ end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

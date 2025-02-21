@@ -43,6 +43,9 @@ commands:
       token:
         description: CircleCI Service account token
         type: string
+      profile:
+        description: Deployment profile (nonereporting or reporting)
+        type: string
     steps:
       - checkout
       - run:
@@ -61,6 +64,7 @@ commands:
                           --install --wait \
                           --namespace=laa-crown-court-proceeding-<< parameters.environment >> \
                           --values ./helm_deploy/laa-crown-court-proceeding/values-<< parameters.environment >>.yaml \
+                          --set profile=<< parameters.profile >> \ 
                           --set image.tag="${CIRCLE_SHA1}"
       - slack/notify:
           channel: laa-crimeapps-ci
@@ -210,6 +214,24 @@ jobs:
           token: ${CIRCLE_CI_TOKEN_DEV}
       - slack_successful_deployment_notify
 
+  deploy-none-reporting-dev:
+    executor: cloud-platform-executor
+    steps:
+      - deploy-to:
+          environment: dev
+          profile: nonereporting
+          token: ${CIRCLE_CI_TOKEN_DEV}
+      - slack_successful_deployment_notify
+
+  deploy-reporting-dev:
+    executor: cloud-platform-executor
+    steps:
+      - deploy-to:
+          environment: dev
+          profile: reporting
+          token: ${CIRCLE_CI_TOKEN_DEV}
+      - slack_successful_deployment_notify
+
   deploy-test:
     executor: cloud-platform-executor
     steps:
@@ -306,7 +328,12 @@ workflows:
           requires:
             - build_scan_and_push_image
 
-      - deploy-dev:
+      - deploy-none-reporting-dev:
+          requires:
+            - hold_install_on_dev
+          context: laa-crime-apps-slack
+
+      - deploy-reporting-dev:
           requires:
             - hold_install_on_dev
           context: laa-crime-apps-slack

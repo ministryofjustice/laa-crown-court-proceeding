@@ -176,6 +176,9 @@ reports:
     cron:
       expression: ${REPORT_CRON_DROPPED_PROSECUTION} # 0 0 9 * * * every day at 9AM
 
+scheduling:
+  enabled: ${SCHEDULING_ENABLED}
+
 feature:
   prosecution-concluded-listener:
     enabled: ${PROSECUTION_CONCLUDED_LISTENER_ENABLED}
