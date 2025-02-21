@@ -46,7 +46,7 @@ commands:
       profile:
         description: Deployment profile (nonereporting or reporting)
         type: string
-        default: "default"
+        default: "reporting"
     steps:
       - checkout
       - run:
