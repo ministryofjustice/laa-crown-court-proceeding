@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: trigger-rest-report
 spec:
-  schedule: "50 14 * * *"
+  schedule: "32 15 * * *"
   jobTemplate:
     spec:
       ttlSecondsAfterFinished: 345600
