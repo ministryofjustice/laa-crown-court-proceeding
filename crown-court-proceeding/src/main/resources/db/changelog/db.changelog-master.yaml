@@ -25,3 +25,5 @@ databaseChangeLog:
       file: db/changelog/changeset/12-create-dead-letter-message-table.sql
   - include:
       file: db/changelog/changeset/13-add-column-dead-letter-message-table.sql
+  - include:
+      file: db/changelog/changeset/14-update-empty-dead-letter-report-status-field.sql
