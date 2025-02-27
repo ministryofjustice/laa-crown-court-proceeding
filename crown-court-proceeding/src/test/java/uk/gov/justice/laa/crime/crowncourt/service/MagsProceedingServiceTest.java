@@ -118,6 +118,15 @@ class MagsProceedingServiceTest {
                         ), DecisionReason.GRANTED
                 ),
                 Arguments.of(
+                      new Scenario(
+                          ReviewResult.PASS,
+                          null,
+                          null,
+                          null,
+                          PassportAssessmentResult.TEMP.getResult()
+                      ), DecisionReason.GRANTED
+                ),
+                Arguments.of(
                         new Scenario(
                                 ReviewResult.FAIL,
                                 null,
