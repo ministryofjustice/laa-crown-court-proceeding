@@ -55,26 +55,57 @@ public class MagsProceedingService {
 
     private DecisionReason getDecisionReason(CrownCourtDTO dto, ReviewResult iojResult) {
         boolean isIojPassed = (iojResult == ReviewResult.PASS);
-        PassportAssessmentResult passportResult =
+        boolean isAssessmentFailed = false;
+        
+        if (dto.getPassportAssessment() != null) {
+            PassportAssessmentResult passportResult =
                 PassportAssessmentResult.getFrom(dto.getPassportAssessment().getResult());
-        boolean isPassported =
+            boolean isPassported =
                 PassportAssessmentResult.PASS.equals(passportResult)
-                        || PassportAssessmentResult.TEMP.equals(passportResult);
+                    || PassportAssessmentResult.TEMP.equals(passportResult);
+            
+            if (isPassported) {
+                return getReasonForPass(isIojPassed);
+            } else if (passportResult == PassportAssessmentResult.FAIL) {
+                isAssessmentFailed = true;
+            }
+        }
 
-        ApiFinancialAssessment financialAssessment = dto.getFinancialAssessment();
-        InitAssessmentResult initResult = InitAssessmentResult.getFrom(financialAssessment.getInitResult());
-        FullAssessmentResult fullResult = FullAssessmentResult.getFrom(financialAssessment.getFullResult());
-        ReviewResult hardshipResult = ofNullable(financialAssessment.getHardshipOverview())
+        if (dto.getFinancialAssessment() != null) {
+            ApiFinancialAssessment financialAssessment = dto.getFinancialAssessment();
+            InitAssessmentResult initResult = InitAssessmentResult.getFrom(
+                financialAssessment.getInitResult());
+            FullAssessmentResult fullResult = FullAssessmentResult.getFrom(
+                financialAssessment.getFullResult());
+            ReviewResult hardshipResult = ofNullable(financialAssessment.getHardshipOverview())
                 .map(ApiHardshipOverview::getReviewResult)
                 .orElse(null);
-
-        if (isPassported || initResult == InitAssessmentResult.PASS || hardshipResult == ReviewResult.PASS
+            
+            // If the applicant has passed any of the financial assessments
+            if (initResult == InitAssessmentResult.PASS || hardshipResult == ReviewResult.PASS
                 || (initResult == InitAssessmentResult.FULL && fullResult == FullAssessmentResult.PASS)) {
-            return isIojPassed ? DecisionReason.GRANTED : DecisionReason.FAILIOJ;
-        } else if (initResult == InitAssessmentResult.FAIL || passportResult == PassportAssessmentResult.FAIL
-                || ((hardshipResult == null || hardshipResult == ReviewResult.FAIL) && fullResult == FullAssessmentResult.FAIL)) {
-            return isIojPassed ? DecisionReason.FAILMEANS : DecisionReason.FAILMEIOJ;
+                return getReasonForPass(isIojPassed);
+            }
+            // If the applicant has failed any of the financial assessments
+            else if (initResult == InitAssessmentResult.FAIL || ((hardshipResult == null 
+                || hardshipResult == ReviewResult.FAIL) && fullResult == FullAssessmentResult.FAIL)) {
+                isAssessmentFailed = true;
+            }
         }
+
+        // The applicant has failed the passport assessment and/or an initial or full means assessment
+        if (isAssessmentFailed) {
+            return getReasonForFail(isIojPassed);
+        }
+
         return null;
+    }
+    
+    private DecisionReason getReasonForPass(boolean isIojPassed) {
+        return isIojPassed ? DecisionReason.GRANTED : DecisionReason.FAILIOJ;
+    }
+
+    private DecisionReason getReasonForFail(boolean isIojPassed) {
+        return isIojPassed ? DecisionReason.FAILMEANS : DecisionReason.FAILMEIOJ;
     }
 }
