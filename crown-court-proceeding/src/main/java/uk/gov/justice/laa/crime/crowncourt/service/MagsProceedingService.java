@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,13 +10,12 @@ import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiIOJSummary;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.FinancialAssessmentOutcome;
 import uk.gov.justice.laa.crime.enums.*;
 import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 import java.time.LocalDate;
 import java.util.Set;
-
-import static java.util.Optional.ofNullable;
 
 @Slf4j
 @Service
@@ -72,23 +72,11 @@ public class MagsProceedingService {
         }
 
         if (dto.getFinancialAssessment() != null) {
-            ApiFinancialAssessment financialAssessment = dto.getFinancialAssessment();
-            InitAssessmentResult initResult = InitAssessmentResult.getFrom(
-                financialAssessment.getInitResult());
-            FullAssessmentResult fullResult = FullAssessmentResult.getFrom(
-                financialAssessment.getFullResult());
-            ReviewResult hardshipResult = ofNullable(financialAssessment.getHardshipOverview())
-                .map(ApiHardshipOverview::getReviewResult)
-                .orElse(null);
-            
-            // If the applicant has passed any of the financial assessments
-            if (initResult == InitAssessmentResult.PASS || hardshipResult == ReviewResult.PASS
-                || (initResult == InitAssessmentResult.FULL && fullResult == FullAssessmentResult.PASS)) {
+            FinancialAssessmentOutcome outcome = getFinancialAssessmentOutcome(dto.getFinancialAssessment());
+
+            if (outcome == FinancialAssessmentOutcome.PASS) {
                 return getReasonForPass(isIojPassed);
-            }
-            // If the applicant has failed any of the financial assessments
-            else if (initResult == InitAssessmentResult.FAIL || ((hardshipResult == null 
-                || hardshipResult == ReviewResult.FAIL) && fullResult == FullAssessmentResult.FAIL)) {
+            } else if (outcome == FinancialAssessmentOutcome.FAIL) {
                 isAssessmentFailed = true;
             }
         }
@@ -99,6 +87,29 @@ public class MagsProceedingService {
         }
 
         return null;
+    }
+
+    private FinancialAssessmentOutcome getFinancialAssessmentOutcome(ApiFinancialAssessment financialAssessment) {
+        InitAssessmentResult initResult = InitAssessmentResult.getFrom(financialAssessment.getInitResult());
+        FullAssessmentResult fullResult = FullAssessmentResult.getFrom(financialAssessment.getFullResult());
+        ReviewResult hardshipResult = Optional.ofNullable(financialAssessment.getHardshipOverview())
+            .map(ApiHardshipOverview::getReviewResult)
+            .orElse(null);
+
+        boolean isPass = (initResult == InitAssessmentResult.PASS)
+            || (initResult == InitAssessmentResult.FULL && fullResult == FullAssessmentResult.PASS)
+            || (hardshipResult == ReviewResult.PASS);
+
+        boolean isFail = (initResult == InitAssessmentResult.FAIL)
+            || ((hardshipResult == null || hardshipResult == ReviewResult.FAIL)
+            && fullResult == FullAssessmentResult.FAIL);
+
+        // Determine outcome
+        if (isPass) return FinancialAssessmentOutcome.PASS;
+        if (isFail) return FinancialAssessmentOutcome.FAIL;
+
+        // Return NULL for all other enum values
+        return FinancialAssessmentOutcome.NONE;
     }
     
     private DecisionReason getReasonForPass(boolean isIojPassed) {
