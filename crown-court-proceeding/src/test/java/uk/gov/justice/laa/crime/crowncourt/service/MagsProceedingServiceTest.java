@@ -44,21 +44,29 @@ class MagsProceedingServiceTest {
     void givenDecisionReasonScenario_whenDetermineMagsRepDecisionIsInvoked_thenDecisionReasonIsPersistedAndReturned(
             Scenario scenario, DecisionReason expectedResult) {
 
-        when(maatCourtDataService.updateRepOrder(any(UpdateRepOrderRequestDTO.class)))
-                .thenReturn(RepOrderDTO.builder()
-                                    .dateModified(TestModelDataBuilder.TEST_DATE_MODIFIED)
-                                    .build()
-                );
+        // If we are expecting null, we don't call updateRepOrder
+        if (expectedResult != null) {
+          when(maatCourtDataService.updateRepOrder(any(UpdateRepOrderRequestDTO.class)))
+              .thenReturn(RepOrderDTO.builder()
+                  .dateModified(TestModelDataBuilder.TEST_DATE_MODIFIED)
+                  .build()
+              );
+        }
 
         CrownCourtDTO crownCourtDTO = buildCrownCourtDTO(scenario);
         MagsDecisionResult decisionResult = magsProceedingService.determineMagsRepDecision(crownCourtDTO);
+        
+        if (decisionResult != null) {
+          softly.assertThat(decisionResult.getDecisionDate()).isNotNull();
+          softly.assertThat(decisionResult.getDecisionReason()).isEqualTo(expectedResult);
+          softly.assertThat(decisionResult.getTimestamp()).isEqualTo(TestModelDataBuilder.TEST_DATE_MODIFIED);
+        }
 
-        softly.assertThat(decisionResult.getDecisionDate()).isNotNull();
-        softly.assertThat(decisionResult.getDecisionReason()).isEqualTo(expectedResult);
-        softly.assertThat(decisionResult.getTimestamp()).isEqualTo(TestModelDataBuilder.TEST_DATE_MODIFIED);
         softly.assertThat(crownCourtDTO.getMagsDecisionResult()).isEqualTo(decisionResult);
 
-        verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
+        if (expectedResult != null) {
+          verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
+        }
     }
 
     private static CrownCourtDTO buildCrownCourtDTO(Scenario scenario) {
@@ -116,6 +124,15 @@ class MagsProceedingServiceTest {
                                 null,
                                 PassportAssessmentResult.PASS.getResult()
                         ), DecisionReason.GRANTED
+                ),
+                Arguments.of(
+                    new Scenario(
+                          ReviewResult.PASS,
+                          null,
+                          null,
+                          null,
+                          null
+                      ), null
                 ),
                 Arguments.of(
                       new Scenario(
@@ -179,6 +196,33 @@ class MagsProceedingServiceTest {
                                 null,
                                 null
                         ), DecisionReason.GRANTED
+                ),
+                Arguments.of(
+                    new Scenario(
+                        ReviewResult.PASS,
+                        InitAssessmentResult.FULL,
+                        FullAssessmentResult.INEL,
+                        null,
+                        null
+                    ), null
+                ),
+                Arguments.of(
+                    new Scenario(
+                        ReviewResult.PASS,
+                        InitAssessmentResult.FULL,
+                        FullAssessmentResult.INEL,
+                        ReviewResult.PASS,
+                        null
+                    ), DecisionReason.GRANTED
+                ),
+                Arguments.of(
+                    new Scenario(
+                        ReviewResult.PASS,
+                        InitAssessmentResult.FULL,
+                        FullAssessmentResult.INEL,
+                        null,
+                        PassportAssessmentResult.FAIL.getResult()
+                    ), DecisionReason.FAILMEANS
                 ),
                 Arguments.of(
                         new Scenario(
