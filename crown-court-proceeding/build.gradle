@@ -16,7 +16,7 @@ jacoco {
 def versions = [
         okhttpVersion                    : "4.9.3",
         pitest                           : "1.4.10",
-        amazonSQSVersion                 : "2.1.1",
+        amazonSQSVersion                 : "2.1.4",
         springFrameworkCloudVersion      : "3.0.1",
         crimeCommonsClasses              : "3.33.0",
         commonsRestClient                : "3.18.0",
