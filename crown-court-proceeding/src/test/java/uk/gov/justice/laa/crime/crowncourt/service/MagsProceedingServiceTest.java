@@ -75,7 +75,8 @@ class MagsProceedingServiceTest {
                 .userSession(new ApiUserSession().withUserName("user"))
                 .crownCourtSummary(new ApiCrownCourtSummary().withIsWarrantIssued(false))
                 .iojSummary(new ApiIOJSummary().withIojResult(scenario.iojResult.getResult()))
-                .passportAssessment(new ApiPassportAssessment().withResult(scenario.passportResult()))
+                .passportAssessment(new ApiPassportAssessment().withResult(
+                    scenario.passportResult() != null ? scenario.passportResult() : null))
                 .financialAssessment(new ApiFinancialAssessment()
                                              .withInitResult(
                                                      scenario.initResult() != null
@@ -90,32 +91,21 @@ class MagsProceedingServiceTest {
                 ).build();
     }
 
-    @Test
-    void givenPassportResultIsFailContinue_whenDetermineMagsRepDecisionIsInvoked_thenDecisionReasonIsNull() {
-        Scenario scenario = new Scenario(
-                ReviewResult.PASS,
-                null,
-                null,
-                null,
-                PassportAssessmentResult.FAIL_CONTINUE.getResult()
-        );
-
-        CrownCourtDTO crownCourtDTO = buildCrownCourtDTO(scenario);
-
-        MagsDecisionResult decisionResult = magsProceedingService.determineMagsRepDecision(crownCourtDTO);
-
-        softly.assertThat(decisionResult).isNull();
-        softly.assertThat(crownCourtDTO.getMagsDecisionResult()).isNull();
-
-        verify(maatCourtDataService, never()).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
-    }
-
     record Scenario(ReviewResult iojResult, InitAssessmentResult initResult, FullAssessmentResult fullResult,
                     ReviewResult hardshipResult, String passportResult) {
     }
 
     private static Stream<Arguments> getDecisionReasonScenarios() {
         return Stream.of(
+                Arguments.of(
+                  new Scenario(
+                      ReviewResult.PASS,
+                      null,
+                      null,
+                      null,
+                      PassportAssessmentResult.FAIL_CONTINUE.getResult()
+                  ), null
+                ),
                 Arguments.of(
                         new Scenario(
                                 ReviewResult.PASS,
@@ -340,4 +330,19 @@ class MagsProceedingServiceTest {
         // then
         assertThat(decisionResult).isNull();
     }
+    
+  @Test
+  void givenNoPassportAssessmentAndNoFinancialAssessment_whenDetermineMagsRepDecisionIsInvoked_thenReturnNull() {
+    CrownCourtDTO crownCourtDTO = CrownCourtDTO.builder()
+        .caseType(CaseType.INDICTABLE)
+        .iojSummary(new ApiIOJSummary().withIojResult("PASS"))
+        .build();
+
+    MagsDecisionResult decisionResult = magsProceedingService.determineMagsRepDecision(crownCourtDTO);
+
+    softly.assertThat(decisionResult).isNull();
+    softly.assertThat(crownCourtDTO.getMagsDecisionResult()).isNull();
+
+    verify(maatCourtDataService, never()).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
+  }
 }

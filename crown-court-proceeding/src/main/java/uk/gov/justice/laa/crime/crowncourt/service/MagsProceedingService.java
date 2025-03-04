@@ -103,12 +103,15 @@ public class MagsProceedingService {
         boolean isFail = (initResult == InitAssessmentResult.FAIL)
             || ((hardshipResult == null || hardshipResult == ReviewResult.FAIL)
             && fullResult == FullAssessmentResult.FAIL);
-
-        // Determine outcome
-        if (isPass) return FinancialAssessmentOutcome.PASS;
-        if (isFail) return FinancialAssessmentOutcome.FAIL;
-
-        // Return NULL for all other enum values
+        
+        if (isPass) {
+            return FinancialAssessmentOutcome.PASS;
+        }
+        
+        if (isFail) {
+            return FinancialAssessmentOutcome.FAIL;
+        }
+        
         return FinancialAssessmentOutcome.NONE;
     }
     
