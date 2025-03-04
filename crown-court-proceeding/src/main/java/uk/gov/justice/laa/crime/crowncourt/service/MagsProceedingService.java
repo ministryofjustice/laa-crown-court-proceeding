@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,13 +10,12 @@ import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiIOJSummary;
 import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
+import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.FinancialAssessmentOutcome;
 import uk.gov.justice.laa.crime.enums.*;
 import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 import java.time.LocalDate;
 import java.util.Set;
-
-import static java.util.Optional.ofNullable;
 
 @Slf4j
 @Service
@@ -55,26 +55,71 @@ public class MagsProceedingService {
 
     private DecisionReason getDecisionReason(CrownCourtDTO dto, ReviewResult iojResult) {
         boolean isIojPassed = (iojResult == ReviewResult.PASS);
-        PassportAssessmentResult passportResult =
+        boolean isAssessmentFailed = false;
+        
+        if (dto.getPassportAssessment() != null) {
+            PassportAssessmentResult passportResult =
                 PassportAssessmentResult.getFrom(dto.getPassportAssessment().getResult());
-        boolean isPassported =
+            boolean isPassported =
                 PassportAssessmentResult.PASS.equals(passportResult)
-                        || PassportAssessmentResult.TEMP.equals(passportResult);
+                    || PassportAssessmentResult.TEMP.equals(passportResult);
+            
+            if (isPassported) {
+                return getReasonForPass(isIojPassed);
+            } else if (passportResult == PassportAssessmentResult.FAIL) {
+                isAssessmentFailed = true;
+            }
+        }
 
-        ApiFinancialAssessment financialAssessment = dto.getFinancialAssessment();
+        if (dto.getFinancialAssessment() != null) {
+            FinancialAssessmentOutcome outcome = getFinancialAssessmentOutcome(dto.getFinancialAssessment());
+
+            if (outcome == FinancialAssessmentOutcome.PASS) {
+                return getReasonForPass(isIojPassed);
+            } else if (outcome == FinancialAssessmentOutcome.FAIL) {
+                isAssessmentFailed = true;
+            }
+        }
+
+        // The applicant has failed the passport assessment and/or an initial or full means assessment
+        if (isAssessmentFailed) {
+            return getReasonForFail(isIojPassed);
+        }
+
+        return null;
+    }
+
+    private FinancialAssessmentOutcome getFinancialAssessmentOutcome(ApiFinancialAssessment financialAssessment) {
         InitAssessmentResult initResult = InitAssessmentResult.getFrom(financialAssessment.getInitResult());
         FullAssessmentResult fullResult = FullAssessmentResult.getFrom(financialAssessment.getFullResult());
-        ReviewResult hardshipResult = ofNullable(financialAssessment.getHardshipOverview())
-                .map(ApiHardshipOverview::getReviewResult)
-                .orElse(null);
+        ReviewResult hardshipResult = Optional.ofNullable(financialAssessment.getHardshipOverview())
+            .map(ApiHardshipOverview::getReviewResult)
+            .orElse(null);
 
-        if (isPassported || initResult == InitAssessmentResult.PASS || hardshipResult == ReviewResult.PASS
-                || (initResult == InitAssessmentResult.FULL && fullResult == FullAssessmentResult.PASS)) {
-            return isIojPassed ? DecisionReason.GRANTED : DecisionReason.FAILIOJ;
-        } else if (initResult == InitAssessmentResult.FAIL || passportResult == PassportAssessmentResult.FAIL
-                || ((hardshipResult == null || hardshipResult == ReviewResult.FAIL) && fullResult == FullAssessmentResult.FAIL)) {
-            return isIojPassed ? DecisionReason.FAILMEANS : DecisionReason.FAILMEIOJ;
+        boolean isPass = (initResult == InitAssessmentResult.PASS)
+            || (initResult == InitAssessmentResult.FULL && fullResult == FullAssessmentResult.PASS)
+            || (hardshipResult == ReviewResult.PASS);
+
+        boolean isFail = (initResult == InitAssessmentResult.FAIL)
+            || ((hardshipResult == null || hardshipResult == ReviewResult.FAIL)
+            && fullResult == FullAssessmentResult.FAIL);
+        
+        if (isPass) {
+            return FinancialAssessmentOutcome.PASS;
         }
-        return null;
+        
+        if (isFail) {
+            return FinancialAssessmentOutcome.FAIL;
+        }
+        
+        return FinancialAssessmentOutcome.NONE;
+    }
+    
+    private DecisionReason getReasonForPass(boolean isIojPassed) {
+        return isIojPassed ? DecisionReason.GRANTED : DecisionReason.FAILIOJ;
+    }
+
+    private DecisionReason getReasonForFail(boolean isIojPassed) {
+        return isIojPassed ? DecisionReason.FAILMEANS : DecisionReason.FAILMEIOJ;
     }
 }
