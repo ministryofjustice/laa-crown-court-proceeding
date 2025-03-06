@@ -38,6 +38,7 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
+          {{- range .paths }}
           - path: {{ . }}
             pathType: "Prefix"
             backend:
@@ -52,5 +53,6 @@ spec:
                 name: {{ $fullName }}
                 port:
                   number: {{ $.Values.actuator.port }}
+          {{- end }}
     {{- end }}
   {{- end }}
