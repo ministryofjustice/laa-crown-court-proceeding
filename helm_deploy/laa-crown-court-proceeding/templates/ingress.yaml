@@ -17,8 +17,8 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- if .Values.ingress.internal_whitelist_source_range }}
-    nginx.ingress.kubernetes.io/whitelist-source-range: {{ $.Values.ingress.internal_whitelist_source_range }}
+  {{- if .Values.ingress.whitelist_source_range }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ $.Values.ingress.whitelist_source_range }}
     external-dns.alpha.kubernetes.io/set-identifier: {{ $fullName }}-{{ $.Values.ingress.environmentName}}-green
   {{- end }}
 spec:
