@@ -31,7 +31,9 @@ def versions = [
         testcontainersJunitjupiterVersion: "1.19.0",
         postgresqlVersion                : "42.7.2",
         tomcatEmbedCoreVersion           : "10.1.34",
-        notifyClientVersion              : "5.1.0-RELEASE"
+        notifyClientVersion              : "5.1.0-RELEASE",
+        oauth2ResourceServer             : "3.4.1",
+        securityCrypto                   : "6.4.4"
 ]
 
 java {
@@ -66,8 +68,9 @@ dependencies {
     implementation "org.apache.tomcat.embed:tomcat-embed-core:$versions.tomcatEmbedCoreVersion"
 
     implementation "org.springframework.boot:spring-boot-starter-validation"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.oauth2ResourceServer"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.security:spring-security-crypto:$versions.securityCrypto"
 
     implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springFrameworkCloudVersion"
     implementation "org.springframework:spring-jms"
