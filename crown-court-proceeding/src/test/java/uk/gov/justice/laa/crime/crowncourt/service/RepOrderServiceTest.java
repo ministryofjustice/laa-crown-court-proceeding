@@ -1,10 +1,14 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
+import java.util.stream.Stream;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -284,30 +288,41 @@ class RepOrderServiceTest {
                 .isEqualTo(Constants.GRANTED_PASSED_MEANS_TEST);
     }
 
-    @Test
-    void givenIndictableCaseWithFailedInitialAssessment_whenGetRepDecisionIsInvoked_grantedFailedMeansTestIsReturned() {
+    @ParameterizedTest
+    @MethodSource("assessmentParametersProvider")
+    void givenIndictableCaseWithFailedAssessment_whenGetRepDecisionIsInvoked_grantedFailedMeansTestIsReturned(
+            CurrentStatus initStatus,
+            CurrentStatus fullStatus,
+            String initAssessmentResult,
+            String fullAssessmentResult,
+            ReviewResult reviewResult) {
+
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
-        setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
-                           InitAssessmentResult.FAIL.getResult(), FullAssessmentResult.FAIL.getResult(),
-                           ReviewResult.FAIL
-        );
+        setUpFinAssessment(requestDTO,
+                initStatus,
+                fullStatus,
+                initAssessmentResult,
+                fullAssessmentResult,
+                reviewResult);
         requestDTO.setCaseType(CaseType.INDICTABLE);
         ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
         assertThat(apiCrownCourtSummary.getRepOrderDecision())
                 .isEqualTo(Constants.GRANTED_FAILED_MEANS_TEST);
     }
 
-    @Test
-    void givenIndictableCaseWithFailedFullAssessment_whenGetRepDecisionIsInvoked_grantedFailedMeansTestIsReturned() {
-        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
-        setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
-                           InitAssessmentResult.FAIL.getResult(), FullAssessmentResult.FAIL.getResult(),
-                           ReviewResult.FAIL
+    private static Stream<Arguments> assessmentParametersProvider() {
+        return Stream.of(
+                // Scenario 1: Failed initial assessment with no full assessment.
+                Arguments.of(CurrentStatus.COMPLETE, null,
+                        InitAssessmentResult.FAIL.getResult(),
+                        null,
+                        null),
+                // Scenario 2: Failed initial assessment and failed full assessment.
+                Arguments.of(CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
+                        InitAssessmentResult.FAIL.getResult(),
+                        FullAssessmentResult.FAIL.getResult(),
+                        ReviewResult.FAIL)
         );
-        requestDTO.setCaseType(CaseType.INDICTABLE);
-        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
-        assertThat(apiCrownCourtSummary.getRepOrderDecision())
-                .isEqualTo(Constants.GRANTED_FAILED_MEANS_TEST);
     }
 
     @Test
