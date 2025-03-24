@@ -62,17 +62,6 @@ class MaatCourtDataServiceTest {
     }
 
     @Test
-    void givenAValidRequest_whenUpdateRepOrderIsInvoked_thenResponseIsReturned() {
-        maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build());
-        verify(maatAPIClient).put(
-                any(UpdateRepOrderRequestDTO.class),
-                any(),
-                anyString(),
-                anyMap()
-        );
-    }
-
-    @Test
     void givenAValidRepId_whenGetRepOrderCCOutcomeByRepIdIsInvoked_thenReturnOutcome() {
         maatCourtDataService.getRepOrderCCOutcomeByRepId(TestModelDataBuilder.TEST_REP_ID);
         verify(maatAPIClient, atLeastOnce()).get(any(), anyString(), anyMap(), any());
