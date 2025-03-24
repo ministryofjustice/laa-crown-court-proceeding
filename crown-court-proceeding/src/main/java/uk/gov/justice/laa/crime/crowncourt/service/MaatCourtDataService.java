@@ -86,6 +86,7 @@ public class MaatCourtDataService {
                 repId
         );
         log.debug(RESPONSE_STRING, response);
-        return response.getHeaders().getContentLength();
+        String header = response.getHeaders().getFirst("X-Total-Records");
+        return header == null ? 0 : Long.parseLong(header);
     }
 }
