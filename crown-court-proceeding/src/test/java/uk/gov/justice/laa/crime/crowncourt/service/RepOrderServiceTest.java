@@ -235,67 +235,17 @@ class RepOrderServiceTest {
                 .isEqualTo(Constants.GRANTED_PASSPORTED);
     }
 
-    @Test
-    void givenIneligibleFullAssessmentAndSentForTrail_whenGetRepDecisionIsInvoked_refusedIneligibleIsReturned() {
-        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
-        setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
-                           InitAssessmentResult.PASS.getResult(), FullAssessmentResult.INEL.getResult(),
-                           ReviewResult.PASS
-        );
-        requestDTO.setMagCourtOutcome(MagCourtOutcome.SENT_FOR_TRIAL);
-        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
-        assertThat(apiCrownCourtSummary.getRepOrderDecision())
-                .isEqualTo(Constants.REFUSED_INELIGIBLE);
-    }
-
-    @Test
-    void givenIneligibleFullAssessmentAndCommittedForTrail_whenGetRepDecisionIsInvoked_refusedIneligibleIsReturned() {
-        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
-        setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
-                           InitAssessmentResult.PASS.getResult(), FullAssessmentResult.INEL.getResult(),
-                           ReviewResult.PASS
-        );
-        requestDTO.setMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL);
-        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
-        assertThat(apiCrownCourtSummary.getRepOrderDecision())
-                .isEqualTo(Constants.REFUSED_INELIGIBLE);
-    }
-
-    @Test
-    void givenAppealCCIneligibleInProgressFullAssessment_whenGetRepDecisionIsInvoked_grantedPassedMeansTestIsReturned() {
-        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
-        setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.IN_PROGRESS,
-                           InitAssessmentResult.PASS.getResult(), FullAssessmentResult.INEL.getResult(),
-                           ReviewResult.PASS
-        );
-        requestDTO.setMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL);
-        requestDTO.setCaseType(CaseType.APPEAL_CC);
-        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
-        assertThat(apiCrownCourtSummary.getRepOrderDecision())
-                .isEqualTo(Constants.GRANTED_PASSED_MEANS_TEST);
-    }
-
-    @Test
-    void givenIndictableCaseWithPassedHardshipOverview_whenGetRepDecisionIsInvoked_grantedPassedMeansTestIsReturned() {
-        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
-        setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
-                           InitAssessmentResult.FAIL.getResult(), FullAssessmentResult.FAIL.getResult(),
-                           ReviewResult.PASS
-        );
-        requestDTO.setCaseType(CaseType.INDICTABLE);
-        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
-        assertThat(apiCrownCourtSummary.getRepOrderDecision())
-                .isEqualTo(Constants.GRANTED_PASSED_MEANS_TEST);
-    }
-
     @ParameterizedTest
     @MethodSource("assessmentParametersProvider")
     void givenIndictableCaseWithFailedAssessment_whenGetRepDecisionIsInvoked_grantedFailedMeansTestIsReturned(
+            CaseType caseType,
+            MagCourtOutcome magsCourtOutcome,
             CurrentStatus initStatus,
             CurrentStatus fullStatus,
             String initAssessmentResult,
             String fullAssessmentResult,
-            ReviewResult reviewResult) {
+            ReviewResult reviewResult,
+            String repOrderDecision) {
 
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         setUpFinAssessment(requestDTO,
@@ -304,37 +254,133 @@ class RepOrderServiceTest {
                 initAssessmentResult,
                 fullAssessmentResult,
                 reviewResult);
-        requestDTO.setCaseType(CaseType.INDICTABLE);
+        requestDTO.setCaseType(caseType);
+        requestDTO.setMagCourtOutcome(magsCourtOutcome);
         ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
         assertThat(apiCrownCourtSummary.getRepOrderDecision())
-                .isEqualTo(Constants.GRANTED_FAILED_MEANS_TEST);
+                .isEqualTo(repOrderDecision);
     }
 
     private static Stream<Arguments> assessmentParametersProvider() {
         return Stream.of(
-                // Scenario 1: Failed initial assessment with no full assessment.
-                Arguments.of(CurrentStatus.COMPLETE, null,
+                /*
+                 * Scenario 1: INDICTABLE case with MagCourtOutcome of APPEAL_TO_CC.
+                 * - Initial assessment fails.
+                 * - No full assessment is performed.
+                 * - Expected outcome: GRANTED_FAILED_MEANS_TEST.
+                 */
+                Arguments.of(
+                        CaseType.INDICTABLE,
+                        MagCourtOutcome.APPEAL_TO_CC,
+                        CurrentStatus.COMPLETE,
+                        null,
                         InitAssessmentResult.FAIL.getResult(),
                         null,
-                        null),
-                // Scenario 2: Failed initial assessment and failed full assessment.
-                Arguments.of(CurrentStatus.COMPLETE, CurrentStatus.COMPLETE,
+                        null,
+                        Constants.GRANTED_FAILED_MEANS_TEST
+                ),
+                /*
+                 * Scenario 2: INDICTABLE case with MagCourtOutcome of APPEAL_TO_CC.
+                 * - Initial assessment fails.
+                 * - Full assessment is performed and fails.
+                 * - Hardship review also fails.
+                 * - Expected outcome: GRANTED_FAILED_MEANS_TEST.
+                 */
+                Arguments.of(
+                        CaseType.INDICTABLE,
+                        MagCourtOutcome.APPEAL_TO_CC,
+                        CurrentStatus.COMPLETE,
+                        CurrentStatus.COMPLETE,
                         InitAssessmentResult.FAIL.getResult(),
                         FullAssessmentResult.FAIL.getResult(),
-                        ReviewResult.FAIL)
+                        ReviewResult.FAIL,
+                        Constants.GRANTED_FAILED_MEANS_TEST
+                ),
+                /* Scenario 3: INDICTABLE case with MagCourtOutcome of APPEAL_TO_CC.
+                 * - Initial assessment fails.
+                 * - Full assessment is performed and fails.
+                 * - Hardship review passes.
+                 * - Expected outcome: GRANTED_PASSED_MEANS_TEST.
+                 */
+                Arguments.of(
+                        CaseType.INDICTABLE,
+                        MagCourtOutcome.APPEAL_TO_CC,
+                        CurrentStatus.COMPLETE,
+                        CurrentStatus.COMPLETE,
+                        InitAssessmentResult.FAIL.getResult(),
+                        FullAssessmentResult.FAIL.getResult(),
+                        ReviewResult.PASS,
+                        Constants.GRANTED_PASSED_MEANS_TEST
+                ),
+                /*
+                 * Scenario 4: APPEAL_CC case with MagCourtOutcome of COMMITTED_FOR_TRIAL.
+                 * - Initial assessment passes.
+                 * - Full assessment is in progress.
+                 * - Hardship review passes.
+                 * - Expected outcome: GRANTED_PASSED_MEANS_TEST.
+                 */
+                Arguments.of(
+                        CaseType.APPEAL_CC,
+                        MagCourtOutcome.COMMITTED_FOR_TRIAL,
+                        CurrentStatus.COMPLETE,
+                        CurrentStatus.IN_PROGRESS,
+                        InitAssessmentResult.PASS.getResult(),
+                        null,
+                        ReviewResult.PASS,
+                        Constants.GRANTED_PASSED_MEANS_TEST
+                ),
+                /*
+                 * Scenario 5: SUMMARY_ONLY case with MagCourtOutcome of COMMITTED_FOR_TRIAL.
+                 * - Initial assessment passes.
+                 * - Full assessment is performed with an INEL result.
+                 * - Hardship review passes.
+                 * - Expected outcome: REFUSED_INELIGIBLE.
+                 */
+                Arguments.of(
+                        CaseType.SUMMARY_ONLY,
+                        MagCourtOutcome.COMMITTED_FOR_TRIAL,
+                        CurrentStatus.COMPLETE,
+                        CurrentStatus.COMPLETE,
+                        InitAssessmentResult.PASS.getResult(),
+                        FullAssessmentResult.INEL.getResult(),
+                        ReviewResult.PASS,
+                        Constants.REFUSED_INELIGIBLE
+                ),
+                /*
+                 * Scenario 6: SUMMARY_ONLY case with MagCourtOutcome of SENT_FOR_TRIAL.
+                 * - Initial assessment passes.
+                 * - Full assessment is performed with an INEL result.
+                 * - Hardship review passes.
+                 * - Expected outcome: REFUSED_INELIGIBLE.
+                 */
+                Arguments.of(
+                        CaseType.SUMMARY_ONLY,
+                        MagCourtOutcome.SENT_FOR_TRIAL,
+                        CurrentStatus.COMPLETE,
+                        CurrentStatus.COMPLETE,
+                        InitAssessmentResult.PASS.getResult(),
+                        FullAssessmentResult.INEL.getResult(),
+                        ReviewResult.PASS,
+                        Constants.REFUSED_INELIGIBLE
+                ),
+                /*
+                 * Scenario 7: SUMMARY_ONLY case with MagCourtOutcome of SENT_FOR_TRIAL.
+                 * - Initial assessment fails.
+                 * - Full assessment is in progress.
+                 * - Hardship review fails.
+                 * - Expected outcome: null (no decision granted).
+                 */
+                Arguments.of(
+                        CaseType.SUMMARY_ONLY,
+                        MagCourtOutcome.SENT_FOR_TRIAL,
+                        CurrentStatus.COMPLETE,
+                        CurrentStatus.IN_PROGRESS,
+                        InitAssessmentResult.FAIL.getResult(),
+                        null,
+                        ReviewResult.FAIL,
+                        null
+                )
         );
-    }
-
-    @Test
-    void givenInProgressFullAssessment_whenGetRepDecisionIsInvoked_nullDecisionIsReturned() {
-        CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
-        setUpFinAssessment(requestDTO, CurrentStatus.COMPLETE, CurrentStatus.IN_PROGRESS,
-                           InitAssessmentResult.FAIL.getResult(), FullAssessmentResult.FAIL.getResult(),
-                           ReviewResult.FAIL
-        );
-        ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.getRepDecision(requestDTO);
-        assertThat(apiCrownCourtSummary.getRepOrderDecision())
-                .isNull();
     }
 
     private void setUpFinAssessment(CrownCourtDTO requestDTO,
