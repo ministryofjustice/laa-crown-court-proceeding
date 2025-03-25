@@ -48,18 +48,7 @@ service:
   targetPort: 8087
 
 ingress:
-  environmentName: laa-crown-court-proceeding-prod
-  enabled: true
-  annotations:
-    external-dns.alpha.kubernetes.io/aws-weight: "100"
-    nginx.ingress.kubernetes.io/affinity: "cookie"
-    nginx.ingress.kubernetes.io/session-cookie-max-age: "300"
-  externalAnnotations: {}
-  hosts:
-    - host: laa-crown-court-proceeding-prod.apps.live.cloud-platform.service.justice.gov.uk
-      paths: ["/open-api/"]
-  tls: []
-  className: default
+  enabled: false
 
 autoscaling:
   enabled: false
