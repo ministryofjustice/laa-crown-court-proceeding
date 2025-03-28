@@ -111,7 +111,7 @@ class MaatCourtDataServiceTest {
     }
 
     @Test
-    void givenAValidEvidenceFeeRequest_whenGetCalEvidenceFeeIsInvokedAndNullIsReturned_then0IsReturned() {
+    void givenAValidEvidenceFeeRequest_whenOutcomeCountIsInvokedAndNullIsReturned_then0IsReturned() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Total-Records", "0");
         ResponseEntity<Void> response = new ResponseEntity<>(null, headers, HttpStatus.OK);
