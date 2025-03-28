@@ -26,8 +26,8 @@ maatApi:
   oauthUrl: https://maat-cd-api-tst.auth.eu-west-2.amazoncognito.com/oauth2/token
 
 cdaApi:
-  baseUrl: https://test.court-data-adaptor.service.justice.gov.uk
-  oauthUrl: https://test.court-data-adaptor.service.justice.gov.uk/oauth/token
+  baseUrl: https://dev.court-data-adaptor.service.justice.gov.uk
+  oauthUrl: https://dev.court-data-adaptor.service.justice.gov.uk/oauth/token
 
 evidenceApi:
   baseUrl: http://laa-crime-evidence.laa-crime-evidence-test.svc.cluster.local
@@ -95,9 +95,9 @@ cloudPlatform:
     sqs:
       region: eu-west-2
       queue:
-        hearingResulted: crime-apps-test-hearing-resulted-queue
+        hearingResulted: crime-apps-dev-hearing-resulted-queue
         prosecutionConcluded:
-          url: crime-apps-test-prosecution-concluded-queue
+          url: crime-apps-dev-prosecution-concluded-queue
           listenerEnabled: true
           scheduleEnabled: true
 
