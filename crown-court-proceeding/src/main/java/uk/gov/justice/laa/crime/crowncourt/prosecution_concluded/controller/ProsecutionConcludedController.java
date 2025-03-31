@@ -13,16 +13,13 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.Prosecu
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/internal/v1/proceedings/prosecution/scheduler")
+@RequestMapping("api/internal/v1/proceedings/prosecution-concluded/{maatId}/messages")
 @Tag(name = "Prosecution concluded", description = "Rest API for Prosecution concluded")
 public class ProsecutionConcludedController {
 
     private final ProsecutionConcludedDataService prosecutionConcludedDataService;
 
-    @RequestMapping(value = "/{maatId}",
-            method = {RequestMethod.HEAD},
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(value = "/count", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve Prosecution Concluded Count")
     public ResponseEntity<Object> getCountByMaatIdAndStatus(@PathVariable int maatId,
                                                             @RequestParam(value = "status", defaultValue = "PENDING") String  status) {

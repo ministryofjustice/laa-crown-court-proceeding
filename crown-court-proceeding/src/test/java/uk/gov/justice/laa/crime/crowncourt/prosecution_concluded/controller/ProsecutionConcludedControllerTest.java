@@ -1,5 +1,10 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.controller;
 
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,15 +21,13 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.Prosecu
 import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @DirtiesContext
 @AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(ProsecutionConcludedController.class)
 class ProsecutionConcludedControllerTest {
 
-    private static final String ENDPOINT_URL = "/api/internal/v1/proceedings/prosecution/scheduler";
+    private static final String COUNT_ENDPOINT_URL =
+            "api/internal/v1/proceedings/prosecution-concluded/%s/messages/count";
 
     @Autowired
     private MockMvc mvc;
@@ -39,15 +42,21 @@ class ProsecutionConcludedControllerTest {
     private DeadLetterMessageService deadLetterMessageService;
 
     @Test
-    void givenIncorrectParameters_whenGetCountByMaatIdAndStatusIsInvoked_thenErrorIsThrown() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.head(ENDPOINT_URL).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
+    void givenIncorrectParameters_whenGetCountByMaatIdAndStatusIsInvoked_thenErrorIsThrown()
+            throws Exception {
+        mvc.perform(MockMvcRequestBuilders.head(COUNT_ENDPOINT_URL)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    void givenAValidParameters_whenGetCountByMaatIdAndStatusIsInvoked_thenReturnCount() throws Exception {
-        when(service.getCountByMaatIdAndStatus(TestModelDataBuilder.TEST_REP_ID, CaseConclusionStatus.PENDING.name())).thenReturn(1L);
-        mvc.perform(MockMvcRequestBuilders.head(ENDPOINT_URL + "/" + TestModelDataBuilder.TEST_REP_ID + "?status=" + CaseConclusionStatus.PENDING.name()))
+    void givenAValidParameters_whenGetCountByMaatIdAndStatusIsInvoked_thenReturnCount()
+            throws Exception {
+        when(service.getCountByMaatIdAndStatus(TestModelDataBuilder.TEST_REP_ID,
+                CaseConclusionStatus.PENDING.name())).thenReturn(1L);
+        mvc.perform(MockMvcRequestBuilders.head(
+                        String.format(COUNT_ENDPOINT_URL, TestModelDataBuilder.TEST_REP_ID)
+                                + "?status=" + CaseConclusionStatus.PENDING.name()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""))
                 .andExpect(header().string(HttpHeaders.CONTENT_LENGTH, "1"));
