@@ -316,7 +316,6 @@ class RepOrderServiceTest {
                  * Scenario 4: APPEAL_CC case with MagCourtOutcome of COMMITTED_FOR_TRIAL.
                  * - Initial assessment passes.
                  * - Full assessment is in progress.
-                 * - Hardship review passes.
                  * - Expected outcome: GRANTED_PASSED_MEANS_TEST.
                  */
                 Arguments.of(
@@ -326,7 +325,7 @@ class RepOrderServiceTest {
                         CurrentStatus.IN_PROGRESS,
                         InitAssessmentResult.PASS.getResult(),
                         null,
-                        ReviewResult.PASS,
+                        null,
                         Constants.GRANTED_PASSED_MEANS_TEST
                 ),
                 /*
@@ -367,17 +366,16 @@ class RepOrderServiceTest {
                  * Scenario 7: SUMMARY_ONLY case with MagCourtOutcome of SENT_FOR_TRIAL.
                  * - Initial assessment fails.
                  * - Full assessment is in progress.
-                 * - Hardship review fails.
                  * - Expected outcome: null (no decision granted).
                  */
                 Arguments.of(
                         CaseType.SUMMARY_ONLY,
                         MagCourtOutcome.SENT_FOR_TRIAL,
                         CurrentStatus.COMPLETE,
-                        CurrentStatus.IN_PROGRESS,
+                        null,
                         InitAssessmentResult.FAIL.getResult(),
                         null,
-                        ReviewResult.FAIL,
+                        null,
                         null
                 )
         );
