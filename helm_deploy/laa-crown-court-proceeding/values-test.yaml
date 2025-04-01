@@ -95,9 +95,9 @@ cloudPlatform:
     sqs:
       region: eu-west-2
       queue:
-        hearingResulted: crime-apps-dev-hearing-resulted-queue
+        hearingResulted: crime-apps-test-hearing-resulted-queue
         prosecutionConcluded:
-          url: crime-apps-dev-prosecution-concluded-queue
+          url: crime-apps-test-prosecution-concluded-queue
           listenerEnabled: true
           scheduleEnabled: true
 
