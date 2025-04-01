@@ -52,25 +52,25 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
             "Cannot have Crown Court outcome without Mags Court outcome";
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .addFilter(springSecurityFilterChain).build();
     }
 
     @Test
-    void givenAEmptyContent_whenProcessRepOrderIsInvoked_thenFailsBadRequest() throws Exception {
+    void givenEmptyContent_whenProcessRepOrderIsInvoked_thenFailsBadRequest() throws Exception {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.POST, "{}", ENDPOINT_URL))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void givenAEmptyOAuthToken_whenCreateAssessmentIsInvoked_thenFailsUnauthorizedAccess() throws Exception {
+    void givenEmptyOAuthToken_whenCreateAssessmentIsInvoked_thenFailsUnauthorizedAccess() throws Exception {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.POST, "{}", ENDPOINT_URL, false))
                 .andExpect(status().isUnauthorized()).andReturn();
     }
 
     @Test
-    void givenAInvalidContent_whenProcessRepOrderIsInvoked_thenFailsBadRequest() throws Exception {
+    void givenInvalidContent_whenProcessRepOrderIsInvoked_thenFailsBadRequest() throws Exception {
         var apiUpdateApplicationRequest =
                 TestModelDataBuilder.getApiProcessRepOrderRequest(!IS_VALID);
         var applicationRequestJson = objectMapper.writeValueAsString(apiUpdateApplicationRequest);
@@ -79,7 +79,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
     }
 
     @Test
-    void givenAValidContent_whenApiResponseIsError_thenProcessRepOrderIsFails() throws Exception {
+    void givenValidContent_whenApiResponseIsError_thenProcessRepOrderIsFails() throws Exception {
         var apiProcessRepOrderRequest = TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE);
         apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
 
@@ -99,7 +99,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
     }
 
     @Test
-    void givenAValidEitherWayCaseTypeContent_whenProcessRepOrderIsInvoked_thenSuccess() throws Exception {
+    void givenValidEitherWayCaseTypeContent_whenProcessRepOrderIsInvoked_thenSuccess() throws Exception {
         MvcResult result = mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.POST, objectMapper.writeValueAsString(
                                 TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE)), ENDPOINT_URL))
@@ -110,7 +110,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
     }
 
     @Test
-    void givenAValidAppealCCContent_whenProcessRepOrderIsInvoked_thenSuccess() throws Exception {
+    void givenValidAppealCCContent_whenProcessRepOrderIsInvoked_thenSuccess() throws Exception {
         var apiProcessRepOrderRequest = TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE);
         apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
         var processRepOrderRequestJson = objectMapper.writeValueAsString(apiProcessRepOrderRequest);
@@ -126,21 +126,21 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
 
 
     @Test
-    void givenAEmptyContent_whenUpdateApplicationIsInvoked_thenFailsBadRequest() throws Exception {
+    void givenEmptyContent_whenUpdateApplicationIsInvoked_thenFailsBadRequest() throws Exception {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, "{}", ENDPOINT_URL))
                 .andExpect(status().isBadRequest()).andReturn();
     }
 
     @Test
-    void givenAEmptyOAuthToken_whenUpdateApplicationIsInvoked_thenFailsUnauthorizedAccess() throws Exception {
+    void givenEmptyOAuthToken_whenUpdateApplicationIsInvoked_thenFailsUnauthorizedAccess() throws Exception {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, "{}", ENDPOINT_URL, Boolean.FALSE))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void givenAInvalidContent_whenUpdateApplicationIsInvoked_thenFailsBadRequest() throws Exception {
+    void givenInvalidContent_whenUpdateApplicationIsInvoked_thenFailsBadRequest() throws Exception {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, objectMapper.writeValueAsString(
                                 TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.FALSE)), ENDPOINT_URL))
@@ -165,7 +165,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
     }
 
     @Test
-    void givenAValidContent_whenUpdateApplicationIsInvoked_thenUpdateApplicationIsSuccess() throws Exception {
+    void givenValidContent_whenUpdateApplicationIsInvoked_thenUpdateApplicationIsSuccess() throws Exception {
         var updateApplicationResponse = TestModelDataBuilder.getApiUpdateApplicationResponse();
         ApiUpdateApplicationRequest
                 apiUpdateApplicationRequest = TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE);
@@ -198,7 +198,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
     }
 
     @Test
-    void givenAIndictableCaseTypeAndMagistratesOutcomeIsEmpty_whenUpdateIsInvoked_thenFailsBadRequest() throws Exception {
+    void givenIndictableCaseTypeAndMagistratesOutcomeIsEmpty_whenUpdateIsInvoked_thenFailsBadRequest() throws Exception {
         ApiUpdateCrownCourtRequest apiUpdateCrownCourtRequest = TestModelDataBuilder.getApiUpdateCrownCourtRequest(Boolean.TRUE);
         apiUpdateCrownCourtRequest.setCaseType(CaseType.INDICTABLE);
         apiUpdateCrownCourtRequest.setMagCourtOutcome(null);
@@ -221,7 +221,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
     }
 
     @Test
-    void givenAValidContent_whenApiResponseIsError_thenUpdateIsFails() throws Exception {
+    void givenValidContent_whenApiResponseIsError_thenUpdateIsFails() throws Exception {
         ApiUpdateCrownCourtRequest apiUpdateCrownCourtRequest = TestModelDataBuilder.getApiUpdateCrownCourtRequest(Boolean.TRUE);
         stubForOAuth();
 
@@ -236,7 +236,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
     }
 
     @Test
-    void givenAValidContent_whenUpdateIsInvoked_thenUpdateIsSuccess() throws Exception {
+    void givenValidContent_whenUpdateIsInvoked_thenUpdateIsSuccess() throws Exception {
 
         ApiUpdateCrownCourtRequest apiUpdateCrownCourtRequest = TestModelDataBuilder.getApiUpdateCrownCourtRequest(Boolean.TRUE);
         apiUpdateCrownCourtRequest.setCaseType(CaseType.APPEAL_CC);
@@ -277,8 +277,8 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
         wiremock.stubFor(head(anyUrl())
                 .willReturn(
                         WireMock.ok()
+                                .withHeader("X-Total-Records", String.valueOf(0))
                                 .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
-                                .withHeader("Content-Length", "0")
                 )
         );
 

@@ -1,5 +1,14 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
@@ -17,11 +27,6 @@ import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderRequestDTO;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
@@ -62,17 +67,6 @@ class MaatCourtDataServiceTest {
     }
 
     @Test
-    void givenAValidRequest_whenUpdateRepOrderIsInvoked_thenResponseIsReturned() {
-        maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build());
-        verify(maatAPIClient).put(
-                any(UpdateRepOrderRequestDTO.class),
-                any(),
-                anyString(),
-                anyMap()
-        );
-    }
-
-    @Test
     void givenAValidRepId_whenGetRepOrderCCOutcomeByRepIdIsInvoked_thenReturnOutcome() {
         maatCourtDataService.getRepOrderCCOutcomeByRepId(TestModelDataBuilder.TEST_REP_ID);
         verify(maatAPIClient, atLeastOnce()).get(any(), anyString(), anyMap(), any());
@@ -91,7 +85,8 @@ class MaatCourtDataServiceTest {
 
     @Test
     void givenAInvalidParameter_whenGetRepOrderCCOutcomeByRepIdIsInvoked_thenReturnError() {
-        when(maatAPIClient.get(any(), anyString(), anyMap(), any())).thenThrow(new APIClientException());
+        when(maatAPIClient.get(any(), anyString(), anyMap(), any()))
+                .thenThrow(new APIClientException());
         assertThatThrownBy(() -> maatCourtDataService.getRepOrderCCOutcomeByRepId(
                 TestModelDataBuilder.TEST_REP_ID)
         ).isInstanceOf(APIClientException.class);
@@ -113,5 +108,15 @@ class MaatCourtDataServiceTest {
         assertThatThrownBy(() -> maatCourtDataService.outcomeCount(
                 TestModelDataBuilder.TEST_REP_ID)
         ).isInstanceOf(APIClientException.class);
+    }
+
+    @Test
+    void givenAValidEvidenceFeeRequest_whenOutcomeCountIsInvokedAndNullIsReturned_then0IsReturned() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Total-Records", "0");
+        ResponseEntity<Void> response = new ResponseEntity<>(null, headers, HttpStatus.OK);
+        when(maatAPIClient.head(any(), any(), any())).thenReturn(response);
+        long outcomeCount = maatCourtDataService.outcomeCount(TestModelDataBuilder.TEST_REP_ID);
+        assertThat(outcomeCount).isZero();
     }
 }

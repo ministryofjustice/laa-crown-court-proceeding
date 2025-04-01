@@ -103,25 +103,25 @@ public class CourtDataAPIService {
     }
 
     public long getOffenceNewOffenceCount(int caseId, String offenceId) {
-        ResponseEntity<Void> response = maatAPIClient.head(
+        Integer response = maatAPIClient.get(
+                new ParameterizedTypeReference<>() {},
                 configuration.getMaatApi().getOffenceEndpoints().getOffenceCountUrl(),
-                emptyMap(),
                 offenceId,
                 caseId
         );
         log.info(RESPONSE_STRING, response);
-        return response.getHeaders().getContentLength();
+        return response;
     }
 
     public long getWQOffenceNewOffenceCount(int caseId, String offenceId) {
-        ResponseEntity<Void> response = maatAPIClient.head(
+        Integer response = maatAPIClient.get(
+                new ParameterizedTypeReference<>() {},
                 configuration.getMaatApi().getWqOffenceEndpoints().getWqOffenceCountUrl(),
-                emptyMap(),
                 offenceId,
                 caseId
         );
         log.info(RESPONSE_STRING, response);
-        return response.getHeaders().getContentLength();
+        return response;
     }
 
     public List<Integer> findResultsByWQTypeSubType(int wqType, int subTypeCode) {
