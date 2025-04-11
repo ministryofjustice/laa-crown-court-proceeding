@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.FilterChainProxy;
@@ -17,6 +18,7 @@ import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplica
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateCrownCourtRequest;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
+import uk.gov.justice.laa.crime.crowncourt.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
@@ -30,10 +32,14 @@ import static io.netty.handler.codec.rtsp.RtspResponseStatuses.INTERNAL_SERVER_E
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder.TEST_REP_ID;
 
 class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
 
     private MockMvc mvc;
+    
+    @MockBean
+    private TraceIdHandler traceIdHandler;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -45,7 +51,6 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
     private WebApplicationContext webApplicationContext;
 
     private static final boolean IS_VALID = true;
-    private static final String ERROR_MSG = "Call to service MAAT-API failed.";
     private static final String ENDPOINT_URL = "/api/internal/v1/proceedings";
     private static final String UPDATE_CC_URL = "/update-crown-court";
     private static final String CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME =
@@ -84,7 +89,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
         apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
 
         stubForOAuth();
-        wiremock.stubFor(get("/api/internal/v1/assessment/ioj-appeal/repId/91919/current-passed")
+        wiremock.stubFor(get("/api/internal/v1/assessment/ioj-appeal/repId/" + TEST_REP_ID + "/current-passed")
                 .willReturn(
                         WireMock.serverError()
                                 .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
@@ -95,7 +100,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
                         HttpMethod.POST, objectMapper.writeValueAsString(apiProcessRepOrderRequest), ENDPOINT_URL))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(ERROR_MSG));
+                .andExpect(jsonPath("$.message").value("500 Internal Server Error from GET http://localhost:9998/api/internal/v1/assessment/ioj-appeal/repId/" + TEST_REP_ID + "/current-passed"));
     }
 
     @Test
@@ -161,7 +166,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
                                 TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE)), ENDPOINT_URL))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(ERROR_MSG));
+                .andExpect(jsonPath("$.message").value("500 Internal Server Error from PUT http://localhost:9998/api/internal/v1/assessment/rep-orders"));
     }
 
     @Test
@@ -232,7 +237,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateCrownCourtRequest), ENDPOINT_URL + UPDATE_CC_URL))
                 .andExpect(status().is5xxServerError())
-                .andExpect(jsonPath("$.message").value(ERROR_MSG));
+                .andExpect(jsonPath("$.message").value("500 Internal Server Error from GET http://localhost:9998/api/internal/v1/assessment/rep-orders/cc-outcome/reporder/" + TEST_REP_ID));
     }
 
     @Test
@@ -241,6 +246,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
         ApiUpdateCrownCourtRequest apiUpdateCrownCourtRequest = TestModelDataBuilder.getApiUpdateCrownCourtRequest(Boolean.TRUE);
         apiUpdateCrownCourtRequest.setCaseType(CaseType.APPEAL_CC);
         stubForUpdateCC();
+        stubForIoJAppeal();
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateCrownCourtRequest), ENDPOINT_URL + UPDATE_CC_URL))
                 .andExpect(status().isOk())
@@ -293,7 +299,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
 
 
     private void stubForIoJAppeal() throws JsonProcessingException {
-        wiremock.stubFor(get("/api/internal/v1/assessment/ioj-appeal/repId/91919/current-passed")
+        wiremock.stubFor(get("/api/internal/v1/assessment/ioj-appeal/repId/" + TEST_REP_ID + "/current-passed")
                 .willReturn(
                         WireMock.ok()
                                 .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))

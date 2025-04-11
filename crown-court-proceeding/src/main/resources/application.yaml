@@ -17,6 +17,7 @@ management:
   tracing:
     propagation:
       type: w3c,b3
+    enabled: true
 
 springdoc:
   packagesToScan: uk.gov.justice.laa.crime.crowncourt
@@ -106,13 +107,34 @@ cloud-platform:
         hearingResulted: ${HEARING_RESULTED_QUEUE}
         prosecutionConcluded: ${PROSECUTION_CONCLUDED_QUEUE}
 
+resilience4j:
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 2s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        retry-exceptions:
+          - org.springframework.web.reactive.function.client.WebClientRequestException
+          - org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
+          - org.springframework.web.reactive.function.client.WebClientResponseException.TooManyRequests
+          - org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
+          - org.springframework.web.reactive.function.client.WebClientResponseException.GatewayTimeout
+
+    instances:
+      maatCourtDataWebClient:
+        base-config: default
+        
 services:
   court-data-adapter:
     base-url: ${CDA_BASE_URL}
-    hearing-url: ${services.court-data-adapter.base-url}/api/internal/v2/hearing_results/{hearingId}
+    court-data-adapter-domain: ${services.court-data-adapter.base-url}/api/internal/v2
+    hearing-url: ${services.court-data-adapter.court-data-adapter-domain}/hearing_results/{hearingId}
 
   maat-api:
     base-url: ${MAAT_API_BASE_URL}
+    registrationId: maat-api
     assessments-domain: ${services.maat-api.base-url}/api/internal/v1/assessment
     ioj-appeal-endpoints:
       find-url: ${services.maat-api.assessments-domain}/ioj-appeal/repId/{repId}/current-passed
@@ -148,8 +170,9 @@ services:
 
   evidence:
     base-url: ${EVIDENCE_API_BASE_URL}
+    evidence-domain: ${services.evidence.base-url}/api/internal/v1/evidence
     evidence-fee-endpoints:
-      evidence-fee-url: ${services.evidence.base-url}/api/internal/v1/evidence/calculate-evidence-fee
+      evidence-fee-url: ${services.evidence.evidence-domain}/calculate-evidence-fee
 
 emailClient:
   notify:

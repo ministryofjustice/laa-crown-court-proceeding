@@ -29,6 +29,12 @@ public class ServicesConfiguration {
         @NotNull
         private String baseUrl;
 
+        @NotNull
+        private String assessmentsDomain;
+
+        @NotNull
+        private String registrationId;
+        
         /**
          * Determines whether oAuth authentication is enabled
          */
@@ -260,6 +266,9 @@ public class ServicesConfiguration {
         private String baseUrl;
 
         @NotNull
+        private String courtDataAdapterDomain;
+
+        @NotNull
         private String hearingUrl;
     }
 
@@ -270,6 +279,9 @@ public class ServicesConfiguration {
 
         @NotNull
         private String baseUrl;
+
+        @NotNull
+        private String evidenceDomain;
 
         @NotNull
         private EvidenceFeeEndpoints evidenceFeeEndpoints;
