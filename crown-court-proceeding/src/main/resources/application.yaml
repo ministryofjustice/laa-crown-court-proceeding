@@ -129,6 +129,7 @@ resilience4j:
 services:
   court-data-adapter:
     base-url: ${CDA_BASE_URL}
+    registrationId: cda
     court-data-adapter-domain: ${services.court-data-adapter.base-url}/api/internal/v2
     hearing-url: ${services.court-data-adapter.court-data-adapter-domain}/hearing_results/{hearingId}
 
@@ -170,6 +171,7 @@ services:
 
   evidence:
     base-url: ${EVIDENCE_API_BASE_URL}
+    registrationId: evidence
     evidence-domain: ${services.evidence.base-url}/api/internal/v1/evidence
     evidence-fee-endpoints:
       evidence-fee-url: ${services.evidence.evidence-domain}/calculate-evidence-fee

@@ -266,6 +266,9 @@ public class ServicesConfiguration {
         private String baseUrl;
 
         @NotNull
+        private String registrationId;
+
+        @NotNull
         private String courtDataAdapterDomain;
 
         @NotNull
@@ -279,6 +282,9 @@ public class ServicesConfiguration {
 
         @NotNull
         private String baseUrl;
+
+        @NotNull
+        private String registrationId;
 
         @NotNull
         private String evidenceDomain;

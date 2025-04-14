@@ -100,7 +100,7 @@ public class WebClientsConfiguration {
         new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations,
             authorizedClients);
     oauthFilter.setDefaultClientRegistrationId(
-        servicesConfiguration.getMaatApi().getRegistrationId());
+        servicesConfiguration.getEvidence().getRegistrationId());
 
     Resilience4jRetryFilter retryFilter =
         new Resilience4jRetryFilter(retryRegistry, EVIDENCE_API_WEB_CLIENT_NAME);
@@ -122,7 +122,7 @@ public class WebClientsConfiguration {
         new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations,
             authorizedClients);
     oauthFilter.setDefaultClientRegistrationId(
-        servicesConfiguration.getMaatApi().getRegistrationId());
+        servicesConfiguration.getCourtDataAdapter().getRegistrationId());
 
     Resilience4jRetryFilter retryFilter =
         new Resilience4jRetryFilter(retryRegistry, COURT_DATA_ADAPTOR_API_WEB_CLIENT_NAME);
