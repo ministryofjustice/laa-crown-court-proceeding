@@ -125,7 +125,7 @@ resilience4j:
     instances:
       maatCourtDataWebClient:
         base-config: default
-        
+
 services:
   court-data-adapter:
     base-url: ${CDA_BASE_URL}
