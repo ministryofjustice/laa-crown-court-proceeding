@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.laa.crime.commons.exception.APIClientException;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
@@ -94,7 +94,7 @@ class ProsecutionConcludedSchedulerTest {
     @Test
     void givenAnInvalidCaseConclusion_whenProcessCaseConclusionIsInvoked_thenUpdateConclusionIsError() {
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
-                .thenThrow(new APIClientException());
+                .thenThrow(WebClientRequestException.class);
         when(prosecutionConcludedRepository.getByHearingId(any()))
                 .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
 
