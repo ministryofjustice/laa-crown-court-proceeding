@@ -65,51 +65,13 @@ swagger-ui:
 services:
   court-data-adapter:
     base-url: http://localhost:${wiremock.server.port}
-    hearing-url: "/api/internal/v2/hearing_results/{hearingId}"
 
   maat-api:
     baseUrl: http://localhost:${wiremock.server.port}
     assessments-domain: ${services.maat-api.baseUrl}/api/internal/v1/assessment
-    ioj-appeal-endpoints:
-      find-url: ${services.maat-api.assessments-domain}/ioj-appeal/repId/{repId}/current-passed
-    rep-order-endpoints:
-      find-url: ${services.maat-api.assessments-domain}/rep-orders/{repId}
-      update-url: ${services.maat-api.assessments-domain}/rep-orders
-      find-outcome-url: ${services.maat-api.assessments-domain}/rep-orders/cc-outcome/reporder/{repId}
-      create-outcome-url: ${services.maat-api.assessments-domain}/rep-orders/cc-outcome
-    offence-endpoints:
-      find-url: ${services.maat-api.assessments-domain}/offence/case/{caseId}
-      offence-count-url: ${services.maat-api.assessments-domain}/offence/{offenceId}/case/{caseId}
-    wq-hearing-endpoints:
-      find-url: ${services.maat-api.assessments-domain}/wq-hearing/{hearingUUID}/maatId/{maatId}
-    wq-link-register-endpoints:
-      find-url: ${services.maat-api.assessments-domain}/wq-link-register/{maatId}
-    wq-offence-endpoints:
-      wq-offence-count-url: ${services.maat-api.assessments-domain}/wq-offence/{offenceId}/case/{caseId}
-    xlat-result-endpoints:
-      result-codes-for-cc-imprisonment-url: ${services.maat-api.assessments-domain}/xlat-result/cc-imprisonment
-      result-codes-for-cc-bench-warrant-url: ${services.maat-api.assessments-domain}/xlat-result/cc-bench-warrant
-      result-codes-for-wqtype-subtype-url: ${services.maat-api.assessments-domain}/xlat-result/wqType/{wqType}/subType/{subType}
-    result-endpoints:
-      result-codes-by-caseid-asnseq-url: ${services.maat-api.assessments-domain}/result/caseId/{caseId}/asnSeq/{asnSeq}
-    wq-result-endpoints:
-      result-codes-by-caseid-asnseq-url: ${services.maat-api.assessments-domain}/wq-result/caseId/{caseId}/asnSeq/{asnSeq}
-    crown-court-stored-procedure-endpoints:
-      update-crown-court-outcome-url: ${services.maat-api.assessments-domain}/crown-court/updateCCOutcome
-    crown-court-processing-endpoints:
-      update-appeal-cc-sentence-url: ${services.maat-api.assessments-domain}/crown-court/update-appeal-cc-sentence
-      update-cc-sentence-url: ${services.maat-api.assessments-domain}/crown-court/update-cc-sentence
-    reservation-endpoints:
-      is-maat-record-locked-url: ${services.maat-api.assessments-domain}/reservations/{maatId}
+
   evidence:
     baseUrl: http://localhost:9999
-    evidence-fee-endpoints:
-      evidence-fee-url: /api/internal/v1/evidence/calculate-evidence-fee
-
-retry-config:
-  max-retries: 2
-  min-back-off-period: 3
-  jitter-value: 0.5
 
 crown-court-proceeding:
   security:

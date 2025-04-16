@@ -16,11 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataApiClient;
-import uk.gov.justice.laa.crime.crowncourt.config.MockServicesConfiguration;
-import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQLinkRegisterDTO;
@@ -41,9 +38,6 @@ class CourtDataAPIServiceTest {
 
     @InjectMocks
     private CourtDataAPIService courtDataAPIService;
-
-    @Spy
-    private ServicesConfiguration configuration = MockServicesConfiguration.getConfiguration(1000);
 
     @Test
     void givenAInvalidParameter_whenRetrieveHearingForCaseConclusionIsInvoked_thenEmptyIsReturned() {
