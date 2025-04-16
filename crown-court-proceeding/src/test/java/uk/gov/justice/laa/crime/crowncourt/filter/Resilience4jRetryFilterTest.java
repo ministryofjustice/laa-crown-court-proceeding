@@ -78,6 +78,7 @@ class Resilience4jRetryFilterTest {
         .hasMessageContaining("502 Bad Gateway");
 
     verifyCorrectNumberOfCalls(NUM_RETRIES, DEFAULT_CONFIG_NAME);
+    softly.assertAll();
   }
 
   @Test
@@ -96,6 +97,7 @@ class Resilience4jRetryFilterTest {
 
     verifyCorrectNumberOfCalls(1, DEFAULT_CONFIG_NAME);
     softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+    softly.assertAll();
   }
 
   @Test
@@ -121,6 +123,7 @@ class Resilience4jRetryFilterTest {
 
     verifyCorrectNumberOfCalls(NUM_RETRIES, DEFAULT_CONFIG_NAME);
     softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+    softly.assertAll();
   }
 
   private void verifyCorrectNumberOfCalls(int numRetries, String configName) {
@@ -146,6 +149,7 @@ class Resilience4jRetryFilterTest {
         .hasMessageContaining("401 Unauthorized");
 
     verifyCorrectNumberOfCalls(1, DEFAULT_CONFIG_NAME);
+    softly.assertAll();
   }
 
   @Test
@@ -181,6 +185,7 @@ class Resilience4jRetryFilterTest {
         .hasMessageContaining("409 Conflict");
 
     verifyCorrectNumberOfCalls(2, "override");
+    softly.assertAll();
   }
 
   @Test
@@ -209,6 +214,7 @@ class Resilience4jRetryFilterTest {
         .hasMessageContaining("409 Conflict");
 
     verifyCorrectNumberOfCalls(2, DEFAULT_CONFIG_NAME);
+    softly.assertAll();
   }
 
   private static WebClientResponseException getWebClientResponseException(HttpStatus status) {
