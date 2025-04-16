@@ -125,17 +125,14 @@ services:
   court-data-adapter:
     base-url: ${CDA_BASE_URL}
     registrationId: cda
-    court-data-adapter-domain: ${services.court-data-adapter.base-url}/api/internal/v2
 
   maat-api:
     base-url: ${MAAT_API_BASE_URL}
     registrationId: maat-api
-    assessments-domain: ${services.maat-api.base-url}/api/internal/v1/assessment
 
   evidence:
     base-url: ${EVIDENCE_API_BASE_URL}
     registrationId: evidence
-    evidence-domain: ${services.evidence.base-url}/api/internal/v1/evidence
 
 emailClient:
   notify:

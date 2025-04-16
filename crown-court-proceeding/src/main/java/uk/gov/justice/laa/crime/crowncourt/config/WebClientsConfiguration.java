@@ -84,7 +84,7 @@ public class WebClientsConfiguration {
         new Resilience4jRetryFilter(retryRegistry, COURT_DATA_API_WEB_CLIENT_NAME);
 
     return webClientBuilder
-        .baseUrl(servicesConfiguration.getMaatApi().getAssessmentsDomain())
+        .baseUrl(servicesConfiguration.getMaatApi().getBaseUrl())
         .filters(filters -> configureFilters(filters, oauthFilter, retryFilter))
         .build();
   }
@@ -106,7 +106,7 @@ public class WebClientsConfiguration {
         new Resilience4jRetryFilter(retryRegistry, EVIDENCE_API_WEB_CLIENT_NAME);
 
     return webClientBuilder
-        .baseUrl(servicesConfiguration.getEvidence().getEvidenceDomain())
+        .baseUrl(servicesConfiguration.getEvidence().getBaseUrl())
         .filters(filters -> configureFilters(filters, oauthFilter, retryFilter))
         .build();
   }
@@ -128,7 +128,7 @@ public class WebClientsConfiguration {
         new Resilience4jRetryFilter(retryRegistry, COURT_DATA_ADAPTOR_API_WEB_CLIENT_NAME);
 
     return webClientBuilder
-        .baseUrl(servicesConfiguration.getCourtDataAdapter().getCourtDataAdapterDomain())
+        .baseUrl(servicesConfiguration.getCourtDataAdapter().getBaseUrl())
         .filters(filters -> configureFilters(filters, oauthFilter, retryFilter))
         .build();
   }

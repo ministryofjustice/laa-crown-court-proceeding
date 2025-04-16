@@ -64,15 +64,13 @@ swagger-ui:
 
 services:
   court-data-adapter:
-    base-url: http://localhost:${wiremock.server.port}
+    base-url: http://localhost:${wiremock.server.port}/api/internal/v2
 
   maat-api:
-    baseUrl: http://localhost:${wiremock.server.port}
-    assessments-domain: ${services.maat-api.baseUrl}/api/internal/v1/assessment
+    baseUrl: http://localhost:${wiremock.server.port}/api/internal/v1/assessment
 
   evidence:
-    baseUrl: http://localhost:${wiremock.server.port}
-    evidence-domain: ${services.maat-api.baseUrl}/api/internal/v1/evidence
+    baseUrl: http://localhost:${wiremock.server.port}/api/internal/v1/evidence
 
 crown-court-proceeding:
   security:
