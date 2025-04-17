@@ -22,7 +22,7 @@ public class CourtDataAdapterService {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("publish_to_queue", "true");
 
-        courtDataAdaptorApiClient.triggerHeadingProcessing(hearingId, queryParams);
+        courtDataAdaptorApiClient.triggerHearingProcessing(hearingId, queryParams);
         log.info("Completed triggering processing for hearing '{}' via court data adapter.", hearingId);
     }
 }

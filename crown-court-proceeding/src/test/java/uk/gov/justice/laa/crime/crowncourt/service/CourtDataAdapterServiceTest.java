@@ -32,7 +32,7 @@ class CourtDataAdapterServiceTest {
         
         courtDataAdapterService.triggerHearingProcessing(testHearingId);
 
-        verify(cdaAPIClient).triggerHeadingProcessing(testHearingId, queryParams);
+        verify(cdaAPIClient).triggerHearingProcessing(testHearingId, queryParams);
     }
 
     @Test
@@ -43,7 +43,7 @@ class CourtDataAdapterServiceTest {
         queryParams.add("publish_to_queue", "true");
 
         doThrow(WebClientResponseException.class)
-            .when(cdaAPIClient).triggerHeadingProcessing(testHearingId, queryParams);
+            .when(cdaAPIClient).triggerHearingProcessing(testHearingId, queryParams);
         
         assertThatThrownBy(() -> courtDataAdapterService.triggerHearingProcessing(testHearingId))
                 .isInstanceOf(WebClientResponseException.class);

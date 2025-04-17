@@ -8,6 +8,6 @@ import org.springframework.web.service.annotation.GetExchange;
 
 public interface CourtDataAdaptorApiClient {
   @GetExchange("/hearing_results/{hearingId}")
-  void triggerHeadingProcessing(@PathVariable UUID hearingId, 
+  void triggerHearingProcessing(@PathVariable UUID hearingId, 
       @RequestParam MultiValueMap<String, String> queryParams);
 }
