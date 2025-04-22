@@ -28,9 +28,9 @@ import uk.gov.justice.laa.crime.crowncourt.filter.Resilience4jRetryFilter;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataApiClient;
 import uk.gov.justice.laa.crime.crowncourt.filter.WebClientFilters;
 
+@Slf4j
 @Configuration
 @AllArgsConstructor
-@Slf4j
 public class WebClientsConfiguration {
   public static final int MAX_IN_MEMORY_SIZE = 10485760;
 

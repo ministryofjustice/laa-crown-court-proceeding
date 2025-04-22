@@ -948,10 +948,10 @@ class RepOrderServiceTest {
 
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
         when(maatCourtDataService.outcomeCount(any())).thenReturn(0L);
-        when(crimeEvidenceDataService.getCalculateEvidenceFee(any())).thenReturn(new ApiCalculateEvidenceFeeResponse());
+        when(crimeEvidenceDataService.calculateEvidenceFee(any())).thenReturn(new ApiCalculateEvidenceFeeResponse());
         when(maatCourtDataService.updateRepOrder(any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
-        verify(crimeEvidenceDataService).getCalculateEvidenceFee(any());
+        verify(crimeEvidenceDataService).calculateEvidenceFee(any());
         verify(maatCourtDataService).updateRepOrder(any());
         verify(maatCourtDataService).createOutcome(any());
         assertThat(repOrderDTO).isNotNull();
@@ -962,11 +962,11 @@ class RepOrderServiceTest {
 
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
         when(maatCourtDataService.outcomeCount(any())).thenReturn(0L);
-        when(crimeEvidenceDataService.getCalculateEvidenceFee(any()))
+        when(crimeEvidenceDataService.calculateEvidenceFee(any()))
                 .thenReturn(TestModelDataBuilder.getApiCalculateEvidenceFeeResponse());
         when(maatCourtDataService.updateRepOrder(any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
-        verify(crimeEvidenceDataService).getCalculateEvidenceFee(any());
+        verify(crimeEvidenceDataService).calculateEvidenceFee(any());
         verify(maatCourtDataService).updateRepOrder(any());
         verify(maatCourtDataService).createOutcome(any());
         assertThat(repOrderDTO).isNotNull();

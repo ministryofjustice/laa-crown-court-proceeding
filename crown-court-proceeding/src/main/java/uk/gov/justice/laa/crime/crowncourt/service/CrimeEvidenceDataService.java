@@ -15,7 +15,7 @@ public class CrimeEvidenceDataService {
     private final EvidenceApiClient evidenceAPIClient;
     private static final String RESPONSE_STRING = "Response from the Evidence service: {}";
 
-    public ApiCalculateEvidenceFeeResponse getCalculateEvidenceFee(ApiCalculateEvidenceFeeRequest evidenceFeeRequest) {
+    public ApiCalculateEvidenceFeeResponse calculateEvidenceFee(ApiCalculateEvidenceFeeRequest evidenceFeeRequest) {
         log.debug("Request to calculate evidence fee: {}", evidenceFeeRequest);
         ApiCalculateEvidenceFeeResponse response = evidenceAPIClient.calculateEvidenceFee(evidenceFeeRequest);
         log.debug(RESPONSE_STRING, response);

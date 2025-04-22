@@ -3,6 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,10 +28,6 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderReque
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
 class MaatCourtDataServiceTest {
-
-    public static final WebClientResponseException DATA_NOT_FOUND = WebClientResponseException
-        .create(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase(), 
-            null, null, null);
     
     @Mock
     MaatCourtDataApiClient maatAPIClient;
@@ -105,5 +102,14 @@ class MaatCourtDataServiceTest {
         when(maatAPIClient.getOutcomeCount(any())).thenReturn(response);
         long outcomeCount = maatCourtDataService.outcomeCount(TestModelDataBuilder.TEST_REP_ID);
         assertThat(outcomeCount).isZero();
+    }
+
+    @Test
+    void givenAValidEvidenceFeeRequest_whenCalculateEvidenceFeeIsInvokedAndTheApiCallFails_thenFailureIsHandled() {
+        when(maatAPIClient.getOutcomeCount(anyInt())).thenThrow(WebClientResponseException.class);
+        assertThatThrownBy(() -> maatCourtDataService.outcomeCount(
+            TestModelDataBuilder.TEST_REP_ID)
+        ).isInstanceOf(WebClientResponseException.class);
+        verify(maatAPIClient).getOutcomeCount(any());
     }
 }

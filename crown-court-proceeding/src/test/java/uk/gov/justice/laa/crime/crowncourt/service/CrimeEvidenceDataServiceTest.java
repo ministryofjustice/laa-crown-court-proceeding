@@ -13,6 +13,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CrimeEvidenceDataServiceTest {
@@ -24,19 +25,18 @@ class CrimeEvidenceDataServiceTest {
     private CrimeEvidenceDataService crimeEvidenceDataService;
 
     @Test
-    void givenAValidEvidenceFeeRequest_whenGetCalEvidenceFeeIsInvoked_thenReturnEvidenceFeeResponse() {
-        crimeEvidenceDataService.getCalculateEvidenceFee(TestModelDataBuilder.getApiCalculateEvidenceFeeRequest());
+    void givenAValidEvidenceFeeRequest_whenCalculateEvidenceFeeIsInvoked_thenReturnEvidenceFeeResponse() {
+        crimeEvidenceDataService.calculateEvidenceFee(TestModelDataBuilder.getApiCalculateEvidenceFeeRequest());
         verify(evidenceAPIClient).calculateEvidenceFee(any());
 
     }
 
     @Test
-    void givenAValidEvidenceFeeRequest_whenGetCalEvidenceFeeIsInvokedAndTheApiCallFails_thenFailureIsHandled() {
-
-        doThrow(WebClientResponseException.class)
-            .when(evidenceAPIClient).calculateEvidenceFee(any());
+    void givenAValidEvidenceFeeRequest_whenCalculateEvidenceFeeIsInvokedAndTheApiCallFails_thenFailureIsHandled() {
+        when(evidenceAPIClient.calculateEvidenceFee(any()))
+            .thenThrow(WebClientResponseException.class);
         
-        assertThatThrownBy(() -> crimeEvidenceDataService.getCalculateEvidenceFee(
+        assertThatThrownBy(() -> crimeEvidenceDataService.calculateEvidenceFee(
                 TestModelDataBuilder.getApiCalculateEvidenceFeeRequest())
         ).isInstanceOf(WebClientResponseException.class);
     }

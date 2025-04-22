@@ -3,6 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.integration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,11 +86,13 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
 
     @Test
     void givenValidContent_whenApiResponseIsError_thenProcessRepOrderIsFails() throws Exception {
+        var stubUrl = "http://localhost:" + wiremock.port() + "/api/internal/v1/assessment/ioj-appeal/repId/" + TEST_REP_ID + "/current-passed";
+        var stubPath = URI.create(stubUrl).getPath();
         var apiProcessRepOrderRequest = TestModelDataBuilder.getApiProcessRepOrderRequest(Boolean.TRUE);
         apiProcessRepOrderRequest.setCaseType(CaseType.APPEAL_CC);
 
         stubForOAuth();
-        wiremock.stubFor(get("/api/internal/v1/assessment/ioj-appeal/repId/" + TEST_REP_ID + "/current-passed")
+        wiremock.stubFor(get(stubPath)
                 .willReturn(
                         WireMock.serverError()
                                 .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
@@ -100,7 +103,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
                         HttpMethod.POST, objectMapper.writeValueAsString(apiProcessRepOrderRequest), ENDPOINT_URL))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("500 Internal Server Error from GET http://localhost:9998/api/internal/v1/assessment/ioj-appeal/repId/" + TEST_REP_ID + "/current-passed"));
+                .andExpect(jsonPath("$.message").value("500 Internal Server Error from GET " + stubUrl));
     }
 
     @Test
@@ -154,7 +157,9 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
 
     @Test
     void givenAValidUpdateApplicationContent_whenApiResponseIsError_thenUpdateApplicationIsFails() throws Exception {
-        wiremock.stubFor(put("/api/internal/v1/assessment/rep-orders")
+        var stubUrl = "http://localhost:9998/api/internal/v1/assessment/rep-orders";
+        var stubPath = URI.create(stubUrl).getPath();
+        wiremock.stubFor(put(stubPath)
                 .willReturn(
                         WireMock.serverError()
                                 .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
@@ -166,7 +171,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
                                 TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE)), ENDPOINT_URL))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("500 Internal Server Error from PUT http://localhost:9998/api/internal/v1/assessment/rep-orders"));
+                .andExpect(jsonPath("$.message").value("500 Internal Server Error from PUT " + stubUrl));
     }
 
     @Test
@@ -227,17 +232,19 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
 
     @Test
     void givenValidContent_whenApiResponseIsError_thenUpdateIsFails() throws Exception {
+        var stubUrl = "http://localhost:9998/api/internal/v1/assessment/rep-orders/cc-outcome/reporder/" + TEST_REP_ID;
+        var stubPath = URI.create(stubUrl).getPath();
         ApiUpdateCrownCourtRequest apiUpdateCrownCourtRequest = TestModelDataBuilder.getApiUpdateCrownCourtRequest(Boolean.TRUE);
         stubForOAuth();
 
-        wiremock.stubFor(get(urlMatching("/api/internal/v1/assessment/rep-orders/cc-outcome/.*"))
+        wiremock.stubFor(get(stubPath)
                 .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR.code())
                         .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
                 ));
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateCrownCourtRequest), ENDPOINT_URL + UPDATE_CC_URL))
                 .andExpect(status().is5xxServerError())
-                .andExpect(jsonPath("$.message").value("500 Internal Server Error from GET http://localhost:9998/api/internal/v1/assessment/rep-orders/cc-outcome/reporder/" + TEST_REP_ID));
+                .andExpect(jsonPath("$.message").value("500 Internal Server Error from GET " + stubUrl));
     }
 
     @Test

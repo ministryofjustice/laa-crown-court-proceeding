@@ -23,27 +23,27 @@ class CourtDataAdapterServiceTest {
 
     @InjectMocks
     private CourtDataAdapterService courtDataAdapterService;
-
+    
     @Test
     void givenAValidHearingId_whenTriggerHearingProcessingIsInvoked_thenTheRequestIsSentCorrectly() {
         UUID testHearingId = UUID.randomUUID();
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("publish_to_queue", "true");
-        
+
         courtDataAdapterService.triggerHearingProcessing(testHearingId);
 
-        verify(cdaAPIClient).triggerHearingProcessing(testHearingId, queryParams);
+        verify(cdaAPIClient).triggerHearingProcessing(
+            eq(testHearingId),
+            argThat(params -> "true".equals(params.getFirst("publish_to_queue")))
+        );
     }
 
     @Test
     void givenAValidHearingId_whenTriggerHearingProcessingIsInvokedAndTheCallFails_thenFailureIsHandled() {
 
         UUID testHearingId = UUID.randomUUID();
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("publish_to_queue", "true");
 
         doThrow(WebClientResponseException.class)
-            .when(cdaAPIClient).triggerHearingProcessing(testHearingId, queryParams);
+            .when(cdaAPIClient).triggerHearingProcessing(eq(testHearingId), 
+                argThat(params -> "true".equals(params.getFirst("publish_to_queue"))));
         
         assertThatThrownBy(() -> courtDataAdapterService.triggerHearingProcessing(testHearingId))
                 .isInstanceOf(WebClientResponseException.class);
