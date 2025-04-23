@@ -22,7 +22,6 @@ import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
-import uk.gov.justice.laa.crime.crowncourt.client.CourtDataAdaptorApiClient;
 import uk.gov.justice.laa.crime.crowncourt.client.EvidenceApiClient;
 import uk.gov.justice.laa.crime.crowncourt.filter.Resilience4jRetryFilter;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataApiClient;
@@ -36,7 +35,6 @@ public class WebClientsConfiguration {
 
   public static final String COURT_DATA_API_WEB_CLIENT_NAME = "maatCourtDataWebClient";
   public static final String EVIDENCE_API_WEB_CLIENT_NAME = "evidenceWebClient";
-  public static final String COURT_DATA_ADAPTOR_API_WEB_CLIENT_NAME = "courtDataAdaptorWebClient";
 
   @Bean
   WebClientCustomizer webClientCustomizer() {
@@ -111,28 +109,6 @@ public class WebClientsConfiguration {
         .build();
   }
 
-  @Bean(COURT_DATA_ADAPTOR_API_WEB_CLIENT_NAME)
-  WebClient courtDataAdaptorWebClient(WebClient.Builder webClientBuilder,
-      ServicesConfiguration servicesConfiguration,
-      ClientRegistrationRepository clientRegistrations,
-      OAuth2AuthorizedClientRepository authorizedClients,
-      RetryRegistry retryRegistry) {
-
-    ServletOAuth2AuthorizedClientExchangeFilterFunction oauthFilter =
-        new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations,
-            authorizedClients);
-    oauthFilter.setDefaultClientRegistrationId(
-        servicesConfiguration.getCourtDataAdapter().getRegistrationId());
-
-    Resilience4jRetryFilter retryFilter =
-        new Resilience4jRetryFilter(retryRegistry, COURT_DATA_ADAPTOR_API_WEB_CLIENT_NAME);
-
-    return webClientBuilder
-        .baseUrl(servicesConfiguration.getCourtDataAdapter().getBaseUrl())
-        .filters(filters -> configureFilters(filters, oauthFilter, retryFilter))
-        .build();
-  }
-
   @Bean
   MaatCourtDataApiClient maatCourtDataApiClient(
       @Qualifier("maatCourtDataWebClient") WebClient maatCourtDataWebClient) {
@@ -150,16 +126,6 @@ public class WebClientsConfiguration {
             .builderFor(WebClientAdapter.create(evidenceApiClient))
             .build();
     return httpServiceProxyFactory.createClient(EvidenceApiClient.class);
-  }
-
-  @Bean
-  CourtDataAdaptorApiClient courtDataAdaptorApiClient(
-      @Qualifier("courtDataAdaptorWebClient") WebClient courtDataAdaptorApiClient) {
-    HttpServiceProxyFactory httpServiceProxyFactory =
-        HttpServiceProxyFactory
-            .builderFor(WebClientAdapter.create(courtDataAdaptorApiClient))
-            .build();
-    return httpServiceProxyFactory.createClient(CourtDataAdaptorApiClient.class);
   }
 
   private void configureFilters(List<ExchangeFilterFunction> filters,

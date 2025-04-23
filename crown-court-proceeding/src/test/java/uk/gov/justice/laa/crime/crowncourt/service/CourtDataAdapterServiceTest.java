@@ -5,10 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import uk.gov.justice.laa.crime.crowncourt.client.CourtDataAdaptorApiClient;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.client.CourtDataAdaptorNonServletApiClient;
 
 import java.util.UUID;
 
@@ -19,7 +17,7 @@ import static org.mockito.Mockito.*;
 class CourtDataAdapterServiceTest {
 
     @Mock
-    CourtDataAdaptorApiClient cdaAPIClient;
+    CourtDataAdaptorNonServletApiClient cdaAPIClient;
 
     @InjectMocks
     private CourtDataAdapterService courtDataAdapterService;

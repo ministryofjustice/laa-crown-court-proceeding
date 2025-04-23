@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import uk.gov.justice.laa.crime.crowncourt.client.CourtDataAdaptorApiClient;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.client.CourtDataAdaptorNonServletApiClient;
 
 import java.util.UUID;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CourtDataAdapterService {
     
-    private final CourtDataAdaptorApiClient courtDataAdaptorApiClient;
+    private final CourtDataAdaptorNonServletApiClient courtDataAdaptorApiClient;
     
     public void triggerHearingProcessing(UUID hearingId) {
         log.info("Triggering processing for hearing '{}' via court data adapter.", hearingId);
