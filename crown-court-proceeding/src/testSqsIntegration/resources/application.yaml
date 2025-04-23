@@ -65,12 +65,15 @@ swagger-ui:
 services:
   court-data-adapter:
     base-url: http://localhost:${wiremock.server.port}/api/internal/v2
+    registrationId: cda
 
   maat-api:
     baseUrl: http://localhost:${wiremock.server.port}/api/internal/v1/assessment
+    registrationId: maat-api
 
   evidence:
     baseUrl: http://localhost:9999/api/internal/v1/evidence
+    registrationId: evidence
 
 crown-court-proceeding:
   security:

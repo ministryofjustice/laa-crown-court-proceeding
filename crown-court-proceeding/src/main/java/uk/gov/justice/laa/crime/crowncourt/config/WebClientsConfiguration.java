@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.config;
 
+import static uk.gov.justice.laa.crime.crowncourt.common.Constants.REGISTRATION_ID_NOT_NULL;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.netty.resolver.DefaultAddressResolverGroup;
 import java.time.Duration;
@@ -16,6 +17,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.util.Assert;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
@@ -75,6 +77,9 @@ public class WebClientsConfiguration {
     ServletOAuth2AuthorizedClientExchangeFilterFunction oauthFilter =
         new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations,
             authorizedClients);
+    
+    String registrationId = servicesConfiguration.getMaatApi().getRegistrationId();
+    Assert.notNull(registrationId, REGISTRATION_ID_NOT_NULL);
     oauthFilter.setDefaultClientRegistrationId(
         servicesConfiguration.getMaatApi().getRegistrationId());
 
@@ -97,6 +102,9 @@ public class WebClientsConfiguration {
     ServletOAuth2AuthorizedClientExchangeFilterFunction oauthFilter =
         new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations,
             authorizedClients);
+    
+    String registrationId = servicesConfiguration.getEvidence().getRegistrationId();
+    Assert.notNull(registrationId, REGISTRATION_ID_NOT_NULL);
     oauthFilter.setDefaultClientRegistrationId(
         servicesConfiguration.getEvidence().getRegistrationId());
 

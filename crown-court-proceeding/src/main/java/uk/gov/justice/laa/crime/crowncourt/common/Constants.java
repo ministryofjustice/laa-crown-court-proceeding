@@ -26,4 +26,5 @@ public class Constants {
     public static final Integer COMMITTAL_FOR_SENTENCE_SUB_TYPE = 1;
     public static final String YES = "Y";
     public static final String NO = "N";
+    public static final String REGISTRATION_ID_NOT_NULL = "registrationId cannot be null";
 }
