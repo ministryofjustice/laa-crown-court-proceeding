@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.crowncourt.service;
+package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

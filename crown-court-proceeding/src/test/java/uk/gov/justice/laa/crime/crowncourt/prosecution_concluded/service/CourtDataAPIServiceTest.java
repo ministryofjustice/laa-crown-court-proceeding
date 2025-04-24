@@ -24,7 +24,6 @@ import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.client.MaatCourtDataNonServletApiClient;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
-import uk.gov.justice.laa.crime.crowncourt.service.CourtDataAdapterService;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
