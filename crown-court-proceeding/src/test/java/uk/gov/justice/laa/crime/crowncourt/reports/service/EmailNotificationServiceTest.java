@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.reports.service;
 
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.lang.NonNull;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -74,7 +74,7 @@ class EmailNotificationServiceTest {
 
     }
 
-    private @NotNull JSONObject getExpectedJsonObject(String fileName) {
+    private @NonNull JSONObject getExpectedJsonObject(String fileName) {
         JSONObject expectedJsonFileObject = new JSONObject();
         expectedJsonFileObject.put("file","dGVzdCBkYXRh");
         expectedJsonFileObject.put("filename", fileName +".csv");
@@ -83,7 +83,7 @@ class EmailNotificationServiceTest {
         return expectedJsonFileObject;
     }
 
-    private static @NotNull Stream<Arguments> emailAddressesTestData() {
+    private static @NonNull Stream<Arguments> emailAddressesTestData() {
         return Stream.of(
                 Arguments.of(1, List.of("recipient1")),
                 Arguments.of(2, List.of("recipient1", "recipient2")),

@@ -63,7 +63,6 @@ repositories {
 
 dependencies {
     
-    implementation("org.jetbrains:annotations:24.1.0")
     implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$versions.crimeCommonsClasses"
     implementation "uk.gov.justice.service.laa-crime:crime-commons-mod-schemas:$versions.commonsModSchemas"
     implementation "org.apache.tomcat.embed:tomcat-embed-core:$versions.tomcatEmbedCoreVersion"
