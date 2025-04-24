@@ -159,6 +159,8 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
     void givenAValidUpdateApplicationContent_whenApiResponseIsError_thenUpdateApplicationIsFails() throws Exception {
         var stubUrl = "http://localhost:9998/api/internal/v1/assessment/rep-orders";
         var stubPath = URI.create(stubUrl).getPath();
+
+        stubForOAuth();
         wiremock.stubFor(put(stubPath)
                 .willReturn(
                         WireMock.serverError()
