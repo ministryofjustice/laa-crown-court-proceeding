@@ -63,8 +63,7 @@ public class NonServletClientConfiguration {
     
     String registrationId = servicesConfiguration.getMaatApi().getRegistrationId();
     Assert.notNull(registrationId, REGISTRATION_ID_NOT_NULL);
-    oauthFilter.setDefaultClientRegistrationId(
-        servicesConfiguration.getMaatApi().getRegistrationId());
+    oauthFilter.setDefaultClientRegistrationId(registrationId);
 
     uk.gov.justice.laa.crime.crowncourt.filter.Resilience4jRetryFilter retryFilter =
         new Resilience4jRetryFilter(retryRegistry, COURT_DATA_API_WEB_CLIENT_NAME);
@@ -87,8 +86,7 @@ public class NonServletClientConfiguration {
     
     String registrationId = servicesConfiguration.getCourtDataAdapter().getRegistrationId();
     Assert.notNull(registrationId, REGISTRATION_ID_NOT_NULL);
-    oauthFilter.setDefaultClientRegistrationId(
-        servicesConfiguration.getCourtDataAdapter().getRegistrationId());
+    oauthFilter.setDefaultClientRegistrationId(registrationId);
 
     Resilience4jRetryFilter retryFilter =
         new Resilience4jRetryFilter(retryRegistry, COURT_DATA_ADAPTOR_API_WEB_CLIENT_NAME);
