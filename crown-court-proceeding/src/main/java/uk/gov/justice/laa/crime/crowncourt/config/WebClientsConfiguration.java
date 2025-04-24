@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.config;
 
-import static uk.gov.justice.laa.crime.crowncourt.common.Constants.REGISTRATION_ID_NOT_NULL;
+import static uk.gov.justice.laa.crime.crowncourt.common.Constants.MISSING_REGISTRATION_ID;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.netty.resolver.DefaultAddressResolverGroup;
 import java.time.Duration;
@@ -79,7 +79,7 @@ public class WebClientsConfiguration {
             authorizedClients);
     
     String registrationId = servicesConfiguration.getMaatApi().getRegistrationId();
-    Assert.notNull(registrationId, REGISTRATION_ID_NOT_NULL);
+    Assert.notNull(registrationId, MISSING_REGISTRATION_ID);
     oauthFilter.setDefaultClientRegistrationId(registrationId);
 
     uk.gov.justice.laa.crime.crowncourt.filter.Resilience4jRetryFilter retryFilter =
@@ -103,7 +103,7 @@ public class WebClientsConfiguration {
             authorizedClients);
     
     String registrationId = servicesConfiguration.getEvidence().getRegistrationId();
-    Assert.notNull(registrationId, REGISTRATION_ID_NOT_NULL);
+    Assert.notNull(registrationId, MISSING_REGISTRATION_ID);
     oauthFilter.setDefaultClientRegistrationId(registrationId);
 
     Resilience4jRetryFilter retryFilter =
