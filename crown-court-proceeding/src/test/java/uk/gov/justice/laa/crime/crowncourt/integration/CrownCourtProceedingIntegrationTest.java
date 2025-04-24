@@ -103,7 +103,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message", containsString("500 Internal Server Error")))
-                .andExpect(jsonPath("$.message", containsString("/ioj-appeal/repId/" + TEST_REP_ID + "/current-passed")));
+                .andExpect(jsonPath("$.message", containsString(stubPath)));
     }
 
     @Test
@@ -172,7 +172,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
                                 TestModelDataBuilder.getApiUpdateApplicationRequest(Boolean.TRUE)), ENDPOINT_URL))
                 .andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("$.message", containsString("500 Internal Server Error")))
-                .andExpect(jsonPath("$.message", containsString("/rep-orders")));
+                .andExpect(jsonPath("$.message", containsString(stubPath)));
     }
 
     @Test
@@ -244,7 +244,7 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
                         HttpMethod.PUT, objectMapper.writeValueAsString(apiUpdateCrownCourtRequest), ENDPOINT_URL + UPDATE_CC_URL))
                 .andExpect(jsonPath("$.message", containsString("500 Internal Server Error")))
-                .andExpect(jsonPath("$.message", containsString("/rep-orders/cc-outcome/reporder/" + TEST_REP_ID)));
+                .andExpect(jsonPath("$.message", containsString(stubPath)));
     }
 
     @Test
