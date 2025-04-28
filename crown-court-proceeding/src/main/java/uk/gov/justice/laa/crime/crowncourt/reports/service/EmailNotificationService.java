@@ -3,7 +3,7 @@ package uk.gov.justice.laa.crime.crowncourt.reports.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -35,7 +35,7 @@ public class EmailNotificationService {
         sendEmailToMultipleRecipients(templateId, emailAddresses, personalisation);
     }
 
-    private void sendEmailToMultipleRecipients(String templateId, @NotNull List<String> emailAddresses, Map<String, Object> personalisation) {
+    private void sendEmailToMultipleRecipients(String templateId, @NonNull List<String> emailAddresses, Map<String, Object> personalisation) {
         emailAddresses.forEach(emailAddress -> sendEmailToRecipient(templateId, emailAddress, personalisation));
     }
 

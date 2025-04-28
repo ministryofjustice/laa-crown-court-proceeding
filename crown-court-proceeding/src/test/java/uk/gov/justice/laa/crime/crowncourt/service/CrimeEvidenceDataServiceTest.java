@@ -4,12 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.laa.crime.commons.client.RestAPIClient;
-import uk.gov.justice.laa.crime.commons.exception.APIClientException;
-import uk.gov.justice.laa.crime.crowncourt.config.MockServicesConfiguration;
-import uk.gov.justice.laa.crime.crowncourt.config.ServicesConfiguration;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import uk.gov.justice.laa.crime.crowncourt.client.EvidenceApiClient;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -21,28 +18,26 @@ import static org.mockito.Mockito.when;
 class CrimeEvidenceDataServiceTest {
 
     @Mock
-    private RestAPIClient evidenceAPIClient;
+    private EvidenceApiClient evidenceAPIClient;
 
     @InjectMocks
     private CrimeEvidenceDataService crimeEvidenceDataService;
 
-    @Spy
-    private ServicesConfiguration configuration = MockServicesConfiguration.getConfiguration(1000);
-
     @Test
-    void givenAValidEvidenceFeeRequest_whenGetCalEvidenceFeeIsInvoked_thenReturnEvidenceFeeResponse() {
-        crimeEvidenceDataService.getCalEvidenceFee(TestModelDataBuilder.getApiCalculateEvidenceFeeRequest());
-        verify(evidenceAPIClient).post(any(), any(), any(), any());
+    void givenAValidEvidenceFeeRequest_whenCalculateEvidenceFeeIsInvoked_thenReturnEvidenceFeeResponse() {
+        crimeEvidenceDataService.calculateEvidenceFee(TestModelDataBuilder.getApiCalculateEvidenceFeeRequest());
+        verify(evidenceAPIClient).calculateEvidenceFee(any());
 
     }
 
     @Test
-    void givenAValidEvidenceFeeRequest_whenGetCalEvidenceFeeIsInvokedAndTheApiCallFails_thenFailureIsHandled() {
-
-        when(evidenceAPIClient.post(any(), any(), any(), any())).thenThrow(new APIClientException());
-        assertThatThrownBy(() -> crimeEvidenceDataService.getCalEvidenceFee(
+    void givenAValidEvidenceFeeRequest_whenCalculateEvidenceFeeIsInvokedAndTheApiCallFails_thenFailureIsHandled() {
+        when(evidenceAPIClient.calculateEvidenceFee(any()))
+            .thenThrow(WebClientResponseException.class);
+        
+        assertThatThrownBy(() -> crimeEvidenceDataService.calculateEvidenceFee(
                 TestModelDataBuilder.getApiCalculateEvidenceFeeRequest())
-        ).isInstanceOf(APIClientException.class);
+        ).isInstanceOf(WebClientResponseException.class);
     }
 
 }

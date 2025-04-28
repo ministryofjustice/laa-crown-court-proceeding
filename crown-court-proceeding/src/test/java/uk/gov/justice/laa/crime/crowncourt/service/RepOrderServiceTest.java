@@ -12,12 +12,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiHardshipOverview;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiIOJSummary;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiPassportAssessment;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiCalculateEvidenceFeeResponse;
-import uk.gov.justice.laa.crime.commons.exception.APIClientException;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
@@ -48,8 +48,6 @@ class RepOrderServiceTest {
 
     @Mock
     private CrimeEvidenceDataService crimeEvidenceDataService;
-
-    private static final String ERROR_MSG = "Call to Court Data API failed, invalid response";
 
     @Test
     void givenValidIoJResult_whenGetReviewResultIsInvoked_reviewResultIsReturned() {
@@ -875,10 +873,10 @@ class RepOrderServiceTest {
     void givenAInvalidValidCrownCourt_whenUpdateIsInvoked_thenThrowError() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         when(maatCourtDataService.updateRepOrder(any()))
-                .thenThrow(new APIClientException(ERROR_MSG));
+                .thenThrow(WebClientResponseException.class);
+        
         assertThatThrownBy(() -> repOrderService.update(requestDTO))
-                .isInstanceOf(APIClientException.class)
-                .hasMessageContaining(ERROR_MSG);
+                .isInstanceOf(WebClientResponseException.class);
     }
 
     @Test
@@ -892,10 +890,9 @@ class RepOrderServiceTest {
     void givenAInvalidValidCrownCourt_whenCreateOutcomeIsInvoked_thenThrowError() {
         CrownCourtDTO requestDTO = TestModelDataBuilder.getCrownCourtDTO();
         when(maatCourtDataService.createOutcome(any()))
-                .thenThrow(new APIClientException(ERROR_MSG));
+                .thenThrow(WebClientResponseException.class);
         assertThatThrownBy(() -> repOrderService.createOutcome(requestDTO))
-                .isInstanceOf(APIClientException.class)
-                .hasMessageContaining(ERROR_MSG);
+                .isInstanceOf(WebClientResponseException.class);
     }
 
     @Test
@@ -951,10 +948,10 @@ class RepOrderServiceTest {
 
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
         when(maatCourtDataService.outcomeCount(any())).thenReturn(0L);
-        when(crimeEvidenceDataService.getCalEvidenceFee(any())).thenReturn(new ApiCalculateEvidenceFeeResponse());
+        when(crimeEvidenceDataService.calculateEvidenceFee(any())).thenReturn(new ApiCalculateEvidenceFeeResponse());
         when(maatCourtDataService.updateRepOrder(any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
-        verify(crimeEvidenceDataService).getCalEvidenceFee(any());
+        verify(crimeEvidenceDataService).calculateEvidenceFee(any());
         verify(maatCourtDataService).updateRepOrder(any());
         verify(maatCourtDataService).createOutcome(any());
         assertThat(repOrderDTO).isNotNull();
@@ -965,11 +962,11 @@ class RepOrderServiceTest {
 
         CrownCourtDTO crownCourtDTO = TestModelDataBuilder.getCrownCourtDTO();
         when(maatCourtDataService.outcomeCount(any())).thenReturn(0L);
-        when(crimeEvidenceDataService.getCalEvidenceFee(any()))
+        when(crimeEvidenceDataService.calculateEvidenceFee(any()))
                 .thenReturn(TestModelDataBuilder.getApiCalculateEvidenceFeeResponse());
         when(maatCourtDataService.updateRepOrder(any())).thenReturn(TestModelDataBuilder.getRepOrderDTO());
         RepOrderDTO repOrderDTO = repOrderService.updateCCOutcome(crownCourtDTO);
-        verify(crimeEvidenceDataService).getCalEvidenceFee(any());
+        verify(crimeEvidenceDataService).calculateEvidenceFee(any());
         verify(maatCourtDataService).updateRepOrder(any());
         verify(maatCourtDataService).createOutcome(any());
         assertThat(repOrderDTO).isNotNull();

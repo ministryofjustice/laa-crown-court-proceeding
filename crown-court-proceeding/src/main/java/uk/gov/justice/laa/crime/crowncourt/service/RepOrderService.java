@@ -254,7 +254,7 @@ public class RepOrderService {
                     && null != request.getCapitalEvidence()) {
 
                 ApiCalculateEvidenceFeeResponse evidenceFeeResponse =
-                        crimeEvidenceDataService.getCalEvidenceFee(request);
+                        crimeEvidenceDataService.calculateEvidenceFee(request);
 
                 if (null != evidenceFeeResponse.getEvidenceFee()) {
                     dto.getCrownCourtSummary().setEvidenceFeeLevel(
