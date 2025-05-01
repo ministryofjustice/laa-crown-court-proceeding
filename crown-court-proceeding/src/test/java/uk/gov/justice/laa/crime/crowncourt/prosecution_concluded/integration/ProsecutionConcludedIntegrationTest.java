@@ -58,7 +58,7 @@ class ProsecutionConcludedIntegrationTest extends WiremockIntegrationTest {
     void givenInvalidParameters_whenGetCountByMaatIdAndStatusIsInvoked_thenErrorIsThrown()
             throws Exception {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.GET, "{}",
-                        COUNT_ENDPOINT_URL, true))
+                        String.format(COUNT_ENDPOINT_URL, "INVALID_REP_ID")))
                 .andExpect(status().is4xxClientError());
     }
 

@@ -21,6 +21,7 @@ import uk.gov.justice.laa.crime.util.SortUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -83,9 +84,8 @@ public class CrownProceedingService {
             repOrderCCOutcomeList = repOrderCCOutcomeList.stream()
                     .filter(outcome -> isNotBlank(outcome.getOutcome()))
                     .collect(Collectors.toCollection(ArrayList::new));
-            SortUtils.sortListWithComparing(repOrderCCOutcomeList, RepOrderCCOutcomeDTO::getOutcomeDate,
-                                            RepOrderCCOutcomeDTO::getId, SortUtils.getComparator()
-            );
+            repOrderCCOutcomeList.sort(Comparator.comparing(RepOrderCCOutcomeDTO::getOutcomeDate, Comparator.naturalOrder())
+                    .thenComparing(RepOrderCCOutcomeDTO::getId, Comparator.naturalOrder()));
             repOrderCCOutcomeList.forEach(outcome -> {
                 CrownCourtOutcome crownCourtOutcome = CrownCourtOutcome.getFrom(outcome.getOutcome());
                 if (crownCourtOutcome != null) {
