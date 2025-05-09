@@ -90,6 +90,13 @@ cloudPlatform:
 scheduledDowntime:
   enabled: false
 
+scheduledScaling:
+  enabled: true
+  # Start at 4:15am UTC
+  scaleUp: '15 4 * * *'
+  # Stop at 4am UTC Monday-Friday
+  scaleDown: '0 4 * * *'
+
 securityContext:
   allowPrivilegeEscalation: false
   capabilities:
@@ -105,8 +112,8 @@ emailClient:
   notify_dropped_prosecution_recipient: ccmt@justice.gov.uk
 
 cron:
-  report_reactivated_cases: '0 0 8 * * *'
-  report_dropped_prosecution: '0 0 9 * * *'
+  report_reactivated_cases: '0 5 4 * * *'
+  report_dropped_prosecution: '0 10 4 * * *'
 
 logging:
   level: INFO

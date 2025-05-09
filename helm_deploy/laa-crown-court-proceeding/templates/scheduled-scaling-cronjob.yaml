@@ -1,0 +1,64 @@
+{{- if .Values.scheduledScaling.enabled -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "laa-crown-court-proceeding.fullname" . }}-scaleDown
+  labels:
+    {{- include "laa-crown-court-proceeding.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.scheduledScaling.scaleDown }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 345600 # 4 days
+      template:
+        spec:
+          containers:
+            - name: cloud-platform-tools
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 1000
+              image: ministryofjustice/cloud-platform-tools
+              args:
+                - kubectl
+                - scale
+                - deploy
+                - {{ include "laa-crown-court-proceeding.fullname" . }}
+                - --replicas=1
+          restartPolicy: OnFailure
+          serviceAccountName: {{ .Values.scheduledDowntime.serviceAccountName }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "laa-crown-court-proceeding.fullname" . | trunc 43 }}-scaleUp
+  labels:
+    {{- include "laa-crown-court-proceeding.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.scheduledScaling.scaleUp }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 345600 # 4 days
+      template:
+        spec:
+          containers:
+            - name: cloud-platform-tools
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 1000
+              image: ministryofjustice/cloud-platform-tools
+              args:
+                - kubectl
+                - scale
+                - deploy
+                - {{ include "laa-crown-court-proceeding.fullname" . }}
+                - --current-replicas=1
+                - --replicas={{ .Values.replicaCount }}
+          restartPolicy: OnFailure
+          serviceAccountName: {{ .Values.scheduledDowntime.serviceAccountName }}
+{{- end }}
