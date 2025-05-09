@@ -2,11 +2,11 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "laa-crown-court-proceeding.fullname" . }}-scaleDown
+  name: {{ include "laa-crown-court-proceeding.fullname" . }}-scaledown
   labels:
     {{- include "laa-crown-court-proceeding.labels" . | nindent 4 }}
 spec:
-  schedule: {{ .Values.scheduledScaling.scaleDown }}
+  schedule: {{ .Values.scheduledScaling.scaledown }}
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 5
@@ -33,11 +33,11 @@ spec:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "laa-crown-court-proceeding.fullname" . | trunc 43 }}-scaleUp
+  name: {{ include "laa-crown-court-proceeding.fullname" . | trunc 43 }}-scaleup
   labels:
     {{- include "laa-crown-court-proceeding.labels" . | nindent 4 }}
 spec:
-  schedule: {{ .Values.scheduledScaling.scaleUp }}
+  schedule: {{ .Values.scheduledScaling.scaleup }}
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 5

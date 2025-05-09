@@ -106,9 +106,9 @@ scheduledDowntime:
 scheduledScaling:
   enabled: true
   # Start at 8:15am UTC Monday-Friday
-  scaleUp: '20 21 * * 1-5'
+  scaleup: '20 21 * * 1-5'
   # Stop at 8am UTC Monday-Friday
-  scaleDown: '0 21 * * 1-5'
+  scaledown: '0 21 * * 1-5'
 
 securityContext:
   allowPrivilegeEscalation: false
