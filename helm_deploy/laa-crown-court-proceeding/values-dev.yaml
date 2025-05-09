@@ -106,9 +106,9 @@ scheduledDowntime:
 scheduledScaling:
   enabled: true
   # Start at 8:15am UTC Monday-Friday
-  scaleUp: '0 21 * * 1-5'
+  scaleUp: '20 21 * * 1-5'
   # Stop at 8am UTC Monday-Friday
-  scaleDown: '40 20 * * 1-5'
+  scaleDown: '0 21 * * 1-5'
 
 securityContext:
   allowPrivilegeEscalation: false
@@ -125,8 +125,8 @@ emailClient:
   notify_dropped_prosecution_recipient: LAACrimeApps@justice.gov.uk
 
 cron:
-  report_reactivated_cases: '0 40 20,21 * * *'
-  report_dropped_prosecution: '0 40 19,20 * * *'
+  report_reactivated_cases: '0 10 20,21 * * *'
+  report_dropped_prosecution: '0 15 20,21 * * *'
 
 logging:
   level: DEBUG
