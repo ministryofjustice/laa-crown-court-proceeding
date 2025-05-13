@@ -15,7 +15,6 @@ jacoco {
 
 def versions = [
         sentry                  : "8.11.1",
-        pitest                  : "1.4.10",
         awazonSqs               : "2.1.4",
         springCloud             : "3.3.0",
         crimeCommonsClasses     : "4.7.1",
@@ -95,7 +94,6 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     testImplementation "com.h2database:h2"
-    testImplementation "org.pitest:pitest:$versions.pitest"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.wiremock.integrations:wiremock-spring-boot:$versions.wiremock"
