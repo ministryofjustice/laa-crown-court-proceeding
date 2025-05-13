@@ -1,5 +1,4 @@
 {
-  "id": "fc0fc3de-1167-487e-9492-2d17f98bb14f",
   "name": "api_internal_v1_assessment_wq-link-register_5635566",
   "request": {
     "urlPattern": "/api/internal/v1/assessment/wq-link-register/([0-9]*)",
@@ -15,7 +14,6 @@
       "X-Amzn-Trace-Id": "Root=1-650374b5-29dd86a351968e25147b497d;"
     }
   },
-  "uuid": "fc0fc3de-1167-487e-9492-2d17f98bb14f",
   "persistent": true,
   "scenarioName": "scenario-1-api-internal-v1-assessment-wq-link-register-5635566",
   "insertionIndex": 1

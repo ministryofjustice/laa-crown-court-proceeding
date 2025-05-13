@@ -22,7 +22,6 @@ def versions = [
         crimeCommonsClasses              : "4.7.1",
         commonsModSchemas                : "1.34.0",
         mockitoInlineVersion             : "5.2.0",
-        wmStubRunnerVersion              : "4.0.1",
         springDocWebMVCVersion           : "2.1.0",
         awsSdkStsVersion                 : "2.20.69",
         awsJavaSdkVersion                : "1.12.783",
@@ -30,7 +29,8 @@ def versions = [
         testcontainersLocalstackVersion  : "1.18.3",
         testcontainersJunitjupiterVersion: "1.19.0",
         notifyClientVersion              : "5.1.0-RELEASE",
-        resilience4jVersion              : "2.2.0"
+        resilience4jVersion              : "2.2.0",
+        wiremock                         : "3.10.0"
 ]
 
 java {
@@ -74,10 +74,10 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
 
-    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springFrameworkCloudVersion"
     implementation "org.springframework:spring-jms"
-    implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$versions.amazonSQSVersion"
     implementation "software.amazon.awssdk:sts:$versions.awsSdkStsVersion"
+    implementation "com.amazonaws:amazon-sqs-java-messaging-lib:$versions.amazonSQSVersion"
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springFrameworkCloudVersion"
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springDocWebMVCVersion"
 
@@ -100,21 +100,22 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     testImplementation "com.h2database:h2"
-    testImplementation "org.mockito:mockito-inline:$versions.mockitoInlineVersion"
-    testImplementation "org.springframework.security:spring-security-test"
-    testImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.wmStubRunnerVersion"
     testImplementation "org.pitest:pitest:$versions.pitest"
+    testImplementation "org.springframework.security:spring-security-test"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.wiremock.integrations:wiremock-spring-boot:${versions.wiremock}"
 
     testCompileOnly "org.projectlombok:lombok"
     testAnnotationProcessor "org.projectlombok:lombok"
     //dependencies for ProsecutionListenerTest only
-    testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk-sqs:$versions.awsJavaSdkVersion"
-    testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk:$versions.awsJavaSdkVersion"
-    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainersJunitjupiterVersion"
-    testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainersLocalstackVersion"
-    testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$versions.localstackUtilsVersion"
     testSqsIntegrationImplementation "com.h2database:h2"
-    testSqsIntegrationImplementation "org.springframework.cloud:spring-cloud-starter-contract-stub-runner:$versions.wmStubRunnerVersion"
+    testSqsIntegrationImplementation "org.springframework.boot:spring-boot-starter-test"
+    testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk:$versions.awsJavaSdkVersion"
+    testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk-sqs:$versions.awsJavaSdkVersion"
+    testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$versions.localstackUtilsVersion"
+    testSqsIntegrationImplementation "org.wiremock.integrations:wiremock-spring-boot:${versions.wiremock}"
+    testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainersLocalstackVersion"
+    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainersJunitjupiterVersion"
 }
 
 configurations {
