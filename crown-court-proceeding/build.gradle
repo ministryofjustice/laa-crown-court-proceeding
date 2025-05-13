@@ -38,19 +38,18 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    testSqsIntegrationImplementation.extendsFrom testImplementation
+}
+
 sourceSets {
     testSqsIntegration {
         compileClasspath += sourceSets.main.output
         runtimeClasspath += sourceSets.main.output
     }
-}
-
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-    testSqsIntegrationImplementation.extendsFrom implementation
 }
 
 repositories {
@@ -108,20 +107,11 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok"
     testAnnotationProcessor "org.projectlombok:lombok"
     //dependencies for ProsecutionListenerTest only
-    testSqsIntegrationImplementation "com.h2database:h2"
-    testSqsIntegrationImplementation "org.springframework.boot:spring-boot-starter-test"
     testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk:$versions.awsJavaSdkVersion"
     testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk-sqs:$versions.awsJavaSdkVersion"
     testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$versions.localstackUtilsVersion"
-    testSqsIntegrationImplementation "org.wiremock.integrations:wiremock-spring-boot:${versions.wiremock}"
     testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainersLocalstackVersion"
     testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainersJunitjupiterVersion"
-}
-
-configurations {
-    testImplementation {
-        exclude group: 'junit', module: 'junit'
-    }
 }
 
 test {
@@ -132,8 +122,8 @@ test {
 
 task testSqsIntegration(type: Test) {
     useJUnitPlatform()
-    testClassesDirs = sourceSets.testSqsIntegration.output.classesDirs
     classpath = sourceSets.testSqsIntegration.runtimeClasspath
+    testClassesDirs = sourceSets.testSqsIntegration.output.classesDirs
 }
 
 check.dependsOn testSqsIntegration
