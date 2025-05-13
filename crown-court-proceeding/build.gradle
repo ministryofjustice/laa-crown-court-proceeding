@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "jacoco"
     id "org.sonarqube" version "4.0.0.2929"
-    id "info.solidsoft.pitest" version "1.9.11"
+    id "info.solidsoft.pitest" version "1.15.0"
     id "org.springframework.boot" version "3.4.5"
     id "io.spring.dependency-management" version "1.1.6"
 }
@@ -25,7 +25,7 @@ def versions = [
         wmStubRunnerVersion              : "4.0.1",
         springDocWebMVCVersion           : "2.1.0",
         awsSdkStsVersion                 : "2.20.69",
-        awsJavaSdkVersion                : "1.12.264",
+        awsJavaSdkVersion                : "1.12.783",
         localstackUtilsVersion           : "0.2.23",
         testcontainersLocalstackVersion  : "1.18.3",
         testcontainersJunitjupiterVersion: "1.19.0",
