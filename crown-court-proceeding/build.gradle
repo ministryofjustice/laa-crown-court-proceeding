@@ -25,7 +25,6 @@ def versions = [
         springDocWebMVCVersion           : "2.1.0",
         awsSdkStsVersion                 : "2.20.69",
         awsJavaSdkVersion                : "1.12.783",
-        localstackUtilsVersion           : "0.2.23",
         testcontainersLocalstackVersion  : "1.18.3",
         testcontainersJunitjupiterVersion: "1.19.0",
         notifyClientVersion              : "5.1.0-RELEASE",
@@ -109,7 +108,6 @@ dependencies {
     //dependencies for ProsecutionListenerTest only
     testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk:$versions.awsJavaSdkVersion"
     testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk-sqs:$versions.awsJavaSdkVersion"
-    testSqsIntegrationImplementation "cloud.localstack:localstack-utils:$versions.localstackUtilsVersion"
     testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainersLocalstackVersion"
     testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainersJunitjupiterVersion"
 }
