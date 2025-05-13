@@ -39,7 +39,10 @@ class CrownCourtProceedingIntegrationTest extends WiremockIntegrationTest {
 
     private MockMvc mvc;
     
-    @MockBean
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockitoBean
     private TraceIdHandler traceIdHandler;
 
     @Autowired
