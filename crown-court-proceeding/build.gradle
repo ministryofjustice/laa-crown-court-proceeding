@@ -113,7 +113,7 @@ test {
     finalizedBy jacocoTestReport
 }
 
-task testSqsIntegration(type: Test) {
+tasks.register('testSqsIntegration', Test) {
     useJUnitPlatform()
     classpath = sourceSets.testSqsIntegration.runtimeClasspath
     testClassesDirs = sourceSets.testSqsIntegration.output.classesDirs
