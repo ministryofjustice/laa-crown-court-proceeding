@@ -66,7 +66,6 @@ dependencies {
     
     implementation "uk.gov.justice.service.laa-crime:crime-commons-classes:$versions.crimeCommonsClasses"
     implementation "uk.gov.justice.service.laa-crime:crime-commons-mod-schemas:$versions.commonsModSchemas"
-    implementation "org.apache.tomcat.embed:tomcat-embed-core"
     
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-web"
@@ -75,7 +74,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-    implementation "org.springframework.security:spring-security-crypto"
 
     implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs:$versions.springFrameworkCloudVersion"
     implementation "org.springframework:spring-jms"
@@ -86,15 +84,14 @@ dependencies {
 
     implementation "io.github.resilience4j:resilience4j-reactor:$versions.resilience4jVersion"
     implementation "io.github.resilience4j:resilience4j-spring-boot3:$versions.resilience4jVersion"
-    
-    // Spring Boot version contains security vulnerabilities raised by Snyk
-    implementation "org.postgresql:postgresql:$versions.postgresqlVersion"
+
+    implementation "org.postgresql:postgresql"
     implementation "org.liquibase:liquibase-core"
 
     implementation "com.google.code.gson:gson"
 
-    implementation "io.micrometer:micrometer-registry-prometheus"
     implementation 'io.micrometer:micrometer-tracing'
+    implementation "io.micrometer:micrometer-registry-prometheus"
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 
     implementation "uk.gov.service.notify:notifications-java-client:$versions.notifyClientVersion"
