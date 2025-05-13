@@ -1,7 +1,7 @@
 plugins {
     id "java"
     id "jacoco"
-    id "org.sonarqube" version "4.0.0.2929"
+    id "org.sonarqube" version "6.1.0.5360"
     id "info.solidsoft.pitest" version "1.15.0"
     id "org.springframework.boot" version "3.4.5"
     id "io.spring.dependency-management" version "1.1.6"
@@ -154,17 +154,30 @@ jacocoTestReport {
 }
 
 pitest {
-    targetClasses = ["uk.gov.justice.laa.crime.crowncourt.*", "uk.gov.justice.laa.crime.crowncourt.controller.*", "uk.gov.justice.laa.crime.crowncourt.validation.*"]
-    excludedClasses = ["uk.gov.justice.laa.crime.crowncourt.dto.*", "uk.gov.justice.laa.crime.crowncourt.mapper.*", "uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication"]
+    targetClasses = ["uk.gov.justice.laa.crime.crowncourt.*",
+                     "uk.gov.justice.laa.crime.crowncourt.controller.*",
+                     "uk.gov.justice.laa.crime.crowncourt.validation.*"
+    ]
+    excludedClasses = ["uk.gov.justice.laa.crime.crowncourt.dto.*",
+                       "uk.gov.justice.laa.crime.crowncourt.mapper.*",
+                       "uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication"
+    ]
     threads = 5
-    outputFormats = ["XML", "HTML"]
-    timestampedReports = false
     mutationThreshold = 60
+    timestampedReports = false
+    outputFormats = ["XML", "HTML"]
 }
 
-tasks["sonar"].dependsOn test
+def isCiBuild = System.getenv("SONAR_TOKEN") != null
+
+if (isCiBuild) {
+    tasks.named("sonar") {
+        dependsOn "test"
+    }
+}
 
 sonar {
+    skipProject = !isCiBuild
     properties {
         property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java"
         property "sonar.coverage.exclusions", "**/CrownCourtProceedingApplication.java"
