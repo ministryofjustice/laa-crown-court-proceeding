@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
@@ -29,11 +29,12 @@ class ProsecutionConcludedControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @MockBean
+    @MockitoBean
+    private TraceIdHandler traceIdHandler;
+
+    @MockitoBean
     private ProsecutionConcludedDataService service;
 
-    @MockBean
-    private TraceIdHandler traceIdHandler;
 
     @Test
     void givenIncorrectParameters_whenGetCountByMaatIdAndStatusIsInvoked_thenErrorIsThrown()

@@ -1,14 +1,19 @@
 package uk.gov.justice.laa.crime.crowncourt.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
@@ -18,11 +23,6 @@ import uk.gov.justice.laa.crime.crowncourt.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.crowncourt.validation.CrownCourtDetailsValidator;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DirtiesContext
 @AutoConfigureMockMvc(addFilters = false)
@@ -40,17 +40,18 @@ class CrownProceedingControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
+    private TraceIdHandler traceIdHandler;
+
+    @MockitoBean
     private CrownProceedingService crownProceedingService;
 
-    @MockBean
-    private CrownCourtDetailsValidator crownCourtDetailsValidator;
-
-    @MockBean
+    @MockitoBean
     private DeadLetterMessageService deadLetterMessageService;
 
-    @MockBean
-    private TraceIdHandler traceIdHandler;
+    @MockitoBean
+    private CrownCourtDetailsValidator crownCourtDetailsValidator;
+
 
     @Test
     void processRepOrder_Success() throws Exception {

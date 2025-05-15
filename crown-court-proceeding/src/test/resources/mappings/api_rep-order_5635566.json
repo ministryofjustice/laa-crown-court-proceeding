@@ -1,5 +1,4 @@
 {
-  "id": "d1e8e869-6248-4178-896d-df359af9067c",
   "name": "api_internal_v1_assessment_rep-orders_5635567",
   "request": {
     "urlPattern": "/api/internal/v1/assessment/rep-orders/([0-9]*)",
@@ -15,7 +14,6 @@
       "X-Amzn-Trace-Id": "Root=1-65083673-48c627b220383f8311bfc165;"
     }
   },
-  "uuid": "d1e8e869-6248-4178-896d-df359af9067c",
   "persistent": true,
   "insertionIndex": 18
 }

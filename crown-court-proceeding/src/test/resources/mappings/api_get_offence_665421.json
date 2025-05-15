@@ -1,5 +1,4 @@
 {
-  "id": "8a250d99-fe63-42ce-9768-c0ed7df7474c",
   "name": "api_internal_v1_assessment_offence_ed0e9d59-cc1c-4869-8fcd-464caf770744_case_665421",
   "request": {
     "urlPath": "/api/internal/v1/assessment/offence/ed0e9d59-cc1c-4869-8fcd-464caf770744/case/665421",
@@ -15,7 +14,6 @@
       "Content-Type": "application/json"
     }
   },
-  "uuid": "8a250d99-fe63-42ce-9768-c0ed7df7474c",
   "persistent": true,
   "insertionIndex": 12
 }

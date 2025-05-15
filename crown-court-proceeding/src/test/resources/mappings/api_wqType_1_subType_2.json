@@ -1,5 +1,4 @@
 {
-  "id": "0ba779d1-401d-4f32-8721-ca74f5fb1dde",
   "name": "api_internal_v1_assessment_xlat-result_wqtype_1_subtype_2",
   "request": {
     "url": "/api/internal/v1/assessment/xlat-result/wqType/1/subType/2",
@@ -15,7 +14,6 @@
       "X-Amzn-Trace-Id": "Root=1-65038462-77865e616e79c8af61968cca;"
     }
   },
-  "uuid": "0ba779d1-401d-4f32-8721-ca74f5fb1dde",
   "persistent": true,
   "scenarioName": "scenario-1-api-internal-v1-assessment-xlat-result-wqType-1-subType-2",
   "requiredScenarioState": "Started",

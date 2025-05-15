@@ -1,6 +1,15 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
 
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,16 +26,6 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderReque
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
-import uk.gov.justice.laa.crime.util.SortUtils;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -83,9 +82,8 @@ public class CrownProceedingService {
             repOrderCCOutcomeList = repOrderCCOutcomeList.stream()
                     .filter(outcome -> isNotBlank(outcome.getOutcome()))
                     .collect(Collectors.toCollection(ArrayList::new));
-            SortUtils.sortListWithComparing(repOrderCCOutcomeList, RepOrderCCOutcomeDTO::getOutcomeDate,
-                                            RepOrderCCOutcomeDTO::getId, SortUtils.getComparator()
-            );
+            repOrderCCOutcomeList.sort(Comparator.comparing(RepOrderCCOutcomeDTO::getOutcomeDate, Comparator.naturalOrder())
+                    .thenComparing(RepOrderCCOutcomeDTO::getId, Comparator.naturalOrder()));
             repOrderCCOutcomeList.forEach(outcome -> {
                 CrownCourtOutcome crownCourtOutcome = CrownCourtOutcome.getFrom(outcome.getOutcome());
                 if (crownCourtOutcome != null) {
