@@ -4,9 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.*;
-
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Getter
@@ -37,5 +36,4 @@ public class CrownCourtsEntity {
 
     @Column(name = "OU_CODE", length = 7)
     private String ouCode;
-
 }

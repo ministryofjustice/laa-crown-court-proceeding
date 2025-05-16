@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.builder;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -9,9 +11,6 @@ import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplica
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateCrownCourtRequest;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -29,7 +28,8 @@ public class CrownCourtDTOBuilder {
         return builder.build();
     }
 
-    private static CrownCourtDTO.CrownCourtDTOBuilder mapToCrownCourtDTO(final ApiProcessRepOrderRequest request) {
+    private static CrownCourtDTO.CrownCourtDTOBuilder mapToCrownCourtDTO(
+            final ApiProcessRepOrderRequest request) {
         return CrownCourtDTO.builder()
                 .repId(request.getRepId())
                 .caseType(request.getCaseType())
@@ -37,20 +37,21 @@ public class CrownCourtDTOBuilder {
                 .magsDecisionResult(
                         MagsDecisionResult.builder()
                                 .decisionReason(request.getDecisionReason())
-                                .decisionDate(Optional.ofNullable(request.getDecisionDate()).map(LocalDateTime::toLocalDate).orElse(null))
-                                .build()
-                )
+                                .decisionDate(
+                                        Optional.ofNullable(request.getDecisionDate())
+                                                .map(LocalDateTime::toLocalDate)
+                                                .orElse(null))
+                                .build())
                 .committalDate(request.getCommittalDate())
                 .dateReceived(request.getDateReceived())
                 .crownCourtSummary(request.getCrownCourtSummary())
                 .iojSummary(request.getIojAppeal())
                 .financialAssessment(request.getFinancialAssessment())
                 .passportAssessment(request.getPassportAssessment());
-
     }
 
-    private static void mapUpdateApplicationRequestToCrownCourtDTO(ApiUpdateApplicationRequest updateRequest
-            , CrownCourtDTO.CrownCourtDTOBuilder builder) {
+    private static void mapUpdateApplicationRequestToCrownCourtDTO(
+            ApiUpdateApplicationRequest updateRequest, CrownCourtDTO.CrownCourtDTOBuilder builder) {
 
         builder.userSession(updateRequest.getUserSession())
                 .crownRepId(updateRequest.getCrownRepId())
@@ -69,13 +70,12 @@ public class CrownCourtDTOBuilder {
                 .build();
     }
 
-    private static void mapUpdateCrownCourtRequestToCrownCourtDTO(final ApiUpdateCrownCourtRequest request,
-                                                                  CrownCourtDTO.CrownCourtDTOBuilder builder) {
+    private static void mapUpdateCrownCourtRequestToCrownCourtDTO(
+            final ApiUpdateCrownCourtRequest request, CrownCourtDTO.CrownCourtDTOBuilder builder) {
         builder.capitalEvidence(request.getCapitalEvidence())
                 .incomeEvidenceReceivedDate(request.getIncomeEvidenceReceivedDate())
                 .capitalEvidenceReceivedDate(request.getCapitalEvidenceReceivedDate())
                 .emstCode(request.getEmstCode())
                 .build();
-
     }
 }

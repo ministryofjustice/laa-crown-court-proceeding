@@ -28,29 +28,23 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderReque
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
 class MaatCourtDataServiceTest {
-    
-    @Mock
-    MaatCourtDataApiClient maatAPIClient;
-    
-    @Mock
-    EvidenceApiClient evidenceApiClient;
-    
-    @InjectMocks
-    private MaatCourtDataService maatCourtDataService;
 
-    @InjectMocks
-    private CrimeEvidenceDataService evidenceService;
+    @Mock MaatCourtDataApiClient maatAPIClient;
+
+    @Mock EvidenceApiClient evidenceApiClient;
+
+    @InjectMocks private MaatCourtDataService maatCourtDataService;
+
+    @InjectMocks private CrimeEvidenceDataService evidenceService;
 
     @Test
     void givenRepId_whenGetCurrentPassedIojAppealFromRepIdIsInvoked_thenResponseIsReturned() {
         IOJAppealDTO expected = new IOJAppealDTO();
-        when(maatAPIClient.getCurrentPassedIOJAppeal(any()))
-                .thenReturn(expected);
+        when(maatAPIClient.getCurrentPassedIOJAppeal(any())).thenReturn(expected);
 
         IOJAppealDTO response =
                 maatCourtDataService.getCurrentPassedIOJAppealFromRepId(
-                        TestModelDataBuilder.TEST_REP_ID
-                );
+                        TestModelDataBuilder.TEST_REP_ID);
 
         assertThat(response).isEqualTo(expected);
     }
@@ -58,9 +52,7 @@ class MaatCourtDataServiceTest {
     @Test
     void givenUpdateRepOrderRequest_whenUpdateRepOrderIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.updateRepOrder(UpdateRepOrderRequestDTO.builder().build());
-        verify(maatAPIClient).updateRepOrder(
-                any(UpdateRepOrderRequestDTO.class)
-        );
+        verify(maatAPIClient).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
     }
 
     @Test
@@ -72,18 +64,18 @@ class MaatCourtDataServiceTest {
     @Test
     void givenAValidRequest_whenCreateOutcomeIsInvoked_thenResponseIsReturned() {
         maatCourtDataService.createOutcome(RepOrderCCOutcomeDTO.builder().build());
-        verify(maatAPIClient).createCrownCourtOutcome(
-                any(RepOrderCCOutcomeDTO.class)
-        );
+        verify(maatAPIClient).createCrownCourtOutcome(any(RepOrderCCOutcomeDTO.class));
     }
 
     @Test
     void givenAInvalidParameter_whenGetRepOrderCCOutcomeByRepIdIsInvoked_thenReturnError() {
         when(maatAPIClient.getRepOrderCCOutcomeByRepId(any()))
                 .thenThrow(WebClientResponseException.class);
-        assertThatThrownBy(() -> maatCourtDataService.getRepOrderCCOutcomeByRepId(
-                TestModelDataBuilder.TEST_REP_ID)
-        ).isInstanceOf(WebClientResponseException.class);
+        assertThatThrownBy(
+                        () ->
+                                maatCourtDataService.getRepOrderCCOutcomeByRepId(
+                                        TestModelDataBuilder.TEST_REP_ID))
+                .isInstanceOf(WebClientResponseException.class);
     }
 
     @Test
@@ -95,7 +87,8 @@ class MaatCourtDataServiceTest {
     }
 
     @Test
-    void givenAValidEvidenceFeeRequest_whenOutcomeCountIsInvokedAndNullIsReturned_then0IsReturned() {
+    void
+            givenAValidEvidenceFeeRequest_whenOutcomeCountIsInvokedAndNullIsReturned_then0IsReturned() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Total-Records", "0");
         ResponseEntity<Void> response = new ResponseEntity<>(null, headers, HttpStatus.OK);
@@ -105,11 +98,12 @@ class MaatCourtDataServiceTest {
     }
 
     @Test
-    void givenAValidEvidenceFeeRequest_whenCalculateEvidenceFeeIsInvokedAndTheApiCallFails_thenFailureIsHandled() {
+    void
+            givenAValidEvidenceFeeRequest_whenCalculateEvidenceFeeIsInvokedAndTheApiCallFails_thenFailureIsHandled() {
         when(maatAPIClient.getOutcomeCount(anyInt())).thenThrow(WebClientResponseException.class);
-        assertThatThrownBy(() -> maatCourtDataService.outcomeCount(
-            TestModelDataBuilder.TEST_REP_ID)
-        ).isInstanceOf(WebClientResponseException.class);
+        assertThatThrownBy(
+                        () -> maatCourtDataService.outcomeCount(TestModelDataBuilder.TEST_REP_ID))
+                .isInstanceOf(WebClientResponseException.class);
         verify(maatAPIClient).getOutcomeCount(any());
     }
 }

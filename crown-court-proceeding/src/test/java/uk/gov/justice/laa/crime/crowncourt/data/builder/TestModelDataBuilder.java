@@ -1,5 +1,9 @@
 package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.common.ApiCrownCourtOutcome;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
@@ -13,25 +17,17 @@ import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
-import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.enums.*;
-
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 @Component
 public class TestModelDataBuilder {
 
-    public static final LocalDateTime TEST_COMMITTAL_DATE =
-            LocalDateTime.of(2020, 10, 5, 0, 0, 0);
-    public static final LocalDateTime TEST_DECISION_DATE =
-            LocalDateTime.of(2021, 6, 5, 0, 0, 0);
-    public static final LocalDateTime TEST_DATE_RECEIVED =
-            LocalDateTime.of(2022, 10, 9, 15, 1, 25);
+    public static final LocalDateTime TEST_COMMITTAL_DATE = LocalDateTime.of(2020, 10, 5, 0, 0, 0);
+    public static final LocalDateTime TEST_DECISION_DATE = LocalDateTime.of(2021, 6, 5, 0, 0, 0);
+    public static final LocalDateTime TEST_DATE_RECEIVED = LocalDateTime.of(2022, 10, 9, 15, 1, 25);
     public static final LocalDateTime TEST_REP_ORDER_DATE =
             LocalDateTime.of(2022, 10, 19, 15, 1, 25);
     public static final LocalDateTime TEST_WITHDRAWAL_DATE =
@@ -40,12 +36,10 @@ public class TestModelDataBuilder {
             LocalDateTime.of(2022, 1, 19, 15, 1, 25);
     public static final LocalDateTime TEST_SENTENCE_ORDER_DATE =
             LocalDateTime.of(2022, 2, 19, 15, 1, 25);
-    public static final LocalDateTime TEST_DATE_MODIFIED =
-            LocalDateTime.of(2023, 1, 10, 11, 1, 25);
+    public static final LocalDateTime TEST_DATE_MODIFIED = LocalDateTime.of(2023, 1, 10, 11, 1, 25);
     public static final LocalDateTime TEST_CROWN_REP_ORDER_DATE =
             LocalDateTime.of(2022, 10, 19, 0, 0, 0);
-    public static final LocalDateTime INCOME_EVIDENCE_DATE =
-            LocalDateTime.of(2023, 6, 5, 15, 0, 0);
+    public static final LocalDateTime INCOME_EVIDENCE_DATE = LocalDateTime.of(2023, 6, 5, 15, 0, 0);
     public static final LocalDateTime CAPITAL_EVIDENCE_DATE =
             LocalDateTime.of(2023, 6, 5, 15, 0, 0);
 
@@ -68,12 +62,13 @@ public class TestModelDataBuilder {
                 .withCommittalDate(TEST_COMMITTAL_DATE)
                 .withDecisionDate(TEST_DECISION_DATE)
                 .withDateReceived(TEST_DATE_RECEIVED)
-                .withCrownCourtSummary(new ApiCrownCourtSummary()
-                        .withRepId(isValid ? TEST_REP_ID : null)
-                        .withRepOrderDate(TEST_REP_ORDER_DATE)
-                        .withRepType(TEST_REP_TYPE)
-                        .withRepOrderDecision(MOCK_DECISION)
-                        .withWithdrawalDate(TEST_WITHDRAWAL_DATE))
+                .withCrownCourtSummary(
+                        new ApiCrownCourtSummary()
+                                .withRepId(isValid ? TEST_REP_ID : null)
+                                .withRepOrderDate(TEST_REP_ORDER_DATE)
+                                .withRepType(TEST_REP_TYPE)
+                                .withRepOrderDecision(MOCK_DECISION)
+                                .withWithdrawalDate(TEST_WITHDRAWAL_DATE))
                 .withIojAppeal(getIojSummary())
                 .withFinancialAssessment(getFinancialAssessment())
                 .withPassportAssessment(getPassportAssessment());
@@ -93,9 +88,10 @@ public class TestModelDataBuilder {
                 .withInitStatus(CurrentStatus.COMPLETE)
                 .withFullResult(FullAssessmentResult.PASS.getResult())
                 .withFullStatus(CurrentStatus.COMPLETE)
-                .withHardshipOverview(new ApiHardshipOverview()
-                        .withAssessmentStatus(CurrentStatus.COMPLETE)
-                        .withReviewResult(ReviewResult.PASS));
+                .withHardshipOverview(
+                        new ApiHardshipOverview()
+                                .withAssessmentStatus(CurrentStatus.COMPLETE)
+                                .withReviewResult(ReviewResult.PASS));
     }
 
     public static ApiPassportAssessment getPassportAssessment() {
@@ -119,8 +115,7 @@ public class TestModelDataBuilder {
                 .magsDecisionResult(
                         MagsDecisionResult.builder()
                                 .decisionDate(TEST_DECISION_DATE.toLocalDate())
-                                .build()
-                )
+                                .build())
                 .crownCourtSummary(getCrownCourtSummary())
                 .passportAssessment(getPassportAssessment())
                 .financialAssessment(getFinancialAssessment())
@@ -137,7 +132,8 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static CrownCourtDTO getCrownCourtDTO(CaseType caseType, MagCourtOutcome magCourtOutcome) {
+    public static CrownCourtDTO getCrownCourtDTO(
+            CaseType caseType, MagCourtOutcome magCourtOutcome) {
         return CrownCourtDTO.builder()
                 .repId(TEST_REP_ID)
                 .caseType(caseType)
@@ -157,11 +153,13 @@ public class TestModelDataBuilder {
                 .withIsImprisoned(true)
                 .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
                 .withCrownCourtOutcome(
-                        List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED, TEST_SENTENCE_ORDER_DATE)));
+                        List.of(
+                                getApiCrownCourtOutcome(
+                                        CrownCourtOutcome.AQUITTED, TEST_SENTENCE_ORDER_DATE)));
     }
 
-    public static ApiCrownCourtOutcome getApiCrownCourtOutcome(CrownCourtOutcome crownCourtOutcome,
-                                                               LocalDateTime dateSet) {
+    public static ApiCrownCourtOutcome getApiCrownCourtOutcome(
+            CrownCourtOutcome crownCourtOutcome, LocalDateTime dateSet) {
         return new ApiCrownCourtOutcome()
                 .withOutcome(crownCourtOutcome)
                 .withDateSet(dateSet)
@@ -183,23 +181,24 @@ public class TestModelDataBuilder {
                 .withSessionId(UUID.randomUUID().toString());
     }
 
-
     public static ApiUpdateApplicationRequest getApiUpdateApplicationRequest(boolean isValid) {
         return new ApiUpdateApplicationRequest()
                 .withRepId(isValid ? TEST_REP_ID : null)
                 .withApplicantHistoryId(TEST_APPLICANT_HISTORY_ID)
-                .withCrownCourtSummary(new ApiCrownCourtSummary()
-                        .withRepId(isValid ? TEST_REP_ID : null)
-                        .withRepOrderDate(TEST_REP_ORDER_DATE)
-                        .withRepType(TEST_REP_TYPE)
-                        .withRepOrderDecision(MOCK_DECISION)
-                        .withWithdrawalDate(TEST_WITHDRAWAL_DATE)
-                        .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
-                        .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE)
-                        .withCrownCourtOutcome(
-                                List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED,
-                                        LocalDateTime.now()
-                                ))))
+                .withCrownCourtSummary(
+                        new ApiCrownCourtSummary()
+                                .withRepId(isValid ? TEST_REP_ID : null)
+                                .withRepOrderDate(TEST_REP_ORDER_DATE)
+                                .withRepType(TEST_REP_TYPE)
+                                .withRepOrderDecision(MOCK_DECISION)
+                                .withWithdrawalDate(TEST_WITHDRAWAL_DATE)
+                                .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
+                                .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE)
+                                .withCrownCourtOutcome(
+                                        List.of(
+                                                getApiCrownCourtOutcome(
+                                                        CrownCourtOutcome.AQUITTED,
+                                                        LocalDateTime.now()))))
                 .withUserSession(getApiUserSession(isValid))
                 .withCaseType(CaseType.EITHER_WAY)
                 .withMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL)
@@ -218,18 +217,20 @@ public class TestModelDataBuilder {
         return new ApiUpdateCrownCourtRequest()
                 .withRepId(isValid ? TEST_REP_ID : null)
                 .withApplicantHistoryId(TEST_APPLICANT_HISTORY_ID)
-                .withCrownCourtSummary(new ApiCrownCourtSummary()
-                        .withRepId(isValid ? TEST_REP_ID : null)
-                        .withRepOrderDate(TEST_REP_ORDER_DATE)
-                        .withRepType(TEST_REP_TYPE)
-                        .withRepOrderDecision(MOCK_DECISION)
-                        .withWithdrawalDate(TEST_WITHDRAWAL_DATE)
-                        .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
-                        .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE)
-                        .withCrownCourtOutcome(
-                                List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED,
-                                        LocalDateTime.now()
-                                ))))
+                .withCrownCourtSummary(
+                        new ApiCrownCourtSummary()
+                                .withRepId(isValid ? TEST_REP_ID : null)
+                                .withRepOrderDate(TEST_REP_ORDER_DATE)
+                                .withRepType(TEST_REP_TYPE)
+                                .withRepOrderDecision(MOCK_DECISION)
+                                .withWithdrawalDate(TEST_WITHDRAWAL_DATE)
+                                .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
+                                .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE)
+                                .withCrownCourtOutcome(
+                                        List.of(
+                                                getApiCrownCourtOutcome(
+                                                        CrownCourtOutcome.AQUITTED,
+                                                        LocalDateTime.now()))))
                 .withUserSession(getApiUserSession(isValid))
                 .withCaseType(CaseType.EITHER_WAY)
                 .withMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL)
@@ -245,10 +246,10 @@ public class TestModelDataBuilder {
                 .withCapitalEvidenceReceivedDate(CAPITAL_EVIDENCE_DATE)
                 .withEmstCode(EMST_CODE)
                 .withCapitalEvidence(List.of(getCapitalEvidenceDTO(TEST_DATE_RECEIVED, "Type")));
-   }
+    }
 
-    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId, String outcome,
-                                                               LocalDateTime outcomeDate) {
+    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(
+            Integer outcomeId, String outcome, LocalDateTime outcomeDate) {
         return RepOrderCCOutcomeDTO.builder()
                 .id(outcomeId)
                 .outcome(outcome)
@@ -274,14 +275,18 @@ public class TestModelDataBuilder {
         return ProsecutionConcluded.builder()
                 .isConcluded(true)
                 .maatId(123456)
-                .offenceSummary(List.of(
-                        OffenceSummary.builder()
-                                .offenceCode("1212")
-                                .verdict(getVerdict("GUILTY", "2021-11-12"))
-                                .plea(Plea.builder().value("NOT_GUILTY").pleaDate("2021-11-12").build())
-                                .proceedingsConcludedChangedDate("2021-11-12")
-                                .build()
-                ))
+                .offenceSummary(
+                        List.of(
+                                OffenceSummary.builder()
+                                        .offenceCode("1212")
+                                        .verdict(getVerdict("GUILTY", "2021-11-12"))
+                                        .plea(
+                                                Plea.builder()
+                                                        .value("NOT_GUILTY")
+                                                        .pleaDate("2021-11-12")
+                                                        .build())
+                                        .proceedingsConcludedChangedDate("2021-11-12")
+                                        .build()))
                 .build();
     }
 
@@ -294,12 +299,10 @@ public class TestModelDataBuilder {
                 .caseUrn(TEST_CASE_ID.toString())
                 .resultCodes("code1,code2,code3")
                 .build();
-
     }
 
     public static ProsecutionConcludedEntity getProsecutionConcludedEntity() {
-        return ProsecutionConcludedEntity
-                .builder()
+        return ProsecutionConcludedEntity.builder()
                 .maatId(TEST_REP_ID)
                 .caseData(getCaseData().getBytes(StandardCharsets.UTF_8))
                 .status(CaseConclusionStatus.PENDING.name())
@@ -380,17 +383,19 @@ public class TestModelDataBuilder {
 
     public static ApiCalculateEvidenceFeeResponse getApiCalculateEvidenceFeeResponse() {
         ApiCalculateEvidenceFeeResponse response = new ApiCalculateEvidenceFeeResponse();
-        response.setEvidenceFee(new ApiEvidenceFee().withFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
-                                        .withDescription(EvidenceFeeLevel.LEVEL1.getDescription()));
+        response.setEvidenceFee(
+                new ApiEvidenceFee()
+                        .withFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
+                        .withDescription(EvidenceFeeLevel.LEVEL1.getDescription()));
         return response;
     }
 
-    public static ApiCapitalEvidence getCapitalEvidenceDTO(LocalDateTime dataReceived, String evidenceType) {
+    public static ApiCapitalEvidence getCapitalEvidenceDTO(
+            LocalDateTime dataReceived, String evidenceType) {
         ApiCapitalEvidence evidence = new ApiCapitalEvidence();
         evidence.setDateReceived(dataReceived);
         evidence.setEvidenceType(evidenceType);
         return evidence;
-
     }
 
     public static ApiCalculateEvidenceFeeRequest getApiCalculateEvidenceFeeRequest() {
@@ -417,8 +422,9 @@ public class TestModelDataBuilder {
         response.setCrownCourtSummary(summary);
         return response;
     }
-    
-    public static ApiDetermineMagsRepDecisionRequest getApiDetermineMagsRepDecisionRequest(boolean isValid) {
+
+    public static ApiDetermineMagsRepDecisionRequest getApiDetermineMagsRepDecisionRequest(
+            boolean isValid) {
         return new ApiDetermineMagsRepDecisionRequest()
                 .withCaseType(CaseType.INDICTABLE)
                 .withRepId(isValid ? TEST_REP_ID : null)

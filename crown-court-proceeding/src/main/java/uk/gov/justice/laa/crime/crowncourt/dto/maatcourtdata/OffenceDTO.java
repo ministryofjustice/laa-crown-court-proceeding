@@ -1,11 +1,10 @@
 package uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata;
 
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Data
 @Builder
@@ -35,5 +34,4 @@ public class OffenceDTO {
     private String attribute5;
     private String offenceId;
     private String isCCNewOffence;
-
 }

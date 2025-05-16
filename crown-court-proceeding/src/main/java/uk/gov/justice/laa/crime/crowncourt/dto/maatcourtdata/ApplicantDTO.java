@@ -1,22 +1,20 @@
 package uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApplicantDTO implements Serializable {
-    @JsonValue
-    private Integer id;
+    @JsonValue private Integer id;
     private String firstName;
     private String lastName;
     private String otherNames;

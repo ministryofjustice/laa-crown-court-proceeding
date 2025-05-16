@@ -1,16 +1,15 @@
 package uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.crime.crowncourt.model.ChildWeightings;
 import uk.gov.justice.laa.crime.crowncourt.model.FinancialAssessmentDetails;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Builder
@@ -58,10 +57,9 @@ public class FinancialAssessmentDTO {
     private LocalDateTime firstReminderDate;
     private LocalDateTime secondReminderDate;
     private LocalDateTime evidenceReceivedDate;
-    @Builder.Default
-    private List<FinancialAssessmentDetails> assessmentDetails = new ArrayList<>();
-    @Builder.Default
-    private List<ChildWeightings> childWeightings = new ArrayList<>();
+    @Builder.Default private List<FinancialAssessmentDetails> assessmentDetails = new ArrayList<>();
+    @Builder.Default private List<ChildWeightings> childWeightings = new ArrayList<>();
+
     @Builder.Default
     private List<FinAssIncomeEvidenceDTO> finAssIncomeEvidences = new ArrayList<>();
 }

@@ -17,55 +17,55 @@ import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 @HttpExchange
 public interface MaatCourtDataNonServletApiClient {
 
-  @GetExchange("/rep-orders/{repId}")
-  RepOrderDTO getRepOrderByRepId(@PathVariable Integer repId);
+    @GetExchange("/rep-orders/{repId}")
+    RepOrderDTO getRepOrderByRepId(@PathVariable Integer repId);
 
-  @PutExchange("/crown-court/updateCCOutcome")
-  void updateCrownCourtOutcome(@RequestBody UpdateCCOutcome request);
+    @PutExchange("/crown-court/updateCCOutcome")
+    void updateCrownCourtOutcome(@RequestBody UpdateCCOutcome request);
 
-  @GetExchange("/wq-hearing/{hearingUUID}/maatId/{maatId}")
-  List<WQHearingDTO> getWorkQueueHearing(@PathVariable String hearingUUID, @PathVariable Integer maatId);
+    @GetExchange("/wq-hearing/{hearingUUID}/maatId/{maatId}")
+    List<WQHearingDTO> getWorkQueueHearing(
+            @PathVariable String hearingUUID, @PathVariable Integer maatId);
 
-  @GetExchange("/wq-link-register/{maatId}")
-  List<WQLinkRegisterDTO> getWorkQueueLinkRegister(@PathVariable Integer maatId);
+    @GetExchange("/wq-link-register/{maatId}")
+    List<WQLinkRegisterDTO> getWorkQueueLinkRegister(@PathVariable Integer maatId);
 
-  @GetExchange("/offence/case/{caseId}")
-  List<OffenceDTO> getOffenceByCaseId(@PathVariable Integer caseId);
+    @GetExchange("/offence/case/{caseId}")
+    List<OffenceDTO> getOffenceByCaseId(@PathVariable Integer caseId);
 
-  @GetExchange("/offence/{offenceId}/case/{caseId}")
-  Integer getOffenceNewOffenceCount(@PathVariable String offenceId, @PathVariable Integer caseId);
+    @GetExchange("/offence/{offenceId}/case/{caseId}")
+    Integer getOffenceNewOffenceCount(@PathVariable String offenceId, @PathVariable Integer caseId);
 
-  @GetExchange("/wq-offence/{offenceId}/case/{caseId}")
-  Integer getWorkQueueOffenceCount(@PathVariable String offenceId, @PathVariable Integer caseId);
+    @GetExchange("/wq-offence/{offenceId}/case/{caseId}")
+    Integer getWorkQueueOffenceCount(@PathVariable String offenceId, @PathVariable Integer caseId);
 
-  @GetExchange("/xlat-result/wqType/{wqType}/subType/{subType}")
-  List<Integer> getResultsByWorkQueueTypeSubType(@PathVariable Integer wqType,
-      @PathVariable Integer subType);
+    @GetExchange("/xlat-result/wqType/{wqType}/subType/{subType}")
+    List<Integer> getResultsByWorkQueueTypeSubType(
+            @PathVariable Integer wqType, @PathVariable Integer subType);
 
-  @GetExchange("/result/caseId/{caseId}/asnSeq/{asnSeq}")
-  List<Integer> getResultCodeByCaseIdAndAsnSeq(@PathVariable Integer caseId,
-      @PathVariable String asnSeq);
+    @GetExchange("/result/caseId/{caseId}/asnSeq/{asnSeq}")
+    List<Integer> getResultCodeByCaseIdAndAsnSeq(
+            @PathVariable Integer caseId, @PathVariable String asnSeq);
 
-  @GetExchange("/wq-result/caseId/{caseId}/asnSeq/{asnSeq}")
-  List<Integer> getWorkQueueResultCodeByCaseIdAndAsnSeq(@PathVariable Integer caseId,
-      @PathVariable String asnSeq);
+    @GetExchange("/wq-result/caseId/{caseId}/asnSeq/{asnSeq}")
+    List<Integer> getWorkQueueResultCodeByCaseIdAndAsnSeq(
+            @PathVariable Integer caseId, @PathVariable String asnSeq);
 
-  @GetExchange("/xlat-result/cc-imprisonment")
-  List<Integer> getResultCodesForCrownCourtImprisonment();
+    @GetExchange("/xlat-result/cc-imprisonment")
+    List<Integer> getResultCodesForCrownCourtImprisonment();
 
-  @GetExchange("/xlat-result/cc-bench-warrant")
-  List<Integer> getResultCodesForCrownCourtBenchWarrantUrl();
+    @GetExchange("/xlat-result/cc-bench-warrant")
+    List<Integer> getResultCodesForCrownCourtBenchWarrantUrl();
 
-  @PutExchange("/crown-court/update-appeal-cc-sentence")
-  void updateAppealSentenceOrderDate(@RequestBody UpdateSentenceOrder request);
+    @PutExchange("/crown-court/update-appeal-cc-sentence")
+    void updateAppealSentenceOrderDate(@RequestBody UpdateSentenceOrder request);
 
-  @PutExchange("/crown-court/update-cc-sentence")
-  void updateSentenceOrderDate(@RequestBody UpdateSentenceOrder request);
+    @PutExchange("/crown-court/update-cc-sentence")
+    void updateSentenceOrderDate(@RequestBody UpdateSentenceOrder request);
 
-  @GetExchange("/reservations/{maatId}")
-  Boolean isMaatRecordLocked(@PathVariable Integer maatId);
+    @GetExchange("/reservations/{maatId}")
+    Boolean isMaatRecordLocked(@PathVariable Integer maatId);
 
-  @GetExchange("/rep-orders/cc-outcome/reporder/{repId}")
-  List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(@PathVariable Integer repId);
-
+    @GetExchange("/rep-orders/cc-outcome/reporder/{repId}")
+    List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(@PathVariable Integer repId);
 }
