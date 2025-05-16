@@ -38,5 +38,6 @@ public class ProsecutionConcluded {
     private Metadata metadata;
     @JsonProperty("isProcessed")
     private boolean isProcessed;
-
+    @JsonProperty("applicationConcluded")
+    private ApplicationConcluded applicationConcluded;
 }
