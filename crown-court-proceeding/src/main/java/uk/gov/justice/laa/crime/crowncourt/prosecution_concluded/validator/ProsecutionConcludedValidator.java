@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -10,20 +12,19 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCou
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 @Component
 @RequiredArgsConstructor
 public class ProsecutionConcludedValidator {
 
     private final CrownCourtCodeHelper crownCourtCodeHelper;
 
-    public static final String PAYLOAD_IS_NOT_AVAILABLE_OR_NULL = "Payload is not available or null.";
+    public static final String PAYLOAD_IS_NOT_AVAILABLE_OR_NULL =
+            "Payload is not available or null.";
     public static final String OU_CODE_IS_MISSING = "OU Code is missing.";
     public static final String OU_CODE_LOOKUP_FAILED = "OU Code lookup failed.";
     public static final String MAAT_ID_FORMAT_INCORRECT = "MAAT ID has incorrect format.";
     public static final String CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME =
-        "Cannot have Crown Court outcome without Mags Court outcome";
+            "Cannot have Crown Court outcome without Mags Court outcome";
 
     public void validateRequestObject(ProsecutionConcluded prosecutionConcluded) {
         if (prosecutionConcluded == null
@@ -61,7 +62,8 @@ public class ProsecutionConcludedValidator {
 
     public void validateMagsCourtOutcomeExists(String magsCourtOutcome) {
         if (StringUtils.isEmpty(magsCourtOutcome)) {
-            throw new ValidationException(CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
+            throw new ValidationException(
+                    CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
         }
     }
 }

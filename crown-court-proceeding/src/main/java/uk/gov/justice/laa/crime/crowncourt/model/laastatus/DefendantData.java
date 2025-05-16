@@ -16,7 +16,7 @@ public class DefendantData {
 
     @JsonProperty("type")
     private String type;
+
     @JsonProperty("id")
     private String id;
-
 }

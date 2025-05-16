@@ -1,12 +1,11 @@
 package uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Data
 @Builder

@@ -1,5 +1,11 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.request;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,21 +20,12 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Prosecuti
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class ProsecutionConcludedValidatorTest {
 
-    @Mock
-    private CrownCourtCodeHelper crownCourtCodeHelper;
+    @Mock private CrownCourtCodeHelper crownCourtCodeHelper;
 
-    @InjectMocks
-    private ProsecutionConcludedValidator prosecutionConcludedValidator;
+    @InjectMocks private ProsecutionConcludedValidator prosecutionConcludedValidator;
 
     @Test
     void testWhenProsecutionConcludedRequestIsNull_thenThrowsException() {
@@ -55,11 +52,12 @@ class ProsecutionConcludedValidatorTest {
 
     @Test
     void givenAOffenceSummaryIsEmpty_whenValidateRequestObjectIsInvoked_thenThrowsException() {
-        ProsecutionConcluded request = ProsecutionConcluded.builder().offenceSummary(List.of())
-                .build();
+        ProsecutionConcluded request =
+                ProsecutionConcluded.builder().offenceSummary(List.of()).build();
         assertThatThrownBy(() -> prosecutionConcludedValidator.validateRequestObject(request))
-                .isInstanceOf(ValidationException.class).hasMessageContaining(ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL);
-
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining(
+                        ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL);
     }
 
     @Test
@@ -67,7 +65,9 @@ class ProsecutionConcludedValidatorTest {
         ProsecutionConcluded request = TestModelDataBuilder.getProsecutionConcluded();
         request.setMaatId(null);
         assertThatThrownBy(() -> prosecutionConcludedValidator.validateRequestObject(request))
-                .isInstanceOf(ValidationException.class).hasMessageContaining(ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL);
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining(
+                        ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL);
     }
 
     @Test
@@ -79,24 +79,25 @@ class ProsecutionConcludedValidatorTest {
     @Test
     void givenOuCodeIsNull_whenValidateOuCodeIsInvoked_thenThrowsException() {
         assertThatThrownBy(() -> prosecutionConcludedValidator.validateOuCode(null))
-            .isInstanceOf(ValidationException.class)
-            .hasMessage(ProsecutionConcludedValidator.OU_CODE_IS_MISSING);
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.OU_CODE_IS_MISSING);
     }
 
     @Test
     void givenOuCodeIsEmpty_whenValidateOuCodeIsInvoked_thenThrowsException() {
         assertThatThrownBy(() -> prosecutionConcludedValidator.validateOuCode(""))
-            .isInstanceOf(ValidationException.class)
-            .hasMessage(ProsecutionConcludedValidator.OU_CODE_IS_MISSING);
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.OU_CODE_IS_MISSING);
     }
 
     @Test
     void givenAnUnknownOuCode_whenValidateOuCodeIsInvoked_thenThrowsException() {
         when(crownCourtCodeHelper.isValidCode("Unknown")).thenReturn(false);
 
-        assertThrows(ValidationException.class,
-            () -> prosecutionConcludedValidator.validateOuCode("Unknown"),
-            ProsecutionConcludedValidator.OU_CODE_LOOKUP_FAILED);
+        assertThrows(
+                ValidationException.class,
+                () -> prosecutionConcludedValidator.validateOuCode("Unknown"),
+                ProsecutionConcludedValidator.OU_CODE_LOOKUP_FAILED);
     }
 
     @Test
@@ -108,28 +109,42 @@ class ProsecutionConcludedValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"{}", "{\"maatId\": \"\"}"})
-    void givenMessageContainsNoOrMissingMaatId_whenValidateMaatIdIsInvoked_thenNoExceptionIsThrown(String message) {
+    void givenMessageContainsNoOrMissingMaatId_whenValidateMaatIdIsInvoked_thenNoExceptionIsThrown(
+            String message) {
         assertDoesNotThrow(() -> prosecutionConcludedValidator.validateMaatId(message));
     }
-    
+
     @Test
-    void givenMessageContainsMaatIdInIncorrectFormat_whenValidateMaatIdIsInvoked_thenThrowsException() {
-        assertThatThrownBy(() -> prosecutionConcludedValidator.validateMaatId("{\"maatId\": A-1223456}"))
-            .isInstanceOf(ValidationException.class)
-            .hasMessage(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT);
+    void
+            givenMessageContainsMaatIdInIncorrectFormat_whenValidateMaatIdIsInvoked_thenThrowsException() {
+        assertThatThrownBy(
+                        () ->
+                                prosecutionConcludedValidator.validateMaatId(
+                                        "{\"maatId\": A-1223456}"))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT);
     }
 
     @ParameterizedTest
     @NullSource
-    @ValueSource(strings = { "" })
-    void givenMagsCourtOutcomeIsNullOrEmpty_whenValidateMagsCourtOutcomeExistsIsInvoked_thenExceptionIsThrown(String magsCourtOutcome) {
-        assertThatThrownBy(() -> prosecutionConcludedValidator.validateMagsCourtOutcomeExists(magsCourtOutcome))
-            .isInstanceOf(ValidationException.class)
-            .hasMessage(ProsecutionConcludedValidator.CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
+    @ValueSource(strings = {""})
+    void
+            givenMagsCourtOutcomeIsNullOrEmpty_whenValidateMagsCourtOutcomeExistsIsInvoked_thenExceptionIsThrown(
+                    String magsCourtOutcome) {
+        assertThatThrownBy(
+                        () ->
+                                prosecutionConcludedValidator.validateMagsCourtOutcomeExists(
+                                        magsCourtOutcome))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(
+                        ProsecutionConcludedValidator
+                                .CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
     }
 
     @Test
-    void givenMagsCourtOutcomeIsNotNullOrEmpty_whenValidateMagsCourtOutcomeExistsIsInvoked_thenNoExceptionIsThrown() {
-        assertDoesNotThrow(() -> prosecutionConcludedValidator.validateMagsCourtOutcomeExists("ACQUITTED"));
+    void
+            givenMagsCourtOutcomeIsNotNullOrEmpty_whenValidateMagsCourtOutcomeExistsIsInvoked_thenNoExceptionIsThrown() {
+        assertDoesNotThrow(
+                () -> prosecutionConcludedValidator.validateMagsCourtOutcomeExists("ACQUITTED"));
     }
 }

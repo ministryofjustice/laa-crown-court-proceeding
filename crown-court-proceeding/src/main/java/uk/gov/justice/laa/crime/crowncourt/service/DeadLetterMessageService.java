@@ -15,13 +15,15 @@ public class DeadLetterMessageService {
     private static final String PENDING = "PENDING";
     private final DeadLetterMessageRepository deadLetterMessageRepository;
 
-    public void logDeadLetterMessage(String deadLetterReason, ProsecutionConcluded prosecutionConcluded) {
-        DeadLetterMessageEntity entity = DeadLetterMessageEntity.builder()
-            .deadLetterReason(deadLetterReason)
-            .message(prosecutionConcluded)
-            .receivedTime(LocalDateTime.now())
-            .reportingStatus(PENDING)
-            .build();
+    public void logDeadLetterMessage(
+            String deadLetterReason, ProsecutionConcluded prosecutionConcluded) {
+        DeadLetterMessageEntity entity =
+                DeadLetterMessageEntity.builder()
+                        .deadLetterReason(deadLetterReason)
+                        .message(prosecutionConcluded)
+                        .receivedTime(LocalDateTime.now())
+                        .reportingStatus(PENDING)
+                        .build();
 
         deadLetterMessageRepository.save(entity);
     }

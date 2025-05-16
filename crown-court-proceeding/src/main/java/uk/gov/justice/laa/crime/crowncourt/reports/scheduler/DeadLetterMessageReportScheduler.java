@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import uk.gov.justice.laa.crime.crowncourt.reports.service.DeadLetterMessageReportService;
 import uk.gov.service.notify.NotificationClientException;
 
-
 @Configuration
 @EnableScheduling
 @RequiredArgsConstructor
@@ -20,5 +19,4 @@ public class DeadLetterMessageReportScheduler {
     public void process() throws NotificationClientException, IOException {
         deadLetterMessageReportService.generateReport();
     }
-
 }

@@ -9,7 +9,7 @@ import reactor.core.publisher.Hooks;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-@EnableAspectJAutoProxy(proxyTargetClass=true)
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @Slf4j
 public class CrownCourtProceedingApplication {
 
@@ -18,5 +18,4 @@ public class CrownCourtProceedingApplication {
         Hooks.enableAutomaticContextPropagation();
         SpringApplication.run(CrownCourtProceedingApplication.class);
     }
-
 }

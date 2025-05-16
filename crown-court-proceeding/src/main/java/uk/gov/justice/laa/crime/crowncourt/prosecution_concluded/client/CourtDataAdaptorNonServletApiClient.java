@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 
 public interface CourtDataAdaptorNonServletApiClient {
-  @GetExchange("/hearing_results/{hearingId}")
-  void triggerHearingProcessing(@PathVariable UUID hearingId, 
-      @RequestParam MultiValueMap<String, String> queryParams);
+    @GetExchange("/hearing_results/{hearingId}")
+    void triggerHearingProcessing(
+            @PathVariable UUID hearingId, @RequestParam MultiValueMap<String, String> queryParams);
 }

@@ -8,8 +8,8 @@ import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiCalculateEvi
 
 @HttpExchange
 public interface EvidenceApiClient {
-  
-  @PostExchange("/calculate-evidence-fee") 
-  ApiCalculateEvidenceFeeResponse calculateEvidenceFee(@RequestBody ApiCalculateEvidenceFeeRequest request);
 
+    @PostExchange("/calculate-evidence-fee")
+    ApiCalculateEvidenceFeeResponse calculateEvidenceFee(
+            @RequestBody ApiCalculateEvidenceFeeRequest request);
 }

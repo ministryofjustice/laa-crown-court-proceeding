@@ -20,7 +20,9 @@ import uk.gov.justice.laa.crime.exception.ValidationException;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "feature.prosecution-concluded-listener.enabled", havingValue = "true")
+@ConditionalOnProperty(
+        value = "feature.prosecution-concluded-listener.enabled",
+        havingValue = "true")
 public class ProsecutionConcludedListener {
 
     private final Gson gson;
@@ -30,8 +32,7 @@ public class ProsecutionConcludedListener {
     private final DeadLetterMessageService deadLetterMessageService;
 
     @SqsListener(value = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
-    public void receive(@Payload final String message,
-                        final @Headers MessageHeaders headers) {
+    public void receive(@Payload final String message, final @Headers MessageHeaders headers) {
         ProsecutionConcluded prosecutionConcluded = null;
 
         try {
@@ -46,8 +47,11 @@ public class ProsecutionConcludedListener {
         } catch (ValidationException exception) {
             log.warn(exception.getMessage());
 
-            if (!exception.getMessage().equalsIgnoreCase(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT)) {
-                deadLetterMessageService.logDeadLetterMessage(exception.getMessage(), prosecutionConcluded);
+            if (!exception
+                    .getMessage()
+                    .equalsIgnoreCase(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT)) {
+                deadLetterMessageService.logDeadLetterMessage(
+                        exception.getMessage(), prosecutionConcluded);
             }
         }
     }

@@ -16,8 +16,10 @@ public class RepOrderData {
 
     @JsonProperty("type")
     private String type;
+
     @JsonProperty("attributes")
     private Attributes attributes;
+
     @JsonProperty("relationships")
     private Relationships relationships;
 }

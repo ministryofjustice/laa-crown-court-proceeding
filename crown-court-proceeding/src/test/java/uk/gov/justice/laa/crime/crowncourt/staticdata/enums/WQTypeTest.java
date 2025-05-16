@@ -1,8 +1,8 @@
 package uk.gov.justice.laa.crime.crowncourt.staticdata.enums;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class WQTypeTest {
 

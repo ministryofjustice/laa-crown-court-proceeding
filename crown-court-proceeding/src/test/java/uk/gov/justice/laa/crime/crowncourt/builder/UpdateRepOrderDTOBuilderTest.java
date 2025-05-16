@@ -14,19 +14,19 @@ import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 @ExtendWith(SoftAssertionsExtension.class)
 class UpdateRepOrderDTOBuilderTest {
 
-    @InjectSoftAssertions
-    private SoftAssertions softly;
+    @InjectSoftAssertions private SoftAssertions softly;
 
     @Test
-    void givenCrownCourtDTO_whenBuildIsInvoked_thenCorrectUpdateRepOrderRequestDTOFieldsArePopulated() {
+    void
+            givenCrownCourtDTO_whenBuildIsInvoked_thenCorrectUpdateRepOrderRequestDTOFieldsArePopulated() {
         CrownCourtDTO dto = TestModelDataBuilder.getCrownCourtDTO();
-        ApiProcessRepOrderResponse apiProcessRepOrderResponse = TestModelDataBuilder.getApiProcessRepOrderResponse();
-        UpdateRepOrderRequestDTO updateRequest = UpdateRepOrderDTOBuilder.build(dto, apiProcessRepOrderResponse);
+        ApiProcessRepOrderResponse apiProcessRepOrderResponse =
+                TestModelDataBuilder.getApiProcessRepOrderResponse();
+        UpdateRepOrderRequestDTO updateRequest =
+                UpdateRepOrderDTOBuilder.build(dto, apiProcessRepOrderResponse);
 
-        softly.assertThat(updateRequest.getRepId())
-                .isEqualTo(dto.getRepId());
-        softly.assertThat(updateRequest.getCrownRepId())
-                .isEqualTo(dto.getCrownRepId());
+        softly.assertThat(updateRequest.getRepId()).isEqualTo(dto.getRepId());
+        softly.assertThat(updateRequest.getCrownRepId()).isEqualTo(dto.getCrownRepId());
         softly.assertThat(updateRequest.getCrownRepOrderDecision())
                 .isEqualTo(apiProcessRepOrderResponse.getRepOrderDecision());
         softly.assertThat(updateRequest.getCrownRepOrderType())
@@ -37,8 +37,7 @@ class UpdateRepOrderDTOBuilderTest {
                 .isEqualTo(dto.getCrownCourtSummary().getWithdrawalDate());
         softly.assertThat(updateRequest.getEvidenceFeeLevel())
                 .isEqualTo(dto.getCrownCourtSummary().getEvidenceFeeLevel().getFeeLevel());
-        softly.assertThat(updateRequest.getIsImprisoned())
-                .isEqualTo(dto.getIsImprisoned());
+        softly.assertThat(updateRequest.getIsImprisoned()).isEqualTo(dto.getIsImprisoned());
         softly.assertThat(updateRequest.getUserModified())
                 .isEqualTo(dto.getUserSession().getUserName());
         softly.assertThat(updateRequest.getSentenceOrderDate())
@@ -47,13 +46,14 @@ class UpdateRepOrderDTOBuilderTest {
     }
 
     @Test
-    void givenCrownCourtDTOAndMagsDecisionResult_whenBuildIsInvoked_thenCorrectUpdateRepOrderRequestDTOFieldsArePopulated() {
+    void
+            givenCrownCourtDTOAndMagsDecisionResult_whenBuildIsInvoked_thenCorrectUpdateRepOrderRequestDTOFieldsArePopulated() {
         CrownCourtDTO dto = TestModelDataBuilder.getCrownCourtDTO();
         MagsDecisionResult magsDecisionResult = TestModelDataBuilder.getMagsDecisionResult();
-        UpdateRepOrderRequestDTO updateRequest = UpdateRepOrderDTOBuilder.build(dto, magsDecisionResult);
+        UpdateRepOrderRequestDTO updateRequest =
+                UpdateRepOrderDTOBuilder.build(dto, magsDecisionResult);
 
-        softly.assertThat(updateRequest.getRepId())
-                .isEqualTo(dto.getRepId());
+        softly.assertThat(updateRequest.getRepId()).isEqualTo(dto.getRepId());
         softly.assertThat(updateRequest.getDecisionDate())
                 .isEqualTo(magsDecisionResult.getDecisionDate());
         softly.assertThat(updateRequest.getDecisionReasonCode())

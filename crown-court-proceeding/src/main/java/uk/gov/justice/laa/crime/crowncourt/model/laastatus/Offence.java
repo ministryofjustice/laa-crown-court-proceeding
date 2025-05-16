@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,12 +16,16 @@ public class Offence {
 
     @JsonProperty("offence_id")
     private String offenceId;
+
     @JsonProperty("status_code")
     private String statusCode;
+
     @JsonProperty("status_date")
     private String statusDate;
+
     @JsonProperty("effective_start_date")
     private String effectiveStartDate;
+
     @JsonProperty("effective_end_date")
     private String effectiveEndDate;
 }

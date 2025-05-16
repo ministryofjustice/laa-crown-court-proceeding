@@ -15,19 +15,19 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderReque
 
 @HttpExchange()
 public interface MaatCourtDataApiClient {
-  
-  @GetExchange("/ioj-appeal/repId/{repId}/current-passed")
-  IOJAppealDTO getCurrentPassedIOJAppeal(@PathVariable Integer repId);
-  
-  @PutExchange("/rep-orders")
-  RepOrderDTO updateRepOrder(@RequestBody UpdateRepOrderRequestDTO request);
-  
-  @GetExchange("/rep-orders/cc-outcome/reporder/{repId}")
-  List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(@PathVariable Integer repId);
-  
-  @PostExchange("/rep-orders/cc-outcome")
-  RepOrderCCOutcomeDTO createCrownCourtOutcome(@RequestBody RepOrderCCOutcomeDTO request);
-  
-  @HttpExchange(method = "HEAD", url = "/rep-orders/cc-outcome/reporder/{repId}")
-  ResponseEntity<Void> getOutcomeCount(@PathVariable Integer repId);
+
+    @GetExchange("/ioj-appeal/repId/{repId}/current-passed")
+    IOJAppealDTO getCurrentPassedIOJAppeal(@PathVariable Integer repId);
+
+    @PutExchange("/rep-orders")
+    RepOrderDTO updateRepOrder(@RequestBody UpdateRepOrderRequestDTO request);
+
+    @GetExchange("/rep-orders/cc-outcome/reporder/{repId}")
+    List<RepOrderCCOutcomeDTO> getRepOrderCCOutcomeByRepId(@PathVariable Integer repId);
+
+    @PostExchange("/rep-orders/cc-outcome")
+    RepOrderCCOutcomeDTO createCrownCourtOutcome(@RequestBody RepOrderCCOutcomeDTO request);
+
+    @HttpExchange(method = "HEAD", url = "/rep-orders/cc-outcome/reporder/{repId}")
+    ResponseEntity<Void> getOutcomeCount(@PathVariable Integer repId);
 }

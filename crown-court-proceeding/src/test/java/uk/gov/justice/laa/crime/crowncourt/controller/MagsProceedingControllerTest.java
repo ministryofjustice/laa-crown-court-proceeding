@@ -1,5 +1,10 @@
 package uk.gov.justice.laa.crime.crowncourt.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -21,47 +26,44 @@ import uk.gov.justice.laa.crime.crowncourt.tracing.TraceIdHandler;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @DirtiesContext
 @AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(MagsProceedingController.class)
 class MagsProceedingControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
+    @Autowired private MockMvc mvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private ObjectMapper objectMapper;
 
-    @MockBean
-    private MagsProceedingService magsProceedingService;
+    @MockBean private MagsProceedingService magsProceedingService;
 
-    @MockBean
-    private DeadLetterMessageService deadLetterMessageService;
+    @MockBean private DeadLetterMessageService deadLetterMessageService;
 
-    @MockBean
-    private TraceIdHandler traceIdHandler;
+    @MockBean private TraceIdHandler traceIdHandler;
 
-    private static final String ENDPOINT_URL = "/api/internal/v1/proceedings/determine-mags-rep-decision";
+    private static final String ENDPOINT_URL =
+            "/api/internal/v1/proceedings/determine-mags-rep-decision";
 
     @Test
     void determineMagsRepDecision_Success() throws Exception {
         var determineMagsRepDecisionRequestJson = BuildRequestJson();
 
-        var determineMagsRepDecisionResponse = new ApiDetermineMagsRepDecisionResponse()
-                .withDecisionResult(TestModelDataBuilder.getMagsDecisionResult());
+        var determineMagsRepDecisionResponse =
+                new ApiDetermineMagsRepDecisionResponse()
+                        .withDecisionResult(TestModelDataBuilder.getMagsDecisionResult());
 
         when(magsProceedingService.determineMagsRepDecision(any(CrownCourtDTO.class)))
                 .thenReturn(TestModelDataBuilder.getMagsDecisionResult());
 
-        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-                        HttpMethod.POST, determineMagsRepDecisionRequestJson, ENDPOINT_URL))
+        mvc.perform(
+                        RequestBuilderUtils.buildRequestGivenContent(
+                                HttpMethod.POST, determineMagsRepDecisionRequestJson, ENDPOINT_URL))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(determineMagsRepDecisionResponse)));
+                .andExpect(
+                        content()
+                                .json(
+                                        objectMapper.writeValueAsString(
+                                                determineMagsRepDecisionResponse)));
     }
 
     @Test
@@ -71,20 +73,26 @@ class MagsProceedingControllerTest {
         when(magsProceedingService.determineMagsRepDecision(any(CrownCourtDTO.class)))
                 .thenReturn(null);
 
-        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(
-                        HttpMethod.POST, determineMagsRepDecisionRequestJson, ENDPOINT_URL))
+        mvc.perform(
+                        RequestBuilderUtils.buildRequestGivenContent(
+                                HttpMethod.POST, determineMagsRepDecisionRequestJson, ENDPOINT_URL))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(new ApiDetermineMagsRepDecisionResponse())));
+                .andExpect(
+                        content()
+                                .json(
+                                        objectMapper.writeValueAsString(
+                                                new ApiDetermineMagsRepDecisionResponse())));
     }
 
     private String BuildRequestJson() throws JsonProcessingException {
-        var apiDetermineMagsRepDecisionRequest = new ApiDetermineMagsRepDecisionRequest()
-                .withCaseType(CaseType.INDICTABLE)
-                .withRepId(TestModelDataBuilder.TEST_REP_ID)
-                .withIojAppeal(new ApiIOJSummary().withIojResult("PASS"))
-                .withPassportAssessment(TestModelDataBuilder.getPassportAssessment())
-                .withFinancialAssessment(TestModelDataBuilder.getFinancialAssessment())
-                .withUserSession(TestModelDataBuilder.getApiUserSession(true));
+        var apiDetermineMagsRepDecisionRequest =
+                new ApiDetermineMagsRepDecisionRequest()
+                        .withCaseType(CaseType.INDICTABLE)
+                        .withRepId(TestModelDataBuilder.TEST_REP_ID)
+                        .withIojAppeal(new ApiIOJSummary().withIojResult("PASS"))
+                        .withPassportAssessment(TestModelDataBuilder.getPassportAssessment())
+                        .withFinancialAssessment(TestModelDataBuilder.getFinancialAssessment())
+                        .withUserSession(TestModelDataBuilder.getApiUserSession(true));
         return objectMapper.writeValueAsString(apiDetermineMagsRepDecisionRequest);
     }
 
@@ -96,7 +104,9 @@ class MagsProceedingControllerTest {
 
     @Test
     void determineMagsRepDecision_BadRequest_RequestEmptyBody() throws Exception {
-        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.POST, "{}", ENDPOINT_URL))
+        mvc.perform(
+                        RequestBuilderUtils.buildRequestGivenContent(
+                                HttpMethod.POST, "{}", ENDPOINT_URL))
                 .andExpect(status().isBadRequest());
     }
 }

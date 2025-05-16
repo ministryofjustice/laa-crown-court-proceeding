@@ -29,17 +29,13 @@ class ProsecutionConcludedIntegrationTest extends WiremockIntegrationTest {
 
     private MockMvc mvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private ObjectMapper objectMapper;
 
-    @Autowired
-    private FilterChainProxy springSecurityFilterChain;
+    @Autowired private FilterChainProxy springSecurityFilterChain;
 
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+    @Autowired private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    private ProsecutionConcludedRepository repository;
+    @Autowired private ProsecutionConcludedRepository repository;
 
     private static final String COUNT_ENDPOINT_URL =
             "/api/internal/v1/proceedings/prosecution-concluded/%s/messages/count";
@@ -47,8 +43,10 @@ class ProsecutionConcludedIntegrationTest extends WiremockIntegrationTest {
 
     @BeforeEach
     void setup() {
-        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
-                .addFilter(springSecurityFilterChain).build();
+        this.mvc =
+                MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
+                        .addFilter(springSecurityFilterChain)
+                        .build();
         ProsecutionConcludedEntity prosecutionConcludedEntity =
                 TestModelDataBuilder.getProsecutionConcludedEntity();
         repository.save(prosecutionConcludedEntity);
@@ -57,15 +55,16 @@ class ProsecutionConcludedIntegrationTest extends WiremockIntegrationTest {
     @Test
     void givenInvalidParameters_whenGetCountByMaatIdAndStatusIsInvoked_thenErrorIsThrown()
             throws Exception {
-        mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.GET, "{}",
-                        COUNT_ENDPOINT_URL, true))
+        mvc.perform(
+                        RequestBuilderUtils.buildRequestGivenContent(
+                                HttpMethod.GET, "{}", COUNT_ENDPOINT_URL, true))
                 .andExpect(status().is4xxClientError());
     }
 
     @ParameterizedTest
     @MethodSource("countUrlProvider")
-    void givenNonExistingMaatId_whenGetNewOffenceCountIsInvoked_thenZeroIsReturned(String url,
-            int expectedCount) throws Exception {
+    void givenNonExistingMaatId_whenGetNewOffenceCountIsInvoked_thenZeroIsReturned(
+            String url, int expectedCount) throws Exception {
         mvc.perform(RequestBuilderUtils.buildRequestGivenContent(HttpMethod.GET, "{}", url))
                 .andExpect(status().isOk())
                 .andExpect(content().string(String.valueOf(expectedCount)))
@@ -74,15 +73,18 @@ class ProsecutionConcludedIntegrationTest extends WiremockIntegrationTest {
 
     private static Stream<Arguments> countUrlProvider() {
         return Stream.of(
-                // Scenario 1: Valid repId but with a status that doesn't match any records returns 0.
-                Arguments.of(String.format(COUNT_ENDPOINT_URL, TestModelDataBuilder.TEST_REP_ID)
-                        + "?status=" + CaseConclusionStatus.PROCESSED.name(), 0),
+                // Scenario 1: Valid repId but with a status that doesn't match any records returns
+                // 0.
+                Arguments.of(
+                        String.format(COUNT_ENDPOINT_URL, TestModelDataBuilder.TEST_REP_ID)
+                                + "?status="
+                                + CaseConclusionStatus.PROCESSED.name(),
+                        0),
                 // Scenario 2: A non-existent repId returns 0.
                 Arguments.of(String.format(COUNT_ENDPOINT_URL, NON_EXISTENT_REP_ID), 0),
                 // Scenario 3: Valid repId but with default status returns 1.
-                Arguments.of(String.format(COUNT_ENDPOINT_URL, TestModelDataBuilder.TEST_REP_ID),
-                        1)
-        );
+                Arguments.of(
+                        String.format(COUNT_ENDPOINT_URL, TestModelDataBuilder.TEST_REP_ID), 1));
     }
 
     @AfterEach

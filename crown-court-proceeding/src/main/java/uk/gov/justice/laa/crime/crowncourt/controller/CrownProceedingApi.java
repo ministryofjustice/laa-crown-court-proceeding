@@ -17,48 +17,74 @@ import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiProcessRepOr
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
 
-
 public interface CrownProceedingApi {
 
     @Operation(description = "Process Rep Order")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ApiProcessRepOrderResponse.class)
-            )
-    )
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ApiProcessRepOrderResponse.class)))
     @DefaultHTTPErrorResponse
     ResponseEntity<ApiProcessRepOrderResponse> processRepOrder(
-            @Parameter(description = "Process Crown Rep Order Data",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiProcessRepOrderRequest.class)
-                    )
-            ) @Valid @RequestBody ApiProcessRepOrderRequest request);
+            @Parameter(
+                            description = "Process Crown Rep Order Data",
+                            content =
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema =
+                                                    @Schema(
+                                                            implementation =
+                                                                    ApiProcessRepOrderRequest
+                                                                            .class)))
+                    @Valid @RequestBody
+                    ApiProcessRepOrderRequest request);
 
     @Operation(description = "Update Crown Court Application")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ApiUpdateApplicationResponse.class)
-            )
-    )
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ApiUpdateApplicationResponse.class)))
     @DefaultHTTPErrorResponse
     ResponseEntity<ApiUpdateApplicationResponse> updateApplication(
-            @Parameter(description = "Updated Application Data",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiUpdateApplicationRequest.class)
-                    )
-            ) @Valid @RequestBody ApiUpdateApplicationRequest request);
+            @Parameter(
+                            description = "Updated Application Data",
+                            content =
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema =
+                                                    @Schema(
+                                                            implementation =
+                                                                    ApiUpdateApplicationRequest
+                                                                            .class)))
+                    @Valid @RequestBody
+                    ApiUpdateApplicationRequest request);
 
     @Operation(description = "Update Crown Court")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ApiUpdateCrownCourtOutcomeResponse.class)
-            )
-    )
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema =
+                                    @Schema(
+                                            implementation =
+                                                    ApiUpdateCrownCourtOutcomeResponse.class)))
     @DefaultHTTPErrorResponse
     ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> updateCrownCourt(
-            @Parameter(description = "Updated crown court",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiUpdateCrownCourtRequest.class)
-                    )
-            ) @Valid @RequestBody ApiUpdateCrownCourtRequest request);
+            @Parameter(
+                            description = "Updated crown court",
+                            content =
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema =
+                                                    @Schema(
+                                                            implementation =
+                                                                    ApiUpdateCrownCourtRequest
+                                                                            .class)))
+                    @Valid @RequestBody
+                    ApiUpdateCrownCourtRequest request);
 }

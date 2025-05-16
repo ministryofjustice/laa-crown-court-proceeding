@@ -1,13 +1,12 @@
 package uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.crime.enums.DecisionReason;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -43,5 +42,4 @@ public class UpdateRepOrderRequestDTO {
     private Integer preferredPaymentDay;
     private String sortCode;
     private LocalDateTime dateModified;
-
 }

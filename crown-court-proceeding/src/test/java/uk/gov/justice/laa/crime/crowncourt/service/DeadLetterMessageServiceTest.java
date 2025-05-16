@@ -18,21 +18,18 @@ import uk.gov.justice.laa.crime.crowncourt.repository.DeadLetterMessageRepositor
 
 @ExtendWith(MockitoExtension.class)
 class DeadLetterMessageServiceTest {
-    @InjectMocks
-    private DeadLetterMessageService deadLetterMessageService;
+    @InjectMocks private DeadLetterMessageService deadLetterMessageService;
 
-    @Spy
-    private DeadLetterMessageRepository deadLetterMessageRepository;
+    @Spy private DeadLetterMessageRepository deadLetterMessageRepository;
 
-    @Captor
-    private ArgumentCaptor<DeadLetterMessageEntity> deadLetterMessageCaptor;
+    @Captor private ArgumentCaptor<DeadLetterMessageEntity> deadLetterMessageCaptor;
 
     @Test
-    void givenErrorReasonAndQueueMessage_whenLogDeadLetterMessageIsInvoked_thenDeadLetterMessageIsCreated() {
+    void
+            givenErrorReasonAndQueueMessage_whenLogDeadLetterMessageIsInvoked_thenDeadLetterMessageIsCreated() {
         String errorReason = ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL;
-        ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
-                .maatId(123456)
-                .build();
+        ProsecutionConcluded prosecutionConcluded =
+                ProsecutionConcluded.builder().maatId(123456).build();
         String reportingStatus = "PENDING";
 
         deadLetterMessageService.logDeadLetterMessage(errorReason, prosecutionConcluded);

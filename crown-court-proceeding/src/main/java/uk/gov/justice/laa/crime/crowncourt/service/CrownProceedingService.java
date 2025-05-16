@@ -1,6 +1,13 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,15 +26,6 @@ import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
 import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.util.SortUtils;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -36,15 +34,14 @@ public class CrownProceedingService {
     private final RepOrderService repOrderService;
     private final MaatCourtDataService maatCourtDataService;
 
-    private final Set<CaseType> crownCourtCaseTypes = Set.of(
-            CaseType.INDICTABLE, CaseType.CC_ALREADY, CaseType.APPEAL_CC, CaseType.COMMITAL
-    );
+    private final Set<CaseType> crownCourtCaseTypes =
+            Set.of(CaseType.INDICTABLE, CaseType.CC_ALREADY, CaseType.APPEAL_CC, CaseType.COMMITAL);
 
     public ApiProcessRepOrderResponse processRepOrder(CrownCourtDTO dto) {
         ApiProcessRepOrderResponse apiProcessRepOrderResponse = new ApiProcessRepOrderResponse();
-        if (crownCourtCaseTypes.contains(dto.getCaseType()) ||
-                (CaseType.EITHER_WAY == dto.getCaseType() &&
-                        MagCourtOutcome.RESOLVED_IN_MAGS != dto.getMagCourtOutcome())) {
+        if (crownCourtCaseTypes.contains(dto.getCaseType())
+                || (CaseType.EITHER_WAY == dto.getCaseType()
+                        && MagCourtOutcome.RESOLVED_IN_MAGS != dto.getMagCourtOutcome())) {
             repOrderService.getRepDecision(dto);
             repOrderService.determineCrownRepType(dto);
             ApiCrownCourtSummary apiCrownCourtSummary = repOrderService.determineRepOrderDate(dto);
@@ -57,13 +54,18 @@ public class CrownProceedingService {
     }
 
     public ApiUpdateApplicationResponse updateApplication(CrownCourtDTO dto) {
-        UpdateRepOrderRequestDTO repOrderRequest = UpdateRepOrderDTOBuilder.build(dto, processRepOrder(dto));
+        UpdateRepOrderRequestDTO repOrderRequest =
+                UpdateRepOrderDTOBuilder.build(dto, processRepOrder(dto));
         RepOrderDTO repOrderDTO = maatCourtDataService.updateRepOrder(repOrderRequest);
-        ApiUpdateApplicationResponse apiUpdateApplicationResponse = new ApiUpdateApplicationResponse();
+        ApiUpdateApplicationResponse apiUpdateApplicationResponse =
+                new ApiUpdateApplicationResponse();
         apiUpdateApplicationResponse.withModifiedDateTime(repOrderDTO.getDateModified());
         apiUpdateApplicationResponse.withCrownRepOrderDate(
-                ofNullable(repOrderDTO.getCrownRepOrderDate()).map(LocalDate::atStartOfDay).orElse(null));
-        apiUpdateApplicationResponse.withCrownRepOrderDecision(repOrderDTO.getCrownRepOrderDecision());
+                ofNullable(repOrderDTO.getCrownRepOrderDate())
+                        .map(LocalDate::atStartOfDay)
+                        .orElse(null));
+        apiUpdateApplicationResponse.withCrownRepOrderDecision(
+                repOrderDTO.getCrownRepOrderDecision());
         apiUpdateApplicationResponse.withCrownRepOrderType(repOrderDTO.getCrownRepOrderType());
 
         return apiUpdateApplicationResponse;
@@ -80,18 +82,23 @@ public class CrownProceedingService {
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList =
                 maatCourtDataService.getRepOrderCCOutcomeByRepId(repId);
         if (null != repOrderCCOutcomeList && !repOrderCCOutcomeList.isEmpty()) {
-            repOrderCCOutcomeList = repOrderCCOutcomeList.stream()
-                    .filter(outcome -> isNotBlank(outcome.getOutcome()))
-                    .collect(Collectors.toCollection(ArrayList::new));
-            SortUtils.sortListWithComparing(repOrderCCOutcomeList, RepOrderCCOutcomeDTO::getOutcomeDate,
-                                            RepOrderCCOutcomeDTO::getId, SortUtils.getComparator()
-            );
-            repOrderCCOutcomeList.forEach(outcome -> {
-                CrownCourtOutcome crownCourtOutcome = CrownCourtOutcome.getFrom(outcome.getOutcome());
-                if (crownCourtOutcome != null) {
-                    outcome.setDescription(crownCourtOutcome.getDescription());
-                }
-            });
+            repOrderCCOutcomeList =
+                    repOrderCCOutcomeList.stream()
+                            .filter(outcome -> isNotBlank(outcome.getOutcome()))
+                            .collect(Collectors.toCollection(ArrayList::new));
+            SortUtils.sortListWithComparing(
+                    repOrderCCOutcomeList,
+                    RepOrderCCOutcomeDTO::getOutcomeDate,
+                    RepOrderCCOutcomeDTO::getId,
+                    SortUtils.getComparator());
+            repOrderCCOutcomeList.forEach(
+                    outcome -> {
+                        CrownCourtOutcome crownCourtOutcome =
+                                CrownCourtOutcome.getFrom(outcome.getOutcome());
+                        if (crownCourtOutcome != null) {
+                            outcome.setDescription(crownCourtOutcome.getDescription());
+                        }
+                    });
         }
         return repOrderCCOutcomeList;
     }

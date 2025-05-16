@@ -31,21 +31,22 @@ public class CrownProceedingController implements CrownProceedingApi {
     private final CrownCourtDetailsValidator crownCourtDetailsValidator;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiProcessRepOrderResponse> processRepOrder(ApiProcessRepOrderRequest request) {
+    public ResponseEntity<ApiProcessRepOrderResponse> processRepOrder(
+            ApiProcessRepOrderRequest request) {
         CrownCourtDTO requestDTO = CrownCourtDTOBuilder.build(request);
-        return ResponseEntity.ok(
-                crownProceedingService.processRepOrder(requestDTO)
-        );
+        return ResponseEntity.ok(crownProceedingService.processRepOrder(requestDTO));
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiUpdateApplicationResponse> updateApplication(ApiUpdateApplicationRequest request) {
+    public ResponseEntity<ApiUpdateApplicationResponse> updateApplication(
+            ApiUpdateApplicationRequest request) {
         CrownCourtDTO crownCourtDTO = CrownCourtDTOBuilder.build(request);
         return ResponseEntity.ok(crownProceedingService.updateApplication(crownCourtDTO));
     }
 
     @PutMapping(value = "/update-crown-court", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> updateCrownCourt(ApiUpdateCrownCourtRequest request) {
+    public ResponseEntity<ApiUpdateCrownCourtOutcomeResponse> updateCrownCourt(
+            ApiUpdateCrownCourtRequest request) {
         CrownCourtDTO crownCourtDTO = CrownCourtDTOBuilder.build(request);
         crownCourtDetailsValidator.checkCCDetails(crownCourtDTO);
         return ResponseEntity.ok(crownProceedingService.update(crownCourtDTO));
