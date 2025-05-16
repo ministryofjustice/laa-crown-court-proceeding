@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.builder;
 
 import static java.util.Optional.ofNullable;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCrownCourtSummary;
@@ -25,7 +26,7 @@ public class UpdateApiResponseBuilder {
         summary.withRepType(repOrderDTO.getCrownRepOrderType());
         summary.withRepOrderDate(
                 ofNullable(repOrderDTO.getCrownRepOrderDate())
-                        .map(o -> o.atStartOfDay())
+                        .map(LocalDate::atStartOfDay)
                         .orElse(null));
         summary.withRepOrderDecision(repOrderDTO.getCrownRepOrderDecision());
         summary.setEvidenceFeeLevel(repOrderDTO.getEvidenceFeeLevel());
@@ -33,20 +34,21 @@ public class UpdateApiResponseBuilder {
 
         if (!repOrderCCOutcomeList.isEmpty()) {
             repOrderCCOutcomeList.stream()
-                    .forEach(
-                            ccOutcomeDTO ->
-                                    summary.getRepOrderCrownCourtOutcome()
-                                            .add(
-                                                    new ApiRepOrderCrownCourtOutcome()
-                                                            .withOutcome(
-                                                                    CrownCourtOutcome.getFrom(
-                                                                            ccOutcomeDTO
-                                                                                    .getOutcome()))
-                                                            .withOutcomeDate(
-                                                                    ccOutcomeDTO
-                                                                            .getOutcomeDate())));
+                    .forEach(ccOutcomeDTO -> updateRepOrderOutcome(ccOutcomeDTO, summary));
             apiUpdateOutcomeResponse.setCrownCourtSummary(summary);
         }
+
         return apiUpdateOutcomeResponse;
+    }
+
+    private static void updateRepOrderOutcome(
+            RepOrderCCOutcomeDTO crownCourtOutcome, ApiCrownCourtSummary crownCourtSummary) {
+        crownCourtSummary
+                .getRepOrderCrownCourtOutcome()
+                .add(
+                        new ApiRepOrderCrownCourtOutcome()
+                                .withOutcome(
+                                        CrownCourtOutcome.getFrom(crownCourtOutcome.getOutcome()))
+                                .withOutcomeDate(crownCourtOutcome.getOutcomeDate()));
     }
 }

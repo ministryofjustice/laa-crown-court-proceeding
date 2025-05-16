@@ -76,11 +76,10 @@ public class WebClientsConfiguration {
                 new ServletOAuth2AuthorizedClientExchangeFilterFunction(
                         clientRegistrations, authorizedClients);
 
-        String registrationId = servicesConfiguration.getMaatApi().getRegistrationId();
-        Assert.notNull(registrationId, MISSING_REGISTRATION_ID);
-        oauthFilter.setDefaultClientRegistrationId(registrationId);
+        setOauthClientRegistrationId(
+                oauthFilter, servicesConfiguration.getMaatApi().getRegistrationId());
 
-        uk.gov.justice.laa.crime.crowncourt.filter.Resilience4jRetryFilter retryFilter =
+        Resilience4jRetryFilter retryFilter =
                 new Resilience4jRetryFilter(retryRegistry, COURT_DATA_API_WEB_CLIENT_NAME);
 
         return webClientBuilder
@@ -101,9 +100,8 @@ public class WebClientsConfiguration {
                 new ServletOAuth2AuthorizedClientExchangeFilterFunction(
                         clientRegistrations, authorizedClients);
 
-        String registrationId = servicesConfiguration.getEvidence().getRegistrationId();
-        Assert.notNull(registrationId, MISSING_REGISTRATION_ID);
-        oauthFilter.setDefaultClientRegistrationId(registrationId);
+        setOauthClientRegistrationId(
+                oauthFilter, servicesConfiguration.getEvidence().getRegistrationId());
 
         Resilience4jRetryFilter retryFilter =
                 new Resilience4jRetryFilter(retryRegistry, EVIDENCE_API_WEB_CLIENT_NAME);
@@ -120,6 +118,7 @@ public class WebClientsConfiguration {
         HttpServiceProxyFactory httpServiceProxyFactory =
                 HttpServiceProxyFactory.builderFor(WebClientAdapter.create(maatCourtDataWebClient))
                         .build();
+
         return httpServiceProxyFactory.createClient(MaatCourtDataApiClient.class);
     }
 
@@ -129,7 +128,15 @@ public class WebClientsConfiguration {
         HttpServiceProxyFactory httpServiceProxyFactory =
                 HttpServiceProxyFactory.builderFor(WebClientAdapter.create(evidenceApiClient))
                         .build();
+
         return httpServiceProxyFactory.createClient(EvidenceApiClient.class);
+    }
+
+    private void setOauthClientRegistrationId(
+            ServletOAuth2AuthorizedClientExchangeFilterFunction oauthFilter,
+            String registrationId) {
+        Assert.notNull(registrationId, MISSING_REGISTRATION_ID);
+        oauthFilter.setDefaultClientRegistrationId(registrationId);
     }
 
     private void configureFilters(

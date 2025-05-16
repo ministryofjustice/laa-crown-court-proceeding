@@ -74,11 +74,13 @@ public class ProsecutionConcludedDataService {
     public void updateConclusion(Integer maatId) {
         List<ProsecutionConcludedEntity> processedCases =
                 prosecutionConcludedRepository.getByMaatId(maatId);
+
         processedCases.forEach(
                 concludedCase -> {
                     concludedCase.setStatus(CaseConclusionStatus.PROCESSED.name());
                     concludedCase.setUpdatedTime(LocalDateTime.now());
                 });
+
         prosecutionConcludedRepository.saveAll(processedCases);
     }
 

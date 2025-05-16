@@ -15,6 +15,8 @@ import uk.gov.justice.laa.crime.enums.DecisionReason;
 @AllArgsConstructor
 public class MagsDecisionResult {
     @NotNull private LocalDate decisionDate;
+
     @NotNull private LocalDateTime timestamp;
+
     @NotNull private DecisionReason decisionReason;
 }

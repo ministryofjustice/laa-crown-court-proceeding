@@ -33,6 +33,7 @@ public class CCPExceptionHandler {
             log.warn("Unable to read the ErrorDTO from WebClientResponseException", ex);
             errorMessage = exception.getMessage();
         }
+
         return buildErrorResponse(
                 exception.getStatusCode(), errorMessage, traceIdHandler.getTraceId());
     }
@@ -65,12 +66,14 @@ public class CCPExceptionHandler {
                 status,
                 message,
                 traceId);
-        return new ResponseEntity<>(
+
+        ErrorDTO errorDTO =
                 ErrorDTO.builder()
                         .traceId(traceId)
                         .code(status.toString())
                         .message(message)
-                        .build(),
-                status);
+                        .build();
+
+        return new ResponseEntity<>(errorDTO, status);
     }
 }

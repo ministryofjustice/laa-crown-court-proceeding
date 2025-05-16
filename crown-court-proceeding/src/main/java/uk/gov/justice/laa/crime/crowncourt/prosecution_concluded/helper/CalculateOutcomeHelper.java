@@ -21,6 +21,7 @@ public class CalculateOutcomeHelper {
         List<String> outcomes = buildOffenceOutComes(offenceSummaryList);
 
         log.info("Offence count: " + outcomes.size());
+
         return outcomes.size() == 1
                 ? outcomes.get(0)
                 : CrownCourtTrialOutcome.PART_CONVICTED.getValue();
@@ -57,11 +58,13 @@ public class CalculateOutcomeHelper {
 
         List<String> list = new ArrayList<>();
         Set<String> uniqueValues = new HashSet<>();
+
         for (String s : offenceOutcomeList) {
             if (uniqueValues.add(s)) {
                 list.add(s);
             }
         }
+
         return list;
     }
 
@@ -73,8 +76,10 @@ public class CalculateOutcomeHelper {
                     VerdictTrialOutcome.getTrialOutcome(
                             offence.getVerdict().getVerdictType().getCategoryType());
             String pleaOutcome = PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue());
+
             return !verdictOutcome.equalsIgnoreCase(pleaOutcome);
         }
+
         return false;
     }
 

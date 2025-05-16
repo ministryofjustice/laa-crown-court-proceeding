@@ -19,12 +19,12 @@ public class ServicesConfiguration {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class MaatApi {
-        /** The API's Base URL */
+        /** The API Base URL */
         @NotNull private String baseUrl;
 
         @NotNull private String registrationId;
 
-        /** Determines whether oAuth authentication is enabled */
+        /** Determines whether OAuth authentication is enabled */
         @NotNull private boolean oAuthEnabled;
     }
 

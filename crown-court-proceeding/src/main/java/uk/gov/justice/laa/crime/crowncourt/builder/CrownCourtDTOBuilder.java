@@ -22,9 +22,11 @@ public class CrownCourtDTOBuilder {
         if (request instanceof ApiUpdateApplicationRequest updateRequest) {
             mapUpdateApplicationRequestToCrownCourtDTO(updateRequest, builder);
         }
+
         if (request instanceof ApiUpdateCrownCourtRequest crownCourtRequest) {
             mapUpdateCrownCourtRequestToCrownCourtDTO(crownCourtRequest, builder);
         }
+
         return builder.build();
     }
 

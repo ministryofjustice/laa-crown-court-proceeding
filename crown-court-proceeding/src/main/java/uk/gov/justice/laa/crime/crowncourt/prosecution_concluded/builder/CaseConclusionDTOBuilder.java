@@ -29,10 +29,10 @@ public class CaseConclusionDTOBuilder {
     }
 
     protected String getMostRecentCaseEndDate(List<OffenceSummary> offenceSummaryList) {
-
         if (offenceSummaryList == null || offenceSummaryList.isEmpty()) {
             return null;
         }
+
         Optional<LocalDate> caseEndDate =
                 offenceSummaryList.stream()
                         .filter(
@@ -63,6 +63,7 @@ public class CaseConclusionDTOBuilder {
                 list.add(s);
             }
         }
+
         return list;
     }
 }

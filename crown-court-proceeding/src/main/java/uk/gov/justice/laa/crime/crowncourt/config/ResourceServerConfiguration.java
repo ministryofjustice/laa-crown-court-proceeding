@@ -25,6 +25,7 @@ public class ResourceServerConfiguration {
         BearerTokenAuthenticationEntryPoint bearerTokenAuthenticationEntryPoint =
                 new BearerTokenAuthenticationEntryPoint();
         bearerTokenAuthenticationEntryPoint.setRealmName("Crown Court Proceedings API");
+
         return bearerTokenAuthenticationEntryPoint;
     }
 
@@ -56,6 +57,7 @@ public class ResourceServerConfiguration {
                                         .authenticationEntryPoint(
                                                 bearerTokenAuthenticationEntryPoint())
                                         .jwt(withDefaults()));
+
         return http.build();
     }
 }

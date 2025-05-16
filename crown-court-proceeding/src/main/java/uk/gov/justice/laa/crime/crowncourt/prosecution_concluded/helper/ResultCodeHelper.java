@@ -21,25 +21,24 @@ public class ResultCodeHelper {
     public String isBenchWarrantIssued(
             final String caseLevelOutcome, List<String> hearingResultCodes) {
 
-        if (isTrial(caseLevelOutcome)) {
-            return anyResultCodeMatch(
-                            courtDataAPIService.findByCjsResultCodeIn(), hearingResultCodes)
-                    ? YES
-                    : null;
+        if (!isTrial(caseLevelOutcome)) {
+            return null;
         }
-        return null;
+
+        return anyResultCodeMatch(courtDataAPIService.findByCjsResultCodeIn(), hearingResultCodes)
+                ? YES
+                : null;
     }
 
     public String isImprisoned(final String caseLevelOutcome, List<String> hearingResultCodes) {
-
-        if (isConvicted(caseLevelOutcome)) {
-            return anyResultCodeMatch(
-                            courtDataAPIService.fetchResultCodesForCCImprisonment(),
-                            hearingResultCodes)
-                    ? YES
-                    : NO;
+        if (!isConvicted(caseLevelOutcome)) {
+            return null;
         }
-        return null;
+
+        return anyResultCodeMatch(
+                        courtDataAPIService.fetchResultCodesForCCImprisonment(), hearingResultCodes)
+                ? YES
+                : NO;
     }
 
     private boolean anyResultCodeMatch(

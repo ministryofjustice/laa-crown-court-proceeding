@@ -21,6 +21,7 @@ public class WebClientFilters {
                             || response.statusCode().is5xxServerError()) {
                         log.error("❌  Response status: {}", response.statusCode());
                     }
+
                     return Mono.just(response);
                 });
     }
@@ -35,6 +36,7 @@ public class WebClientFilters {
                                     values.forEach(value -> log.debug("{}={}", name, value));
                                 }
                             });
+
             return next.exchange(request);
         };
     }
@@ -46,6 +48,7 @@ public class WebClientFilters {
                         return response.bodyToMono(Void.class)
                                 .then(Mono.just(ClientResponse.create(HttpStatus.OK).build()));
                     }
+
                     return Mono.just(response);
                 });
     }
@@ -57,6 +60,7 @@ public class WebClientFilters {
                             || response.statusCode().is5xxServerError()) {
                         return response.createException().flatMap(Mono::error);
                     }
+
                     return Mono.just(response);
                 });
     }

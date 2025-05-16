@@ -66,12 +66,11 @@ public class ProsecutionConcludedScheduler {
 
     public void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
         try {
-            WQHearingDTO wqHearingDTO =
+            WQHearingDTO hearing =
                     courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
-            if (wqHearingDTO != null) {
-                if (isCCConclusion(wqHearingDTO)) {
-                    prosecutionConcludedService.executeCCOutCome(
-                            prosecutionConcluded, wqHearingDTO);
+            if (hearing != null) {
+                if (isCCConclusion(hearing)) {
+                    prosecutionConcludedService.executeCCOutCome(prosecutionConcluded, hearing);
                 } else {
                     updateConclusion(
                             prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(),
@@ -116,11 +115,13 @@ public class ProsecutionConcludedScheduler {
     public void updateConclusion(String hearingId, CaseConclusionStatus caseConclusionStatus) {
         List<ProsecutionConcludedEntity> processedCases =
                 prosecutionConcludedRepository.getByHearingId(hearingId);
+
         processedCases.forEach(
                 concludedCase -> {
                     concludedCase.setStatus(caseConclusionStatus.name());
                     concludedCase.setUpdatedTime(LocalDateTime.now());
                 });
+
         prosecutionConcludedRepository.saveAll(processedCases);
     }
 }

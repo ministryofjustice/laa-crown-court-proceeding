@@ -21,6 +21,7 @@ public class UpdateRepOrderDTOBuilder {
             CrownCourtDTO crownCourtDTO, ApiProcessRepOrderResponse apiProcessRepOrderResponse) {
 
         ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
+
         return UpdateRepOrderRequestDTO.builder()
                 .repId(crownCourtDTO.getRepId())
                 .crownRepId(crownCourtDTO.getCrownRepId())
@@ -46,6 +47,7 @@ public class UpdateRepOrderDTOBuilder {
 
     public static UpdateRepOrderRequestDTO build(CrownCourtDTO crownCourtDTO) {
         ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
+
         return UpdateRepOrderRequestDTO.builder()
                 .repId(crownCourtDTO.getRepId())
                 .isImprisoned(crownCourtDTO.getIsImprisoned())

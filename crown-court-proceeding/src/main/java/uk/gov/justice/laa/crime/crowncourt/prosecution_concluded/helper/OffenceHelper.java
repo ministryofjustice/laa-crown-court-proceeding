@@ -19,7 +19,6 @@ public class OffenceHelper {
     private final CourtDataAPIService courtDataAPIService;
 
     public List<OffenceSummary> getTrialOffences(List<OffenceSummary> offenceList, int maatId) {
-
         int caseId = courtDataAPIService.findWQLinkRegisterByMaatId(maatId);
         List<OffenceDTO> offenceDTO = courtDataAPIService.findOffenceByCaseId(caseId);
         List<Integer> committalForTrialRefResults =
@@ -37,6 +36,7 @@ public class OffenceHelper {
                 list.add(offence);
             }
         }
+
         return list;
     }
 
@@ -57,6 +57,7 @@ public class OffenceHelper {
                 && !hasCommittalResults(offence, offenceDTO, committalForSentenceRefResults)) {
             isNewCCOffence = true;
         }
+
         return isNewCCOffence;
     }
 
@@ -93,11 +94,13 @@ public class OffenceHelper {
                     Stream.concat(resultList.stream(), wqResultList.stream())
                             .anyMatch(committalRefResults::contains);
         }
+
         return isCommittal;
     }
 
     private String getAsnSeq(OffenceDTO offenceDTO) {
         int asnSeq = Integer.parseInt(offenceDTO.getAsnSeq());
+
         return asnSeq < 9
                 ? offenceDTO.getAsnSeq().substring(2)
                 : offenceDTO.getAsnSeq().substring(1);

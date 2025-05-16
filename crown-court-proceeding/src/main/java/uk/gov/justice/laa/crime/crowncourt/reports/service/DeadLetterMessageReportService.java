@@ -77,11 +77,11 @@ public class DeadLetterMessageReportService {
                 Sort.by("deadLetterReason").ascending().and(Sort.by("receivedTime").descending());
         deadLetterMessageList = deadLetterMessageRepository.findByReportingStatus(PENDING, sort);
 
-        if (CollectionUtils.isEmpty(deadLetterMessageList)) {
-            log.info("No dead letter messages found on {}", LocalDate.now());
-        } else {
+        if (!CollectionUtils.isEmpty(deadLetterMessageList)) {
             return prepareLinesForCsv(deadLetterMessageList);
         }
+
+        log.info("No dead letter messages found on {}", LocalDate.now());
 
         return Collections.emptyList();
     }
@@ -130,7 +130,6 @@ public class DeadLetterMessageReportService {
         }
 
         Map<String, Integer> reasonCounts = new HashMap<>();
-        ;
 
         for (DeadLetterMessageEntity deadLetterMessage : deadLetterMessageList) {
             // Determine start and end times

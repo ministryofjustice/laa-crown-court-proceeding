@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.ResultCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 import uk.gov.justice.laa.crime.exception.ValidationException;
@@ -22,7 +21,6 @@ import uk.gov.justice.laa.crime.exception.ValidationException;
 public class ProsecutionConcludedImpl {
 
     private final CourtDataAPIService courtDataAPIService;
-    private final CrownCourtCodeHelper crownCourtCodeHelper;
     private final ProcessSentencingImpl processSentencingHelper;
     private final ResultCodeHelper resultCodeHelper;
 

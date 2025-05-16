@@ -17,6 +17,7 @@ public class SpringCloudAwsConfig {
         MappingJackson2MessageConverter messageConverter = new MappingJackson2MessageConverter();
         messageConverter.setSerializedPayloadClass(String.class);
         messageConverter.setObjectMapper(objectMapper);
+
         return messageConverter;
     }
 }

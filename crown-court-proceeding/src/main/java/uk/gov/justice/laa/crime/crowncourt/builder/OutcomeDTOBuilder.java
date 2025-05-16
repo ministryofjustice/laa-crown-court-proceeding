@@ -18,26 +18,30 @@ public class OutcomeDTOBuilder {
     public static List<RepOrderCCOutcomeDTO> build(CrownCourtDTO crownCourtDTO) {
         List<ApiCrownCourtOutcome> outcomes =
                 crownCourtDTO.getCrownCourtSummary().getCrownCourtOutcome();
+
         List<RepOrderCCOutcomeDTO> repOrderCCOutcomeList = null;
+
         if (null != outcomes && !outcomes.isEmpty()) {
-            repOrderCCOutcomeList =
-                    outcomes.stream()
-                            .map(
-                                    outcome ->
-                                            RepOrderCCOutcomeDTO.builder()
-                                                    .repId(crownCourtDTO.getRepId())
-                                                    .outcome(outcome.getOutcome().getCode())
-                                                    .outcomeDate(
-                                                            null != outcome.getDateSet()
-                                                                    ? outcome.getDateSet()
-                                                                    : LocalDateTime.now())
-                                                    .userCreated(
-                                                            crownCourtDTO
-                                                                    .getUserSession()
-                                                                    .getUserName())
-                                                    .build())
-                            .collect(Collectors.toCollection(ArrayList::new));
+            repOrderCCOutcomeList = mapRepOrderOutcomes(outcomes, crownCourtDTO);
         }
+
         return repOrderCCOutcomeList;
+    }
+
+    private static List<RepOrderCCOutcomeDTO> mapRepOrderOutcomes(
+            List<ApiCrownCourtOutcome> outcomes, CrownCourtDTO crownCourtDTO) {
+        return outcomes.stream()
+                .map(
+                        outcome ->
+                                RepOrderCCOutcomeDTO.builder()
+                                        .repId(crownCourtDTO.getRepId())
+                                        .outcome(outcome.getOutcome().getCode())
+                                        .outcomeDate(
+                                                null != outcome.getDateSet()
+                                                        ? outcome.getDateSet()
+                                                        : LocalDateTime.now())
+                                        .userCreated(crownCourtDTO.getUserSession().getUserName())
+                                        .build())
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }
