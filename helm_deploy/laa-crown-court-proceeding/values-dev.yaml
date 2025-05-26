@@ -23,7 +23,7 @@ jwt:
 
 maatApi:
   baseUrl: https://laa-maat-data-api-dev.apps.live.cloud-platform.service.justice.gov.uk/api/internal/v1/assessment
-  oauthUrl: https://maat-cd-api-dev.auth.eu-west-2.amazoncognito.com/oauth2/token
+  oauthUrl: https://maat-api-dev.auth.eu-west-2.amazoncognito.com/oauth2/token
 
 cdaApi:
   baseUrl: https://dev.court-data-adaptor.service.justice.gov.uk/api/internal/v2
