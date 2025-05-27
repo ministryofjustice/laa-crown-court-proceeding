@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,5 +16,4 @@ public class Defendant {
 
     @JsonProperty("data")
     private DefendantData data;
-
 }

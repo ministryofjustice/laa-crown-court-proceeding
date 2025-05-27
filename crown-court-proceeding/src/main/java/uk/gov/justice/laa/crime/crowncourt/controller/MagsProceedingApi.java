@@ -13,20 +13,30 @@ import uk.gov.justice.laa.crime.annotation.DefaultHTTPErrorResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiDetermineMagsRepDecisionRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiDetermineMagsRepDecisionResponse;
 
-
 public interface MagsProceedingApi {
 
     @Operation(description = "Determine Magistrates Rep Decision")
-    @ApiResponse(responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ApiDetermineMagsRepDecisionResponse.class)
-            )
-    )
+    @ApiResponse(
+            responseCode = "200",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema =
+                                    @Schema(
+                                            implementation =
+                                                    ApiDetermineMagsRepDecisionResponse.class)))
     @DefaultHTTPErrorResponse
     ResponseEntity<ApiDetermineMagsRepDecisionResponse> determineMagsRepDecision(
-            @Parameter(description = "Application Data Required to Determine Rep Decision",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiDetermineMagsRepDecisionRequest.class)
-                    )
-            ) @Valid @RequestBody ApiDetermineMagsRepDecisionRequest request);
+            @Parameter(
+                            description = "Application Data Required to Determine Rep Decision",
+                            content =
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema =
+                                                    @Schema(
+                                                            implementation =
+                                                                    ApiDetermineMagsRepDecisionRequest
+                                                                            .class)))
+                    @Valid @RequestBody
+                    ApiDetermineMagsRepDecisionRequest request);
 }

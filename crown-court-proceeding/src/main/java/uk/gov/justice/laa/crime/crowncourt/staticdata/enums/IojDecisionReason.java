@@ -1,15 +1,13 @@
 package uk.gov.justice.laa.crime.crowncourt.staticdata.enums;
 
+import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.stream.Stream;
-
 @Getter
 @AllArgsConstructor
 public enum IojDecisionReason {
-
     NOTUNDPROC("NOTUNDPROC", 1, "Would not understand the proceedings"),
     SKILLEXAM("SKILLEXAM", 2, "Skillful exam of prosecution witness"),
     LOSLIBTY("LOSLIBTY", 3, "Loss of liberty"),
@@ -31,6 +29,11 @@ public enum IojDecisionReason {
         return Stream.of(IojDecisionReason.values())
                 .filter(iojDecisionReason -> iojDecisionReason.code.equals(code))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(String.format("IOJ Decision Outcome with value: %s does not exist.", code)));
+                .orElseThrow(
+                        () ->
+                                new IllegalArgumentException(
+                                        String.format(
+                                                "IOJ Decision Outcome with value: %s does not exist.",
+                                                code)));
     }
 }

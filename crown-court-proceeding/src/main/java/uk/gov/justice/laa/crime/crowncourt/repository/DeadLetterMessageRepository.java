@@ -10,10 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.justice.laa.crime.crowncourt.entity.DeadLetterMessageEntity;
 
 @Repository
-public interface DeadLetterMessageRepository extends JpaRepository<DeadLetterMessageEntity, Integer> {
-  List<DeadLetterMessageEntity> findByReportingStatus(String reportingStatus, Sort sort);
-  @Modifying
-  @Transactional
-  @Query("UPDATE DeadLetterMessageEntity DLM SET DLM.reportingStatus = :newStatus WHERE DLM.id IN (:ids)")
-  void updateReportingStatusForIds(List<Integer> ids, String newStatus);
+public interface DeadLetterMessageRepository
+        extends JpaRepository<DeadLetterMessageEntity, Integer> {
+    List<DeadLetterMessageEntity> findByReportingStatus(String reportingStatus, Sort sort);
+
+    @Modifying
+    @Transactional
+    @Query(
+            "UPDATE DeadLetterMessageEntity DLM SET DLM.reportingStatus = :newStatus WHERE DLM.id IN (:ids)")
+    void updateReportingStatusForIds(List<Integer> ids, String newStatus);
 }

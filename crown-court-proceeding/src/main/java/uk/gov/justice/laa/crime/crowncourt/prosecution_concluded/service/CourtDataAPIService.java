@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -14,17 +15,14 @@ import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.client.MaatCourtDataNonServletApiClient;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 
-import java.util.List;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CourtDataAPIService {
-    
+
     private final MaatCourtDataNonServletApiClient maatAPIClient;
     private final CourtDataAdapterService courtDataAdapterService;
     public static final String RESPONSE_STRING = "Response from Court Data API: {}";
-
 
     public RepOrderDTO getRepOrder(Integer repId) {
         RepOrderDTO response = maatAPIClient.getRepOrderByRepId(repId);
@@ -36,19 +34,19 @@ public class CourtDataAPIService {
         maatAPIClient.updateCrownCourtOutcome(updateCCOutcome);
     }
 
-    public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
+    public WQHearingDTO retrieveHearingForCaseConclusion(
+            ProsecutionConcluded prosecutionConcluded) {
 
-        List<WQHearingDTO> wqHearingList = maatAPIClient.getWorkQueueHearing(
-            prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), 
-            prosecutionConcluded.getMaatId());
+        List<WQHearingDTO> wqHearingList =
+                maatAPIClient.getWorkQueueHearing(
+                        prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(),
+                        prosecutionConcluded.getMaatId());
 
-        WQHearingDTO wqHearingDTO = CollectionUtils.isNotEmpty(wqHearingList) ? wqHearingList.get(0) : null;
-        if (wqHearingDTO == null
-                && prosecutionConcluded.isConcluded()) {
-            courtDataAdapterService.
-                    triggerHearingProcessing(
-                            prosecutionConcluded.getHearingIdWhereChangeOccurred()
-                    );
+        WQHearingDTO wqHearingDTO =
+                CollectionUtils.isNotEmpty(wqHearingList) ? wqHearingList.get(0) : null;
+        if (wqHearingDTO == null && prosecutionConcluded.isConcluded()) {
+            courtDataAdapterService.triggerHearingProcessing(
+                    prosecutionConcluded.getHearingIdWhereChangeOccurred());
         }
         return wqHearingDTO;
     }
@@ -84,7 +82,8 @@ public class CourtDataAPIService {
     }
 
     public List<Integer> findResultsByWQTypeSubType(int wqType, int subTypeCode) {
-        List<Integer> response = maatAPIClient.getResultsByWorkQueueTypeSubType(wqType, subTypeCode);
+        List<Integer> response =
+                maatAPIClient.getResultsByWorkQueueTypeSubType(wqType, subTypeCode);
         log.info(RESPONSE_STRING, response);
         return response;
     }
@@ -96,7 +95,8 @@ public class CourtDataAPIService {
     }
 
     public List<Integer> getWqResultCodeByCaseIdAndAsnSeq(int caseId, String offenceId) {
-        List<Integer> response = maatAPIClient.getWorkQueueResultCodeByCaseIdAndAsnSeq(caseId, offenceId);
+        List<Integer> response =
+                maatAPIClient.getWorkQueueResultCodeByCaseIdAndAsnSeq(caseId, offenceId);
         log.info(RESPONSE_STRING, response);
         return response;
     }

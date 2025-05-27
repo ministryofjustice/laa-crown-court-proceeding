@@ -1,6 +1,11 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.scheduler;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,37 +22,24 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.Prose
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
-
-import java.util.List;
-import java.util.UUID;
 import uk.gov.justice.laa.crime.exception.ValidationException;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProsecutionConcludedSchedulerTest {
 
-    @Mock
-    private ObjectMapper objectMapper;
+    @Mock private ObjectMapper objectMapper;
 
-    @Mock
-    private CourtDataAPIService courtDataAPIService;
+    @Mock private CourtDataAPIService courtDataAPIService;
 
-    @Mock
-    private DeadLetterMessageService deadLetterMessageService;
+    @Mock private DeadLetterMessageService deadLetterMessageService;
 
-    @Mock
-    private ProsecutionConcludedService prosecutionConcludedService;
+    @Mock private ProsecutionConcludedService prosecutionConcludedService;
 
-    @Mock
-    private ProsecutionConcludedRepository prosecutionConcludedRepository;
+    @Mock private ProsecutionConcludedRepository prosecutionConcludedRepository;
 
-    @Mock
-    private ProsecutionConcludedDataService prosecutionConcludedDataService;
+    @Mock private ProsecutionConcludedDataService prosecutionConcludedDataService;
 
-    @InjectMocks
-    private ProsecutionConcludedScheduler prosecutionConcludedScheduler;
+    @InjectMocks private ProsecutionConcludedScheduler prosecutionConcludedScheduler;
 
     @Test
     void givenHearingIsFound_whenSchedulerIsCalled_thenCCtProcessIsTriggered() throws Exception {
@@ -55,7 +47,10 @@ class ProsecutionConcludedSchedulerTest {
                 .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
 
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
-                .thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.CROWN.name()).build());
+                .thenReturn(
+                        WQHearingDTO.builder()
+                                .wqJurisdictionType(JurisdictionType.CROWN.name())
+                                .build());
 
         byte[] caseData = TestModelDataBuilder.getProsecutionConcludedEntity().getCaseData();
         when(objectMapper.readValue(caseData, ProsecutionConcluded.class))
@@ -78,40 +73,49 @@ class ProsecutionConcludedSchedulerTest {
     }
 
     @Test
-    void givenAJurisdictionIsMagistrates_whenProcessCaseConclusionIsInvoked_thenUpdateConclusionIsSuccess() {
-        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).
-                thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.MAGISTRATES.name()).build());
+    void
+            givenAJurisdictionIsMagistrates_whenProcessCaseConclusionIsInvoked_thenUpdateConclusionIsSuccess() {
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
+                .thenReturn(
+                        WQHearingDTO.builder()
+                                .wqJurisdictionType(JurisdictionType.MAGISTRATES.name())
+                                .build());
         when(prosecutionConcludedRepository.getByHearingId(any()))
                 .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
 
         prosecutionConcludedScheduler.processCaseConclusion(
-                ProsecutionConcluded.builder().maatId(1234).hearingIdWhereChangeOccurred(UUID.randomUUID()).build()
-        );
+                ProsecutionConcluded.builder()
+                        .maatId(1234)
+                        .hearingIdWhereChangeOccurred(UUID.randomUUID())
+                        .build());
 
         verify(prosecutionConcludedRepository).saveAll(any());
     }
 
     @Test
-    void givenAnInvalidCaseConclusion_whenProcessCaseConclusionIsInvoked_thenUpdateConclusionIsError() {
+    void
+            givenAnInvalidCaseConclusion_whenProcessCaseConclusionIsInvoked_thenUpdateConclusionIsError() {
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
                 .thenThrow(WebClientRequestException.class);
         when(prosecutionConcludedRepository.getByHearingId(any()))
                 .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
 
         prosecutionConcludedScheduler.processCaseConclusion(
-                ProsecutionConcluded.builder().maatId(1234).hearingIdWhereChangeOccurred(UUID.randomUUID()).build()
-        );
+                ProsecutionConcluded.builder()
+                        .maatId(1234)
+                        .hearingIdWhereChangeOccurred(UUID.randomUUID())
+                        .build());
         verify(prosecutionConcludedRepository).saveAll(any());
     }
 
     @Test
     void givenInvalidCaseData_whenProcessIsInvoked_thenExecuteOutcomeIsFailed() throws Exception {
-        when(objectMapper.readValue(TestModelDataBuilder.getCaseData().getBytes(), ProsecutionConcluded.class))
+        when(objectMapper.readValue(
+                        TestModelDataBuilder.getCaseData().getBytes(), ProsecutionConcluded.class))
                 .thenReturn(null);
         when(prosecutionConcludedRepository.getConcludedCases())
                 .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
-        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).
-                thenReturn(null);
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(null);
 
         byte[] caseData = TestModelDataBuilder.getProsecutionConcludedEntity().getCaseData();
         when(objectMapper.readValue(caseData, ProsecutionConcluded.class))
@@ -125,20 +129,27 @@ class ProsecutionConcludedSchedulerTest {
 
     @Test
     void givenAnInvalidOuCode_whenProcessIsInvoked_thenMessageIsSavedAsADeadLetterMessage() {
-        WQHearingDTO wqHearingDTO = WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.CROWN.name()).build();
-        ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder().maatId(1234).hearingIdWhereChangeOccurred(UUID.randomUUID()).build();
+        WQHearingDTO wqHearingDTO =
+                WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.CROWN.name()).build();
+        ProsecutionConcluded prosecutionConcluded =
+                ProsecutionConcluded.builder()
+                        .maatId(1234)
+                        .hearingIdWhereChangeOccurred(UUID.randomUUID())
+                        .build();
 
-        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).
-            thenReturn(wqHearingDTO);
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(wqHearingDTO);
         when(prosecutionConcludedRepository.getByHearingId(any()))
-            .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
+                .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
 
-        doThrow(new ValidationException(ProsecutionConcludedValidator.OU_CODE_LOOKUP_FAILED)).when(prosecutionConcludedService).executeCCOutCome(prosecutionConcluded, wqHearingDTO);
+        doThrow(new ValidationException(ProsecutionConcludedValidator.OU_CODE_LOOKUP_FAILED))
+                .when(prosecutionConcludedService)
+                .executeCCOutCome(prosecutionConcluded, wqHearingDTO);
 
         prosecutionConcludedScheduler.processCaseConclusion(prosecutionConcluded);
 
-        verify(deadLetterMessageService, times(1)).logDeadLetterMessage(
-            ProsecutionConcludedValidator.OU_CODE_LOOKUP_FAILED, prosecutionConcluded);
+        verify(deadLetterMessageService, times(1))
+                .logDeadLetterMessage(
+                        ProsecutionConcludedValidator.OU_CODE_LOOKUP_FAILED, prosecutionConcluded);
         verify(prosecutionConcludedRepository).saveAll(any());
     }
 }

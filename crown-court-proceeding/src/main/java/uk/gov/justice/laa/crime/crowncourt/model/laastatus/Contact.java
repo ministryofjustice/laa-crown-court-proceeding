@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,15 +16,19 @@ public class Contact {
 
     @JsonProperty("home")
     private String home;
+
     @JsonProperty("work")
     private String work;
+
     @JsonProperty("mobile")
     private String mobile;
+
     @JsonProperty("primary_email")
     private String primaryEmail;
+
     @JsonProperty("secondary_email")
     private String secondaryEmail;
+
     @JsonProperty("fax")
     private String fax;
-
 }

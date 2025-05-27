@@ -1,20 +1,19 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.impl;
 
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.caseTypeForAppeal;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.caseTypeForTrial;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.isTrial;
+import static uk.gov.justice.laa.crime.enums.CrownCourtAppealOutcome.isAppeal;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.ResultCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 import uk.gov.justice.laa.crime.exception.ValidationException;
-
-import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.caseTypeForAppeal;
-import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.caseTypeForTrial;
-import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.isTrial;
-import static uk.gov.justice.laa.crime.enums.CrownCourtAppealOutcome.isAppeal;
 
 @Slf4j
 @Component
@@ -22,7 +21,6 @@ import static uk.gov.justice.laa.crime.enums.CrownCourtAppealOutcome.isAppeal;
 public class ProsecutionConcludedImpl {
 
     private final CourtDataAPIService courtDataAPIService;
-    private final CrownCourtCodeHelper crownCourtCodeHelper;
     private final ProcessSentencingImpl processSentencingHelper;
     private final ResultCodeHelper resultCodeHelper;
 
@@ -32,19 +30,27 @@ public class ProsecutionConcludedImpl {
 
             verifyCaseTypeValidator(repOrderDTO, concludedDTO.getCalculatedOutcome());
 
-            courtDataAPIService
-                    .updateCrownCourtOutcome(
-                            UpdateCCOutcome.builder()
-                                    .repId(repOrderDTO.getId())
-                                    .ccOutcome(concludedDTO.getCalculatedOutcome())
-                                    .benchWarrantIssued(resultCodeHelper.isBenchWarrantIssued(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCodeList()))
-                                    .appealType(repOrderDTO.getAppealTypeCode())
-                                    .imprisoned(resultCodeHelper.isImprisoned(concludedDTO.getCalculatedOutcome(), concludedDTO.getHearingResultCodeList()))
-                                    .caseNumber(concludedDTO.getCaseUrn())
-                                    .crownCourtCode(concludedDTO.getCrownCourtCode()).build()
-                    );
+            courtDataAPIService.updateCrownCourtOutcome(
+                    UpdateCCOutcome.builder()
+                            .repId(repOrderDTO.getId())
+                            .ccOutcome(concludedDTO.getCalculatedOutcome())
+                            .benchWarrantIssued(
+                                    resultCodeHelper.isBenchWarrantIssued(
+                                            concludedDTO.getCalculatedOutcome(),
+                                            concludedDTO.getHearingResultCodeList()))
+                            .appealType(repOrderDTO.getAppealTypeCode())
+                            .imprisoned(
+                                    resultCodeHelper.isImprisoned(
+                                            concludedDTO.getCalculatedOutcome(),
+                                            concludedDTO.getHearingResultCodeList()))
+                            .caseNumber(concludedDTO.getCaseUrn())
+                            .crownCourtCode(concludedDTO.getCrownCourtCode())
+                            .build());
 
-            processSentencingHelper.processSentencingDate(concludedDTO.getCaseEndDate(), repOrderDTO.getId(), repOrderDTO.getCatyCaseType());
+            processSentencingHelper.processSentencingDate(
+                    concludedDTO.getCaseEndDate(),
+                    repOrderDTO.getId(),
+                    repOrderDTO.getCatyCaseType());
         }
     }
 

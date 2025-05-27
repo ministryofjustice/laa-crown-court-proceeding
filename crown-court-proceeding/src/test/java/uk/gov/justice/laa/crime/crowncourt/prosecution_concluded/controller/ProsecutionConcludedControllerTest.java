@@ -26,31 +26,32 @@ class ProsecutionConcludedControllerTest {
     private static final String COUNT_ENDPOINT_URL =
             "/api/internal/v1/proceedings/prosecution-concluded/%s/messages/count";
 
-    @Autowired
-    private MockMvc mvc;
+    @Autowired private MockMvc mvc;
 
-    @MockBean
-    private ProsecutionConcludedDataService service;
+    @MockBean private ProsecutionConcludedDataService service;
 
-    @MockBean
-    private TraceIdHandler traceIdHandler;
+    @MockBean private TraceIdHandler traceIdHandler;
 
     @Test
     void givenIncorrectParameters_whenGetCountByMaatIdAndStatusIsInvoked_thenErrorIsThrown()
             throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get(String.format(COUNT_ENDPOINT_URL, "invalid"))
-                        .contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(
+                        MockMvcRequestBuilders.get(String.format(COUNT_ENDPOINT_URL, "invalid"))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void givenValidParameters_whenGetCountByMaatIdAndStatusIsInvoked_thenReturnCount()
             throws Exception {
-        when(service.getCountByMaatIdAndStatus(TestModelDataBuilder.TEST_REP_ID,
-                CaseConclusionStatus.PENDING.name())).thenReturn(1L);
-        mvc.perform(MockMvcRequestBuilders.get(
-                        String.format(COUNT_ENDPOINT_URL, TestModelDataBuilder.TEST_REP_ID)
-                                + "?status=" + CaseConclusionStatus.PENDING.name()))
+        when(service.getCountByMaatIdAndStatus(
+                        TestModelDataBuilder.TEST_REP_ID, CaseConclusionStatus.PENDING.name()))
+                .thenReturn(1L);
+        mvc.perform(
+                        MockMvcRequestBuilders.get(
+                                String.format(COUNT_ENDPOINT_URL, TestModelDataBuilder.TEST_REP_ID)
+                                        + "?status="
+                                        + CaseConclusionStatus.PENDING.name()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(String.valueOf(1)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

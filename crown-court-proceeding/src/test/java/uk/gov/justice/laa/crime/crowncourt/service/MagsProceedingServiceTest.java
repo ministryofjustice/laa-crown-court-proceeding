@@ -1,5 +1,10 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import java.util.stream.Stream;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -20,52 +25,46 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderReque
 import uk.gov.justice.laa.crime.enums.*;
 import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
 class MagsProceedingServiceTest {
 
-    @InjectSoftAssertions
-    private SoftAssertions softly;
+    @InjectSoftAssertions private SoftAssertions softly;
 
-    @InjectMocks
-    private MagsProceedingService magsProceedingService;
+    @InjectMocks private MagsProceedingService magsProceedingService;
 
-    @Mock
-    private MaatCourtDataService maatCourtDataService;
+    @Mock private MaatCourtDataService maatCourtDataService;
 
     @ParameterizedTest
     @MethodSource("getDecisionReasonScenarios")
-    void givenDecisionReasonScenario_whenDetermineMagsRepDecisionIsInvoked_thenDecisionReasonIsPersistedAndReturned(
-            Scenario scenario, DecisionReason expectedResult) {
+    void
+            givenDecisionReasonScenario_whenDetermineMagsRepDecisionIsInvoked_thenDecisionReasonIsPersistedAndReturned(
+                    Scenario scenario, DecisionReason expectedResult) {
 
         // If we are expecting null, we don't call updateRepOrder
         if (expectedResult != null) {
-          when(maatCourtDataService.updateRepOrder(any(UpdateRepOrderRequestDTO.class)))
-              .thenReturn(RepOrderDTO.builder()
-                  .dateModified(TestModelDataBuilder.TEST_DATE_MODIFIED)
-                  .build()
-              );
+            when(maatCourtDataService.updateRepOrder(any(UpdateRepOrderRequestDTO.class)))
+                    .thenReturn(
+                            RepOrderDTO.builder()
+                                    .dateModified(TestModelDataBuilder.TEST_DATE_MODIFIED)
+                                    .build());
         }
 
         CrownCourtDTO crownCourtDTO = buildCrownCourtDTO(scenario);
-        MagsDecisionResult decisionResult = magsProceedingService.determineMagsRepDecision(crownCourtDTO);
-        
+        MagsDecisionResult decisionResult =
+                magsProceedingService.determineMagsRepDecision(crownCourtDTO);
+
         if (decisionResult != null) {
-          softly.assertThat(decisionResult.getDecisionDate()).isNotNull();
-          softly.assertThat(decisionResult.getDecisionReason()).isEqualTo(expectedResult);
-          softly.assertThat(decisionResult.getTimestamp()).isEqualTo(TestModelDataBuilder.TEST_DATE_MODIFIED);
+            softly.assertThat(decisionResult.getDecisionDate()).isNotNull();
+            softly.assertThat(decisionResult.getDecisionReason()).isEqualTo(expectedResult);
+            softly.assertThat(decisionResult.getTimestamp())
+                    .isEqualTo(TestModelDataBuilder.TEST_DATE_MODIFIED);
         }
 
         softly.assertThat(crownCourtDTO.getMagsDecisionResult()).isEqualTo(decisionResult);
 
         if (expectedResult != null) {
-          verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
+            verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
         }
     }
 
@@ -75,274 +74,239 @@ class MagsProceedingServiceTest {
                 .userSession(new ApiUserSession().withUserName("user"))
                 .crownCourtSummary(new ApiCrownCourtSummary().withIsWarrantIssued(false))
                 .iojSummary(new ApiIOJSummary().withIojResult(scenario.iojResult.getResult()))
-                .passportAssessment(new ApiPassportAssessment().withResult(
-                    scenario.passportResult() != null ? scenario.passportResult() : null))
-                .financialAssessment(new ApiFinancialAssessment()
-                                             .withInitResult(
-                                                     scenario.initResult() != null
-                                                             ? scenario.initResult.getResult() : null
-                                             )
-                                             .withFullResult(
-                                                     scenario.fullResult() != null
-                                                             ? scenario.fullResult.getResult() : null
-                                             )
-                                             .withHardshipOverview(new ApiHardshipOverview()
-                                                                           .withReviewResult(scenario.hardshipResult))
-                ).build();
+                .passportAssessment(
+                        new ApiPassportAssessment()
+                                .withResult(
+                                        scenario.passportResult() != null
+                                                ? scenario.passportResult()
+                                                : null))
+                .financialAssessment(
+                        new ApiFinancialAssessment()
+                                .withInitResult(
+                                        scenario.initResult() != null
+                                                ? scenario.initResult.getResult()
+                                                : null)
+                                .withFullResult(
+                                        scenario.fullResult() != null
+                                                ? scenario.fullResult.getResult()
+                                                : null)
+                                .withHardshipOverview(
+                                        new ApiHardshipOverview()
+                                                .withReviewResult(scenario.hardshipResult)))
+                .build();
     }
 
-    record Scenario(ReviewResult iojResult, InitAssessmentResult initResult, FullAssessmentResult fullResult,
-                    ReviewResult hardshipResult, String passportResult) {
-    }
+    record Scenario(
+            ReviewResult iojResult,
+            InitAssessmentResult initResult,
+            FullAssessmentResult fullResult,
+            ReviewResult hardshipResult,
+            String passportResult) {}
 
     private static Stream<Arguments> getDecisionReasonScenarios() {
         return Stream.of(
                 Arguments.of(
-                  new Scenario(
-                      ReviewResult.PASS,
-                      null,
-                      null,
-                      null,
-                      PassportAssessmentResult.FAIL_CONTINUE.getResult()
-                  ), null
-                ),
+                        new Scenario(
+                                ReviewResult.PASS,
+                                null,
+                                null,
+                                null,
+                                PassportAssessmentResult.FAIL_CONTINUE.getResult()),
+                        null),
                 Arguments.of(
                         new Scenario(
                                 ReviewResult.PASS,
                                 null,
                                 null,
                                 null,
-                                PassportAssessmentResult.PASS.getResult()
-                        ), DecisionReason.GRANTED
-                ),
+                                PassportAssessmentResult.PASS.getResult()),
+                        DecisionReason.GRANTED),
+                Arguments.of(new Scenario(ReviewResult.PASS, null, null, null, null), null),
                 Arguments.of(
-                    new Scenario(
-                          ReviewResult.PASS,
-                          null,
-                          null,
-                          null,
-                          null
-                      ), null
-                ),
-                Arguments.of(
-                      new Scenario(
-                          ReviewResult.PASS,
-                          null,
-                          null,
-                          null,
-                          PassportAssessmentResult.TEMP.getResult()
-                      ), DecisionReason.GRANTED
-                ),
+                        new Scenario(
+                                ReviewResult.PASS,
+                                null,
+                                null,
+                                null,
+                                PassportAssessmentResult.TEMP.getResult()),
+                        DecisionReason.GRANTED),
                 Arguments.of(
                         new Scenario(
                                 ReviewResult.FAIL,
                                 null,
                                 null,
                                 null,
-                                PassportAssessmentResult.PASS.getResult()
-                        ), DecisionReason.FAILIOJ
-                ),
+                                PassportAssessmentResult.PASS.getResult()),
+                        DecisionReason.FAILIOJ),
                 Arguments.of(
                         new Scenario(
-                                ReviewResult.PASS,
-                                InitAssessmentResult.PASS,
-                                null,
-                                null,
-                                null
-                        ), DecisionReason.GRANTED
-                ),
+                                ReviewResult.PASS, InitAssessmentResult.PASS, null, null, null),
+                        DecisionReason.GRANTED),
                 Arguments.of(
                         new Scenario(
-                                ReviewResult.FAIL,
-                                InitAssessmentResult.PASS,
-                                null,
-                                null,
-                                null
-                        ), DecisionReason.FAILIOJ
-                ),
+                                ReviewResult.FAIL, InitAssessmentResult.PASS, null, null, null),
+                        DecisionReason.FAILIOJ),
                 Arguments.of(
-                        new Scenario(
-                                ReviewResult.PASS,
-                                null,
-                                null,
-                                ReviewResult.PASS,
-                                null
-                        ), DecisionReason.GRANTED
-                ),
+                        new Scenario(ReviewResult.PASS, null, null, ReviewResult.PASS, null),
+                        DecisionReason.GRANTED),
                 Arguments.of(
-                        new Scenario(
-                                ReviewResult.FAIL,
-                                null,
-                                null,
-                                ReviewResult.PASS,
-                                null
-                        ), DecisionReason.FAILIOJ
-                ),
+                        new Scenario(ReviewResult.FAIL, null, null, ReviewResult.PASS, null),
+                        DecisionReason.FAILIOJ),
                 Arguments.of(
                         new Scenario(
                                 ReviewResult.PASS,
                                 InitAssessmentResult.FULL,
                                 FullAssessmentResult.PASS,
                                 null,
-                                null
-                        ), DecisionReason.GRANTED
-                ),
+                                null),
+                        DecisionReason.GRANTED),
                 Arguments.of(
-                    new Scenario(
-                        ReviewResult.PASS,
-                        InitAssessmentResult.FULL,
-                        FullAssessmentResult.INEL,
-                        null,
-                        null
-                    ), null
-                ),
+                        new Scenario(
+                                ReviewResult.PASS,
+                                InitAssessmentResult.FULL,
+                                FullAssessmentResult.INEL,
+                                null,
+                                null),
+                        null),
                 Arguments.of(
-                    new Scenario(
-                        ReviewResult.PASS,
-                        InitAssessmentResult.FULL,
-                        FullAssessmentResult.INEL,
-                        ReviewResult.PASS,
-                        null
-                    ), DecisionReason.GRANTED
-                ),
+                        new Scenario(
+                                ReviewResult.PASS,
+                                InitAssessmentResult.FULL,
+                                FullAssessmentResult.INEL,
+                                ReviewResult.PASS,
+                                null),
+                        DecisionReason.GRANTED),
                 Arguments.of(
-                    new Scenario(
-                        ReviewResult.PASS,
-                        InitAssessmentResult.FULL,
-                        FullAssessmentResult.INEL,
-                        null,
-                        PassportAssessmentResult.FAIL.getResult()
-                    ), DecisionReason.FAILMEANS
-                ),
+                        new Scenario(
+                                ReviewResult.PASS,
+                                InitAssessmentResult.FULL,
+                                FullAssessmentResult.INEL,
+                                null,
+                                PassportAssessmentResult.FAIL.getResult()),
+                        DecisionReason.FAILMEANS),
                 Arguments.of(
                         new Scenario(
                                 ReviewResult.FAIL,
                                 InitAssessmentResult.FULL,
                                 FullAssessmentResult.PASS,
                                 null,
-                                null
-                        ), DecisionReason.FAILIOJ
-                ),
+                                null),
+                        DecisionReason.FAILIOJ),
                 Arguments.of(
                         new Scenario(
-                                ReviewResult.PASS,
-                                InitAssessmentResult.FAIL,
-                                null,
-                                null,
-                                null
-                        ), DecisionReason.FAILMEANS
-                ),
+                                ReviewResult.PASS, InitAssessmentResult.FAIL, null, null, null),
+                        DecisionReason.FAILMEANS),
                 Arguments.of(
                         new Scenario(
-                                ReviewResult.FAIL,
-                                InitAssessmentResult.FAIL,
-                                null,
-                                null,
-                                null
-                        ), DecisionReason.FAILMEIOJ
-                ),
+                                ReviewResult.FAIL, InitAssessmentResult.FAIL, null, null, null),
+                        DecisionReason.FAILMEIOJ),
                 Arguments.of(
                         new Scenario(
                                 ReviewResult.FAIL,
                                 null,
                                 null,
                                 null,
-                                PassportAssessmentResult.FAIL.getResult()
-                        ), DecisionReason.FAILMEIOJ
-                ),
+                                PassportAssessmentResult.FAIL.getResult()),
+                        DecisionReason.FAILMEIOJ),
                 Arguments.of(
                         new Scenario(
                                 ReviewResult.PASS,
                                 null,
                                 null,
                                 null,
-                                PassportAssessmentResult.FAIL.getResult()
-                        ), DecisionReason.FAILMEANS
-                ),
+                                PassportAssessmentResult.FAIL.getResult()),
+                        DecisionReason.FAILMEANS),
                 Arguments.of(
                         new Scenario(
                                 ReviewResult.FAIL,
                                 InitAssessmentResult.FULL,
                                 FullAssessmentResult.FAIL,
                                 ReviewResult.FAIL,
-                                null
-                        ), DecisionReason.FAILMEIOJ
-                ),
+                                null),
+                        DecisionReason.FAILMEIOJ),
                 Arguments.of(
                         new Scenario(
                                 ReviewResult.PASS,
                                 InitAssessmentResult.FULL,
                                 FullAssessmentResult.FAIL,
                                 ReviewResult.FAIL,
-                                null
-                        ), DecisionReason.FAILMEANS
-                ),
+                                null),
+                        DecisionReason.FAILMEANS),
                 Arguments.of(
                         new Scenario(
                                 ReviewResult.PASS,
                                 InitAssessmentResult.FULL,
                                 FullAssessmentResult.FAIL,
                                 null,
-                                null
-                        ), DecisionReason.FAILMEANS
-                )
-        );
+                                null),
+                        DecisionReason.FAILMEANS));
     }
 
     @Test
     void givenNullIojResultAndMagsCaseType_whenDetermineMagsRepDecisionIsInvoked_thenReturnNull() {
         // given
-        CrownCourtDTO crownCourtDTO = CrownCourtDTO.builder()
-                .caseType(CaseType.INDICTABLE)
-                .iojSummary(new ApiIOJSummary())
-                .build();
+        CrownCourtDTO crownCourtDTO =
+                CrownCourtDTO.builder()
+                        .caseType(CaseType.INDICTABLE)
+                        .iojSummary(new ApiIOJSummary())
+                        .build();
         // when
-        MagsDecisionResult decisionResult = magsProceedingService.determineMagsRepDecision(crownCourtDTO);
+        MagsDecisionResult decisionResult =
+                magsProceedingService.determineMagsRepDecision(crownCourtDTO);
         // then
         assertThat(decisionResult).isNull();
     }
 
     @Test
-    void givenPassedIojResultAndCrownCourtCaseType_whenDetermineMagsRepDecisionIsInvoked_thenReturnNull() {
+    void
+            givenPassedIojResultAndCrownCourtCaseType_whenDetermineMagsRepDecisionIsInvoked_thenReturnNull() {
         // given
-        CrownCourtDTO crownCourtDTO = CrownCourtDTO.builder()
-                .caseType(CaseType.CC_ALREADY)
-                .iojSummary(new ApiIOJSummary().withIojResult("PASS"))
-                .build();
+        CrownCourtDTO crownCourtDTO =
+                CrownCourtDTO.builder()
+                        .caseType(CaseType.CC_ALREADY)
+                        .iojSummary(new ApiIOJSummary().withIojResult("PASS"))
+                        .build();
         // when
-        MagsDecisionResult decisionResult = magsProceedingService.determineMagsRepDecision(crownCourtDTO);
+        MagsDecisionResult decisionResult =
+                magsProceedingService.determineMagsRepDecision(crownCourtDTO);
         // then
         assertThat(decisionResult).isNull();
     }
 
     @Test
-    void givenFailedIojAppealResultAndMagsCaseType_whenDetermineMagsRepDecisionIsInvoked_thenReturnNull() {
+    void
+            givenFailedIojAppealResultAndMagsCaseType_whenDetermineMagsRepDecisionIsInvoked_thenReturnNull() {
         // given
-        CrownCourtDTO crownCourtDTO = CrownCourtDTO.builder()
-                .caseType(CaseType.CC_ALREADY)
-                .iojSummary(
-                        new ApiIOJSummary()
-                                .withIojResult("FAIL")
-                                .withDecisionResult("FAIL"))
-                .build();
+        CrownCourtDTO crownCourtDTO =
+                CrownCourtDTO.builder()
+                        .caseType(CaseType.CC_ALREADY)
+                        .iojSummary(
+                                new ApiIOJSummary()
+                                        .withIojResult("FAIL")
+                                        .withDecisionResult("FAIL"))
+                        .build();
         // when
-        MagsDecisionResult decisionResult = magsProceedingService.determineMagsRepDecision(crownCourtDTO);
+        MagsDecisionResult decisionResult =
+                magsProceedingService.determineMagsRepDecision(crownCourtDTO);
         // then
         assertThat(decisionResult).isNull();
     }
-    
-  @Test
-  void givenNoPassportAssessmentAndNoFinancialAssessment_whenDetermineMagsRepDecisionIsInvoked_thenReturnNull() {
-    CrownCourtDTO crownCourtDTO = CrownCourtDTO.builder()
-        .caseType(CaseType.INDICTABLE)
-        .iojSummary(new ApiIOJSummary().withIojResult("PASS"))
-        .build();
 
-    MagsDecisionResult decisionResult = magsProceedingService.determineMagsRepDecision(crownCourtDTO);
+    @Test
+    void
+            givenNoPassportAssessmentAndNoFinancialAssessment_whenDetermineMagsRepDecisionIsInvoked_thenReturnNull() {
+        CrownCourtDTO crownCourtDTO =
+                CrownCourtDTO.builder()
+                        .caseType(CaseType.INDICTABLE)
+                        .iojSummary(new ApiIOJSummary().withIojResult("PASS"))
+                        .build();
 
-    softly.assertThat(decisionResult).isNull();
-    softly.assertThat(crownCourtDTO.getMagsDecisionResult()).isNull();
+        MagsDecisionResult decisionResult =
+                magsProceedingService.determineMagsRepDecision(crownCourtDTO);
 
-    verify(maatCourtDataService, never()).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
-  }
+        softly.assertThat(decisionResult).isNull();
+        softly.assertThat(crownCourtDTO.getMagsDecisionResult()).isNull();
+
+        verify(maatCourtDataService, never()).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
+    }
 }

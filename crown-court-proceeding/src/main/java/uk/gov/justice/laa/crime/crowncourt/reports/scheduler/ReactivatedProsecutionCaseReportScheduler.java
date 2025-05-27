@@ -1,14 +1,12 @@
 package uk.gov.justice.laa.crime.crowncourt.reports.scheduler;
 
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import uk.gov.justice.laa.crime.crowncourt.reports.service.ReactivatedProsecutionCaseReportService;
 import uk.gov.service.notify.NotificationClientException;
-
-import java.io.IOException;
-
 
 @Configuration
 @EnableScheduling
@@ -21,5 +19,4 @@ public class ReactivatedProsecutionCaseReportScheduler {
     public void process() throws NotificationClientException, IOException {
         reactivatedProsecutionCaseReportService.generateReport();
     }
-
 }

@@ -24,7 +24,8 @@ public class ProsecutionConcludedController {
 
     @GetMapping(value = "/count", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Retrieve Prosecution Concluded Count")
-    public ResponseEntity<Object> getCountByMaatIdAndStatus(@PathVariable int maatId,
+    public ResponseEntity<Object> getCountByMaatIdAndStatus(
+            @PathVariable int maatId,
             @RequestParam(value = "status", defaultValue = "PENDING") String status) {
         return ResponseEntity.ok(concludedDataService.getCountByMaatIdAndStatus(maatId, status));
     }

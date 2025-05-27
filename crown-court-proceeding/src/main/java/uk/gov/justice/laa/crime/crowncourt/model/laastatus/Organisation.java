@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,9 +16,10 @@ public class Organisation {
 
     @JsonProperty("name")
     public String name;
+
     @JsonProperty("address")
     public Address address;
+
     @JsonProperty("contact")
     public Contact contact;
-
 }

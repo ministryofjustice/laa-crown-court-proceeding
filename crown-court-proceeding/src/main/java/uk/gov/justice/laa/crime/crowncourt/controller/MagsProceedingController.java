@@ -19,17 +19,22 @@ import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/internal/v1/proceedings")
-@Tag(name = "Magistrate Court Proceedings", description = "Rest API for Magistrate Court Proceedings")
+@Tag(
+        name = "Magistrate Court Proceedings",
+        description = "Rest API for Magistrate Court Proceedings")
 public class MagsProceedingController implements MagsProceedingApi {
 
     private final MagsProceedingService magsProceedingService;
 
-    @PostMapping(value = "/determine-mags-rep-decision", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(
+            value = "/determine-mags-rep-decision",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiDetermineMagsRepDecisionResponse> determineMagsRepDecision(
             ApiDetermineMagsRepDecisionRequest request) {
 
         CrownCourtDTO crownCourtDTO = CrownCourtDTOBuilder.build(request);
-        MagsDecisionResult decisionResult = magsProceedingService.determineMagsRepDecision(crownCourtDTO);
+        MagsDecisionResult decisionResult =
+                magsProceedingService.determineMagsRepDecision(crownCourtDTO);
         ApiDetermineMagsRepDecisionResponse response = new ApiDetermineMagsRepDecisionResponse();
 
         if (decisionResult != null) {

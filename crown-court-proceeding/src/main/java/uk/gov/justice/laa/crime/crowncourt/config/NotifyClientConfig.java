@@ -15,5 +15,4 @@ public class NotifyClientConfig {
     public NotificationClient notificationClient() {
         return new NotificationClient(apiKey);
     }
-
 }
