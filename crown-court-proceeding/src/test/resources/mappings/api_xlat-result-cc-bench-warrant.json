@@ -1,5 +1,4 @@
 {
-  "id": "278816dc-ede3-43a6-8f8d-e10ddcc2212f",
   "name": "api_internal_v1_assessment_xlat-result_cc-bench-warrant",
   "request": {
     "url": "/api/internal/v1/assessment/xlat-result/cc-bench-warrant",
@@ -15,7 +14,6 @@
       "X-Amzn-Trace-Id": "Root=1-65082296-652f43d1214dafd15169ecb2;"
     }
   },
-  "uuid": "278816dc-ede3-43a6-8f8d-e10ddcc2212f",
   "persistent": true,
   "insertionIndex": 9
 }

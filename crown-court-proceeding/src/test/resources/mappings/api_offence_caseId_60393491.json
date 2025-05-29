@@ -1,5 +1,4 @@
 {
-  "id": "86b05205-6f27-4e29-a3de-abefc99ab225",
   "name": "api_internal_v1_assessment_offence_case_665421",
   "request": {
     "url": "/api/internal/v1/assessment/offence/case/665421",
@@ -15,7 +14,6 @@
       "X-Amzn-Trace-Id": "Root=1-65038255-3c07f50d3b700c3e12f8a17e;"
     }
   },
-  "uuid": "86b05205-6f27-4e29-a3de-abefc99ab225",
   "persistent": true,
   "insertionIndex": 3
 }
