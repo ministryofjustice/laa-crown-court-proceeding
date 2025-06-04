@@ -51,12 +51,17 @@ ingress:
     external-dns.alpha.kubernetes.io/aws-weight: "100"
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "300"
+    nginx.ingress.kubernetes.io/enable-modsecurity: "true"
+    nginx.ingress.kubernetes.io/modsecurity-snippet: |
+      SecAuditEngine On
+      SecRuleEngine DetectionOnly
+      SecDefaultAction "phase:2,pass,log,tag:github_team=laa-crime-apps-team,tag:namespace=laa-crown-court-proceeding-uat"
   externalAnnotations: {}
   hosts:
     - host: laa-crown-court-proceeding-uat.apps.live.cloud-platform.service.justice.gov.uk
       paths: ["/"]
   tls: []
-  className: default
+  className: modsec-non-prod
 
 autoscaling:
   enabled: false
