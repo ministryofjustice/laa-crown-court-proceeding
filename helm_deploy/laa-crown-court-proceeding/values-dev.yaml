@@ -49,6 +49,7 @@ ingress:
   enabled: true
   annotations:
     external-dns.alpha.kubernetes.io/aws-weight: "100"
+    external-dns.alpha.kubernetes.io/set-identifier: "laa-crown-court-proceeding-laa-crown-court-proceeding-dev-green"
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "300"
     nginx.ingress.kubernetes.io/enable-modsecurity: "true"
