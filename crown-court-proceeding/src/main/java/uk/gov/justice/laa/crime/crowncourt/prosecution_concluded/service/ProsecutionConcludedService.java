@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.builder.CaseConclusionDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CalculateAppealOutcomeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CalculateOutcomeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.OffenceHelper;
@@ -24,6 +26,7 @@ import java.util.List;
 public class ProsecutionConcludedService {
 
     private final CalculateOutcomeHelper calculateOutcomeHelper;
+    private final CalculateAppealOutcomeHelper calculateAppealOutcomeHelper;
     private final ProsecutionConcludedValidator prosecutionConcludedValidator;
     private final ProsecutionConcludedImpl prosecutionConcludedImpl;
     private final CaseConclusionDTOBuilder caseConclusionDTOBuilder;
@@ -45,6 +48,7 @@ public class ProsecutionConcludedService {
             if (prosecutionConcluded.isConcluded()
                     && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
                 if (Boolean.TRUE.equals(courtDataAPIService.isMaatRecordLocked(prosecutionConcluded.getMaatId()))) {
+                    log.info("MAAT record is locked for maat-id {}", prosecutionConcluded.getMaatId());
                     prosecutionConcludedDataService.execute(prosecutionConcluded);
                 } else {
                     prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
@@ -52,17 +56,19 @@ public class ProsecutionConcludedService {
                 }
             }
         } else {
+            log.info("Hearing data is null for maat-id {}", prosecutionConcluded.getMaatId());
             prosecutionConcludedDataService.execute(prosecutionConcluded);
         }
     }
 
     public void executeCCOutCome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO) {
+        log.info("Processing CC Outcome for maat-id {}", prosecutionConcluded.getMaatId());
         List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
 
         List<OffenceSummary> trialOffences = offenceHelper
                 .getTrialOffences(offenceSummaryList, prosecutionConcluded.getMaatId());
 
-        if (!trialOffences.isEmpty()) {
+        if (!trialOffences.isEmpty() || Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
             log.info("Number of Valid offences for CC Outcome Calculations : {}", trialOffences.size());
             processOutcome(prosecutionConcluded, wqHearingDTO, trialOffences);
         }
@@ -72,13 +78,20 @@ public class ProsecutionConcludedService {
 
     private void processOutcome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, List<OffenceSummary> trialOffences) {
         String crownCourtCode = crownCourtCodeHelper.getCode(wqHearingDTO.getOuCourtLocation());
-        String calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences);
+        String calculatedOutcome;
+        if (Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
+            calculatedOutcome = calculateAppealOutcomeHelper.calculate(prosecutionConcluded.getApplicationConcluded().getApplicationResultCode());
+        } else {
+            calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences);
+        }
         log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
 
         ConcludedDTO concludedDTO = caseConclusionDTOBuilder.build(prosecutionConcluded, wqHearingDTO, calculatedOutcome, crownCourtCode);
         RepOrderDTO repOrderDTO = courtDataAPIService.getRepOrder(concludedDTO.getProsecutionConcluded().getMaatId());
 
-        prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
+        if (Objects.isNull(prosecutionConcluded.getApplicationConcluded())) {
+            prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
+        }
         prosecutionConcludedImpl.execute(concludedDTO, repOrderDTO);
     }
 }

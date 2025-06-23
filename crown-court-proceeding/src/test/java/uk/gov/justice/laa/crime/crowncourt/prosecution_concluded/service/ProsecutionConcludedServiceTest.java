@@ -10,10 +10,12 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.Metadata;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.builder.CaseConclusionDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CalculateAppealOutcomeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CalculateOutcomeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.OffenceHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.impl.ProsecutionConcludedImpl;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ApplicationConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Plea;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
@@ -58,6 +60,9 @@ class ProsecutionConcludedServiceTest {
 
     @Mock
     private ReactivatedCaseDetectionService reactivatedCaseDetectionService;
+
+    @Mock
+    private CalculateAppealOutcomeHelper calculateAppealOutcomeHelper;
 
     private static final int MAAT_ID = 1212111;
 
@@ -174,6 +179,24 @@ class ProsecutionConcludedServiceTest {
         verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
     }
 
+    @Test
+    void givenProsecutionConcludedContainsApplicationConcluded_whenExecuteIsInvoked_thenCalculateAppealOutcomeHelperIsCalled() {
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity());
+        when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(List.of(getOffenceSummary("123")));
+        when(caseConclusionDTOBuilder.build(any(), any(), any(), any()))
+            .thenReturn(ConcludedDTO.builder()
+                .prosecutionConcluded(getProsecutionConcluded())
+                .build());
+        when(courtDataAPIService.getRepOrder(any())).thenReturn(
+            RepOrderDTO.builder().magsOutcome("CONVICTED").build());
+
+        ProsecutionConcluded prosecutionConcludedRequest = getProsecutionConcluded();
+        prosecutionConcludedRequest.setApplicationConcluded(getApplicationConcluded());
+        prosecutionConcludedService.execute(prosecutionConcludedRequest);
+
+        verify(calculateAppealOutcomeHelper, atLeast(1)).calculate(any());
+    }
+
     private ProsecutionConcluded getProsecutionConcluded() {
         return ProsecutionConcluded.builder()
                 .isConcluded(true)
@@ -183,6 +206,14 @@ class ProsecutionConcludedServiceTest {
                 .hearingIdWhereChangeOccurred(UUID.fromString("ce60cac9-ab22-468e-8af9-a3ba2ecece5b"))
                 .metadata(Metadata.builder().laaTransactionId(UUID.randomUUID().toString()).build())
                 .build();
+    }
+
+    private ApplicationConcluded getApplicationConcluded() {
+        return ApplicationConcluded.builder()
+            .applicationId(UUID.fromString("ce60cac9-ab22-468e-8af9-a3ba2ecece5b"))
+            .subjectId(UUID.fromString("ce60cac9-ab22-468e-8af9-a3ba2ecece5b"))
+            .applicationResultCode("AACA")
+            .build();
     }
 
     private OffenceSummary getOffenceSummary(String offenceCode) {
