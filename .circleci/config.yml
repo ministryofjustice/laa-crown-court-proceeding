@@ -26,7 +26,7 @@ executors:
     working_directory: ~/laa-crown-court-proceeding/crown-court-proceeding
   build-executor:
     docker:
-      - image: cimg/openjdk:17.0.4
+      - image: cimg/openjdk:21.0.6
     working_directory: ~/laa-crown-court-proceeding/crown-court-proceeding
 
 # ------------------
