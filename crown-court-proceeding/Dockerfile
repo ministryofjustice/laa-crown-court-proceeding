@@ -1,4 +1,4 @@
-FROM amazoncorretto:17-alpine
+FROM amazoncorretto:21-alpine
 RUN mkdir -p /opt/laa-crown-court-proceeding/
 WORKDIR /opt/laa-crown-court-proceeding/
 COPY ./build/libs/crown-court-proceeding.jar /opt/laa-crown-court-proceeding/app.jar
