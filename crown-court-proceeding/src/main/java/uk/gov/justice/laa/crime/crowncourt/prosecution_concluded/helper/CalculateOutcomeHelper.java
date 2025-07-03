@@ -63,13 +63,6 @@ public class CalculateOutcomeHelper {
 
     }
 
-    private boolean isPleaAndVerdictMissing(OffenceSummary offence) {
-        return (offence.getPlea() == null || offence.getPlea().getValue() == null)
-                && (offence.getVerdict() == null
-                || offence.getVerdict().getVerdictType() == null
-                || offence.getVerdict().getVerdictType().getCategoryType() == null);
-    }
-
     private void handleMissingPleaAndVerdict(OffenceSummary offence,
                                              ProsecutionConcluded prosecutionConcluded,
                                              CallerType callerType,
