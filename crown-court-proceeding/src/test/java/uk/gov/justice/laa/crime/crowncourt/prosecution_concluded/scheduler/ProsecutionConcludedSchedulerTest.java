@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.CallerType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
@@ -63,7 +64,7 @@ class ProsecutionConcludedSchedulerTest {
 
         prosecutionConcludedScheduler.process();
 
-        verify(prosecutionConcludedService).executeCCOutCome(any(), any());
+        verify(prosecutionConcludedService).executeCCOutCome(any(), any(), any());
     }
 
     @Test
@@ -119,7 +120,7 @@ class ProsecutionConcludedSchedulerTest {
 
         prosecutionConcludedScheduler.process();
 
-        verify(prosecutionConcludedService, times(0)).executeCCOutCome(any(), any());
+        verify(prosecutionConcludedService, times(0)).executeCCOutCome(any(), any(), any());
         verify(prosecutionConcludedDataService).execute(any());
     }
 
@@ -133,7 +134,7 @@ class ProsecutionConcludedSchedulerTest {
         when(prosecutionConcludedRepository.getByHearingId(any()))
             .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
 
-        doThrow(new ValidationException(ProsecutionConcludedValidator.OU_CODE_LOOKUP_FAILED)).when(prosecutionConcludedService).executeCCOutCome(prosecutionConcluded, wqHearingDTO);
+        doThrow(new ValidationException(ProsecutionConcludedValidator.OU_CODE_LOOKUP_FAILED)).when(prosecutionConcludedService).executeCCOutCome(prosecutionConcluded, wqHearingDTO, CallerType.SCHEDULER);
 
         prosecutionConcludedScheduler.processCaseConclusion(prosecutionConcluded);
 

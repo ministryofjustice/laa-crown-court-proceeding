@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.CallerType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
@@ -67,7 +68,7 @@ public class ProsecutionConcludedScheduler {
             WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
             if (wqHearingDTO != null) {
                 if (isCCConclusion(wqHearingDTO)) {
-                    prosecutionConcludedService.executeCCOutCome(prosecutionConcluded, wqHearingDTO);
+                    prosecutionConcludedService.executeCCOutCome(prosecutionConcluded, wqHearingDTO, CallerType.SCHEDULER);
                 } else {
                     updateConclusion(prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.PROCESSED);
                 }
