@@ -308,6 +308,45 @@ class ProsecutionListenerTest {
         assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
     }
 
+    @Test
+    void givenAMultipleOffence_withNoPleaAndNoVerdictInformation_thenOutcomeIsAquitted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaAndNoVerdict.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        LoggedRequest request = requests.get(requests.size() - 1);
+        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+    }
+
+    @Test
+    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndIsConvictedResult_thenOutcomeIsConvicted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndIsConvictedResult.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        LoggedRequest request = requests.get(requests.size() - 1);
+        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+    }
+
+    @Test
+    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndNotIsConvictedResult_thenOutcomeIsAquitted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndNotIsConvictedResult.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        LoggedRequest request = requests.get(requests.size() - 1);
+        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+    }
+
     private String getExpectedRequest(String outcome, String imprisoned) {
         return "{\"repId\":5635567,\"ccOutcome\":\"" + outcome + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":" + imprisoned + ",\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":\"433\"}";
     }

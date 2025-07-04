@@ -49,7 +49,7 @@ public class ProsecutionConcludedService {
                     prosecutionConcludedDataService.execute(prosecutionConcluded);
                 } else {
                     prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
-                    executeCCOutCome(prosecutionConcluded, wqHearingDTO, CallerType.SCHEDULER);
+                    executeCCOutCome(prosecutionConcluded, wqHearingDTO, CallerType.QUEUE);
                 }
             }
         } else {
