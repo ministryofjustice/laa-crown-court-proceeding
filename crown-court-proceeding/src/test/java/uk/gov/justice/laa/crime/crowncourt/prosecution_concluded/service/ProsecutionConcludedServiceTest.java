@@ -73,7 +73,7 @@ class ProsecutionConcludedServiceTest {
         verify(prosecutionConcludedDataService, atLeast(1)).execute(any());
         verify(courtDataAPIService, atLeast(1)).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, never()).execute(any(), any());
-        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(calculateOutcomeHelper, never()).calculate(any(), any(), any());
 
         verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
         verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
@@ -97,7 +97,7 @@ class ProsecutionConcludedServiceTest {
         verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(courtDataAPIService, atLeast(1)).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, atLeast(1)).execute(any(), any());
-        verify(calculateOutcomeHelper, atLeast(1)).calculate(any());
+        verify(calculateOutcomeHelper, atLeast(1)).calculate(any(), any(), any());
         verify(caseConclusionDTOBuilder, atLeast(1)).build(any(), any(), any(), any());
         verify(offenceHelper, atLeast(1)).getTrialOffences(any(), anyInt());
     }
@@ -118,7 +118,7 @@ class ProsecutionConcludedServiceTest {
 
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(courtDataAPIService).isMaatRecordLocked(anyInt());
-        verify(calculateOutcomeHelper).calculate(any());
+        verify(calculateOutcomeHelper).calculate(any(), any(), any());
     }
 
     @Test
@@ -141,7 +141,7 @@ class ProsecutionConcludedServiceTest {
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(courtDataAPIService).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl).execute(any(), any());
-        verify(calculateOutcomeHelper).calculate(any());
+        verify(calculateOutcomeHelper).calculate(any(), any(), any());
     }
 
     @Test
@@ -169,7 +169,7 @@ class ProsecutionConcludedServiceTest {
         verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(courtDataAPIService, never()).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, never()).execute(any(), any());
-        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(calculateOutcomeHelper, never()).calculate(any(), any(), any());
         verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
         verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
     }

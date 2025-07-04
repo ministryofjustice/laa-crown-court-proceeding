@@ -93,6 +93,9 @@ class ProsecutionConcludedListenerTest {
         softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getVerdict().getVerdictType().getSequence())
                 .isEqualTo(4126);
 
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getResults().get(0).isConvictedResult())
+                .isEqualTo(true);
+
         softly.assertThat(prosecutionConcluded.getMetadata().getLaaTransactionId())
                 .isEqualTo(originatingHearingId);
 
@@ -140,7 +143,22 @@ class ProsecutionConcludedListenerTest {
                                        sequence: 4126,
                                        verdictTypeId: null
                                    }
-                               }
+                               },
+                               "results":
+                                   [
+                                       {
+                                           "resultCode": "1017",
+                                           "resultShortTitle": "Absolute discharge",
+                                           "resultText": "AD - Absolute discharge",
+                                           "category": "FINAL",
+                                           "resultCodeQualifiers": null,
+                                           "nextHearingDate": null,
+                                           "nextHearingLocation": null,
+                                           "laaOfficeAccount": null,
+                                           "legalAidWithdrawalDate": "2025-04-11",
+                                           "isConvictedResult": true
+                                       }
+                                   ]
                            }
                        ],
                        maatId: 6039349,
