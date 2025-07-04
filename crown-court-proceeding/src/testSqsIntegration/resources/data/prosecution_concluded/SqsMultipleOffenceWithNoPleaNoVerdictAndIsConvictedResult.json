@@ -20,8 +20,7 @@
       "offenceCode": "PT00011",
       "proceedingsConcluded": true,
       "proceedingsConcludedChangedDate": "2022-02-01",
-      "results":
-      [
+      "results": [
         {
           "resultCode": "1017",
           "resultShortTitle": "Absolute discharge",
@@ -35,10 +34,8 @@
           "isConvictedResult": true
         }
       ],
-      "plea": {
-      },
-      "verdict": {
-      }
+      "plea": {},
+      "verdict": {}
     }
   ],
   "maatId": 5635567,
