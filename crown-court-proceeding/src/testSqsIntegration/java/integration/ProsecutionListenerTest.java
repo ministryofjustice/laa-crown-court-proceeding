@@ -322,7 +322,7 @@ class ProsecutionListenerTest {
     }
 
     @Test
-    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndIsConvictedResult_thenOutcomeIsConvicted() {
+    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndIsConvictedResult_thenOutcomeIsAquitted() {
         amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndIsConvictedResult.json"));
         setScenarioState("reservations", "State 2");
 
