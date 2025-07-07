@@ -7,6 +7,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.builder.CaseConclusionDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.CallerType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CalculateOutcomeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.OffenceHelper;
@@ -48,7 +49,7 @@ public class ProsecutionConcludedService {
                     prosecutionConcludedDataService.execute(prosecutionConcluded);
                 } else {
                     prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
-                    executeCCOutCome(prosecutionConcluded, wqHearingDTO);
+                    executeCCOutCome(prosecutionConcluded, wqHearingDTO, CallerType.QUEUE);
                 }
             }
         } else {
@@ -56,7 +57,7 @@ public class ProsecutionConcludedService {
         }
     }
 
-    public void executeCCOutCome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO) {
+    public void executeCCOutCome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, CallerType callerType) {
         List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
 
         List<OffenceSummary> trialOffences = offenceHelper
@@ -64,15 +65,15 @@ public class ProsecutionConcludedService {
 
         if (!trialOffences.isEmpty()) {
             log.info("Number of Valid offences for CC Outcome Calculations : {}", trialOffences.size());
-            processOutcome(prosecutionConcluded, wqHearingDTO, trialOffences);
+            processOutcome(prosecutionConcluded, wqHearingDTO, trialOffences, callerType);
         }
         prosecutionConcludedDataService.updateConclusion(prosecutionConcluded.getMaatId());
         log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
     }
 
-    private void processOutcome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, List<OffenceSummary> trialOffences) {
+    private void processOutcome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, List<OffenceSummary> trialOffences, CallerType callerType) {
         String crownCourtCode = crownCourtCodeHelper.getCode(wqHearingDTO.getOuCourtLocation());
-        String calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences);
+        String calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences, prosecutionConcluded, callerType);
         log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
 
         ConcludedDTO concludedDTO = caseConclusionDTOBuilder.build(prosecutionConcluded, wqHearingDTO, calculatedOutcome, crownCourtCode);
