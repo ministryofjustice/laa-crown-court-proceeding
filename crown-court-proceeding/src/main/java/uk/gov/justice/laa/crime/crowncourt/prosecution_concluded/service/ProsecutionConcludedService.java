@@ -63,7 +63,6 @@ public class ProsecutionConcludedService {
     }
 
     public void executeCCOutCome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, CallerType callerType) {
-    public void executeCCOutCome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO) {
         log.info("Processing CC Outcome for maat-id {}", prosecutionConcluded.getMaatId());
         List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
 
