@@ -57,6 +57,7 @@ public class ProsecutionConcludedService {
                 }
             } else {
                 log.info("maat-id {} jurisdiction type: {}", prosecutionConcluded.getMaatId(), wqHearingDTO.getWqJurisdictionType());
+                log.info("maat-id {} prosecution is concluded: {}", prosecutionConcluded.getMaatId(), prosecutionConcluded.isConcluded());
             }
         } else {
             log.info("Hearing data is null for maat-id {}", prosecutionConcluded.getMaatId());
