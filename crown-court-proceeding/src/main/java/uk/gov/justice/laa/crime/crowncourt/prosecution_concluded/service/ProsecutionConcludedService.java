@@ -55,6 +55,8 @@ public class ProsecutionConcludedService {
                     prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
                     executeCCOutCome(prosecutionConcluded, wqHearingDTO, CallerType.QUEUE);
                 }
+            } else {
+                log.info("maat-id {} jurisdiction type: {}", prosecutionConcluded.getMaatId(), wqHearingDTO.getWqJurisdictionType());
             }
         } else {
             log.info("Hearing data is null for maat-id {}", prosecutionConcluded.getMaatId());
