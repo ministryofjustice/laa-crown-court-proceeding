@@ -46,8 +46,10 @@ public class ProsecutionConcludedService {
         WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
 
         if (wqHearingDTO != null) {
-            if (prosecutionConcluded.isConcluded()
-                    && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
+            if ((prosecutionConcluded.isConcluded()
+                    && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType()))
+                    || (JurisdictionType.MAGISTRATES.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())
+                    && Objects.nonNull(prosecutionConcluded.getApplicationConcluded()))) {
                 if (Boolean.TRUE.equals(courtDataAPIService.isMaatRecordLocked(prosecutionConcluded.getMaatId()))) {
                     log.info("MAAT record is locked for maat-id {}", prosecutionConcluded.getMaatId());
                     prosecutionConcludedDataService.execute(prosecutionConcluded);
