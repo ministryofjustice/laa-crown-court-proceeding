@@ -150,7 +150,7 @@ class ProsecutionConcludedServiceTest {
     }
 
     @Test
-    void givenMessageIsReceived_whenCaseIsMeg_thenNotProcess() {
+    void givenMessageIsReceived_whenCaseIsMegButNotAppeal_thenNotProcess() {
         ProsecutionConcluded prosecutionConcludedRequest = getProsecutionConcluded();
 
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
@@ -160,7 +160,6 @@ class ProsecutionConcludedServiceTest {
 
         verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(prosecutionConcludedValidator).validateRequestObject(any(ProsecutionConcluded.class));
-        verify(courtDataAPIService, never()).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, never()).execute(any(ConcludedDTO.class), any(RepOrderDTO.class));
     }
 

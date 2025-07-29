@@ -45,17 +45,21 @@ public class ProsecutionConcludedService {
 
         WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
 
+        log.info("wqHearingDTO {}", wqHearingDTO);
+
         if (wqHearingDTO != null) {
-            if ((prosecutionConcluded.isConcluded()
-                    && JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType()))
-                    || (JurisdictionType.MAGISTRATES.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())
-                    && Objects.nonNull(prosecutionConcluded.getApplicationConcluded()))) {
+            if (prosecutionConcluded.isConcluded()) {
                 if (Boolean.TRUE.equals(courtDataAPIService.isMaatRecordLocked(prosecutionConcluded.getMaatId()))) {
                     log.info("MAAT record is locked for maat-id {}", prosecutionConcluded.getMaatId());
                     prosecutionConcludedDataService.execute(prosecutionConcluded);
                 } else {
-                    prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
-                    executeCCOutCome(prosecutionConcluded, wqHearingDTO, CallerType.QUEUE);
+                    if (JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
+                        prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
+                        executeCCOutCome(prosecutionConcluded, wqHearingDTO, CallerType.QUEUE);
+                    } else if (JurisdictionType.MAGISTRATES.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())
+                        && Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
+                        executeCCOutCome(prosecutionConcluded, wqHearingDTO, CallerType.QUEUE);
+                    }
                 }
             } else {
                 log.info("maat-id {} jurisdiction type: {}", prosecutionConcluded.getMaatId(), wqHearingDTO.getWqJurisdictionType());
