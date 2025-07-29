@@ -369,7 +369,7 @@ class ProsecutionListenerTest {
     }
 
     private String getExpectedAppealsRequest(String outcome) {
-        return "{\"repId\":6151867,\"ccOutcome\":\"" + outcome + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":null,\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":\"433\"}";
+        return "{\"repId\":6151867,\"ccOutcome\":\"" + outcome + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":null,\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":null}";
     }
 }
 

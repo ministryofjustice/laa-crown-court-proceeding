@@ -89,13 +89,13 @@ public class ProsecutionConcludedService {
 
     private void processOutcome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, List<OffenceSummary> trialOffences, CallerType callerType) {
         String crownCourtCode;
+        String calculatedOutcome;
         try {
             crownCourtCode = crownCourtCodeHelper.getCode(wqHearingDTO.getOuCourtLocation());
         } catch (ValidationException exception) {
             log.info("Validation exception for maat-id {}: {}", prosecutionConcluded.getMaatId(),exception.getMessage());
             crownCourtCode = null;
         }
-        String calculatedOutcome;
         if (Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
             calculatedOutcome = calculateAppealOutcomeHelper.calculate(prosecutionConcluded.getApplicationConcluded().getApplicationResultCode());
         } else {
