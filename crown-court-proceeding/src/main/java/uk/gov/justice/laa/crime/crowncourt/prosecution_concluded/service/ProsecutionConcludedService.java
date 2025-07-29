@@ -20,6 +20,7 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.Prose
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 
 import java.util.List;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 @Slf4j
 @Service
@@ -87,7 +88,13 @@ public class ProsecutionConcludedService {
     }
 
     private void processOutcome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, List<OffenceSummary> trialOffences, CallerType callerType) {
-        String crownCourtCode = crownCourtCodeHelper.getCode(wqHearingDTO.getOuCourtLocation());
+        String crownCourtCode;
+        try {
+            crownCourtCode = crownCourtCodeHelper.getCode(wqHearingDTO.getOuCourtLocation());
+        } catch (ValidationException exception) {
+            log.info("Validation exception for maat-id {}: {}", prosecutionConcluded.getMaatId(),exception.getMessage());
+            crownCourtCode = null;
+        }
         String calculatedOutcome;
         if (Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
             calculatedOutcome = calculateAppealOutcomeHelper.calculate(prosecutionConcluded.getApplicationConcluded().getApplicationResultCode());
