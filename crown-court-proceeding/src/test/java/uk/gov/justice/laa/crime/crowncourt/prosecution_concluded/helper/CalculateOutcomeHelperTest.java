@@ -219,7 +219,7 @@ class CalculateOutcomeHelperTest {
     }
 
     @Test
-    void givenMessageIsReceivedFromQueue_whenPleaAndVerdictIsNotAvailable_ConvictedResult_thenReturnOutcomeAsAquitted() {
+    void givenMessageIsReceivedFromQueue_whenPleaAndVerdictIsNotAvailable_ConvictedResult_thenReturnOutcomeAsConvicted() {
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
                 .isConcluded(true)
                 .maatId(123456)
@@ -229,6 +229,23 @@ class CalculateOutcomeHelperTest {
                                 .plea(Plea.builder().build())
                                 .verdict(Verdict.builder().build())
                                 .results(List.of(Result.builder().isConvictedResult(true).build()))
+                                .build()
+                ))
+                .build();
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummary(), prosecutionConcluded, callerTypeQueue);
+        assertThat(res).isEqualTo("CONVICTED");
+    }
+
+    @Test
+    void givenMessageIsReceivedFromQueue_whenPleaAndVerdictIsNotAvailable_ConvictedResultIsNotAvailable_thenReturnOutcomeAsAquitted() {
+        ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
+                .isConcluded(true)
+                .maatId(123456)
+                .offenceSummary(List.of(
+                        OffenceSummary.builder()
+                                .offenceCode("1212")
+                                .plea(Plea.builder().build())
+                                .verdict(Verdict.builder().build())
                                 .build()
                 ))
                 .build();

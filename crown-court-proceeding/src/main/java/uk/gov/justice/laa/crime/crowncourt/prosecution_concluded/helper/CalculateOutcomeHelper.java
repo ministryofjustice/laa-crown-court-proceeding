@@ -67,21 +67,39 @@ public class CalculateOutcomeHelper {
                                              ProsecutionConcluded prosecutionConcluded,
                                              CallerType callerType,
                                              List<String> offenceOutcomeList) {
-        if (callerType == CallerType.SCHEDULER) {
-            boolean isConvicted = offence.getResults() != null &&
-                    offence.getResults().stream()
-                            .anyMatch(Result::isConvictedResult);
 
-            offenceOutcomeList.add(
-                    isConvicted ? CrownCourtTrialOutcome.CONVICTED.getValue()
-                            : CrownCourtTrialOutcome.AQUITTED.getValue()
-            );
-        } else if (callerType == CallerType.QUEUE) {
-            prosecutionConcludedDataService.execute(prosecutionConcluded);
-            offenceOutcomeList.add(CrownCourtTrialOutcome.AQUITTED.getValue());
+        List<Result> results = offence.getResults();
+
+        boolean hasResults = results != null && !results.isEmpty();
+
+        boolean isConvictedPresent = hasResults && results.stream()
+                .anyMatch(result -> result.getIsConvictedResult() != null);
+
+        boolean isConvicted = isConvictedPresent && results.stream()
+                .anyMatch(result -> Boolean.TRUE.equals(result.getIsConvictedResult()));
+
+        switch (callerType) {
+            case SCHEDULER -> {
+                offenceOutcomeList.add(
+                        isConvicted
+                                ? CrownCourtTrialOutcome.CONVICTED.getValue()
+                                : CrownCourtTrialOutcome.AQUITTED.getValue()
+                );
+            }
+            case QUEUE -> {
+                if (!isConvictedPresent) {
+                    prosecutionConcludedDataService.execute(prosecutionConcluded);
+                    offenceOutcomeList.add(CrownCourtTrialOutcome.AQUITTED.getValue());
+                } else {
+                    offenceOutcomeList.add(
+                            isConvicted
+                                    ? CrownCourtTrialOutcome.CONVICTED.getValue()
+                                    : CrownCourtTrialOutcome.AQUITTED.getValue()
+                    );
+                }
+            }
         }
     }
-
 
     private boolean isVerdictPleaMismatch(OffenceSummary offence) {
         if ((offence.getPlea() != null && offence.getPlea().getPleaDate() != null)
