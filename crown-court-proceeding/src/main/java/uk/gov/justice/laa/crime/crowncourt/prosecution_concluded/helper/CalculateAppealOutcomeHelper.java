@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class CalculateAppealOutcomeHelper {
-  private String SUCCESSFUL = "SUCCESSFUL";
-  private String UNSUCCESSFUL = "UNSUCCESSFUL";
-  private String PART_SUCCESS = "PART SUCCESS";
+  private final String SUCCESSFUL = "SUCCESSFUL";
+  private final String UNSUCCESSFUL = "UNSUCCESSFUL";
+  private final String PART_SUCCESS = "PART SUCCESS";
 
   public String calculate(String applicationResult) {
     String outcome = UNSUCCESSFUL;
