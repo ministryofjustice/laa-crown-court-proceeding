@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.CallerType.QUEUE;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -78,26 +80,15 @@ public class CalculateOutcomeHelper {
         boolean isConvicted = isConvictedPresent && results.stream()
                 .anyMatch(result -> Boolean.TRUE.equals(result.getIsConvictedResult()));
 
-        switch (callerType) {
-            case SCHEDULER -> {
-                offenceOutcomeList.add(
-                        isConvicted
-                                ? CrownCourtTrialOutcome.CONVICTED.getValue()
-                                : CrownCourtTrialOutcome.AQUITTED.getValue()
-                );
-            }
-            case QUEUE -> {
-                if (!isConvictedPresent) {
-                    prosecutionConcludedDataService.execute(prosecutionConcluded);
-                    offenceOutcomeList.add(CrownCourtTrialOutcome.AQUITTED.getValue());
-                } else {
-                    offenceOutcomeList.add(
-                            isConvicted
-                                    ? CrownCourtTrialOutcome.CONVICTED.getValue()
-                                    : CrownCourtTrialOutcome.AQUITTED.getValue()
-                    );
-                }
-            }
+        if (QUEUE.equals(callerType) && !isConvictedPresent) {
+            prosecutionConcludedDataService.execute(prosecutionConcluded);
+            offenceOutcomeList.add(CrownCourtTrialOutcome.AQUITTED.getValue());
+        } else {
+            offenceOutcomeList.add(
+                    isConvicted
+                            ? CrownCourtTrialOutcome.CONVICTED.getValue()
+                            : CrownCourtTrialOutcome.AQUITTED.getValue()
+            );
         }
     }
 
