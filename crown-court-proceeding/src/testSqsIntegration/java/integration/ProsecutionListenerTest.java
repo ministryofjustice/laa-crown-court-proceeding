@@ -66,6 +66,7 @@ class ProsecutionListenerTest {
     private static final String AQUITTED = "AQUITTED";
     private static final String CONVICTED = "CONVICTED";
     private static final String PART_CONVICTED = "PART CONVICTED";
+    private static final String SUCCESSFUL = "SUCCESSFUL";
     private static final String QUEUE_NAME = "crime-apps-dev-prosecution-concluded-queue";
     private static final String CC_OUTCOME_URL = "/api/internal/v1/assessment/crown-court/updateCCOutcome";
 
@@ -360,12 +361,28 @@ class ProsecutionListenerTest {
         assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
     }
 
+    @Test
+    void givenAppealsConcludedResultIsReceived_whenListenerIsInvoked_thenOutcomeIsSuccesful() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsAppealsPayload.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+            .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedAppealsRequest(SUCCESSFUL));
+    }
+
     private String getExpectedRequest(String outcome, String imprisoned) {
         return "{\"repId\":5635567,\"ccOutcome\":\"" + outcome + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":" + imprisoned + ",\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":\"433\"}";
     }
 
     private String getExpectedRequest(String outcome) {
         return "{\"repId\":5635567,\"ccOutcome\":\"" + outcome + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":\"N\",\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":\"433\"}";
+    }
+
+    private String getExpectedAppealsRequest(String outcome) {
+        return "{\"repId\":6151867,\"ccOutcome\":\"" + outcome + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":null,\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":null}";
     }
 }
 
