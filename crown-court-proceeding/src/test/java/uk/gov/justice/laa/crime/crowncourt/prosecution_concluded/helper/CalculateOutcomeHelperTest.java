@@ -205,7 +205,6 @@ class CalculateOutcomeHelperTest {
                                 .offenceCode("1212")
                                 .plea(Plea.builder().build())
                                 .verdict(Verdict.builder().build())
-                                .results(List.of(Result.builder().isConvictedResult(false).build()))
                                 .build()
                 ))
                 .build();
@@ -223,7 +222,6 @@ class CalculateOutcomeHelperTest {
                                 .offenceCode("1212")
                                 .plea(Plea.builder().build())
                                 .verdict(Verdict.builder().build())
-                                .results(List.of(Result.builder().isConvictedResult(true).build()))
                                 .build()
                 ))
                 .build();
@@ -258,7 +256,6 @@ class CalculateOutcomeHelperTest {
                                 .offenceCode("1212")
                                 .plea(Plea.builder().build())
                                 .verdict(Verdict.builder().build())
-                                .results(List.of(Result.builder().isConvictedResult(false).build()))
                                 .build()
                 ))
                 .build();
