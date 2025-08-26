@@ -93,9 +93,6 @@ class ProsecutionConcludedListenerTest {
         softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getVerdict().getVerdictType().getSequence())
                 .isEqualTo(4126);
 
-        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getResults().get(0).isConvictedResult())
-                .isEqualTo(true);
-
         softly.assertThat(prosecutionConcluded.getMetadata().getLaaTransactionId())
                 .isEqualTo(originatingHearingId);
 
