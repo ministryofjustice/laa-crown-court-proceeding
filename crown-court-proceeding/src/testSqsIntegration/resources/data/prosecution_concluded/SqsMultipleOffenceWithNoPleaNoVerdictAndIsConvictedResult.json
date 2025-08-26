@@ -9,6 +9,17 @@
       "offenceCode": "PT00011",
       "proceedingsConcluded": true,
       "proceedingsConcludedChangedDate": "2022-02-01",
+      "plea": {
+        "originatingHearingId": "908ad01e-5a38-4158-957a-0c1d1a783862",
+        "value": "NOT_GUILTY",
+        "pleaDate": "2022-02-01"
+      }
+    },
+    {
+      "offenceId": "ed0e9d59-cc1c-4869-8fcd-464caf770744",
+      "offenceCode": "PT00011",
+      "proceedingsConcluded": true,
+      "proceedingsConcludedChangedDate": "2022-02-01",
       "results": [
         {
           "resultCode": "1017",

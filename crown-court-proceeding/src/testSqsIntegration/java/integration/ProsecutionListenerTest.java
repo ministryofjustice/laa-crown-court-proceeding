@@ -323,21 +323,8 @@ class ProsecutionListenerTest {
     }
 
     @Test
-    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndIsConvictedResult_thenOutcomeIsConvicted() {
+    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndIsConvictedResult_thenOutcomeIsAquitted() {
         amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndIsConvictedResult.json"));
-        setScenarioState("reservations", "State 2");
-
-        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
-                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
-
-        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
-        LoggedRequest request = requests.get(requests.size() - 1);
-        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(CONVICTED));
-    }
-
-    @Test
-    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndNotConvictedResult_thenOutcomeIsAquitted() {
-        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndNotConvictedResult.json"));
         setScenarioState("reservations", "State 2");
 
         with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
@@ -349,8 +336,8 @@ class ProsecutionListenerTest {
     }
 
     @Test
-    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndIsConvictedResultNotAvailable_thenOutcomeIsAquitted() {
-        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndIsConvictedResultNotAvailable.json"));
+    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndNotIsConvictedResult_thenOutcomeIsAquitted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndNotIsConvictedResult.json"));
         setScenarioState("reservations", "State 2");
 
         with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
