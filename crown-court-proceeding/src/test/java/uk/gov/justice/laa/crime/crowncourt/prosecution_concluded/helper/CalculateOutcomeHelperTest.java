@@ -219,7 +219,7 @@ class CalculateOutcomeHelperTest {
     }
 
     @Test
-    void givenMessageIsReceivedFromQueue_whenPleaAndVerdictIsNotAvailable_ConvictedResult_thenReturnOutcomeAsConvicted() {
+    void givenMessageIsReceivedFromQueue_whenPleaAndVerdictIsNotAvailable_ConvictedResult_thenReturnOutcomeAsAquitted() {
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
                 .isConcluded(true)
                 .maatId(123456)
@@ -233,7 +233,7 @@ class CalculateOutcomeHelperTest {
                 ))
                 .build();
         String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummary(), prosecutionConcluded, callerTypeQueue);
-        assertThat(res).isEqualTo("CONVICTED");
+        assertThat(res).isEqualTo("AQUITTED");
     }
 
     @Test

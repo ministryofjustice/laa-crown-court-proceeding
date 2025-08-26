@@ -17,8 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.CallerType.QUEUE;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -69,28 +67,21 @@ public class CalculateOutcomeHelper {
                                              ProsecutionConcluded prosecutionConcluded,
                                              CallerType callerType,
                                              List<String> offenceOutcomeList) {
+        if (callerType == CallerType.SCHEDULER) {
+            boolean isConvicted = offence.getResults() != null &&
+                    offence.getResults().stream()
+                            .anyMatch(Result::isConvictedResult);
 
-        List<Result> results = offence.getResults();
-
-        boolean hasResults = results != null && !results.isEmpty();
-
-        boolean isConvictedPresent = hasResults && results.stream()
-                .anyMatch(result -> result.getIsConvictedResult() != null);
-
-        boolean isConvicted = isConvictedPresent && results.stream()
-                .anyMatch(result -> Boolean.TRUE.equals(result.getIsConvictedResult()));
-
-        if (QUEUE.equals(callerType) && !isConvictedPresent) {
-            prosecutionConcludedDataService.execute(prosecutionConcluded);
-            offenceOutcomeList.add(CrownCourtTrialOutcome.AQUITTED.getValue());
-        } else {
             offenceOutcomeList.add(
-                    isConvicted
-                            ? CrownCourtTrialOutcome.CONVICTED.getValue()
+                    isConvicted ? CrownCourtTrialOutcome.CONVICTED.getValue()
                             : CrownCourtTrialOutcome.AQUITTED.getValue()
             );
+        } else if (callerType == CallerType.QUEUE) {
+            prosecutionConcludedDataService.execute(prosecutionConcluded);
+            offenceOutcomeList.add(CrownCourtTrialOutcome.AQUITTED.getValue());
         }
     }
+
 
     private boolean isVerdictPleaMismatch(OffenceSummary offence) {
         if ((offence.getPlea() != null && offence.getPlea().getPleaDate() != null)
