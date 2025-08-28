@@ -7,8 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ApplicationConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.exception.ValidationException;
+
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -64,4 +68,26 @@ public class ProsecutionConcludedValidator {
             throw new ValidationException(CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
         }
     }
+    
+    public void validateIsAppealMissing(String caseType) {
+        if (CaseType.APPEAL_CC.getCaseType().equals(caseType)) {
+            throw new ValidationException(CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
+        }
+    }
+    
+    public void validateApplicationResultCode(ApplicationConcluded applicationConcluded) {
+        if (applicationConcluded != null) {
+            String applicationResult = applicationConcluded.getApplicationResultCode();
+            if (applicationResult == null) {
+                throw new ValidationException("Application Result Code is missing.");
+            } else {
+                List<String> resultCodes = List.of(new String[]{"APA", "AW", "AACD", "ASV",
+                        "AACA", "AASD", "AASA", "ACSD"});
+                if (!(resultCodes.contains(applicationResult) || (applicationResult.contains("AACD") && applicationResult.contains("AASA")))) {
+                    throw new ValidationException("Application Result Code is invalid.");
+                }
+            }
+        }
+    }
 }
+
