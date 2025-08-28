@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.ResultCode;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ApplicationConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.exception.ValidationException;
@@ -34,7 +33,7 @@ public class ProsecutionConcludedValidator {
     public static final String APPEAL_IS_MISSING ="application concluded is missing for appeal.";
     public static final String INVALID_APPLICATION_RESULT_CODE ="Application Result Code is invalid.";
     public static final String MISSING_APPLICATION_RESULT_CODE = "Application Result Code is missing.";
-    public static final List<String> RESULT_CODE = Arrays.stream(ResultCode.values()).map(ResultCode::name).collect(Collectors.toList());
+    protected static final List<String> RESULT_CODE = Arrays.stream(ResultCode.values()).map(ResultCode::name).toList();
     public void validateRequestObject(ProsecutionConcluded prosecutionConcluded) {
         if (prosecutionConcluded == null
                 || prosecutionConcluded.getOffenceSummary() == null
