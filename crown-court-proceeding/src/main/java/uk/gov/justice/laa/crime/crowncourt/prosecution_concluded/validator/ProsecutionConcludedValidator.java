@@ -14,7 +14,6 @@ import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
