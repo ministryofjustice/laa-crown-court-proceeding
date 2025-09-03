@@ -102,6 +102,9 @@ public class ProsecutionConcludedService {
 
         if (Objects.isNull(prosecutionConcluded.getApplicationConcluded())) {
             prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
+            prosecutionConcludedValidator.validateIsAppealMissing(repOrderDTO.getCatyCaseType());
+        } else {
+            prosecutionConcludedValidator.validateApplicationResultCode(prosecutionConcluded.getApplicationConcluded().getApplicationResultCode());
         }
         prosecutionConcludedImpl.execute(concludedDTO, repOrderDTO);
     }

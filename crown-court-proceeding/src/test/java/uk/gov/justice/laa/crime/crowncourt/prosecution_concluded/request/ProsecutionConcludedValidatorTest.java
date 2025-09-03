@@ -9,9 +9,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.ResultCode;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
+import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import java.util.List;
@@ -126,6 +128,39 @@ class ProsecutionConcludedValidatorTest {
         assertThatThrownBy(() -> prosecutionConcludedValidator.validateMagsCourtOutcomeExists(magsCourtOutcome))
             .isInstanceOf(ValidationException.class)
             .hasMessage(ProsecutionConcludedValidator.CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = { "" })
+    void givenResultCodeIsNullOrEmpty_whenValidateApplicationResultCodeIsInvoked_thenExceptionIsThrown(String resultCode) {
+        assertThatThrownBy(() -> prosecutionConcludedValidator.validateApplicationResultCode(resultCode))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.MISSING_APPLICATION_RESULT_CODE);
+    }
+    @ParameterizedTest
+    @ValueSource(strings = { "AAAA","BBBB" })
+    void givenAInvalidResultCode_whenValidateApplicationResultCodeIsInvoked_thenExceptionIsThrown(String resultCode) {
+        assertThatThrownBy(() -> prosecutionConcludedValidator.validateApplicationResultCode(resultCode))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.INVALID_APPLICATION_RESULT_CODE);
+    }
+    @ParameterizedTest
+    @ValueSource(strings = { "APA","AACA", "AACD and AASA" })
+    void givenAValidResultCode_whenValidateApplicationResultCodeIsInvoked_thenNoExceptionIsThrown() {
+        assertDoesNotThrow(() -> prosecutionConcludedValidator.validateApplicationResultCode(ResultCode.APA.name()));
+    }
+
+    @Test
+    void givenApplicationConcludeNullOrEmpty_whenAppealMissingIsInvoked_thenExceptionIsThrown() {
+        assertThatThrownBy(() -> prosecutionConcludedValidator.validateIsAppealMissing(CaseType.APPEAL_CC.getCaseType()))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.APPEAL_IS_MISSING);
+    }
+
+    @Test
+    void givenAValidApplicationConclude_whenAppealMissingIsInvoked_thenNoExceptionIsThrown() {
+        assertDoesNotThrow(() -> prosecutionConcludedValidator.validateIsAppealMissing(CaseType.COMMITAL.getCaseType()));
     }
 
     @Test
