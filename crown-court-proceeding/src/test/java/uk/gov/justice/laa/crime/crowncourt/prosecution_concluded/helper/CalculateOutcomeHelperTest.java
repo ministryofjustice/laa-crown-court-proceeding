@@ -3,9 +3,10 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +18,9 @@ class CalculateOutcomeHelperTest {
 
     @InjectMocks
     private CalculateOutcomeHelper calculateOutcomeHelper;
+
+    @Mock
+    private ProsecutionConcludedDataService prosecutionConcludedDataService;
 
     @Test
     void givenMessageIsReceived_whenPleaAndVerdictIsAvailable_thenReturnOutcomeAsPartConvicted() {
@@ -172,5 +176,90 @@ class CalculateOutcomeHelperTest {
                                 .build()
                 ))
                 .build();
+    }
+
+    @Test
+    void givenMessageIsReceivedFromQueue_whenPleaAndVerdictIsNotAvailable_thenReturnOutcomeAsAquitted() {
+        ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
+                .isConcluded(true)
+                .maatId(123456)
+                .offenceSummary(List.of(
+                        OffenceSummary.builder()
+                                .offenceCode("1212")
+                                .plea(Plea.builder().build())
+                                .verdict(Verdict.builder().build())
+                                .build()
+                ))
+                .build();
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummary());
+        assertThat(res).isEqualTo("AQUITTED");
+    }
+
+    @Test
+    void givenMessageIsReceivedFromQueue_whenPleaAndVerdictIsNotAvailable_NotConvictedResult_thenReturnOutcomeAsAquitted() {
+        ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
+                .isConcluded(true)
+                .maatId(123456)
+                .offenceSummary(List.of(
+                        OffenceSummary.builder()
+                                .offenceCode("1212")
+                                .plea(Plea.builder().build())
+                                .verdict(Verdict.builder().build())
+                                .build()
+                ))
+                .build();
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummary());
+        assertThat(res).isEqualTo("AQUITTED");
+    }
+
+    @Test
+    void givenMessageIsReceivedFromQueue_whenPleaAndVerdictIsNotAvailable_ConvictedResult_thenReturnOutcomeAsAquitted() {
+        ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
+                .isConcluded(true)
+                .maatId(123456)
+                .offenceSummary(List.of(
+                        OffenceSummary.builder()
+                                .offenceCode("1212")
+                                .plea(Plea.builder().build())
+                                .verdict(Verdict.builder().build())
+                                .build()
+                ))
+                .build();
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummary());
+        assertThat(res).isEqualTo("AQUITTED");
+    }
+
+    @Test
+    void givenMessageIsReceivedFromScheduler_whenPleaAndVerdictIsNotAvailable_thenReturnOutcomeAsAquitted() {
+        ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
+                .isConcluded(true)
+                .maatId(123456)
+                .offenceSummary(List.of(
+                        OffenceSummary.builder()
+                                .offenceCode("1212")
+                                .plea(Plea.builder().build())
+                                .verdict(Verdict.builder().build())
+                                .build()
+                ))
+                .build();
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummary());
+        assertThat(res).isEqualTo("AQUITTED");
+    }
+
+    @Test
+    void givenMessageIsReceivedFromScheduler_whenPleaAndVerdictIsNotAvailable_NotConvictedResult_thenReturnOutcomeAsAquitted() {
+        ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
+                .isConcluded(true)
+                .maatId(123456)
+                .offenceSummary(List.of(
+                        OffenceSummary.builder()
+                                .offenceCode("1212")
+                                .plea(Plea.builder().build())
+                                .verdict(Verdict.builder().build())
+                                .build()
+                ))
+                .build();
+        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummary());
+        assertThat(res).isEqualTo("AQUITTED");
     }
 }

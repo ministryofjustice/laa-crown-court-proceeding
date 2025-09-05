@@ -1,0 +1,36 @@
+{
+  "applicationConcluded": {
+    "applicationId": "1acf5b84-200f-42b6-852b-f2d320789a42",
+    "applicationResultCode": "AACA",
+    "subjectId": "4c7cdc2f-e9be-4bca-9732-1c4834c04e34"
+  },
+  "hearingIdWhereChangeOccurred": "1bbdf9ee-f426-488d-9fb2-c690377d6fd6",
+  "isConcluded": true,
+  "offenceSummary": [
+    {
+      "offenceCode": "TH68010",
+      "offenceId": "ed0e9d59-cc1c-4869-8fcd-464caf770744",
+      "plea": {
+        "originatingHearingId": "1bbdf9ee-f426-488d-9fb2-c690377d6fd6",
+        "pleaDate": "2025-06-18",
+        "value": "NOT_GUILTY"
+      },
+      "proceedingsConcluded": true,
+      "verdict": {
+        "originatingHearingId": "1bbdf9ee-f426-488d-9fb2-c690377d6fd6",
+        "verdictDate": "2025-06-18",
+        "verdictType": {
+          "category": "Guilty",
+          "categoryType": "GUILTY",
+          "description": "Found guilty",
+          "sequence": 10,
+          "verdictTypeId": "c4ca4238-a0b9-3382-8dcc-509a6f75849b"
+        }
+      }
+    }
+  ],
+  "maatId": "6151867",
+  "metadata": {
+    "laaTransactionId": "d5bba0b1c6f7ca7f9403aa5a9228854f"
+  }
+}

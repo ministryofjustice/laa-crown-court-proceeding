@@ -140,7 +140,22 @@ class ProsecutionConcludedListenerTest {
                                        sequence: 4126,
                                        verdictTypeId: null
                                    }
-                               }
+                               },
+                               "results":
+                                   [
+                                       {
+                                           "resultCode": "1017",
+                                           "resultShortTitle": "Absolute discharge",
+                                           "resultText": "AD - Absolute discharge",
+                                           "category": "FINAL",
+                                           "resultCodeQualifiers": null,
+                                           "nextHearingDate": null,
+                                           "nextHearingLocation": null,
+                                           "laaOfficeAccount": null,
+                                           "legalAidWithdrawalDate": "2025-04-11",
+                                           "isConvictedResult": true
+                                       }
+                                   ]
                            }
                        ],
                        maatId: 6039349,

@@ -1,26 +1,48 @@
 package integration;
 
-import cloud.localstack.awssdkv1.TestUtils;
+import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
+import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.setScenarioState;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
+
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import com.google.gson.Gson;
-import org.junit.jupiter.api.*;
-import org.mockito.Mock;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.localstack.LocalStackContainer;
+import org.testcontainers.containers.localstack.LocalStackContainer.Service;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import org.wiremock.spring.EnableWireMock;
+import org.wiremock.spring.InjectWireMock;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.entity.DeadLetterMessageEntity;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
@@ -31,42 +53,39 @@ import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedReposi
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.util.FileUtils;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
-
+@EnableWireMock
 @DirtiesContext
 @Testcontainers
-@SpringBootTest(classes = {CrownCourtProceedingApplication.class})
-@AutoConfigureWireMock(port = 9999)
 @AutoConfigureObservability
+@SpringBootTest(classes = {CrownCourtProceedingApplication.class})
 class ProsecutionListenerTest {
 
-    private static final String CC_OUTCOME_URL = "/api/internal/v1/assessment/crown-court/updateCCOutcome";
-    private static final String CONVICTED = "CONVICTED";
+    private static String queueUrl;
+    private static AmazonSQS amazonSQS;
+
     private static final String AQUITTED = "AQUITTED";
+    private static final String CONVICTED = "CONVICTED";
     private static final String PART_CONVICTED = "PART CONVICTED";
+    private static final String SUCCESSFUL = "SUCCESSFUL";
     private static final String QUEUE_NAME = "crime-apps-dev-prosecution-concluded-queue";
+    private static final String CC_OUTCOME_URL = "/api/internal/v1/assessment/crown-court/updateCCOutcome";
+
     @Container
     static LocalStackContainer localStack = new LocalStackContainer(DockerImageName.parse("localstack/localstack"))
             .withServices(LocalStackContainer.Service.SQS).withEnv("LOCALSTACK_HOST", "127.0.0.1");
-    private static AmazonSQS amazonSQS;
-    private static String queueUrl;
 
     @Autowired
     private Gson gson;
 
-    @Autowired
-    private ProsecutionConcludedRepository prosecutionConcludedRepository;
+    @InjectWireMock
+    private static WireMockServer wiremock;
 
     @Autowired
     private DeadLetterMessageRepository deadLetterMessageRepository;
+
+    @Autowired
+    private ProsecutionConcludedRepository prosecutionConcludedRepository;
+
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -74,11 +93,23 @@ class ProsecutionListenerTest {
         registry.add("feature.prosecution-concluded-listener.enabled", () -> "true");
     }
 
-    @BeforeAll
-    static void beforeAll() throws IOException {
-        amazonSQS = TestUtils.getClientSQS(localStack.getEndpointOverride(LocalStackContainer.Service.SQS).toString());
-        queueUrl = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
+    @BeforeEach
+    void setup() throws JsonProcessingException {
         stubForOAuth();
+    }
+
+    @BeforeAll
+    static void setupSqs() {
+        amazonSQS = AmazonSQSClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
+                        localStack.getEndpointOverride(Service.SQS).toString(),
+                        localStack.getRegion()
+                ))
+                .withCredentials(new AWSStaticCredentialsProvider(
+                        new BasicAWSCredentials("test", "test")
+                ))
+                .build();
+        queueUrl = amazonSQS.createQueue(QUEUE_NAME).getQueueUrl();
     }
 
     private static void stubForOAuth() throws JsonProcessingException {
@@ -89,7 +120,7 @@ class ProsecutionListenerTest {
                 "access_token", UUID.randomUUID()
         );
 
-        stubFor(
+        wiremock.stubFor(
                 post("/oauth2/token").willReturn(
                         WireMock.ok()
                                 .withHeader("Content-Type", String.valueOf(MediaType.APPLICATION_JSON))
@@ -278,12 +309,67 @@ class ProsecutionListenerTest {
         assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
     }
 
+    @Test
+    void givenAMultipleOffence_withNoPleaAndNoVerdictInformation_thenOutcomeIsAquitted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaAndNoVerdict.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        LoggedRequest request = requests.get(requests.size() - 1);
+        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+    }
+
+    @Test
+    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndIsConvictedResult_thenOutcomeIsAquitted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndIsConvictedResult.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        LoggedRequest request = requests.get(requests.size() - 1);
+        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+    }
+
+    @Test
+    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndNotIsConvictedResult_thenOutcomeIsAquitted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndNotIsConvictedResult.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        LoggedRequest request = requests.get(requests.size() - 1);
+        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+    }
+
+    @Test
+    void givenAppealsConcludedResultIsReceived_whenListenerIsInvoked_thenOutcomeIsSuccesful() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsAppealsPayload.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+            .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedAppealsRequest(SUCCESSFUL));
+    }
+
     private String getExpectedRequest(String outcome, String imprisoned) {
         return "{\"repId\":5635567,\"ccOutcome\":\"" + outcome + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":" + imprisoned + ",\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":\"433\"}";
     }
 
     private String getExpectedRequest(String outcome) {
         return "{\"repId\":5635567,\"ccOutcome\":\"" + outcome + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":\"N\",\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":\"433\"}";
+    }
+
+    private String getExpectedAppealsRequest(String outcome) {
+        return "{\"repId\":6151867,\"ccOutcome\":\"" + outcome + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":null,\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":null}";
     }
 }
 

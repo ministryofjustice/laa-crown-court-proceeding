@@ -3,10 +3,11 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.PleaTrialOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.VerdictTrialOutcome;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,6 +18,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Slf4j
 public class CalculateOutcomeHelper {
+
+    private final ProsecutionConcludedDataService prosecutionConcludedDataService;
 
     public String calculate(List<OffenceSummary> offenceSummaryList) {
         List<String> outcomes = buildOffenceOutComes(offenceSummaryList);
