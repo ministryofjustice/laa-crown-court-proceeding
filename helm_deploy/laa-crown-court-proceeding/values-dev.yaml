@@ -107,6 +107,13 @@ scheduledDowntime:
   shutdown: '0 22 * * 1-5'
   serviceAccountName: scheduled-downtime-serviceaccount
 
+scheduledScaling:
+  enabled: true
+  # Start at 8:15am UTC Monday-Friday
+  scaleup: '15 8 * * 1-5'
+  # Stop at 8am UTC Monday-Friday
+  scaledown: '0 8 * * 1-5'
+
 securityContext:
   allowPrivilegeEscalation: false
   capabilities:
@@ -117,13 +124,13 @@ securityContext:
 
 emailClient:
   notify_reactivated_prosecution_template_id: 7ca95ad3-6e57-47fe-96e2-eaaf038e64ed
-  notify_reactivated_prosecution_recipient: gangadhar.nitta@digital.justice.gov.uk
+  notify_reactivated_prosecution_recipient: LAACrimeApps@justice.gov.uk
   notify_dropped_prosecution_template_id: 2ce9c2c4-9c87-47f7-9df9-684c14ebc0df
-  notify_dropped_prosecution_recipient: josh.hunt@digital.justice.gov.uk
+  notify_dropped_prosecution_recipient: LAACrimeApps@justice.gov.uk
 
 cron:
-  report_reactivated_cases: '0 0 8 * * *'
-  report_dropped_prosecution: '0 0 9 * * *'
+  report_reactivated_cases: '0 5 8 * * *'
+  report_dropped_prosecution: '0 10 8 * * *'
 
 logging:
   level: DEBUG
