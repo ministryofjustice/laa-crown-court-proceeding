@@ -89,6 +89,7 @@ cloudPlatform:
 
 scheduledDowntime:
   enabled: false
+  serviceAccountName: scheduled-downtime-serviceaccount
 
 scheduledScaling:
   enabled: true
