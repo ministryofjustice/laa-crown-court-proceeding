@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.MessageHeaders;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.CallerType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
@@ -56,7 +57,7 @@ class ProsecutionConcludedListenerTest {
                 .thenReturn(prosecutionConcluded);
         prosecutionConcludedListener.receive(message, new MessageHeaders(new HashMap<>()));
 
-        verify(prosecutionConcludedService).execute(prosecutionConcluded);
+        verify(prosecutionConcludedService).execute(prosecutionConcluded, CallerType.QUEUE);
         verify(queueMessageLogService).createLog(MessageType.PROSECUTION_CONCLUDED, message);
 
         softly.assertThat(prosecutionConcluded.getProsecutionCaseId())
@@ -93,6 +94,9 @@ class ProsecutionConcludedListenerTest {
         softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getVerdict().getVerdictType().getSequence())
                 .isEqualTo(4126);
 
+        softly.assertThat(prosecutionConcluded.getOffenceSummary().get(0).getResults().get(0).getIsConvictedResult())
+                .isEqualTo(true);
+
         softly.assertThat(prosecutionConcluded.getMetadata().getLaaTransactionId())
                 .isEqualTo(originatingHearingId);
 
@@ -107,7 +111,7 @@ class ProsecutionConcludedListenerTest {
 
         doThrow(new ValidationException(ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL)).when(prosecutionConcludedValidator).validateMaatId(any());
         prosecutionConcludedListener.receive(message, new MessageHeaders(new HashMap<>()));
-        verify(prosecutionConcludedService, times(0)).execute(any());
+        verify(prosecutionConcludedService, times(0)).execute(any(), any());
         verify(deadLetterMessageService, times(1)).logDeadLetterMessage(
             ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL, prosecutionConcluded);
     }

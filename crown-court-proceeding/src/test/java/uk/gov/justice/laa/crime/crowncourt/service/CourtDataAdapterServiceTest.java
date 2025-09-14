@@ -9,6 +9,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.client.CourtDataAdaptorNonServletApiClient;
 
 import java.util.UUID;
+
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAdapterService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -45,6 +47,31 @@ class CourtDataAdapterServiceTest {
                 argThat(params -> "true".equals(params.getFirst("publish_to_queue"))));
         
         assertThatThrownBy(() -> courtDataAdapterService.triggerHearingProcessing(testHearingId))
+                .isInstanceOf(WebClientResponseException.class);
+    }
+
+    @Test
+    void givenAValidHearingId_whenGetHearingIsInvoked_thenTheRequestIsSentCorrectly() {
+        UUID testHearingId = UUID.randomUUID();
+
+        courtDataAdapterService.getHearingResult(ProsecutionConcluded.builder().hearingIdWhereChangeOccurred(testHearingId).build());
+
+        verify(cdaAPIClient).getHearingResult(
+                eq(testHearingId),
+                argThat(params -> "false".equals(params.getFirst("publish_to_queue")))
+        );
+    }
+
+    @Test
+    void givenAValidHearingId_whenGetHearingIsInvokedAndTheCallFails_thenFailureIsHandled() {
+
+        UUID testHearingId = UUID.randomUUID();
+
+        doThrow(WebClientResponseException.class)
+                .when(cdaAPIClient).getHearingResult(eq(testHearingId),
+                        argThat(params -> "false".equals(params.getFirst("publish_to_queue"))));
+
+        assertThatThrownBy(() -> courtDataAdapterService.getHearingResult(ProsecutionConcluded.builder().hearingIdWhereChangeOccurred(testHearingId).build()))
                 .isInstanceOf(WebClientResponseException.class);
     }
 }

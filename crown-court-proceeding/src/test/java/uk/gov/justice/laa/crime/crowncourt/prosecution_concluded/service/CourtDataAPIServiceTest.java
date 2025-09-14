@@ -23,6 +23,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQLinkRegisterDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.client.MaatCourtDataNonServletApiClient;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.CallerType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +44,7 @@ class CourtDataAPIServiceTest {
         WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(
                 ProsecutionConcluded.builder().hearingIdWhereChangeOccurred(UUID.randomUUID())
                         .maatId(TestModelDataBuilder.TEST_REP_ID).build()
+                , CallerType.QUEUE
         );
         assertThat(wqHearingDTO).isNull();
     }
@@ -54,6 +56,7 @@ class CourtDataAPIServiceTest {
                         .maatId(TestModelDataBuilder.TEST_REP_ID)
                         .isConcluded(true)
                         .build()
+                , CallerType.QUEUE
         );
         assertThat(wqHearingDTO).isNull();
         verify(courtDataAdapterService, times(1)).triggerHearingProcessing(any());
@@ -73,6 +76,7 @@ class CourtDataAPIServiceTest {
                         .maatId(TestModelDataBuilder.TEST_REP_ID)
                         .isConcluded(false)
                         .build()
+                , CallerType.QUEUE
         );
         assertThat(wqHearingDTO).isNotNull();
         verify(courtDataAdapterService, never()).triggerHearingProcessing(any());
@@ -218,5 +222,18 @@ class CourtDataAPIServiceTest {
     void givenAValidParameter_whenMaatRecordLockedIsInvoked_thenResponseIsReturned() {
         courtDataAPIService.isMaatRecordLocked(TestModelDataBuilder.TEST_REP_ID);
         verify(maatAPIClient).isMaatRecordLocked(TestModelDataBuilder.TEST_REP_ID);
+    }
+
+    @Test
+    void givenACallerTypeIsScheduler_whenRetrieveHearingForCaseConclusionIsInvoked_thenGetHearingIsTriggered() {
+        WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(
+                ProsecutionConcluded.builder().hearingIdWhereChangeOccurred(UUID.randomUUID())
+                        .maatId(TestModelDataBuilder.TEST_REP_ID)
+                        .isConcluded(true)
+                        .build()
+                , CallerType.SCHEDULER
+        );
+        assertThat(wqHearingDTO).isNull();
+        verify(courtDataAdapterService, times(1)).getHearingResult(any(ProsecutionConcluded.class));
     }
 }

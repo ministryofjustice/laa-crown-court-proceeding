@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
+import jakarta.validation.constraints.Max;
+import org.junit.platform.commons.util.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.common.ApiCrownCourtOutcome;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
@@ -11,12 +13,16 @@ import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplic
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
-import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.*;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.enums.*;
+import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -58,6 +64,12 @@ public class TestModelDataBuilder {
     public static final String TEST_REP_TYPE = "TEST_REP_TYPE";
 
     public static final String EMST_CODE = "TEST_CODE";
+    public static final String CASE_URN="CP7890124";
+    public static final UUID DEFENDANT_ID = UUID.fromString("a169b51-5057-422f-a5c5-8f97865700ad");
+    public static final String OU_CODE ="31";
+    public static final String JURISDICTION_TYPE = "CROWN";
+
+    public static String RESULT_CODE = "4057,4058,4059";
 
     public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
         return new ApiProcessRepOrderRequest()
@@ -434,5 +446,79 @@ public class TestModelDataBuilder {
                 .decisionDate(TEST_DECISION_DATE.toLocalDate())
                 .timestamp(TestModelDataBuilder.TEST_DATE_MODIFIED)
                 .build();
+    }
+
+    public static HearingResultResponse getHearingResultResponse(boolean defendant, boolean hasOffences, boolean hasResult) {
+
+        return HearingResultResponse.builder()
+                .hearing(getHearing(defendant, hasOffences, hasResult))
+                .build();
+    }
+
+
+
+    private static Hearing getHearing(boolean defendant, boolean hasOffences,boolean hasResult) {
+
+        Hearing hearing = new Hearing();
+        hearing.setId(UUID.randomUUID());
+        hearing.setCourt_centre(CourtCentre.builder()
+                .id(UUID.randomUUID().toString())
+                .oucode_l2_code(OU_CODE)
+                .build());
+        hearing.setJurisdiction_type(JURISDICTION_TYPE);
+        hearing.setProsecution_cases(List.of(getProsecutionCase(defendant,hasOffences, hasResult)));
+
+        return hearing;
+
+    }
+
+    private static ProsecutionCase getProsecutionCase(boolean defendant, boolean hasOffences, boolean hasResult) {
+        ProsecutionCase prosecutionCase = new ProsecutionCase();
+        prosecutionCase.setProsecution_case_identifier(ProsecutionCaseIdentifier.builder()
+                .case_urn(CASE_URN).build());
+        if (defendant) {
+            prosecutionCase.setDefendants(List.of(getDefendants(hasOffences, hasResult)));
+        }
+        return prosecutionCase;
+    }
+
+    public static Defendant getDefendants(boolean hasOffences, boolean hasResult) {
+
+        Defendant defendant = new Defendant();
+
+        defendant.setId(DEFENDANT_ID);
+        if (hasOffences) {
+            defendant.setOffences(List.of(getOffence(hasResult)));
+        }
+        return defendant;
+    }
+
+    public static Offence getOffence(boolean hasResult) {
+
+        Offence offence = new Offence();
+
+        if (hasResult) {
+            offence.setJudicial_results(List.of(getJudicialResult("4057"),
+                    getJudicialResult("4058"),
+                    getJudicialResult("4059")));
+        }
+        return offence;
+    }
+
+    public static JudicialResult getJudicialResult(String code) {
+        return JudicialResult.builder().cjs_code(code).build();
+    }
+
+    public static WQHearingDTO getWqHearingDTO(String resultCode) {
+        WQHearingDTO wqHearingDTO = WQHearingDTO.builder()
+                .ouCourtLocation(TestModelDataBuilder.OU_CODE)
+                .caseUrn(TestModelDataBuilder.CASE_URN)
+                .wqJurisdictionType(TestModelDataBuilder.JURISDICTION_TYPE)
+                .build();
+
+        if (StringUtils.isNotBlank(resultCode)) {
+            wqHearingDTO.setResultCodes(resultCode);
+        }
+        return wqHearingDTO;
     }
 }

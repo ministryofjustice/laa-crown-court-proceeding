@@ -12,6 +12,7 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQLinkRegisterDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.client.MaatCourtDataNonServletApiClient;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.CallerType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class CourtDataAPIService {
         maatAPIClient.updateCrownCourtOutcome(updateCCOutcome);
     }
 
-    public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
+    public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded, CallerType callerType) {
 
         List<WQHearingDTO> wqHearingList = maatAPIClient.getWorkQueueHearing(
             prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), 
@@ -45,10 +46,15 @@ public class CourtDataAPIService {
         WQHearingDTO wqHearingDTO = CollectionUtils.isNotEmpty(wqHearingList) ? wqHearingList.get(0) : null;
         if (wqHearingDTO == null
                 && prosecutionConcluded.isConcluded()) {
-            courtDataAdapterService.
-                    triggerHearingProcessing(
-                            prosecutionConcluded.getHearingIdWhereChangeOccurred()
-                    );
+
+            if (CallerType.QUEUE.equals(callerType)) {
+                courtDataAdapterService.
+                        triggerHearingProcessing(
+                                prosecutionConcluded.getHearingIdWhereChangeOccurred()
+                        );
+            } else {
+                wqHearingDTO = courtDataAdapterService.getHearingResult(prosecutionConcluded);
+            }
         }
         return wqHearingDTO;
     }
