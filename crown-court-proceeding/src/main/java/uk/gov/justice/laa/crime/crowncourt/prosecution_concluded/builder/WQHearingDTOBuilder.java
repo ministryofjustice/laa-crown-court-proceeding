@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Component
 public class WQHearingDTOBuilder {
 
-    private void WQHearingDTOBuilder() {}
+    private WQHearingDTOBuilder() {}
 
     public static WQHearingDTO build(HearingResultResponse hearingResultResponse, ProsecutionConcluded prosecutionConcluded) {
 
