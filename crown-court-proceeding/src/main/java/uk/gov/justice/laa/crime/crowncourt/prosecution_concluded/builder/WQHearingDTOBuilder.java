@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 @Component
 public class WQHearingDTOBuilder {
 
+    private void WQHearingDTOBuilder() {}
+
     public static WQHearingDTO build(HearingResultResponse hearingResultResponse, ProsecutionConcluded prosecutionConcluded) {
 
         if (Objects.isNull(hearingResultResponse) || Objects.isNull(hearingResultResponse.getHearing())) {
@@ -19,14 +21,14 @@ public class WQHearingDTOBuilder {
         }
 
         return WQHearingDTO.builder()
-                .caseUrn(getCaseUrn(hearingResultResponse, prosecutionConcluded))
+                .caseUrn(getCaseUrn(hearingResultResponse))
                 .ouCourtLocation(hearingResultResponse.getHearing().getCourt_centre().getOucode_l2_code())
                 .wqJurisdictionType(hearingResultResponse.getHearing().getJurisdiction_type())
                 .resultCodes(getResultCode(hearingResultResponse, prosecutionConcluded))
                 .build();
     }
 
-    static String getCaseUrn(HearingResultResponse hearingResultResponse, ProsecutionConcluded prosecutionConcluded) {
+    static String getCaseUrn(HearingResultResponse hearingResultResponse) {
 
         if (Objects.nonNull(hearingResultResponse.getHearing().getProsecution_cases())) {
             return hearingResultResponse.getHearing().getProsecution_cases().stream()
@@ -44,7 +46,7 @@ public class WQHearingDTOBuilder {
         String resultCodes = null;
         if (Objects.nonNull(hearingResultResponse.getHearing().getProsecution_cases())) {
             List<String> resultCodeList = hearingResultResponse.getHearing().getProsecution_cases().stream()
-                    .filter(ProsecutionCases -> Objects.nonNull(ProsecutionCases) && Objects.nonNull(ProsecutionCases.getDefendants()))
+                    .filter(prosecutionCases -> Objects.nonNull(prosecutionCases) && Objects.nonNull(prosecutionCases.getDefendants()))
                     .flatMap(defendantDTO -> defendantDTO.getDefendants().stream()
                             .filter(defendant -> defendant.getId() == prosecutionConcluded.getDefendantId())
                             .filter(offences -> Objects.nonNull(offences) && Objects.nonNull(offences.getOffences()))

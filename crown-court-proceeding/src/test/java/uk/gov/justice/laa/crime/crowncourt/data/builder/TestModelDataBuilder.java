@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
-import jakarta.validation.constraints.Max;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.common.ApiCrownCourtOutcome;
@@ -69,7 +68,7 @@ public class TestModelDataBuilder {
     public static final String OU_CODE ="31";
     public static final String JURISDICTION_TYPE = "CROWN";
 
-    public static String RESULT_CODE = "4057,4058,4059";
+    public static final String RESULT_CODE = "4057,4058,4059";
 
     public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
         return new ApiProcessRepOrderRequest()
