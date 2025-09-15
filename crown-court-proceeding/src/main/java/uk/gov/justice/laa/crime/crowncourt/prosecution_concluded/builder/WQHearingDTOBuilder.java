@@ -3,6 +3,9 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.builder;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.HearingResultResponse;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.JudicialResult;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.Offence;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ProsecutionCase;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 
 import java.util.List;
@@ -22,7 +25,8 @@ public class WQHearingDTOBuilder {
 
         return WQHearingDTO.builder()
                 .caseUrn(getCaseUrn(hearingResultResponse))
-                .ouCourtLocation(hearingResultResponse.getHearing().getCourt_centre().getOucode_l2_code())
+                .ouCourtLocation(Objects.nonNull(hearingResultResponse.getHearing().getCourt_centre()) ?
+                        hearingResultResponse.getHearing().getCourt_centre().getOucode_l2_code() : null)
                 .wqJurisdictionType(hearingResultResponse.getHearing().getJurisdiction_type())
                 .resultCodes(getResultCode(hearingResultResponse, prosecutionConcluded))
                 .build();
@@ -32,9 +36,9 @@ public class WQHearingDTOBuilder {
 
         if (Objects.nonNull(hearingResultResponse.getHearing().getProsecution_cases())) {
             return hearingResultResponse.getHearing().getProsecution_cases().stream()
-                    .filter(prosecutionCase -> Objects.nonNull(prosecutionCase))
-                    .map(caseIdentifier -> caseIdentifier.getProsecution_case_identifier())
-                    .filter(caseIdentifier -> Objects.nonNull(caseIdentifier))
+                    .filter(Objects::nonNull)
+                    .map(ProsecutionCase::getProsecution_case_identifier)
+                    .filter(Objects::nonNull)
                     .map(caseU -> caseU.getCase_urn())
                     .findFirst().orElse(null);
         }
@@ -52,10 +56,10 @@ public class WQHearingDTOBuilder {
                             .filter(offences -> Objects.nonNull(offences) && Objects.nonNull(offences.getOffences()))
                             .flatMap(offences -> offences.getOffences().stream()
                                     .filter(offence -> Objects.nonNull(offence) && Objects.nonNull(offence.getJudicial_results()))
-                                    .map(judicialResults -> judicialResults.getJudicial_results())
+                                    .map(Offence::getJudicial_results)
                                      .flatMap(judicialResults -> judicialResults.stream()
                                       .filter(judicialResult -> Objects.nonNull(judicialResult.getCjs_code()))
-                                      .map(resultCode -> resultCode.getCjs_code()))))
+                                      .map(JudicialResult::getCjs_code))))
                     .toList();
 
             if (Objects.nonNull(resultCodeList) && !resultCodeList.isEmpty()) {
