@@ -53,6 +53,7 @@ public class WQHearingDTOBuilder {
                             && prosecutionCases.getId().equals(prosecutionConcluded.getProsecutionCaseId().toString())
                             && Objects.nonNull(prosecutionCases.getDefendants())))
                     .flatMap(defendantDTO -> defendantDTO.getDefendants().stream()
+                            .filter(Objects::nonNull)
                             .filter(defendant -> Objects.nonNull(defendant.getId())
                                     && defendant.getId().equals(prosecutionConcluded.getDefendantId()))
                             .filter(offences -> Objects.nonNull(offences) && Objects.nonNull(offences.getOffences()))
