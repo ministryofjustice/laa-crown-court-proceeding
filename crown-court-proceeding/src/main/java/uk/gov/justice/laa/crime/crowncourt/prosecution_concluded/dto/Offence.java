@@ -13,4 +13,5 @@ public class Offence {
 
     private String id;
     private List<JudicialResult> judicial_results;
+    private LaaApplication laa_application;
 }

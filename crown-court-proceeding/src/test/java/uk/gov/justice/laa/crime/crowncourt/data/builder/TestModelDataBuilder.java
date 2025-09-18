@@ -70,6 +70,8 @@ public class TestModelDataBuilder {
 
     public static final String RESULT_CODE = "4057,4058,4059";
 
+    public static final UUID PROSECUTION_CASE_ID = UUID.fromString("b169b51-5077-432f-a5c5-8f97865700de");
+
     public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
         return new ApiProcessRepOrderRequest()
                 .withRepId(isValid ? TEST_REP_ID : null)
@@ -473,6 +475,7 @@ public class TestModelDataBuilder {
 
     private static ProsecutionCase getProsecutionCase(boolean defendant, boolean hasOffences, boolean hasResult) {
         ProsecutionCase prosecutionCase = new ProsecutionCase();
+        prosecutionCase.setId(PROSECUTION_CASE_ID.toString());
         prosecutionCase.setProsecution_case_identifier(ProsecutionCaseIdentifier.builder()
                 .case_urn(CASE_URN).build());
         if (defendant) {
@@ -495,7 +498,7 @@ public class TestModelDataBuilder {
     public static Offence getOffence(boolean hasResult) {
 
         Offence offence = new Offence();
-
+        offence.setLaa_application(LaaApplication.builder().reference(TEST_REP_ID.toString()).build());
         if (hasResult) {
             offence.setJudicial_results(List.of(getJudicialResult("4057"),
                     getJudicialResult("4058"),

@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.builder;
 
-import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.HearingResultResponse;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.JudicialResult;
@@ -12,14 +11,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Component
 public class WQHearingDTOBuilder {
 
     private WQHearingDTOBuilder() {}
 
     public static WQHearingDTO build(HearingResultResponse hearingResultResponse, ProsecutionConcluded prosecutionConcluded) {
 
-        if (Objects.isNull(hearingResultResponse) || Objects.isNull(hearingResultResponse.getHearing())) {
+        if (Objects.isNull(hearingResultResponse) || Objects.isNull(hearingResultResponse.getHearing())
+                || !isValidProsecution(hearingResultResponse, prosecutionConcluded)) {
             return null;
         }
 
@@ -50,12 +49,18 @@ public class WQHearingDTOBuilder {
         String resultCodes = null;
         if (Objects.nonNull(hearingResultResponse.getHearing().getProsecution_cases())) {
             List<String> resultCodeList = hearingResultResponse.getHearing().getProsecution_cases().stream()
-                    .filter(prosecutionCases -> Objects.nonNull(prosecutionCases) && Objects.nonNull(prosecutionCases.getDefendants()))
+                    .filter(prosecutionCases -> (Objects.nonNull(prosecutionCases)
+                            && prosecutionCases.getId().equals(prosecutionConcluded.getProsecutionCaseId().toString())
+                            && Objects.nonNull(prosecutionCases.getDefendants())))
                     .flatMap(defendantDTO -> defendantDTO.getDefendants().stream()
-                            .filter(defendant -> defendant.getId() == prosecutionConcluded.getDefendantId())
+                            .filter(defendant -> Objects.nonNull(defendant.getId())
+                                    && defendant.getId().equals(prosecutionConcluded.getDefendantId()))
                             .filter(offences -> Objects.nonNull(offences) && Objects.nonNull(offences.getOffences()))
                             .flatMap(offences -> offences.getOffences().stream()
                                     .filter(offence -> Objects.nonNull(offence) && Objects.nonNull(offence.getJudicial_results()))
+                                    .filter(offence -> (Objects.nonNull(offence.getLaa_application())
+                                            && Objects.nonNull(offence.getLaa_application().getReference())
+                                    && offence.getLaa_application().getReference().equals(prosecutionConcluded.getMaatId().toString())))
                                     .map(Offence::getJudicial_results)
                                      .flatMap(judicialResults -> judicialResults.stream()
                                       .filter(judicialResult -> Objects.nonNull(judicialResult.getCjs_code()))
@@ -67,6 +72,18 @@ public class WQHearingDTOBuilder {
             }
         }
         return resultCodes;
+    }
+
+    static boolean isValidProsecution(HearingResultResponse hearingResultResponse, ProsecutionConcluded prosecutionConcluded) {
+
+        if (Objects.nonNull(hearingResultResponse.getHearing().getProsecution_cases()) &&
+                Objects.nonNull(prosecutionConcluded.getProsecutionCaseId())) {
+            return  hearingResultResponse.getHearing().getProsecution_cases().stream()
+                    .filter(Objects::nonNull)
+                    .anyMatch(prosecution -> prosecution.getId().equals(prosecutionConcluded.getProsecutionCaseId().toString()));
+        }
+
+        return false;
     }
 
 }

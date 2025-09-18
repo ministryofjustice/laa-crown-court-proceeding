@@ -41,16 +41,13 @@ class WQHearingDTOBuilderTest {
         HearingResultResponse emptyProsecutionCase = TestModelDataBuilder.getHearingResultResponse(false,false,false);
         emptyProsecutionCase.getHearing().setProsecution_cases(null);
 
-        WQHearingDTO emptyCaseUrn = TestModelDataBuilder.getWqHearingDTO(null);
-        emptyCaseUrn.setCaseUrn(null);
-
         return Stream.of(
                 Arguments.of(HearingResultResponse.builder().build(), ProsecutionConcluded.builder().build(),null),
 
                 Arguments.of(TestModelDataBuilder.getHearingResultResponse(true,true,true),
                         getProsecutionConcluded(),TestModelDataBuilder.getWqHearingDTO(TestModelDataBuilder.RESULT_CODE)),
 
-                Arguments.of(TestModelDataBuilder.getHearingResultResponse(true,true,false),
+                 Arguments.of(TestModelDataBuilder.getHearingResultResponse(true,true,false),
                         getProsecutionConcluded(),TestModelDataBuilder.getWqHearingDTO(null)),
 
                 Arguments.of(TestModelDataBuilder.getHearingResultResponse(true,false,false),
@@ -59,13 +56,17 @@ class WQHearingDTOBuilderTest {
                 Arguments.of(TestModelDataBuilder.getHearingResultResponse(false,false,false),
                         getProsecutionConcluded(),TestModelDataBuilder.getWqHearingDTO(null)),
 
-                Arguments.of(emptyProsecutionCase,getProsecutionConcluded(),emptyCaseUrn)
+                Arguments.of(emptyProsecutionCase,getProsecutionConcluded(),null)
 
          );
     }
 
     private static ProsecutionConcluded getProsecutionConcluded() {
-        return ProsecutionConcluded.builder().defendantId(TestModelDataBuilder.DEFENDANT_ID).build();
+        return ProsecutionConcluded.builder()
+                .defendantId(TestModelDataBuilder.DEFENDANT_ID)
+                .prosecutionCaseId(TestModelDataBuilder.PROSECUTION_CASE_ID)
+                .maatId(TestModelDataBuilder.TEST_REP_ID)
+                .build();
     }
 
 
