@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.CallerType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
@@ -54,7 +55,7 @@ class ProsecutionConcludedSchedulerTest {
         when(prosecutionConcludedRepository.getConcludedCases())
                 .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
 
-        when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any(), any(CallerType.class)))
                 .thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.CROWN.name()).build());
 
         byte[] caseData = TestModelDataBuilder.getProsecutionConcludedEntity().getCaseData();
@@ -63,7 +64,7 @@ class ProsecutionConcludedSchedulerTest {
 
         prosecutionConcludedScheduler.process();
 
-        verify(prosecutionConcludedService).executeCCOutCome(any(), any());
+        verify(prosecutionConcludedService).executeCCOutCome(any(), any(), any(CallerType.class));
     }
 
     @Test
@@ -73,14 +74,14 @@ class ProsecutionConcludedSchedulerTest {
 
         prosecutionConcludedScheduler.process();
 
-        verify(prosecutionConcludedService, never()).execute(any());
+        verify(prosecutionConcludedService, never()).execute(any(), any(CallerType.class));
         verify(prosecutionConcludedRepository, never()).saveAll(any());
     }
 
     @Test
     void givenAJurisdictionIsMagistrates_whenProcessCaseConclusionIsInvoked_thenUpdateConclusionIsSuccess() {
-        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).
-                thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.MAGISTRATES.name()).build());
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any(), any(CallerType.class)))
+                .thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.MAGISTRATES.name()).build());
         when(prosecutionConcludedRepository.getByHearingId(any()))
                 .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
 
@@ -93,7 +94,7 @@ class ProsecutionConcludedSchedulerTest {
 
     @Test
     void givenAnInvalidCaseConclusion_whenProcessCaseConclusionIsInvoked_thenUpdateConclusionIsError() {
-        when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any(), any(CallerType.class)))
                 .thenThrow(WebClientRequestException.class);
         when(prosecutionConcludedRepository.getByHearingId(any()))
                 .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
@@ -110,7 +111,7 @@ class ProsecutionConcludedSchedulerTest {
                 .thenReturn(null);
         when(prosecutionConcludedRepository.getConcludedCases())
                 .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
-        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any(), any(CallerType.class))).
                 thenReturn(null);
 
         byte[] caseData = TestModelDataBuilder.getProsecutionConcludedEntity().getCaseData();
@@ -119,7 +120,7 @@ class ProsecutionConcludedSchedulerTest {
 
         prosecutionConcludedScheduler.process();
 
-        verify(prosecutionConcludedService, times(0)).executeCCOutCome(any(), any());
+        verify(prosecutionConcludedService, times(0)).executeCCOutCome(any(), any(), any(CallerType.class));
         verify(prosecutionConcludedDataService).execute(any());
     }
 
@@ -128,12 +129,13 @@ class ProsecutionConcludedSchedulerTest {
         WQHearingDTO wqHearingDTO = WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.CROWN.name()).build();
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder().maatId(1234).hearingIdWhereChangeOccurred(UUID.randomUUID()).build();
 
-        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any(), any(CallerType.class))).
             thenReturn(wqHearingDTO);
         when(prosecutionConcludedRepository.getByHearingId(any()))
             .thenReturn(List.of(TestModelDataBuilder.getProsecutionConcludedEntity()));
 
-        doThrow(new ValidationException(ProsecutionConcludedValidator.OU_CODE_LOOKUP_FAILED)).when(prosecutionConcludedService).executeCCOutCome(prosecutionConcluded, wqHearingDTO);
+        doThrow(new ValidationException(ProsecutionConcludedValidator.OU_CODE_LOOKUP_FAILED))
+                .when(prosecutionConcludedService).executeCCOutCome(prosecutionConcluded, wqHearingDTO, CallerType.SCHEDULER);
 
         prosecutionConcludedScheduler.processCaseConclusion(prosecutionConcluded);
 

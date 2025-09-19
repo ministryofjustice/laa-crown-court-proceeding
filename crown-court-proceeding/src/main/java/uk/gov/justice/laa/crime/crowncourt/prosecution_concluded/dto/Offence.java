@@ -1,0 +1,16 @@
+package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto;
+
+import lombok.*;
+
+import java.util.List;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Offence {
+
+    private String id;
+    private List<JudicialResult> judicial_results;
+    private LaaApplication laa_application;
+}

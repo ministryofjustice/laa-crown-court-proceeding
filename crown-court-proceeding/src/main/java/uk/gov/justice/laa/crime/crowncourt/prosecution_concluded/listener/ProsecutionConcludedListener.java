@@ -9,6 +9,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.CallerType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
@@ -41,7 +42,7 @@ public class ProsecutionConcludedListener {
 
             queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
             prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
-            prosecutionConcludedService.execute(prosecutionConcluded);
+            prosecutionConcludedService.execute(prosecutionConcluded, CallerType.QUEUE);
             log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
         } catch (ValidationException exception) {
             log.warn(exception.getMessage());
