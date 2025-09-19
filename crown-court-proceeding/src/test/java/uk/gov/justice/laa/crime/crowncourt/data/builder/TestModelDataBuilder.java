@@ -66,7 +66,7 @@ public class TestModelDataBuilder {
     public static final String CASE_URN="CP7890124";
     public static final UUID DEFENDANT_ID = UUID.fromString("a169b51-5057-422f-a5c5-8f97865700ad");
     public static final String OU_CODE ="31";
-    public static final String JURISDICTION_TYPE = "CROWN";
+    public static final String JURISDICTION_TYPE ="CROWN";
 
     public static final String RESULT_CODE = "4057,4058,4059";
 
@@ -455,8 +455,6 @@ public class TestModelDataBuilder {
                 .hearing(getHearing(defendant, hasOffences, hasResult))
                 .build();
     }
-
-
 
     private static Hearing getHearing(boolean defendant, boolean hasOffences,boolean hasResult) {
 
