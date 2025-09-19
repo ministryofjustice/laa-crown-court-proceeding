@@ -88,9 +88,7 @@ public class CalculateOutcomeHelper {
                                              List<String> offenceOutcomeList) {
         List<Result> results = offence.getResults();
 
-        boolean hasResults = results != null && !results.isEmpty();
-
-        boolean isConvictedPresent = hasResults && results.stream()
+        boolean isConvictedPresent = (results != null && !results.isEmpty()) && results.stream()
                 .anyMatch(result -> result.getIsConvictedResult() != null);
 
         boolean isConvicted = isConvictedPresent && results.stream()

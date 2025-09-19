@@ -2,8 +2,7 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

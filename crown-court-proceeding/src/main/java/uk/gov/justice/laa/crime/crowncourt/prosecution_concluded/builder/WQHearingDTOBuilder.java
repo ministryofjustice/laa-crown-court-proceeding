@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 
 public class WQHearingDTOBuilder {
 
-    private WQHearingDTOBuilder() {}
+    private WQHearingDTOBuilder() {
+    }
 
     public static WQHearingDTO build(HearingResultResponse hearingResultResponse, ProsecutionConcluded prosecutionConcluded) {
 
@@ -31,7 +32,7 @@ public class WQHearingDTOBuilder {
                 .build();
     }
 
-    static String getCaseUrn(HearingResultResponse hearingResultResponse) {
+    private static String getCaseUrn(HearingResultResponse hearingResultResponse) {
 
         if (Objects.nonNull(hearingResultResponse.getHearing().getProsecution_cases())) {
             return hearingResultResponse.getHearing().getProsecution_cases().stream()
@@ -44,7 +45,7 @@ public class WQHearingDTOBuilder {
         return null;
     }
 
-    static String getResultCode(HearingResultResponse hearingResultResponse, ProsecutionConcluded prosecutionConcluded) {
+    private static String getResultCode(HearingResultResponse hearingResultResponse, ProsecutionConcluded prosecutionConcluded) {
 
         String resultCodes = null;
         if (Objects.nonNull(hearingResultResponse.getHearing().getProsecution_cases())) {
@@ -61,11 +62,11 @@ public class WQHearingDTOBuilder {
                                     .filter(offence -> Objects.nonNull(offence) && Objects.nonNull(offence.getJudicial_results()))
                                     .filter(offence -> (Objects.nonNull(offence.getLaa_application())
                                             && Objects.nonNull(offence.getLaa_application().getReference())
-                                    && offence.getLaa_application().getReference().equals(prosecutionConcluded.getMaatId().toString())))
+                                            && offence.getLaa_application().getReference().equals(prosecutionConcluded.getMaatId().toString())))
                                     .map(Offence::getJudicial_results)
-                                     .flatMap(judicialResults -> judicialResults.stream()
-                                      .filter(judicialResult -> Objects.nonNull(judicialResult.getCjs_code()))
-                                      .map(JudicialResult::getCjs_code))))
+                                    .flatMap(judicialResults -> judicialResults.stream()
+                                            .filter(judicialResult -> Objects.nonNull(judicialResult.getCjs_code()))
+                                            .map(JudicialResult::getCjs_code))))
                     .toList();
 
             if (Objects.nonNull(resultCodeList) && !resultCodeList.isEmpty()) {
@@ -75,11 +76,11 @@ public class WQHearingDTOBuilder {
         return resultCodes;
     }
 
-    static boolean isValidProsecution(HearingResultResponse hearingResultResponse, ProsecutionConcluded prosecutionConcluded) {
+    private static boolean isValidProsecution(HearingResultResponse hearingResultResponse, ProsecutionConcluded prosecutionConcluded) {
 
         if (Objects.nonNull(hearingResultResponse.getHearing().getProsecution_cases()) &&
                 Objects.nonNull(prosecutionConcluded.getProsecutionCaseId())) {
-            return  hearingResultResponse.getHearing().getProsecution_cases().stream()
+            return hearingResultResponse.getHearing().getProsecution_cases().stream()
                     .filter(Objects::nonNull)
                     .anyMatch(prosecution -> prosecution.getId().equals(prosecutionConcluded.getProsecutionCaseId().toString()));
         }
