@@ -155,6 +155,10 @@ queue:
       cron:
         expression: 0 0 0 * * *
       expiryInDays: 30
+    purge:
+      cron:
+        expression: 0 0 2 * * *
+      month: 2
 
 reports:
   reactivated_cases:
