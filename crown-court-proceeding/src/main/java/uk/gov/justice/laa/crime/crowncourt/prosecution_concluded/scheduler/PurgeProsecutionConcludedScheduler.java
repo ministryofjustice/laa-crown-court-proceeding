@@ -14,8 +14,8 @@ import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 @EnableScheduling
 @RequiredArgsConstructor
 public class PurgeProsecutionConcludedScheduler {
-    private final QueueMessageLogService queueMessageLogService;
 
+    private final QueueMessageLogService queueMessageLogService;
 
     @Scheduled(cron = "${queue.message.purge.cron.expression}")
     public void purgePeriodicMessages() {
