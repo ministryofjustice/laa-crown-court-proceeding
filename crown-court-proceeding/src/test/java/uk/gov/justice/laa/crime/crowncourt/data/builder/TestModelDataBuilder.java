@@ -435,4 +435,14 @@ public class TestModelDataBuilder {
                 .timestamp(TestModelDataBuilder.TEST_DATE_MODIFIED)
                 .build();
     }
+
+    public static ProsecutionConcludedEntity getProsecutionConcludedEntity(LocalDateTime createdTime) {
+        return ProsecutionConcludedEntity
+                .builder()
+                .maatId(TEST_REP_ID)
+                .caseData(getCaseData().getBytes(StandardCharsets.UTF_8))
+                .createdTime(createdTime)
+                .status(CaseConclusionStatus.PENDING.name())
+                .build();
+    }
 }
