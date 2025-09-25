@@ -129,7 +129,6 @@ queue:
         expression: 0 0 2 * * *
       month: 2
 
-
 reports:
   reactivated_cases:
     cron:
