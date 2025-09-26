@@ -157,7 +157,7 @@ queue:
       expiryInDays: 30
     purge:
       cron:
-        expression: 0 0 2 * * *
+        expression: 0 * * * * *
       month: 2
 
 reports:
