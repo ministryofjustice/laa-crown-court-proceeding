@@ -17,7 +17,7 @@ public class PurgeProsecutionConcludedScheduler {
 
     private final QueueMessageLogService queueMessageLogService;
 
-    @Scheduled(cron = "${queue.message.purge.cron.expression}")
+    //@Scheduled(cron = "${queue.message.purge.cron.expression}")
     public void purgePeriodicMessages() {
         log.info("Purge Prosecution concluded Scheduling is started");
         queueMessageLogService.purgePeriodicMessages();
