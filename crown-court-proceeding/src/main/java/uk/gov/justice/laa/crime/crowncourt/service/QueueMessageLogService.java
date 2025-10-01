@@ -6,15 +6,12 @@ import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import uk.gov.justice.laa.crime.crowncourt.entity.QueueMessageLogEntity;
 import uk.gov.justice.laa.crime.crowncourt.repository.QueueMessageLogRepository;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,9 +21,6 @@ import java.util.UUID;
 public class QueueMessageLogService {
 
     private final QueueMessageLogRepository queueMessageLogRepository;
-
-    @Value("${queue.message.purge.month:2}")
-    private int monthToPurge;
 
     public void createLog(final MessageType messageType, final String message) {
 
@@ -77,14 +71,5 @@ public class QueueMessageLogService {
 
     private byte[] convertAsByte(final String message) {
         return message.getBytes();
-    }
-
-    @Transactional
-    public void purgePeriodicMessages() {
-        log.debug("Purge prosecution concluded messaged is started");
-        LocalDateTime purgeBeforeDate = LocalDateTime.now().minusMonths(monthToPurge);
-        long deletedRecords = queueMessageLogRepository.deleteByCreatedTimeBefore(purgeBeforeDate);
-        log.info("{} periodic message is deleted", deletedRecords);
-        log.debug("Purge prosecution concluded messaged is ended");
     }
 }

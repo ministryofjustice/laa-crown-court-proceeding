@@ -12,10 +12,7 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.crowncourt.repository.QueueMessageLogRepository;
 
-import java.time.LocalDateTime;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -99,11 +96,6 @@ class QueueMessageLogServiceTest {
                 "    }\n" +
                 "}";
 
-    }
-    @Test
-    void givenAValidInput_whenPurgePeriodicMessagesIsInvoked_thenPurgeProcessIsSuccess() {
-        queueMessageLogService.purgePeriodicMessages();
-        verify(queueMessageLogRepository).deleteByCreatedTimeBefore(any(LocalDateTime.class));
     }
 }
 
