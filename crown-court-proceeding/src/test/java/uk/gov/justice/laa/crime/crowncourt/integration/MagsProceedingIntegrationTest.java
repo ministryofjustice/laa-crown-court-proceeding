@@ -1,7 +1,13 @@
 package uk.gov.justice.laa.crime.crowncourt.integration;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +21,6 @@ import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.enums.DecisionReason;
 import uk.gov.justice.laa.crime.util.RequestBuilderUtils;
-
-import java.time.LocalDate;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class MagsProceedingIntegrationTest extends WiremockIntegrationTest {
 

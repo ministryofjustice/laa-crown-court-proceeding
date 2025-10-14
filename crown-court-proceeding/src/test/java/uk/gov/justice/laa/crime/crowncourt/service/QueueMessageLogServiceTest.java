@@ -1,5 +1,14 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -8,16 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.entity.QueueMessageLogEntity;
+import uk.gov.justice.laa.crime.crowncourt.repository.QueueMessageLogRepository;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
-import uk.gov.justice.laa.crime.crowncourt.repository.QueueMessageLogRepository;
-
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class QueueMessageLogServiceTest {

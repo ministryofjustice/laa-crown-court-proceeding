@@ -1,6 +1,13 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.gson.Gson;
+import java.util.HashMap;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -18,11 +25,6 @@ import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.PleaTrialOutcome;
 import uk.gov.justice.laa.crime.exception.ValidationException;
-
-import java.util.HashMap;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)

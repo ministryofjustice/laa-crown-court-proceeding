@@ -1,5 +1,13 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.impl;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.crime.enums.CrownCourtAppealOutcome.isAppeal;
+
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,12 +25,6 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDa
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome;
 import uk.gov.justice.laa.crime.exception.ValidationException;
-
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.Mockito.*;
-import static uk.gov.justice.laa.crime.enums.CrownCourtAppealOutcome.isAppeal;
 
 @ExtendWith(MockitoExtension.class)
 class ProsecutionConcludedImplTest {

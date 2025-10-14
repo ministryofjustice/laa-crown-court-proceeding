@@ -1,9 +1,11 @@
 package uk.gov.justice.laa.crime.crowncourt.config;
 
-import lombok.*;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
 @RequiredArgsConstructor

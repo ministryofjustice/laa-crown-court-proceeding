@@ -1,27 +1,52 @@
 package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.common.ApiCrownCourtOutcome;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
-import uk.gov.justice.laa.crime.common.model.proceeding.common.*;
-import uk.gov.justice.laa.crime.common.model.proceeding.request.*;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCapitalEvidence;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCrownCourtSummary;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiEvidenceFee;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiFinancialAssessment;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiHardshipOverview;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiIOJSummary;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiPassportAssessment;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiCalculateEvidenceFeeRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiDetermineMagsRepDecisionRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateCrownCourtRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiCalculateEvidenceFeeResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
-import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Plea;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Verdict;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.VerdictType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
-import uk.gov.justice.laa.crime.enums.*;
-
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import uk.gov.justice.laa.crime.enums.CaseType;
+import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
+import uk.gov.justice.laa.crime.enums.CurrentStatus;
+import uk.gov.justice.laa.crime.enums.DecisionReason;
+import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
+import uk.gov.justice.laa.crime.enums.FullAssessmentResult;
+import uk.gov.justice.laa.crime.enums.InitAssessmentResult;
+import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.enums.PassportAssessmentResult;
+import uk.gov.justice.laa.crime.enums.ReviewResult;
+import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 @Component
 public class TestModelDataBuilder {

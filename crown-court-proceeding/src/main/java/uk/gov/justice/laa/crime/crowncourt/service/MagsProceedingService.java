@@ -1,6 +1,8 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
+import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,11 +13,13 @@ import uk.gov.justice.laa.crime.crowncourt.builder.UpdateRepOrderDTOBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.FinancialAssessmentOutcome;
-import uk.gov.justice.laa.crime.enums.*;
+import uk.gov.justice.laa.crime.enums.CaseType;
+import uk.gov.justice.laa.crime.enums.DecisionReason;
+import uk.gov.justice.laa.crime.enums.FullAssessmentResult;
+import uk.gov.justice.laa.crime.enums.InitAssessmentResult;
+import uk.gov.justice.laa.crime.enums.PassportAssessmentResult;
+import uk.gov.justice.laa.crime.enums.ReviewResult;
 import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
-
-import java.time.LocalDate;
-import java.util.Set;
 
 @Slf4j
 @Service

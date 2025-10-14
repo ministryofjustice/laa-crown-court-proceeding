@@ -1,16 +1,19 @@
 package uk.gov.justice.laa.crime.crowncourt.dto;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
-import uk.gov.justice.laa.crime.common.model.proceeding.common.*;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCapitalEvidence;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCrownCourtSummary;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiFinancialAssessment;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiIOJSummary;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiPassportAssessment;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder

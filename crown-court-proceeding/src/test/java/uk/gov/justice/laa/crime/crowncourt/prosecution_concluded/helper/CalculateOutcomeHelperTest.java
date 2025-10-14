@@ -1,17 +1,20 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Plea;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Verdict;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.VerdictType;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class CalculateOutcomeHelperTest {

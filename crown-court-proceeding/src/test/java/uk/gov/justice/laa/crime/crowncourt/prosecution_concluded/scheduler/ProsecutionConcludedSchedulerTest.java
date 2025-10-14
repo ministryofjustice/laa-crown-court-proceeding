@@ -1,6 +1,15 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.scheduler;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,13 +26,7 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.Prose
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
 import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
-
-import java.util.List;
-import java.util.UUID;
 import uk.gov.justice.laa.crime.exception.ValidationException;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProsecutionConcludedSchedulerTest {

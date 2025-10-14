@@ -1,11 +1,18 @@
 package uk.gov.justice.laa.crime.crowncourt.staticdata.enums;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.APPEAL_CC;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.CC_ALREADY;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.EITHER_WAY;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.INDICTABLE;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.caseTypeForAppeal;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.caseTypeForTrial;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.crime.exception.ValidationException;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.*;
 
 class CrownCourtCaseTypeTest {
 
