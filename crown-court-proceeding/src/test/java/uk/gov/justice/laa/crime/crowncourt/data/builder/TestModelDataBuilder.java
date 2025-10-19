@@ -11,12 +11,16 @@ import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplic
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
-import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.*;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
 import uk.gov.justice.laa.crime.enums.*;
+import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -58,6 +62,10 @@ public class TestModelDataBuilder {
     public static final String TEST_REP_TYPE = "TEST_REP_TYPE";
 
     public static final String EMST_CODE = "TEST_CODE";
+    public static final UUID PROSECUTION_CASE_ID = UUID.fromString("b169b51-5077-432f-a5c5-8f97865700de");
+    public static final UUID DEFENDANT_ID = UUID.fromString("a169b51-5057-422f-a5c5-8f97865700ad");
+
+    public static final UUID OFFENCE_ID = UUID.fromString("a169b51-5057-422f-a5c5-8f97865700af");
 
     public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
         return new ApiProcessRepOrderRequest()
@@ -444,5 +452,92 @@ public class TestModelDataBuilder {
                 .createdTime(createdTime)
                 .status(CaseConclusionStatus.PENDING.name())
                 .build();
+    }
+
+    public static ProsecutionConcluded getProsecutionConcluded(boolean hasOffence, boolean hasPlea,
+                                                               boolean verdict, boolean isResult) {
+
+        ProsecutionConcluded prosecutionConcluded =  ProsecutionConcluded.builder()
+                .isConcluded(true)
+                .hearingIdWhereChangeOccurred(UUID.randomUUID())
+                .maatId(TEST_REP_ID).build();
+
+        OffenceSummary offenceSummary = OffenceSummary.builder()
+                .offenceId(UUID.randomUUID())
+                .build();
+        if (hasPlea) {
+            offenceSummary.setPlea(Plea.builder().value("GUILTY").pleaDate("2021-12-12").build());
+        }
+        if (verdict) {
+            offenceSummary.setVerdict(Verdict.builder()
+                    .verdictType(VerdictType.builder().categoryType("GUILTY").build())
+                    .verdictDate("2021-11-12")
+                    .build());
+        }
+        if (isResult) {
+            offenceSummary.setJudicialResults(List.of(Result.builder().isConvictedResult(Boolean.TRUE).build()));
+        }
+        if (hasOffence) {
+            prosecutionConcluded.setOffenceSummary(List.of(offenceSummary));
+        }
+        return prosecutionConcluded;
+    }
+
+    public static HearingResultResponse getHearingResultResponse(boolean defendant, boolean hasOffences, boolean hasResult) {
+
+        return HearingResultResponse.builder()
+                .hearing(getHearing(defendant, hasOffences, hasResult))
+                .build();
+    }
+
+    private static Hearing getHearing(boolean defendant, boolean hasOffences, boolean hasResult) {
+
+        Hearing hearing = new Hearing();
+        hearing.setId(UUID.randomUUID());
+        hearing.setProsecution_cases(List.of(getProsecutionCase(defendant,hasOffences, hasResult)));
+        return hearing;
+    }
+
+    private static ProsecutionCase getProsecutionCase(boolean defendant, boolean hasOffences, boolean hasResult) {
+        ProsecutionCase prosecutionCase = new ProsecutionCase();
+        prosecutionCase.setId(PROSECUTION_CASE_ID);
+        if (defendant) {
+            prosecutionCase.setDefendants(List.of(getDefendants(hasOffences, hasResult)));
+        }
+        return prosecutionCase;
+    }
+
+    private static Defendant getDefendants(boolean hasOffences, boolean hasResult) {
+
+        Defendant defendant = new Defendant();
+        defendant.setId(DEFENDANT_ID);
+        if (hasOffences) {
+            defendant.setOffences(List.of(getOffence(hasResult)));
+        }
+        return defendant;
+    }
+
+    private static Offence getOffence(boolean hasResult) {
+
+        Offence offence = new Offence();
+        offence.setId(OFFENCE_ID);
+        offence.setLaa_application(LaaApplication.builder().reference(TEST_REP_ID).build());
+        if (hasResult) {
+            offence.setJudicial_results(List.of(getJudicialResult(true)));
+        }
+        return offence;
+    }
+
+    private static JudicialResult getJudicialResult(boolean isConvicted) {
+        return JudicialResult.builder().is_convicted_result(isConvicted).build();
+    }
+
+    public static OffenceSummary getOffenceSummary(boolean isResultRequired, boolean isConvicted) {
+        OffenceSummary offenceSummary =  OffenceSummary.builder().build();
+        offenceSummary.setOffenceId(OFFENCE_ID);
+        if (isResultRequired) {
+            offenceSummary.setJudicialResults(List.of(Result.builder().isConvictedResult(isConvicted).build()));
+        }
+        return offenceSummary;
     }
 }

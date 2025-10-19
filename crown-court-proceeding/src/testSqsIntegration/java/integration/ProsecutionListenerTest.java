@@ -323,7 +323,7 @@ class ProsecutionListenerTest {
     }
 
     @Test
-    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndIsConvictedResult_thenOutcomeIsAquitted() {
+    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndIsConvictedResult_thenOutcomeIsAConvicted() {
         amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndIsConvictedResult.json"));
         setScenarioState("reservations", "State 2");
 
@@ -332,7 +332,7 @@ class ProsecutionListenerTest {
 
         List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
         LoggedRequest request = requests.get(requests.size() - 1);
-        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(CONVICTED));
     }
 
     @Test
@@ -358,6 +358,31 @@ class ProsecutionListenerTest {
 
         List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
         assertThat(requests.get(requests.size() - 1).getBodyAsString()).isEqualTo(getExpectedAppealsRequest(SUCCESSFUL));
+    }
+    @Test
+    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndIsConvictedResultNotAvailable_thenOutcomeIsAquitted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndNotIsConvictedResult.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        LoggedRequest request = requests.get(requests.size() - 1);
+        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
+    }
+
+    @Test
+    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndNotIsConvictedResult_thenOutcomeIsAqutted() {
+        amazonSQS.sendMessage(queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsNoPleaNoVerdictAndIsConvictedResultIsFalse.json"));
+        setScenarioState("reservations", "State 2");
+
+        with().pollDelay(10, SECONDS).pollInterval(5, SECONDS).await().atMost(60, SECONDS)
+                .untilAsserted(() -> verify(putRequestedFor(urlEqualTo(CC_OUTCOME_URL))));
+
+        List<LoggedRequest> requests = findAll(putRequestedFor(urlEqualTo(CC_OUTCOME_URL)));
+        LoggedRequest request = requests.get(requests.size() - 1);
+        assertThat(request.getBodyAsString()).isEqualTo(getExpectedRequest(AQUITTED, null));
     }
 
     private String getExpectedRequest(String outcome, String imprisoned) {
