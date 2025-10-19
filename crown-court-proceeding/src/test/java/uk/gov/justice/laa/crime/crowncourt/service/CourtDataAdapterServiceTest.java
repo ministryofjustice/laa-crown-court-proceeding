@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.client.CourtDataAdaptorNonServletApiClient;
 
 import java.util.UUID;
@@ -46,5 +47,16 @@ class CourtDataAdapterServiceTest {
         
         assertThatThrownBy(() -> courtDataAdapterService.triggerHearingProcessing(testHearingId))
                 .isInstanceOf(WebClientResponseException.class);
+    }
+
+    @Test
+    void givenAValidHearingId_whenTriggerHearingProcessingIsInvokedAndTheCallFails_thenFailureIsHandled1() {
+
+        courtDataAdapterService.getHearingResult(TestModelDataBuilder.getProsecutionConcluded(true, false, false, false), UUID.randomUUID());
+
+        verify(cdaAPIClient).getHearingResult(
+                any(UUID.class),
+                argThat(params -> "false".equals(params.getFirst("publish_to_queue")))
+        );
     }
 }

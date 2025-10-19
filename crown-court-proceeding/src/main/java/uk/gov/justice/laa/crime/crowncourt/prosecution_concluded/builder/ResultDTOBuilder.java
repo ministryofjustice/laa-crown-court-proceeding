@@ -29,11 +29,11 @@ public class ResultDTOBuilder {
 
     }
 
-    public static List<JudicialResult> extractJudicialResults(Hearing hearing,
+    private static List<JudicialResult> extractJudicialResults(Hearing hearing,
                                                               ProsecutionConcluded prosecutionConcluded,
                                                               UUID offenceId) {
         if (hearing == null || hearing.getProsecution_cases() == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         return hearing.getProsecution_cases().stream()
@@ -44,6 +44,7 @@ public class ResultDTOBuilder {
                 .filter(defendant -> defendant.getOffences() != null)
                 .flatMap(defendant -> defendant.getOffences().stream())
                 .filter(offence -> offence != null && offence.getJudicial_results() != null)
+                .filter(offence -> Objects.nonNull(offence.getId()) && offence.getId().equals(offenceId))
                 .filter(offence -> hasMatchingLaaApplication(offence, prosecutionConcluded.getMaatId()))
                 .flatMap(offence -> offence.getJudicial_results().stream())
                 .filter(judicialResult -> judicialResult.getIs_convicted_result() != null)
