@@ -1,0 +1,19 @@
+{
+  "name": "api_hearing_result",
+  "request": {
+    "urlPath": "/api/internal/v2/hearing_results/908ad01e-5a38-4158-957a-0c1d1a783862",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "{\n   \"hearing\":{\n      \"id\":\"c32e3ca4-e0c0-424b-85df-bcb7192c8b57\",\n      \"jurisdiction_type\":\"CROWN\",\n      \"prosecution_cases\":[\n         {\n            \"id\":\"998984a0-ae53-466c-9c13-e0c84c1fd581\",\n            \"defendants\":[\n               {\n                  \"id\":\"aa07e234-7e80-4be1-a076-5ab8a8f49df5\",\n                  \"prosecution_case_id\":\"2605db13-7d0f-4f78-b3d4-957651078fe5\",\n                  \"offences\":[\n                     {\n                        \"id\":\"ed0e9d59-cc1c-4869-8fcd-464caf770744\",\n                        \"judicial_results\":[\n                           {\n                              \"is_convicted_result\":false,\n                              \"is_financial_result\":false,\n                              \"qualifier\":\"Random String\",\n                              \"text\":\"GUILTY\",\n                              \"cjs_code\":\"2507\",\n                              \"ordered_date\":\"2019-10-16\",\n                              \"post_hearing_custody_status\":\"A\",\n                              \"wording\":null\n                           }\n                        ],\n                        \"laa_application\":{\n                           \"reference\":\"5635567\",\n                           \"id\":\"f0e9e814-f38b-4f75-9b16-85e25aaf2e27\",\n                           \"status_code\":\"AP\",\n                           \"status_date\":\"2025-09-30\",\n                           \"description\":\"FAKE NEWS\",\n                           \"effective_start_date\":null,\n                           \"effective_end_date\":null,\n                           \"contract_number\":null\n                        }\n                     }\n                  ]\n               }\n            ]\n         }\n      ]\n   }\n}",
+    "headers": {
+      "Date": "Mon, 18 Sep 2023 11:37:23 GMT",
+      "Content-Type": "application/json",
+      "apigw-requestid": "Lc1yHiCxLPEEJ-g=",
+      "X-Amzn-Trace-Id": "Root=1-65083673-48c627b220383f8311bfc165;"
+    }
+  },
+  "persistent": true,
+  "insertionIndex": 12
+}

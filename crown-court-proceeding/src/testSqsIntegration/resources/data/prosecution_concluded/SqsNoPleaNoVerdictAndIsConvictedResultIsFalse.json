@@ -19,7 +19,8 @@
           "nextHearingDate": null,
           "nextHearingLocation": null,
           "laaOfficeAccount": null,
-          "legalAidWithdrawalDate": "2025-04-11"
+          "legalAidWithdrawalDate": "2025-04-11",
+          "isConvictedResult": false
         }
       ],
       "plea": {},

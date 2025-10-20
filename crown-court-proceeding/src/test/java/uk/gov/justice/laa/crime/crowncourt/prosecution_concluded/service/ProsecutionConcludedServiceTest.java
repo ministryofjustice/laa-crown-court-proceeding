@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.model.Metadata;
@@ -28,6 +29,7 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProsecutionConcludedServiceTest {
@@ -64,6 +66,9 @@ class ProsecutionConcludedServiceTest {
     @Mock
     private CalculateAppealOutcomeHelper calculateAppealOutcomeHelper;
 
+    @Mock
+    private CourtDataAdapterService courtDataAdapterService;
+
     private static final int MAAT_ID = 1212111;
 
     @Test
@@ -78,7 +83,7 @@ class ProsecutionConcludedServiceTest {
         verify(prosecutionConcludedDataService, atLeast(1)).execute(any());
         verify(courtDataAPIService, atLeast(1)).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, never()).execute(any(), any());
-        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(calculateOutcomeHelper, never()).calculate(any(), any(ProsecutionConcluded.class));
 
         verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
         verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
@@ -95,6 +100,7 @@ class ProsecutionConcludedServiceTest {
                 .build());
         when(courtDataAPIService.getRepOrder(any())).thenReturn(
             RepOrderDTO.builder().magsOutcome("ACQUITTED").build());
+        when(calculateOutcomeHelper.isOutcomePresentWhenPleaAndVerdictEmpty(any(ProsecutionConcluded.class))).thenReturn(true);
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
 
@@ -102,7 +108,7 @@ class ProsecutionConcludedServiceTest {
         verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(courtDataAPIService, atLeast(1)).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, atLeast(1)).execute(any(), any());
-        verify(calculateOutcomeHelper, atLeast(1)).calculate(any());
+        verify(calculateOutcomeHelper, atLeast(1)).calculate(any(), any(ProsecutionConcluded.class));
         verify(caseConclusionDTOBuilder, atLeast(1)).build(any(), any(), any(), any());
         verify(offenceHelper, atLeast(1)).getTrialOffences(any(), anyInt());
     }
@@ -118,12 +124,13 @@ class ProsecutionConcludedServiceTest {
                 .build());
         when(courtDataAPIService.getRepOrder(any())).thenReturn(
             RepOrderDTO.builder().magsOutcome("ACQUITTED").build());
+        when(calculateOutcomeHelper.isOutcomePresentWhenPleaAndVerdictEmpty(any(ProsecutionConcluded.class))).thenReturn(true);
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
 
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(courtDataAPIService).isMaatRecordLocked(anyInt());
-        verify(calculateOutcomeHelper).calculate(any());
+        verify(calculateOutcomeHelper).calculate(any(), any(ProsecutionConcluded.class));
     }
 
     @Test
@@ -139,6 +146,7 @@ class ProsecutionConcludedServiceTest {
                 .build());
         when(courtDataAPIService.getRepOrder(any())).thenReturn(
             RepOrderDTO.builder().magsOutcome("ACQUITTED").build());
+        when(calculateOutcomeHelper.isOutcomePresentWhenPleaAndVerdictEmpty(any(ProsecutionConcluded.class))).thenReturn(true);
 
         prosecutionConcludedService.execute(prosecutionConcludedRequest);
 
@@ -146,7 +154,7 @@ class ProsecutionConcludedServiceTest {
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(courtDataAPIService).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl).execute(any(), any());
-        verify(calculateOutcomeHelper).calculate(any());
+        verify(calculateOutcomeHelper).calculate(any(), any(ProsecutionConcluded.class));
     }
 
     @Test
@@ -173,7 +181,7 @@ class ProsecutionConcludedServiceTest {
         verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(courtDataAPIService, never()).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, never()).execute(any(), any());
-        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(calculateOutcomeHelper, never()).calculate(any(), any(ProsecutionConcluded.class));
         verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
         verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
     }
@@ -188,6 +196,7 @@ class ProsecutionConcludedServiceTest {
                 .build());
         when(courtDataAPIService.getRepOrder(any())).thenReturn(
             RepOrderDTO.builder().magsOutcome("CONVICTED").build());
+        when(calculateOutcomeHelper.isOutcomePresentWhenPleaAndVerdictEmpty(any(ProsecutionConcluded.class))).thenReturn(true);
 
         ProsecutionConcluded prosecutionConcludedRequest = getProsecutionConcluded();
         prosecutionConcludedRequest.setApplicationConcluded(getApplicationConcluded());
@@ -212,6 +221,22 @@ class ProsecutionConcludedServiceTest {
         prosecutionConcludedService.execute(prosecutionConcludedRequest);
 
         verify(calculateAppealOutcomeHelper, atLeast(1)).calculate(any());
+    }
+
+
+    @Test
+    void givenEmptyPleaAndVerdict_whenExecuteIsInvoked_thenMovedIntoScheduler() {
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity(JurisdictionType.CROWN.name()));
+        when(courtDataAPIService.isMaatRecordLocked(any())).thenReturn(false);
+        when(calculateOutcomeHelper.isOutcomePresentWhenPleaAndVerdictEmpty(any(ProsecutionConcluded.class))).thenReturn(false);
+
+        prosecutionConcludedService.execute(TestModelDataBuilder.getProsecutionConcluded(true,false,false,false));
+
+        verify(prosecutionConcludedValidator).validateRequestObject(any());
+        verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
+        verify(courtDataAPIService, atLeast(1)).isMaatRecordLocked(anyInt());
+        verify(prosecutionConcludedDataService).execute(any(ProsecutionConcluded.class));
+
     }
 
     private ProsecutionConcluded getProsecutionConcluded() {

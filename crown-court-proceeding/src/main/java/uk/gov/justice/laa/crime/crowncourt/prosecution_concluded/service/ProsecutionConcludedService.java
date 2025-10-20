@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,9 +16,10 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSu
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import java.util.List;
-import uk.gov.justice.laa.crime.exception.ValidationException;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -53,7 +53,11 @@ public class ProsecutionConcludedService {
                 } else {
                     if (JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
                         prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
-                        executeCCOutCome(prosecutionConcluded, wqHearingDTO);
+                        if (calculateOutcomeHelper.isOutcomePresentWhenPleaAndVerdictEmpty(prosecutionConcluded)) {
+                            executeCCOutCome(prosecutionConcluded, wqHearingDTO);
+                        } else {
+                            prosecutionConcludedDataService.execute(prosecutionConcluded);
+                        }
                     } else if (JurisdictionType.MAGISTRATES.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())
                         && Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
                         executeCCOutCome(prosecutionConcluded, wqHearingDTO);
@@ -93,7 +97,7 @@ public class ProsecutionConcludedService {
         if (Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
             calculatedOutcome = calculateAppealOutcomeHelper.calculate(prosecutionConcluded.getApplicationConcluded().getApplicationResultCode());
         } else {
-            calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences);
+            calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences, prosecutionConcluded);
         }
         log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
 
