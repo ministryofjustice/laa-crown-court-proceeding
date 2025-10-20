@@ -43,7 +43,7 @@ public class ProsecutionConcludedScheduler {
     private final ProsecutionConcludedDataService prosecutionConcludedDataService;
     private final DeadLetterMessageService deadLetterMessageService;
 
-    @Scheduled(cron = "${queue.message.log.cron.expression}")
+    @Scheduled(cron = "0 * * * * *")
     public void process() {
 
         log.info("Prosecution Conclusion Scheduling is started");
