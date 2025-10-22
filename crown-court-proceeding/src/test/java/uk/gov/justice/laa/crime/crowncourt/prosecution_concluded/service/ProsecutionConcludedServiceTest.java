@@ -22,7 +22,6 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Prosecuti
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -216,7 +215,23 @@ class ProsecutionConcludedServiceTest {
     }
 
     @Test
-    void givenACaseIsNotConcludedAndNoHearing_whenExecuteIsInvoked_thenShouldNotAddToScheduler() {
+    void givenACaseIsNotConcluded_whenExecuteIsInvoked_thenShouldNotAddToScheduler() {
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity(JurisdictionType.CROWN.name()));
+
+        ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
+        prosecutionConcluded.setConcluded(Boolean.FALSE);
+        prosecutionConcludedService.execute(prosecutionConcluded);
+
+        verify(prosecutionConcludedValidator).validateRequestObject(any());
+        verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
+        verify(prosecutionConcludedDataService, never()).execute(any());
+        verify(prosecutionConcludedImpl, never()).execute(any(), any());
+        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
+        verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
+    }
+
+    void givenACaseIsNotConcludedAndEmptyHearing_whenExecuteIsInvoked_thenShouldNotAddToScheduler() {
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(null);
 
         ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();

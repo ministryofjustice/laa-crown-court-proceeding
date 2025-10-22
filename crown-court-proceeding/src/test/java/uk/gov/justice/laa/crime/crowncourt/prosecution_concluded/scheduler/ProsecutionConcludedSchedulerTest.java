@@ -149,4 +149,11 @@ class ProsecutionConcludedSchedulerTest {
         prosecutionConcludedScheduler.processCaseConclusion(prosecutionConcluded);
         verify(prosecutionConcludedService, never()).executeCCOutCome(any(ProsecutionConcluded.class), any());
     }
+
+    @Test
+    void givenACaseIsConcludedAndNoHearing_whenProcessIsInvoked_thenShouldNotCalculateOutcome() {
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(null);
+        prosecutionConcludedScheduler.processCaseConclusion(TestModelDataBuilder.getProsecutionConcluded());
+        verify(prosecutionConcludedService, never()).executeCCOutCome(any(ProsecutionConcluded.class), any());
+    }
 }
