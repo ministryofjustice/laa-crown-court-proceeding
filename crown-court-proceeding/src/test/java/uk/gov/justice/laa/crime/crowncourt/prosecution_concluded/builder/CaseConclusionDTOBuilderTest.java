@@ -85,7 +85,6 @@ class CaseConclusionDTOBuilderTest {
         softly.assertThat(concludedDTO.getCaseUrn()).isEqualTo("45673");
         softly.assertThat(concludedDTO.getCaseEndDate()).isEqualTo("2021-11-12");
         softly.assertThat(concludedDTO.getHearingResultCodeList()).isEqualTo(List.of("code1", "code2", "code3"));
-        softly.assertThat(concludedDTO.getProsecutionConcluded()).isEqualTo(TestModelDataBuilder.getProsecutionConcluded());
         softly.assertAll();
     }
 

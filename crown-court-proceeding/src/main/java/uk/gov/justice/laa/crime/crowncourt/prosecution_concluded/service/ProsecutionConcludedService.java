@@ -60,8 +60,8 @@ public class ProsecutionConcludedService {
                     }
                 }
             }
-        } else {
-            log.info("Hearing data is null for maat-id {}", prosecutionConcluded.getMaatId());
+        } else if (prosecutionConcluded.isConcluded()) {
+            log.info("The prosecution case is concluded, and no hearing has been received for this MAAT-ID {}", prosecutionConcluded.getMaatId());
             prosecutionConcludedDataService.execute(prosecutionConcluded);
         }
     }
