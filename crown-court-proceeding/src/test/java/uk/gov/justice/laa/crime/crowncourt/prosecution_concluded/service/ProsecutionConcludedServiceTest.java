@@ -231,6 +231,7 @@ class ProsecutionConcludedServiceTest {
         verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
     }
 
+    @Test
     void givenACaseIsNotConcludedAndEmptyHearing_whenExecuteIsInvoked_thenShouldNotAddToScheduler() {
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(null);
 

@@ -151,6 +151,17 @@ class ProsecutionConcludedSchedulerTest {
     }
 
     @Test
+    void givenACaseIsConcludedAndValidHearing_whenProcessIsInvoked_thenShouldNotCalculateOutcome() {
+        ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
+                .isConcluded(Boolean.FALSE)
+                .maatId(1234).hearingIdWhereChangeOccurred(UUID.randomUUID()).build();
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
+                .thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.CROWN.name()).build());
+        prosecutionConcludedScheduler.processCaseConclusion(prosecutionConcluded);
+        verify(prosecutionConcludedService, never()).executeCCOutCome(any(ProsecutionConcluded.class), any());
+    }
+
+    @Test
     void givenACaseIsConcludedAndNoHearing_whenProcessIsInvoked_thenShouldNotCalculateOutcome() {
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(null);
         prosecutionConcludedScheduler.processCaseConclusion(TestModelDataBuilder.getProsecutionConcluded());
