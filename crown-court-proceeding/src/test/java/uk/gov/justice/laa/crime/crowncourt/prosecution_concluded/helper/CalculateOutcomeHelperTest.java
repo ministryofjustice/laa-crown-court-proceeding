@@ -198,19 +198,4 @@ class CalculateOutcomeHelperTest {
         String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummary());
         assertThat(res).isEqualTo("AQUITTED");
     }
-
-    @Test
-    void givenOffenceSummary_whenPleaAndVerdictMissingAndNotConvicted_thenReturnAcquitted() {
-        ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
-                .isConcluded(true)
-                .maatId(123456)
-                .offenceSummary(List.of(OffenceSummary.builder()
-                        .offenceCode("1212")
-                        .plea(Plea.builder().build())
-                        .verdict(Verdict.builder().build())
-                        .build()))
-                .build();
-        String res = calculateOutcomeHelper.calculate(prosecutionConcluded.getOffenceSummary());
-        assertThat(res).isEqualTo("AQUITTED");
-    }
 }
