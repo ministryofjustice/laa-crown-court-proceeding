@@ -35,8 +35,7 @@ class CrownCourtDTOBuilderTest {
     }
 
     @Test
-    void
-            givenApiProcessRepOrderRequestWithMagsDecision_whenBuildIsInvoked_thenCorrectCrownCourtDTOFieldsArePopulated() {
+    void givenMagsDecisionRequest_whenBuildInvoked_thenCrownCourtDTOFieldsMappedCorrectly() {
         ApiProcessRepOrderRequest request = TestModelDataBuilder.getApiProcessRepOrderRequest(true);
         CrownCourtDTO dto = CrownCourtDTOBuilder.build(request);
         softly.assertThat(dto.getMagsDecisionResult().getDecisionDate())

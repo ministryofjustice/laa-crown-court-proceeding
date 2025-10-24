@@ -186,8 +186,7 @@ class ProsecutionConcludedServiceTest {
     }
 
     @Test
-    void
-            givenCrownCourtProsecutionConcludedContainsApplicationConcluded_whenExecuteIsInvoked_thenCalculateAppealOutcomeHelperIsCalled() {
+    void givenCrownCourtProsecutionConcludedWithApplicationConcluded_whenExecuteInvoked_thenAppealOutcomeCalculated() {
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
                 .thenReturn(getWQHearingEntity(JurisdictionType.CROWN.name()));
         when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(List.of(getOffenceSummary("123")));
@@ -206,8 +205,7 @@ class ProsecutionConcludedServiceTest {
     }
 
     @Test
-    void
-            givenMagistratesProsecutionConcludedContainsApplicationConcluded_whenExecuteIsInvoked_thenCalculateAppealOutcomeHelperIsCalled() {
+    void givenMagistratesProsecutionConcludedWithApplicationConcluded_whenExecuteInvoked_thenAppealOutcomeCalculated() {
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
                 .thenReturn(getWQHearingEntity(JurisdictionType.MAGISTRATES.name()));
         when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(List.of(getOffenceSummary("123")));

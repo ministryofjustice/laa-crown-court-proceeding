@@ -44,8 +44,7 @@ class UpdateRepOrderDTOBuilderTest {
     }
 
     @Test
-    void
-            givenCrownCourtDTOAndMagsDecisionResult_whenBuildIsInvoked_thenCorrectUpdateRepOrderRequestDTOFieldsArePopulated() {
+    void givenCrownCourtDTOAndMagsDecisionResult_whenBuildInvoked_thenUpdateRepOrderDTOFieldsMappedCorrectly() {
         CrownCourtDTO dto = TestModelDataBuilder.getCrownCourtDTO();
         MagsDecisionResult magsDecisionResult = TestModelDataBuilder.getMagsDecisionResult();
         UpdateRepOrderRequestDTO updateRequest = UpdateRepOrderDTOBuilder.build(dto, magsDecisionResult);
