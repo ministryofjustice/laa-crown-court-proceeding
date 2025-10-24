@@ -129,7 +129,7 @@ class ProsecutionListenerTest {
         prosecutionConcludedRepository.deleteAll();
         amazonSQS.sendMessage(
                 queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaAndVerdict.json"));
-        setScenarioState("reservations", "Started");
+        setReservationState(ReservationScenarioState.STARTED);
         with().pollDelay(10, SECONDS)
                 .pollInterval(10, SECONDS)
                 .await()
@@ -156,7 +156,7 @@ class ProsecutionListenerTest {
         ProsecutionConcluded expectedMessage = gson.fromJson(queueMessage, ProsecutionConcluded.class);
 
         amazonSQS.sendMessage(queueUrl, queueMessage);
-        setScenarioState("reservations", "Started");
+        setReservationState(ReservationScenarioState.STARTED);
         with().pollDelay(10, SECONDS)
                 .pollInterval(10, SECONDS)
                 .await()
@@ -179,7 +179,7 @@ class ProsecutionListenerTest {
         String queueMessage =
                 FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaWithInvalidMaatId.json");
         amazonSQS.sendMessage(queueUrl, queueMessage);
-        setScenarioState("reservations", "Started");
+        setReservationState(ReservationScenarioState.STARTED);
         with().pollDelay(10, SECONDS)
                 .pollInterval(10, SECONDS)
                 .await()
@@ -194,7 +194,7 @@ class ProsecutionListenerTest {
     void givenPleaIsGuiltyAndNoVerdict_whenListenerIsInvoked_thenOutcomeIsConvicted() {
         amazonSQS.sendMessage(
                 queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaWithGuilty.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -210,7 +210,7 @@ class ProsecutionListenerTest {
     void givenAPleaNotGuiltyAndNoVerdict_whenListenerIsInvoked_thenOutcomeIsAquitted() {
         amazonSQS.sendMessage(
                 queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaWithNotGuilty.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -226,7 +226,7 @@ class ProsecutionListenerTest {
     void givenAVerdictIsGuiltyAndNoPlea_whenListenerIsInvoked_thenOutcomeIsAConvicted() {
         amazonSQS.sendMessage(
                 queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadVerdictWithGuilty.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -242,7 +242,7 @@ class ProsecutionListenerTest {
     void givenAVerdictIsNotGuiltyAndNoPlea_whenListenerIsInvoked_thenOutcomeIsAAquitted() {
         amazonSQS.sendMessage(
                 queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadVerdictWithNotGuilty.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -259,7 +259,7 @@ class ProsecutionListenerTest {
         amazonSQS.sendMessage(
                 queueUrl,
                 FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaAndVerdictWithGuilty.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -276,7 +276,7 @@ class ProsecutionListenerTest {
         amazonSQS.sendMessage(
                 queueUrl,
                 FileUtils.readFileToString("data/prosecution_concluded/SqsPayloadPleaAndVerdictWithNotGuilty.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -290,13 +290,11 @@ class ProsecutionListenerTest {
 
     @Test
     void givenAPleaIsNotGuiltyAndVerdictIsGuilty_whenListenerIsInvoked_thenOutcomeIsConvicted() {
-        /* amazonSQS.sendMessage(queueUrl, getSqsMessagePayloadWithPleaAndVerdict(5635567, "" +
-        NOT_GUILTY, GUILTY));*/
         amazonSQS.sendMessage(
                 queueUrl,
                 FileUtils.readFileToString(
                         "data/prosecution_concluded/SqsPayloadPleaIsNotGuiltyAndVerdictIsGuilty.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -310,13 +308,12 @@ class ProsecutionListenerTest {
 
     @Test
     void givenAMultipleOffenceWithPleaAndNoVerdict_whenListenerIsInvoked_thenOutcomeIsAConvicted() {
-        /*amazonSQS.sendMessage(queueUrl, getSqsMessagePayloadWithMultiplePlea(5635567, GUILTY));*/
 
         amazonSQS.sendMessage(
                 queueUrl,
                 FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithPleaIsGuilty.json"));
 
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -330,14 +327,12 @@ class ProsecutionListenerTest {
 
     @Test
     void givenAMultipleOffence_whenPleaIsGuiltyAndVerdictIsNotGuilty_thenOutcomeIsAPartConvicted() {
-        /*amazonSQS.sendMessage(queueUrl, getPayloadWithMultiplePleaAndVerdict(5635567, GUILTY));*/
-
         amazonSQS.sendMessage(
                 queueUrl,
                 FileUtils.readFileToString(
                         "data/prosecution_concluded/SqsMultipleOffenceWithPleaAndVerdictIsNotGuilty.json"));
 
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -352,11 +347,10 @@ class ProsecutionListenerTest {
 
     @Test
     void givenAMultipleOffence_withPleaIsNotGuiltyAndVerdictIsNotGuilty_thenOutcomeIsAquitted() {
-        /*amazonSQS.sendMessage(queueUrl, getPayloadWithMultiplePleaAndVerdict(5635567, NOT_GUILTY));*/
         amazonSQS.sendMessage(
                 queueUrl,
                 FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNotGuilty.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -374,7 +368,7 @@ class ProsecutionListenerTest {
         amazonSQS.sendMessage(
                 queueUrl,
                 FileUtils.readFileToString("data/prosecution_concluded/SqsMultipleOffenceWithNoPleaAndNoVerdict.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -393,7 +387,7 @@ class ProsecutionListenerTest {
                 queueUrl,
                 FileUtils.readFileToString(
                         "data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndIsConvictedResult.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -412,7 +406,7 @@ class ProsecutionListenerTest {
                 queueUrl,
                 FileUtils.readFileToString(
                         "data/prosecution_concluded/SqsMultipleOffenceWithNoPleaNoVerdictAndNotIsConvictedResult.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -429,7 +423,7 @@ class ProsecutionListenerTest {
     void givenAppealsConcludedResultIsReceived_whenListenerIsInvoked_thenOutcomeIsSuccesful() {
         amazonSQS.sendMessage(
                 queueUrl, FileUtils.readFileToString("data/prosecution_concluded/SqsAppealsPayload.json"));
-        setScenarioState("reservations", "State 2");
+        setReservationState(ReservationScenarioState.STATE_2);
 
         with().pollDelay(10, SECONDS)
                 .pollInterval(5, SECONDS)
@@ -456,5 +450,24 @@ class ProsecutionListenerTest {
     private String getExpectedAppealsRequest(String outcome) {
         return "{\"repId\":6151867,\"ccOutcome\":\"" + outcome
                 + "\",\"benchWarrantIssued\":null,\"appealType\":\"ACN\",\"imprisoned\":null,\"caseNumber\":\"21GN1208521\",\"crownCourtCode\":null}";
+    }
+
+    public enum ReservationScenarioState {
+        STARTED("Started"),
+        STATE_2("State 2");
+
+        private final String value;
+
+        ReservationScenarioState(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    private void setReservationState(ReservationScenarioState state) {
+            setScenarioState("reservations", state.value);
     }
 }
