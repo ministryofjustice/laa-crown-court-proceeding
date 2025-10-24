@@ -75,9 +75,9 @@ In CI, the Gradle `build` task automatically depends on `spotlessCheck`, so any 
 
 You can run Spotless locally in two ways:
 
-| Command | Description |
-|----------|-------------|
-| `./gradlew spotlessCheck` | Checks formatting and reports any violations |
+| Command                   | Description                                    |
+| ------------------------- | ---------------------------------------------- |
+| `./gradlew spotlessCheck` | Checks formatting and reports any violations   |
 | `./gradlew spotlessApply` | Automatically fixes formatting issues in place |
 
 If you see a failure such as:
@@ -94,6 +94,5 @@ Run './gradlew spotlessApply' to fix these violations.
 ### Developer Tips:
 
 - You don’t need to install any IDE plugin — Spotless ensures consistent results across environments.
-- You can safely ignore `.git/hooks/pre-push` — formatting is enforced in CI. 
+- You can safely ignore `.git/hooks/pre-push` — formatting is enforced in CI.
 - It’s good practice to run `./gradlew spotlessApply` before opening a PR to avoid unnecessary CI failures.
-
