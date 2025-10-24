@@ -468,6 +468,6 @@ class ProsecutionListenerTest {
     }
 
     private void setReservationState(ReservationScenarioState state) {
-            setScenarioState("reservations", state.value);
+        setScenarioState("reservations", state.value);
     }
 }

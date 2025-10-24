@@ -61,7 +61,7 @@ class CourtDataAPIServiceTest {
     }
 
     @Test
-    void givenProsecutionNotConcluded_whenRetrieveHearingInvoked_thenReturnsHearingDetailsWithoutTriggeringProcessing() {
+    void givenProsecutionNotConcluded_whenRetrieveHearingInvoked_thenReturnsHearingDetailsWithoutProcessingTriggered() {
         when(maatAPIClient.getWorkQueueHearing(anyString(), anyInt()))
                 .thenReturn(List.of(WQHearingDTO.builder()
                         .caseId(TestModelDataBuilder.TEST_CASE_ID)

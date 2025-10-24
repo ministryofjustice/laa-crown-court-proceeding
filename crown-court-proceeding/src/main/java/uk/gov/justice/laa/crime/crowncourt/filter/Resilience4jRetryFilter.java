@@ -34,7 +34,8 @@ public class Resilience4jRetryFilter implements ExchangeFilterFunction {
                         event.getWaitInterval().toMillis()))
                 .onError(event -> log.error(
                         "🚨 Request failed after {} retry attempts. Giving up.", event.getNumberOfRetryAttempts()))
-                .onSuccess(event -> log.info("✅ Request succeeded after {} attempts", event.getNumberOfRetryAttempts()));
+                .onSuccess(
+                        event -> log.info("✅ Request succeeded after {} attempts", event.getNumberOfRetryAttempts()));
     }
 
     @Override
