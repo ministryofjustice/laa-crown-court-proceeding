@@ -10,12 +10,12 @@ import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCas
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.caseTypeForAppeal;
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtCaseType.caseTypeForTrial;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
-class CrownCourtCaseTypeTest {
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
+class CrownCourtCaseTypeTest {
 
     @Test
     void givenCaseTypeForTrialIsEmpty_ExceptionThrown() {
@@ -28,29 +28,25 @@ class CrownCourtCaseTypeTest {
     @Test
     void givenCaseTypeForTrialIsIndictable_ReturnsTrue() {
 
-        assertAll("CaseTypeForTrial",
-                () -> assertTrue(caseTypeForTrial(INDICTABLE.getValue())));
+        assertAll("CaseTypeForTrial", () -> assertTrue(caseTypeForTrial(INDICTABLE.getValue())));
     }
 
     @Test
     void givenCaseTypeForTrialIsEitherWayOnly_ReturnsTrue() {
 
-        assertAll("CaseTypeForTrial",
-                () -> assertTrue(caseTypeForTrial(EITHER_WAY.getValue())));
+        assertAll("CaseTypeForTrial", () -> assertTrue(caseTypeForTrial(EITHER_WAY.getValue())));
     }
 
     @Test
     void givenCaseTypeForTrialIsCCAlready_ReturnsTrue() {
 
-        assertAll("CaseTypeForTrial",
-                () -> assertTrue(caseTypeForTrial(CC_ALREADY.getValue())));
+        assertAll("CaseTypeForTrial", () -> assertTrue(caseTypeForTrial(CC_ALREADY.getValue())));
     }
 
     @Test
     void givenCaseTypeForTrialNotValid_ReturnsFalse() {
 
-        assertAll("CaseTypeForTrial",
-                () -> assertFalse(caseTypeForTrial(APPEAL_CC.getValue())));
+        assertAll("CaseTypeForTrial", () -> assertFalse(caseTypeForTrial(APPEAL_CC.getValue())));
     }
 
     @Test
@@ -61,20 +57,15 @@ class CrownCourtCaseTypeTest {
         });
     }
 
-
     @Test
     void givenCaseTypeForAppealIsAppealCC_ReturnsTrue() {
 
-        assertAll("CaseTypeForAppeal",
-                () -> assertTrue(caseTypeForAppeal(APPEAL_CC.getValue())));
+        assertAll("CaseTypeForAppeal", () -> assertTrue(caseTypeForAppeal(APPEAL_CC.getValue())));
     }
-
 
     @Test
     void givenCaseTypeNotForAppeal_ReturnsFalse() {
 
-        assertAll("CaseTypeForAppeal",
-                () -> assertFalse(caseTypeForAppeal(EITHER_WAY.getValue())));
+        assertAll("CaseTypeForAppeal", () -> assertFalse(caseTypeForAppeal(EITHER_WAY.getValue())));
     }
-
 }

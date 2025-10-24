@@ -1,9 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.builder.CaseConclusionDTOBuilder;
@@ -17,9 +15,12 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSu
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
 import java.util.List;
-import uk.gov.justice.laa.crime.exception.ValidationException;
+import java.util.Objects;
+
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -54,8 +55,10 @@ public class ProsecutionConcludedService {
                     if (JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
                         prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
                         executeCCOutCome(prosecutionConcluded, wqHearingDTO);
-                    } else if (JurisdictionType.MAGISTRATES.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())
-                        && Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
+                    } else if (JurisdictionType.MAGISTRATES
+                                    .name()
+                                    .equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())
+                            && Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
                         executeCCOutCome(prosecutionConcluded, wqHearingDTO);
                     }
                 }
@@ -70,8 +73,8 @@ public class ProsecutionConcludedService {
         log.info("Processing CC Outcome for maat-id {}", prosecutionConcluded.getMaatId());
         List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
 
-        List<OffenceSummary> trialOffences = offenceHelper
-                .getTrialOffences(offenceSummaryList, prosecutionConcluded.getMaatId());
+        List<OffenceSummary> trialOffences =
+                offenceHelper.getTrialOffences(offenceSummaryList, prosecutionConcluded.getMaatId());
 
         if (!trialOffences.isEmpty() || Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
             log.info("Number of Valid offences for CC Outcome Calculations : {}", trialOffences.size());
@@ -81,30 +84,38 @@ public class ProsecutionConcludedService {
         log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
     }
 
-    private void processOutcome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, List<OffenceSummary> trialOffences) {
+    private void processOutcome(
+            ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, List<OffenceSummary> trialOffences) {
         String crownCourtCode;
         String calculatedOutcome;
         try {
             crownCourtCode = crownCourtCodeHelper.getCode(wqHearingDTO.getOuCourtLocation());
         } catch (ValidationException exception) {
-            log.info("Validation exception for maat-id {}: {}", prosecutionConcluded.getMaatId(),exception.getMessage());
+            log.info(
+                    "Validation exception for maat-id {}: {}",
+                    prosecutionConcluded.getMaatId(),
+                    exception.getMessage());
             crownCourtCode = null;
         }
         if (Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
-            calculatedOutcome = calculateAppealOutcomeHelper.calculate(prosecutionConcluded.getApplicationConcluded().getApplicationResultCode());
+            calculatedOutcome = calculateAppealOutcomeHelper.calculate(
+                    prosecutionConcluded.getApplicationConcluded().getApplicationResultCode());
         } else {
             calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences);
         }
         log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
 
-        ConcludedDTO concludedDTO = caseConclusionDTOBuilder.build(prosecutionConcluded, wqHearingDTO, calculatedOutcome, crownCourtCode);
-        RepOrderDTO repOrderDTO = courtDataAPIService.getRepOrder(concludedDTO.getProsecutionConcluded().getMaatId());
+        ConcludedDTO concludedDTO =
+                caseConclusionDTOBuilder.build(prosecutionConcluded, wqHearingDTO, calculatedOutcome, crownCourtCode);
+        RepOrderDTO repOrderDTO = courtDataAPIService.getRepOrder(
+                concludedDTO.getProsecutionConcluded().getMaatId());
 
         if (Objects.isNull(prosecutionConcluded.getApplicationConcluded())) {
             prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
             prosecutionConcludedValidator.validateIsAppealMissing(repOrderDTO.getCatyCaseType());
         } else {
-            prosecutionConcludedValidator.validateApplicationResultCode(prosecutionConcluded.getApplicationConcluded().getApplicationResultCode());
+            prosecutionConcludedValidator.validateApplicationResultCode(
+                    prosecutionConcluded.getApplicationConcluded().getApplicationResultCode());
         }
         prosecutionConcludedImpl.execute(concludedDTO, repOrderDTO);
     }

@@ -2,7 +2,6 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome;
@@ -13,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -30,24 +31,28 @@ public class CalculateOutcomeHelper {
 
     private List<String> buildOffenceOutComes(List<OffenceSummary> offenceSummaryList) {
         List<String> offenceOutcomeList = new ArrayList<>();
-        offenceSummaryList
-                .forEach(offence -> {
-                    if (isVerdictAvailable(offence)) {
-                        offenceOutcomeList.add(VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType()));
-                        if (isVerdictPleaMismatch(offence)) {
-                            log.error("The recent Plea outcome is different from the Verdict outcome - " +
-                                            "Offence Id {} Plea Date {} Verdict Date {} Plea Outcome {} Verdict Outcome {}",
-                                    offence.getOffenceId(), offence.getPlea().getPleaDate(), offence.getVerdict().getVerdictDate(),
-                                    PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()),
-                                    VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType())
-                            );
-                        }
-                    } else if (offence.getPlea() != null && offence.getPlea().getValue() != null) {
-                        offenceOutcomeList.add(PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()));
-                    } else {
-                        offenceOutcomeList.add(CrownCourtTrialOutcome.AQUITTED.getValue());
-                    }
-                });
+        offenceSummaryList.forEach(offence -> {
+            if (isVerdictAvailable(offence)) {
+                offenceOutcomeList.add(VerdictTrialOutcome.getTrialOutcome(
+                        offence.getVerdict().getVerdictType().getCategoryType()));
+                if (isVerdictPleaMismatch(offence)) {
+                    log.error(
+                            "The recent Plea outcome is different from the Verdict outcome - "
+                                    + "Offence Id {} Plea Date {} Verdict Date {} Plea Outcome {} Verdict Outcome {}",
+                            offence.getOffenceId(),
+                            offence.getPlea().getPleaDate(),
+                            offence.getVerdict().getVerdictDate(),
+                            PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()),
+                            VerdictTrialOutcome.getTrialOutcome(
+                                    offence.getVerdict().getVerdictType().getCategoryType()));
+                }
+            } else if (offence.getPlea() != null && offence.getPlea().getValue() != null) {
+                offenceOutcomeList.add(
+                        PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()));
+            } else {
+                offenceOutcomeList.add(CrownCourtTrialOutcome.AQUITTED.getValue());
+            }
+        });
 
         List<String> list = new ArrayList<>();
         Set<String> uniqueValues = new HashSet<>();
@@ -57,14 +62,20 @@ public class CalculateOutcomeHelper {
             }
         }
         return list;
-
     }
 
     private boolean isVerdictPleaMismatch(OffenceSummary offence) {
-        if ((offence.getPlea() != null && offence.getPlea().getPleaDate() != null)
-                && offence.getVerdict().getVerdictDate().compareTo(offence.getPlea().getPleaDate()) < 0) {
-            String verdictOutcome = VerdictTrialOutcome.getTrialOutcome(offence.getVerdict().getVerdictType().getCategoryType());
-            String pleaOutcome = PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue());
+        if ((offence.getPlea() == null || offence.getPlea().getPleaDate() == null)) {
+            return false;
+        }
+
+        String pleaDate = offence.getPlea().getPleaDate();
+        String verdictDate = offence.getVerdict().getVerdictDate();
+        if (verdictDate.compareTo(pleaDate) < 0) {
+            String verdictOutcome = VerdictTrialOutcome.getTrialOutcome(
+                    offence.getVerdict().getVerdictType().getCategoryType());
+            String pleaOutcome =
+                    PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue());
             return !verdictOutcome.equalsIgnoreCase(pleaOutcome);
         }
         return false;

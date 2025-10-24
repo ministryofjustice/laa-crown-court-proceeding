@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
@@ -19,7 +20,7 @@ public class ServicesConfiguration {
     private CourtDataAdapter courtDataAdapter;
 
     @NotNull
-    private Evidence  evidence;
+    private Evidence evidence;
 
     @Data
     @AllArgsConstructor
@@ -33,7 +34,7 @@ public class ServicesConfiguration {
 
         @NotNull
         private String registrationId;
-        
+
         /**
          * Determines whether oAuth authentication is enabled
          */

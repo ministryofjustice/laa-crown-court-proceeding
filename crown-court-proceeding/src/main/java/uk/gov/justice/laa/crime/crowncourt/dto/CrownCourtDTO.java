@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
@@ -14,6 +12,9 @@ import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
 import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder

@@ -8,9 +8,10 @@ import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTri
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.isConvicted;
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.isTrial;
 
+import uk.gov.justice.laa.crime.exception.ValidationException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.crime.exception.ValidationException;
 
 class CrownCourtTrialOutcomeTest {
 
@@ -25,22 +26,19 @@ class CrownCourtTrialOutcomeTest {
     @Test
     void givenOutComeIsConvicted_ReturnsTrue() {
 
-        assertAll("TrialOutcome",
-                () -> assertTrue(isConvicted(CONVICTED.getValue())));
+        assertAll("TrialOutcome", () -> assertTrue(isConvicted(CONVICTED.getValue())));
     }
 
     @Test
     void givenOutComeIsPartConvicted_ReturnsTrue() {
 
-        assertAll("TrialOutcome",
-                () -> assertTrue(isConvicted(PART_CONVICTED.getValue())));
+        assertAll("TrialOutcome", () -> assertTrue(isConvicted(PART_CONVICTED.getValue())));
     }
 
     @Test
     void givenOutComeIsNotConvicted_ReturnsFalse() {
 
-        assertAll("TrialOutcome",
-                () -> assertFalse(isConvicted("ACQUITTED")));
+        assertAll("TrialOutcome", () -> assertFalse(isConvicted("ACQUITTED")));
     }
 
     @Test
@@ -54,15 +52,12 @@ class CrownCourtTrialOutcomeTest {
     @Test
     void givenOutComeIsForTrial_ReturnsTrue() {
 
-        assertAll("TrialOutcome",
-                () -> assertTrue(isTrial(CONVICTED.getValue())));
+        assertAll("TrialOutcome", () -> assertTrue(isTrial(CONVICTED.getValue())));
     }
-
 
     @Test
     void givenOutComeIsNotTrial_ReturnsFalse() {
 
-        assertAll("TrialOutcome",
-                () -> assertFalse(isTrial("INVALID")));
+        assertAll("TrialOutcome", () -> assertFalse(isTrial("INVALID")));
     }
 }

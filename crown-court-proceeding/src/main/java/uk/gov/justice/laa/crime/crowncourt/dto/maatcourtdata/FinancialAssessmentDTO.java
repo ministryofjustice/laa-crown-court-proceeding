@@ -58,10 +58,13 @@ public class FinancialAssessmentDTO {
     private LocalDateTime firstReminderDate;
     private LocalDateTime secondReminderDate;
     private LocalDateTime evidenceReceivedDate;
+
     @Builder.Default
     private List<FinancialAssessmentDetails> assessmentDetails = new ArrayList<>();
+
     @Builder.Default
     private List<ChildWeightings> childWeightings = new ArrayList<>();
+
     @Builder.Default
     private List<FinAssIncomeEvidenceDTO> finAssIncomeEvidences = new ArrayList<>();
 }

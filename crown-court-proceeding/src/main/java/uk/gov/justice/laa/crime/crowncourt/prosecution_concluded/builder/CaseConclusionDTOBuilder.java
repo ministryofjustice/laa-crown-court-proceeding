@@ -1,5 +1,10 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.builder;
 
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -7,19 +12,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.dto.ConcludedDTO;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 
 @Component
 public class CaseConclusionDTOBuilder {
 
-    public ConcludedDTO build(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, String calculatedOutcome, String crownCourtCode) {
-        return ConcludedDTO.
-                builder()
+    public ConcludedDTO build(
+            ProsecutionConcluded prosecutionConcluded,
+            WQHearingDTO wqHearingDTO,
+            String calculatedOutcome,
+            String crownCourtCode) {
+        return ConcludedDTO.builder()
                 .prosecutionConcluded(prosecutionConcluded)
                 .calculatedOutcome(calculatedOutcome)
                 .crownCourtCode(crownCourtCode)
@@ -38,14 +43,14 @@ public class CaseConclusionDTOBuilder {
         Optional<LocalDate> caseEndDate = offenceSummaryList.stream()
                 .filter(offenceSummary -> StringUtils.isNotBlank(offenceSummary.getProceedingsConcludedChangedDate()))
                 .map(offenceSummary -> LocalDate.parse(offenceSummary.getProceedingsConcludedChangedDate()))
-                .distinct().toList()
+                .distinct()
+                .toList()
                 .stream()
                 .sorted(Comparator.reverseOrder())
                 .findFirst();
 
         return caseEndDate.isPresent() ? caseEndDate.get().toString() : null;
     }
-
 
     protected List<String> buildResultCodeList(WQHearingDTO wqHearingDTO) {
         String results = wqHearingDTO.getResultCodes() != null ? wqHearingDTO.getResultCodes() : "";

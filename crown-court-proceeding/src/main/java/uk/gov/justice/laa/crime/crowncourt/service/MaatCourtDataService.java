@@ -2,8 +2,6 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.client.MaatCourtDataApiClient;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
@@ -12,11 +10,14 @@ import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.UpdateRepOrderReque
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MaatCourtDataService {
-    
+
     private final MaatCourtDataApiClient maatAPIClient;
     public static final String RESPONSE_STRING = "Response from Court Data API: {}";
 
@@ -26,7 +27,7 @@ public class MaatCourtDataService {
         log.debug(RESPONSE_STRING, response);
         return response;
     }
-    
+
     public RepOrderDTO updateRepOrder(UpdateRepOrderRequestDTO updateRepOrderRequestDTO) {
         log.debug("Request to update rep order: {}", updateRepOrderRequestDTO);
         RepOrderDTO response = maatAPIClient.updateRepOrder(updateRepOrderRequestDTO);
