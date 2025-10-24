@@ -35,8 +35,8 @@ public class ResourceServerConfiguration {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf((csrf) -> csrf.disable())
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/oauth2/**")
                         .permitAll()
                         .requestMatchers("/open-api/**")
@@ -47,7 +47,7 @@ public class ResourceServerConfiguration {
                         .hasAuthority(SCOPE_CCP_STANDARD)
                         .anyRequest()
                         .authenticated())
-                .oauth2ResourceServer((oauth2) -> oauth2.accessDeniedHandler(bearerTokenAccessDeniedHandler())
+                .oauth2ResourceServer(oauth2 -> oauth2.accessDeniedHandler(bearerTokenAccessDeniedHandler())
                         .authenticationEntryPoint(bearerTokenAuthenticationEntryPoint())
                         .jwt(withDefaults()));
         return http.build();

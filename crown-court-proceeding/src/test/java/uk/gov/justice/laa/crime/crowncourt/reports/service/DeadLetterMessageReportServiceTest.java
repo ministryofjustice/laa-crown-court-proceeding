@@ -53,7 +53,7 @@ class DeadLetterMessageReportServiceTest {
             Sort.by("deadLetterReason").ascending().and(Sort.by("receivedTime").descending());
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         deadLetterMessageReportService.setTemplateId("test-template-id");
         deadLetterMessageReportService.setEmailAddresses(List.of("test1@example.com", "test2@example.com"));
     }

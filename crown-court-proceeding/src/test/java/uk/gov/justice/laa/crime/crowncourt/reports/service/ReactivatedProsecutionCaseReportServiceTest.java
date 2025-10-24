@@ -46,7 +46,7 @@ class ReactivatedProsecutionCaseReportServiceTest {
     private ReactivatedProsecutionCaseReportService reactivatedProsecutionCaseReportService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         reactivatedProsecutionCaseReportService.setTemplateId("test-template-id");
         reactivatedProsecutionCaseReportService.setEmailAddresses(List.of("test1@example.com", "test2@example.com"));
     }

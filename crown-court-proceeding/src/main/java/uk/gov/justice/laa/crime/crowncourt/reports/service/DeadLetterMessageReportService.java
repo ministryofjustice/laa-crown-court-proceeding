@@ -122,7 +122,7 @@ public class DeadLetterMessageReportService {
         }
 
         Map<String, Integer> reasonCounts = new HashMap<>();
-        ;
+
 
         for (DeadLetterMessageEntity deadLetterMessage : deadLetterMessageList) {
             // Determine start and end times
