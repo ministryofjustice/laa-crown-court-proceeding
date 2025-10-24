@@ -1,8 +1,8 @@
 package uk.gov.justice.laa.crime.crowncourt.staticdata.enums;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.AQUITTED;
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.CONVICTED;
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.PART_CONVICTED;
 import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.isConvicted;
@@ -10,54 +10,42 @@ import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTri
 
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class CrownCourtTrialOutcomeTest {
 
     @Test
     void givenOutcomeIsEmpty_ExceptionThrown() {
-
-        Assertions.assertThrows(ValidationException.class, () -> {
-            isConvicted(null);
-        });
+        assertThatThrownBy(() -> isConvicted(null)).isInstanceOf(ValidationException.class);
     }
 
     @Test
     void givenOutComeIsConvicted_ReturnsTrue() {
-
-        assertAll("TrialOutcome", () -> assertTrue(isConvicted(CONVICTED.getValue())));
+        assertThat(isConvicted(CONVICTED.getValue())).isTrue();
     }
 
     @Test
     void givenOutComeIsPartConvicted_ReturnsTrue() {
-
-        assertAll("TrialOutcome", () -> assertTrue(isConvicted(PART_CONVICTED.getValue())));
+        assertThat(isConvicted(PART_CONVICTED.getValue())).isTrue();
     }
 
     @Test
     void givenOutComeIsNotConvicted_ReturnsFalse() {
-
-        assertAll("TrialOutcome", () -> assertFalse(isConvicted("ACQUITTED")));
+        assertThat(isConvicted(AQUITTED.getValue())).isFalse();
     }
 
     @Test
     void givenOutcomeIsEmptyForTrial_ExceptionThrown() {
-
-        Assertions.assertThrows(ValidationException.class, () -> {
-            isTrial(null);
-        });
+        assertThatThrownBy(() -> isTrial(null)).isInstanceOf(ValidationException.class);
     }
 
     @Test
     void givenOutComeIsForTrial_ReturnsTrue() {
-
-        assertAll("TrialOutcome", () -> assertTrue(isTrial(CONVICTED.getValue())));
+        assertThat(isTrial(CONVICTED.getValue())).isTrue();
     }
 
     @Test
     void givenOutComeIsNotTrial_ReturnsFalse() {
-
-        assertAll("TrialOutcome", () -> assertFalse(isTrial("INVALID")));
+        assertThat(isTrial("INVALID")).isFalse();
     }
 }

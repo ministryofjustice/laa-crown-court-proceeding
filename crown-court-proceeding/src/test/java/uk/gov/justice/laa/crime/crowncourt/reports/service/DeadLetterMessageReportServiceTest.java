@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.reports.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -197,6 +197,6 @@ class DeadLetterMessageReportServiceTest {
                 new String(System.lineSeparator()),
                 new String("01/01/2025 to 14/01/2025"));
 
-        assertEquals(expected, actual);
+        assertThat(expected).isEqualTo(actual);
     }
 }

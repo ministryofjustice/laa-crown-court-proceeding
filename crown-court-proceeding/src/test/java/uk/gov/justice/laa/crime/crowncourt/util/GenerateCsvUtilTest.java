@@ -1,8 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.util;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -14,13 +13,20 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 import java.util.Set;
 
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(SoftAssertionsExtension.class)
 class GenerateCsvUtilTest {
+
+    @InjectSoftAssertions
+    private SoftAssertions softly;
 
     @Test
     void testGenerateCsvFile() throws IOException {
@@ -35,24 +41,23 @@ class GenerateCsvUtilTest {
         File csvFile = GenerateCsvUtil.generateCsvFile(lines, "testfile");
 
         // Verify file exists
-        assertTrue(csvFile.exists(), "CSV file should exist");
+        assertThat(csvFile).exists();
 
         // Verify file permissions
         Set<PosixFilePermission> expectedPermissions = PosixFilePermissions.fromString("rwx------");
         Set<PosixFilePermission> actualPermissions = Files.getPosixFilePermissions(csvFile.toPath());
-        assertEquals(expectedPermissions, actualPermissions, "File permissions should match");
+
+        assertThat(actualPermissions).isEqualTo(expectedPermissions);
 
         // Verify file content
         List<String> rows = Files.readAllLines(csvFile.toPath());
-        assertEquals(3, rows.size(), "CSV file should have three rows (header + 2 data rows)");
-        assertEquals(
-                "maat id, case URN, hearing id, previous outcome, previous outcome date, date of status change",
-                rows.get(0),
-                "Header should match");
-        assertEquals(
-                "123,URN123,HID123,Outcome1,2024-05-05T05:05,2024-06-05T05:05", rows.get(1), "First row should match");
-        assertEquals(
-                "456,URN456,HID456,Outcome2,2024-02-01T05:05,2024-06-05T05:05", rows.get(2), "Second row should match");
+
+        assertThat(rows.size()).isEqualTo(3);
+
+        softly.assertThat(rows.getFirst()).isEqualTo(headings);
+        softly.assertThat(rows.get(1)).isEqualTo(case1);
+        softly.assertThat(rows.get(2)).isEqualTo(case2);
+
         Files.deleteIfExists(csvFile.toPath());
     }
 

@@ -1,9 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,6 +11,9 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 
 import java.time.LocalDateTime;
 
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,6 +23,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(SoftAssertionsExtension.class)
 class QueueMessageLogServiceTest {
 
     @InjectMocks
@@ -35,6 +35,9 @@ class QueueMessageLogServiceTest {
     @Captor
     private ArgumentCaptor<QueueMessageLogEntity> queueMessageCaptor;
 
+    @InjectSoftAssertions
+    private SoftAssertions softly;
+
     @Test
     void testWhenProsecutionConcluded_thenCheckLogEntryCreated() {
 
@@ -45,17 +48,15 @@ class QueueMessageLogServiceTest {
         verify(queueMessageLogRepository, times(1)).save(queueMessageCaptor.capture());
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
-        assertAll(
-                "ProsecutionMessage",
-                () -> assertNotNull(savedQueueMsg),
-                () -> assertNotNull(savedQueueMsg.getMaatId()),
-                () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
-                () -> assertNotNull(savedQueueMsg.getLaaTransactionId()),
-                () -> assertNotNull(savedQueueMsg.getType()),
-                () -> assertNotNull(savedQueueMsg.getMessage()),
-                () -> assertNotNull(savedQueueMsg.getCreatedTime()),
-                () -> assertEquals("8720c683-39ef-4168-a8cc-058668a2dcca", savedQueueMsg.getLaaTransactionId()),
-                () -> assertEquals(savedQueueMsg.getMaatId(), maatId));
+        softly.assertThat(savedQueueMsg).isNotNull();
+        softly.assertThat(savedQueueMsg.getMaatId()).isNotNull();
+        softly.assertThat(savedQueueMsg.getTransactionUUID()).isNotNull();
+        softly.assertThat(savedQueueMsg.getLaaTransactionId()).isNotNull();
+        softly.assertThat(savedQueueMsg.getType()).isNotNull();
+        softly.assertThat(savedQueueMsg.getMessage()).isNotNull();
+        softly.assertThat(savedQueueMsg.getCreatedTime()).isNotNull();
+        softly.assertThat(savedQueueMsg.getLaaTransactionId()).isEqualTo("8720c683-39ef-4168-a8cc-058668a2dcca");
+        softly.assertThat(savedQueueMsg.getMaatId()).isEqualTo(maatId);
     }
 
     @Test
@@ -75,15 +76,14 @@ class QueueMessageLogServiceTest {
 
         QueueMessageLogEntity savedQueueMsg = queueMessageCaptor.getValue();
 
-        assertAll(
-                "SQSMessage",
-                () -> assertNotNull(savedQueueMsg),
-                () -> assertNotNull(savedQueueMsg.getMaatId()),
-                () -> assertNotNull(savedQueueMsg.getTransactionUUID()),
-                () -> assertNull(savedQueueMsg.getLaaTransactionId()),
-                () -> assertNotNull(savedQueueMsg.getType()),
-                () -> assertNotNull(savedQueueMsg.getMessage()),
-                () -> assertEquals(savedQueueMsg.getMaatId(), maatId));
+        softly.assertThat(savedQueueMsg).isNotNull();
+        softly.assertThat(savedQueueMsg.getMaatId()).isNotNull();
+        softly.assertThat(savedQueueMsg.getTransactionUUID()).isNotNull();
+        softly.assertThat(savedQueueMsg.getLaaTransactionId()).isNull();
+        softly.assertThat(savedQueueMsg.getType()).isNotNull();
+        softly.assertThat(savedQueueMsg.getMessage()).isNotNull();
+        softly.assertThat(savedQueueMsg.getCreatedTime()).isNotNull();
+        softly.assertThat(savedQueueMsg.getMaatId()).isEqualTo(maatId);
     }
 
     private String newQueueMessageWithoutMetaData(Integer maatId) {

@@ -7,8 +7,8 @@ import uk.gov.justice.laa.crime.exception.ValidationException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum CrownCourtCaseType {
     INDICTABLE("INDICTABLE"),
     SUMMARY_ONLY("SUMMARY ONLY"),

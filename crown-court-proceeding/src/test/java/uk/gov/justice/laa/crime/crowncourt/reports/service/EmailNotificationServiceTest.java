@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.reports.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -34,8 +34,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
 class EmailNotificationServiceTest {
@@ -45,6 +45,8 @@ class EmailNotificationServiceTest {
 
     @InjectMocks
     private EmailNotificationService emailNotificationService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @ParameterizedTest
     @MethodSource("emailAddressesTestData")
@@ -69,9 +71,11 @@ class EmailNotificationServiceTest {
         emailNotificationService.send("test-template-id", emailAddresses, mockFile, fileName);
 
         verify(client, times(noOfInvokes)).sendEmail(anyString(), anyString(), anyMap(), isNull());
-        assertEquals(date, mockPersonalisation.get("date"));
-        JSONAssert.assertEquals(
-                expectedJsonFileObject, (JSONObject) mockPersonalisation.get("link_to_file"), JSONCompareMode.STRICT);
+        assertThat(date).isEqualTo(mockPersonalisation.get("date"));
+
+        assertThat(objectMapper.readTree(expectedJsonFileObject.toString()))
+                .isEqualTo(objectMapper.readTree(
+                        mockPersonalisation.get("link_to_file").toString()));
     }
 
     private JSONObject getExpectedJsonObject(String fileName) {
@@ -100,11 +104,11 @@ class EmailNotificationServiceTest {
             mockedFileUtils
                     .when(() -> FileUtils.readFileToByteArray(reportFile))
                     .thenThrow(new IOException("Test IOException"));
-            IOException exception = assertThrows(
-                    IOException.class,
-                    () -> emailNotificationService.send("test-template-id", List.of("test"), reportFile, fileName));
 
-            assertEquals("Test IOException", exception.getMessage());
+            assertThatThrownBy(() ->
+                            emailNotificationService.send("test-template-id", List.of("test"), reportFile, fileName))
+                    .isInstanceOf(IOException.class)
+                    .hasMessage("Test IOException");
         }
 
         verify(client, never()).sendEmail(anyString(), anyString(), anyMap(), isNull());

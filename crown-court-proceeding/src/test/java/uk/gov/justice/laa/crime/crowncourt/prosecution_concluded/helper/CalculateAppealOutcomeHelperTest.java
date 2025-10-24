@@ -1,31 +1,29 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class CalculateAppealOutcomeHelperTest {
-    private CalculateAppealOutcomeHelper calculateAppealOutcomeHelper = new CalculateAppealOutcomeHelper();
 
-    @Test
-    void testPartSuccess() {
-        assertEquals("PART SUCCESS", calculateAppealOutcomeHelper.calculate("AACD AASA"));
-        assertEquals("PART SUCCESS", calculateAppealOutcomeHelper.calculate("AASA AACD"));
+    private final CalculateAppealOutcomeHelper calculateAppealOutcomeHelper = new CalculateAppealOutcomeHelper();
+
+    @ParameterizedTest
+    @CsvSource({"AACD AASA", "AASA AACD"})
+    void shouldReturnPartSuccess(String input) {
+        assertThat(calculateAppealOutcomeHelper.calculate(input)).isEqualTo("PART SUCCESS");
     }
 
-    @Test
-    void testSuccessful() {
-        assertEquals("SUCCESSFUL", calculateAppealOutcomeHelper.calculate("AACA"));
-        assertEquals("SUCCESSFUL", calculateAppealOutcomeHelper.calculate("AASA"));
+    @ParameterizedTest
+    @CsvSource({"AACA", "AASA"})
+    void shouldReturnSuccessful(String input) {
+        assertThat(calculateAppealOutcomeHelper.calculate(input)).isEqualTo("SUCCESSFUL");
     }
 
-    @Test
-    void testUnsuccessful() {
-        assertEquals("UNSUCCESSFUL", calculateAppealOutcomeHelper.calculate("APA"));
-        assertEquals("UNSUCCESSFUL", calculateAppealOutcomeHelper.calculate("AW"));
-        assertEquals("UNSUCCESSFUL", calculateAppealOutcomeHelper.calculate("AACD"));
-        assertEquals("UNSUCCESSFUL", calculateAppealOutcomeHelper.calculate("ASV"));
-        assertEquals("UNSUCCESSFUL", calculateAppealOutcomeHelper.calculate("AASD"));
-        assertEquals("UNSUCCESSFUL", calculateAppealOutcomeHelper.calculate("ACSD"));
+    @ParameterizedTest
+    @CsvSource({"APA", "AW", "AACD", "ASV", "AASD", "ACSD"})
+    void shouldReturnUnsuccessful(String input) {
+        assertThat(calculateAppealOutcomeHelper.calculate(input)).isEqualTo("UNSUCCESSFUL");
     }
 }

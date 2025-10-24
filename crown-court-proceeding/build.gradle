@@ -120,6 +120,16 @@ spotless {
         trimTrailingWhitespace()
         removeUnusedImports()
         forbidWildcardImports()
+
+        // Custom rule: Disallow JUnit assertions
+        custom("Refuse JUnit assertions", { text ->
+            if (text =~ /\bassert(?:Equals|True|False|Null|NotNull|Same|NotSame|ArrayEquals)\b/) {
+                throw new IllegalStateException(
+                        "Use AssertJ (assertThat(...)) instead of JUnit assertions."
+                )
+            }
+            text
+        } as Closure<String>)
     }
 }
 
