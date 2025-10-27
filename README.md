@@ -61,13 +61,14 @@ Spotless runs automatically in CI and will fail the build if any files don’t c
 
 ### How it works
 
-Spotless is configured in [`build.gradle`](build.gradle) to:
+Spotless is configured in [`build.gradle`](./crown-court-proceeding/build.gradle) to:
 
 - Format Java source files under `src/*/java/**`
-- Use the **Palantir Java Format** (a Google-style formatter with 4-space indentation and 120-character line width)
+- Use the [**Palantir Java Format**](https://github.com/palantir/palantir-java-format/) (a Google-style formatter with 4-space indentation and 120-character line width)
 - Clean up imports (`removeUnusedImports`, `forbidWildcardImports`, `importOrder`)
 - Trim trailing whitespace and ensure files end with a newline
 - Exclude generated or build directories
+- Fail the build if wildcard imports or standard JUnit 5 assertions are used; AssertJ is the required assertion framework
 
 In CI, the Gradle `build` task automatically depends on `spotlessCheck`, so any formatting issues will cause the build to fail before tests or SonarQube analysis run.
 
