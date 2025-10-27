@@ -274,6 +274,7 @@ public class TestModelDataBuilder {
         return ProsecutionConcluded.builder()
                 .isConcluded(true)
                 .maatId(123456)
+                .hearingIdWhereChangeOccurred(UUID.randomUUID())
                 .offenceSummary(List.of(
                         OffenceSummary.builder()
                                 .offenceCode("1212")

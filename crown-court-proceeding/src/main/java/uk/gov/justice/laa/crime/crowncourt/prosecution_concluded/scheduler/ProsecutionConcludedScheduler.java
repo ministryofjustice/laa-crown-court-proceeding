@@ -65,7 +65,7 @@ public class ProsecutionConcludedScheduler {
     public void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
         try {
             WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
-            if (wqHearingDTO != null) {
+            if (wqHearingDTO != null && prosecutionConcluded.isConcluded()) {
                 if (isCCConclusion(wqHearingDTO)) {
                     prosecutionConcludedService.executeCCOutCome(prosecutionConcluded, wqHearingDTO);
                 } else {
