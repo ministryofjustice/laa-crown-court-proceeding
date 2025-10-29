@@ -226,6 +226,41 @@ class ProsecutionConcludedServiceTest {
         verify(calculateAppealOutcomeHelper, atLeast(1)).calculate(any());
     }
 
+    @Test
+    void givenACaseIsNotConcluded_whenExecuteIsInvoked_thenShouldNotAddToScheduler() {
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity(JurisdictionType.CROWN.name()));
+
+        ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
+        prosecutionConcluded.setConcluded(Boolean.FALSE);
+        prosecutionConcludedService.execute(prosecutionConcluded);
+
+        verify(prosecutionConcludedValidator).validateRequestObject(any());
+        verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
+        verify(prosecutionConcludedDataService, never()).execute(any());
+        verify(prosecutionConcludedImpl, never()).execute(any(), any());
+        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
+        verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
+    }
+
+    @Test
+    void givenACaseIsNotConcludedAndEmptyHearing_whenExecuteIsInvoked_thenShouldNotAddToScheduler() {
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(null);
+
+        ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
+        prosecutionConcluded.setConcluded(Boolean.FALSE);
+        prosecutionConcludedService.execute(prosecutionConcluded);
+
+        verify(prosecutionConcludedValidator).validateRequestObject(any());
+        verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
+        verify(prosecutionConcludedDataService, never()).execute(any());
+        verify(prosecutionConcludedImpl, never()).execute(any(), any());
+        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
+        verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
+    }
+
+
     private ProsecutionConcluded getProsecutionConcluded() {
         return ProsecutionConcluded.builder()
                 .isConcluded(true)

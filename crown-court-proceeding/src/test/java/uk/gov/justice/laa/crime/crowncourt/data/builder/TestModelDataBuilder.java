@@ -283,15 +283,15 @@ public class TestModelDataBuilder {
         return ProsecutionConcluded.builder()
                 .isConcluded(true)
                 .maatId(123456)
-                .offenceSummary(List.of(OffenceSummary.builder()
-                        .offenceCode("1212")
-                        .verdict(getVerdict("GUILTY", "2021-11-12"))
-                        .plea(Plea.builder()
-                                .value("NOT_GUILTY")
-                                .pleaDate("2021-11-12")
-                                .build())
-                        .proceedingsConcludedChangedDate("2021-11-12")
-                        .build()))
+                .hearingIdWhereChangeOccurred(UUID.randomUUID())
+                .offenceSummary(List.of(
+                        OffenceSummary.builder()
+                                .offenceCode("1212")
+                                .verdict(getVerdict("GUILTY", "2021-11-12"))
+                                .plea(Plea.builder().value("NOT_GUILTY").pleaDate("2021-11-12").build())
+                                .proceedingsConcludedChangedDate("2021-11-12")
+                                .build()
+                ))
                 .build();
     }
 
