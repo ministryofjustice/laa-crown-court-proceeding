@@ -228,7 +228,8 @@ class ProsecutionConcludedServiceTest {
 
     @Test
     void givenACaseIsNotConcluded_whenExecuteIsInvoked_thenShouldNotAddToScheduler() {
-        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(getWQHearingEntity(JurisdictionType.CROWN.name()));
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
+                .thenReturn(getWQHearingEntity(JurisdictionType.CROWN.name()));
 
         ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
         prosecutionConcluded.setConcluded(Boolean.FALSE);
@@ -259,7 +260,6 @@ class ProsecutionConcludedServiceTest {
         verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
         verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
     }
-
 
     private ProsecutionConcluded getProsecutionConcluded() {
         return ProsecutionConcluded.builder()

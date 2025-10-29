@@ -129,7 +129,9 @@ class ProsecutionConcludedSchedulerTest {
 
     @Test
     void givenAnInvalidOuCode_whenProcessIsInvoked_thenMessageIsSavedAsADeadLetterMessage() {
-        WQHearingDTO wqHearingDTO = WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.CROWN.name()).build();
+        WQHearingDTO wqHearingDTO = WQHearingDTO.builder()
+                .wqJurisdictionType(JurisdictionType.CROWN.name())
+                .build();
         ProsecutionConcluded prosecutionConcluded = TestModelDataBuilder.getProsecutionConcluded();
 
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(wqHearingDTO);
@@ -152,7 +154,9 @@ class ProsecutionConcludedSchedulerTest {
 
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
                 .isConcluded(Boolean.FALSE)
-                .maatId(1234).hearingIdWhereChangeOccurred(UUID.randomUUID()).build();
+                .maatId(1234)
+                .hearingIdWhereChangeOccurred(UUID.randomUUID())
+                .build();
 
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(null);
         prosecutionConcludedScheduler.processCaseConclusion(prosecutionConcluded);
@@ -163,9 +167,13 @@ class ProsecutionConcludedSchedulerTest {
     void givenACaseIsConcludedAndValidHearing_whenProcessIsInvoked_thenShouldNotCalculateOutcome() {
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
                 .isConcluded(Boolean.FALSE)
-                .maatId(1234).hearingIdWhereChangeOccurred(UUID.randomUUID()).build();
+                .maatId(1234)
+                .hearingIdWhereChangeOccurred(UUID.randomUUID())
+                .build();
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
-                .thenReturn(WQHearingDTO.builder().wqJurisdictionType(JurisdictionType.CROWN.name()).build());
+                .thenReturn(WQHearingDTO.builder()
+                        .wqJurisdictionType(JurisdictionType.CROWN.name())
+                        .build());
         prosecutionConcludedScheduler.processCaseConclusion(prosecutionConcluded);
         verify(prosecutionConcludedService, never()).executeCCOutCome(any(ProsecutionConcluded.class), any());
     }

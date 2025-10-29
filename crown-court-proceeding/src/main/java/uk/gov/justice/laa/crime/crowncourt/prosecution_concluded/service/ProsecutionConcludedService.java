@@ -64,7 +64,9 @@ public class ProsecutionConcludedService {
                 }
             }
         } else if (prosecutionConcluded.isConcluded()) {
-            log.info("The prosecution case is concluded, and no hearing has been received for this MAAT-ID {}", prosecutionConcluded.getMaatId());
+            log.info(
+                    "The prosecution case is concluded, and no hearing has been received for this MAAT-ID {}",
+                    prosecutionConcluded.getMaatId());
             prosecutionConcludedDataService.execute(prosecutionConcluded);
         }
     }
