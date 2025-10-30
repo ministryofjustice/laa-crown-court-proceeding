@@ -1,14 +1,15 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.scheduler;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+
+import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
-
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class PurgeProsecutionConcludedSchedulerTest {
@@ -25,5 +26,4 @@ class PurgeProsecutionConcludedSchedulerTest {
         scheduler.purgePeriodicMessages();
         verify(queueMessageLogService).purgePeriodicMessages();
     }
-
 }

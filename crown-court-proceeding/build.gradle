@@ -2,6 +2,7 @@ plugins {
     id "java"
     id "jacoco"
     id "org.sonarqube" version "6.2.0.5505"
+    id "com.diffplug.spotless" version "8.0.0"
     id "info.solidsoft.pitest" version "1.15.0"
     id "org.springframework.boot" version "3.4.6"
     id "io.spring.dependency-management" version "1.1.6"
@@ -104,6 +105,32 @@ dependencies {
     testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk-sqs:$versions.awsJavaSDK"
     testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainers"
     testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainers"
+}
+
+spotless {
+    java {
+        target 'src/*/java/**/*.java'
+        targetExclude '**/generated/**', '**/build/**'
+
+        formatAnnotations()
+        palantirJavaFormat()
+        importOrder('', 'java', 'javax', 'org', 'com')
+
+        endWithNewline()
+        trimTrailingWhitespace()
+        removeUnusedImports()
+        forbidWildcardImports()
+
+        // Custom rule: Disallow JUnit assertions
+        custom("Refuse JUnit assertions", { text ->
+            if (text =~ /\bassert(?:Equals|True|False|Null|NotNull|Same|NotSame|ArrayEquals)\b/) {
+                throw new IllegalStateException(
+                        "Use AssertJ (assertThat(...)) instead of JUnit assertions."
+                )
+            }
+            text
+        } as Closure<String>)
+    }
 }
 
 test {

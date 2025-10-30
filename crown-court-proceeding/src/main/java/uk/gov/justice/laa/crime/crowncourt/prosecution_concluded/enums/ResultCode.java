@@ -9,5 +9,4 @@ public enum ResultCode {
     AASD,
     AASA,
     ACSD
-
 }

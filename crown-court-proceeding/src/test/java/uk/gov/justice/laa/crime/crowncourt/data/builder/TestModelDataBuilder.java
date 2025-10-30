@@ -1,53 +1,69 @@
 package uk.gov.justice.laa.crime.crowncourt.data.builder;
 
-import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.common.ApiCrownCourtOutcome;
 import uk.gov.justice.laa.crime.common.model.common.ApiUserSession;
-import uk.gov.justice.laa.crime.common.model.proceeding.common.*;
-import uk.gov.justice.laa.crime.common.model.proceeding.request.*;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCapitalEvidence;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCrownCourtSummary;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiEvidenceFee;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiFinancialAssessment;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiHardshipOverview;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiIOJSummary;
+import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiPassportAssessment;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiCalculateEvidenceFeeRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiDetermineMagsRepDecisionRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiProcessRepOrderRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateApplicationRequest;
+import uk.gov.justice.laa.crime.common.model.proceeding.request.ApiUpdateCrownCourtRequest;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiCalculateEvidenceFeeResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateApplicationResponse;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiUpdateCrownCourtOutcomeResponse;
 import uk.gov.justice.laa.crime.crowncourt.common.Constants;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
-import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.*;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.IOJAppealDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
+import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ProsecutionConcludedEntity;
-import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.*;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Plea;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Verdict;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.VerdictType;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CaseConclusionStatus;
-import uk.gov.justice.laa.crime.enums.*;
+import uk.gov.justice.laa.crime.enums.CaseType;
+import uk.gov.justice.laa.crime.enums.CrownCourtOutcome;
+import uk.gov.justice.laa.crime.enums.CurrentStatus;
+import uk.gov.justice.laa.crime.enums.DecisionReason;
+import uk.gov.justice.laa.crime.enums.EvidenceFeeLevel;
+import uk.gov.justice.laa.crime.enums.FullAssessmentResult;
+import uk.gov.justice.laa.crime.enums.InitAssessmentResult;
+import uk.gov.justice.laa.crime.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.enums.PassportAssessmentResult;
+import uk.gov.justice.laa.crime.enums.ReviewResult;
+import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Component;
+
 @Component
 public class TestModelDataBuilder {
 
-    public static final LocalDateTime TEST_COMMITTAL_DATE =
-            LocalDateTime.of(2020, 10, 5, 0, 0, 0);
-    public static final LocalDateTime TEST_DECISION_DATE =
-            LocalDateTime.of(2021, 6, 5, 0, 0, 0);
-    public static final LocalDateTime TEST_DATE_RECEIVED =
-            LocalDateTime.of(2022, 10, 9, 15, 1, 25);
-    public static final LocalDateTime TEST_REP_ORDER_DATE =
-            LocalDateTime.of(2022, 10, 19, 15, 1, 25);
-    public static final LocalDateTime TEST_WITHDRAWAL_DATE =
-            LocalDateTime.of(2022, 9, 19, 15, 1, 25);
-    public static final LocalDateTime TEST_IOJ_APPEAL_DECISION_DATE =
-            LocalDateTime.of(2022, 1, 19, 15, 1, 25);
-    public static final LocalDateTime TEST_SENTENCE_ORDER_DATE =
-            LocalDateTime.of(2022, 2, 19, 15, 1, 25);
-    public static final LocalDateTime TEST_DATE_MODIFIED =
-            LocalDateTime.of(2023, 1, 10, 11, 1, 25);
-    public static final LocalDateTime TEST_CROWN_REP_ORDER_DATE =
-            LocalDateTime.of(2022, 10, 19, 0, 0, 0);
-    public static final LocalDateTime INCOME_EVIDENCE_DATE =
-            LocalDateTime.of(2023, 6, 5, 15, 0, 0);
-    public static final LocalDateTime CAPITAL_EVIDENCE_DATE =
-            LocalDateTime.of(2023, 6, 5, 15, 0, 0);
+    public static final LocalDateTime TEST_COMMITTAL_DATE = LocalDateTime.of(2020, 10, 5, 0, 0, 0);
+    public static final LocalDateTime TEST_DECISION_DATE = LocalDateTime.of(2021, 6, 5, 0, 0, 0);
+    public static final LocalDateTime TEST_DATE_RECEIVED = LocalDateTime.of(2022, 10, 9, 15, 1, 25);
+    public static final LocalDateTime TEST_REP_ORDER_DATE = LocalDateTime.of(2022, 10, 19, 15, 1, 25);
+    public static final LocalDateTime TEST_WITHDRAWAL_DATE = LocalDateTime.of(2022, 9, 19, 15, 1, 25);
+    public static final LocalDateTime TEST_IOJ_APPEAL_DECISION_DATE = LocalDateTime.of(2022, 1, 19, 15, 1, 25);
+    public static final LocalDateTime TEST_SENTENCE_ORDER_DATE = LocalDateTime.of(2022, 2, 19, 15, 1, 25);
+    public static final LocalDateTime TEST_DATE_MODIFIED = LocalDateTime.of(2023, 1, 10, 11, 1, 25);
+    public static final LocalDateTime TEST_CROWN_REP_ORDER_DATE = LocalDateTime.of(2022, 10, 19, 0, 0, 0);
+    public static final LocalDateTime INCOME_EVIDENCE_DATE = LocalDateTime.of(2023, 6, 5, 15, 0, 0);
+    public static final LocalDateTime CAPITAL_EVIDENCE_DATE = LocalDateTime.of(2023, 6, 5, 15, 0, 0);
 
     public static final Integer TEST_CASE_ID = 45673;
     public static final String TEST_OFFENCE_ID = "324234";
@@ -116,11 +132,9 @@ public class TestModelDataBuilder {
                 .repId(TEST_REP_ID)
                 .caseType(CaseType.SUMMARY_ONLY)
                 .magCourtOutcome(MagCourtOutcome.APPEAL_TO_CC)
-                .magsDecisionResult(
-                        MagsDecisionResult.builder()
-                                .decisionDate(TEST_DECISION_DATE.toLocalDate())
-                                .build()
-                )
+                .magsDecisionResult(MagsDecisionResult.builder()
+                        .decisionDate(TEST_DECISION_DATE.toLocalDate())
+                        .build())
                 .crownCourtSummary(getCrownCourtSummary())
                 .passportAssessment(getPassportAssessment())
                 .financialAssessment(getFinancialAssessment())
@@ -160,8 +174,8 @@ public class TestModelDataBuilder {
                         List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED, TEST_SENTENCE_ORDER_DATE)));
     }
 
-    public static ApiCrownCourtOutcome getApiCrownCourtOutcome(CrownCourtOutcome crownCourtOutcome,
-                                                               LocalDateTime dateSet) {
+    public static ApiCrownCourtOutcome getApiCrownCourtOutcome(
+            CrownCourtOutcome crownCourtOutcome, LocalDateTime dateSet) {
         return new ApiCrownCourtOutcome()
                 .withOutcome(crownCourtOutcome)
                 .withDateSet(dateSet)
@@ -183,7 +197,6 @@ public class TestModelDataBuilder {
                 .withSessionId(UUID.randomUUID().toString());
     }
 
-
     public static ApiUpdateApplicationRequest getApiUpdateApplicationRequest(boolean isValid) {
         return new ApiUpdateApplicationRequest()
                 .withRepId(isValid ? TEST_REP_ID : null)
@@ -197,9 +210,7 @@ public class TestModelDataBuilder {
                         .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
                         .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE)
                         .withCrownCourtOutcome(
-                                List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED,
-                                        LocalDateTime.now()
-                                ))))
+                                List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED, LocalDateTime.now()))))
                 .withUserSession(getApiUserSession(isValid))
                 .withCaseType(CaseType.EITHER_WAY)
                 .withMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL)
@@ -227,9 +238,7 @@ public class TestModelDataBuilder {
                         .withEvidenceFeeLevel(EvidenceFeeLevel.LEVEL1)
                         .withSentenceOrderDate(TEST_SENTENCE_ORDER_DATE)
                         .withCrownCourtOutcome(
-                                List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED,
-                                        LocalDateTime.now()
-                                ))))
+                                List.of(getApiCrownCourtOutcome(CrownCourtOutcome.AQUITTED, LocalDateTime.now()))))
                 .withUserSession(getApiUserSession(isValid))
                 .withCaseType(CaseType.EITHER_WAY)
                 .withMagCourtOutcome(MagCourtOutcome.COMMITTED_FOR_TRIAL)
@@ -245,10 +254,10 @@ public class TestModelDataBuilder {
                 .withCapitalEvidenceReceivedDate(CAPITAL_EVIDENCE_DATE)
                 .withEmstCode(EMST_CODE)
                 .withCapitalEvidence(List.of(getCapitalEvidenceDTO(TEST_DATE_RECEIVED, "Type")));
-   }
+    }
 
-    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(Integer outcomeId, String outcome,
-                                                               LocalDateTime outcomeDate) {
+    public static RepOrderCCOutcomeDTO getRepOrderCCOutcomeDTO(
+            Integer outcomeId, String outcome, LocalDateTime outcomeDate) {
         return RepOrderCCOutcomeDTO.builder()
                 .id(outcomeId)
                 .outcome(outcome)
@@ -275,14 +284,15 @@ public class TestModelDataBuilder {
                 .isConcluded(true)
                 .maatId(123456)
                 .hearingIdWhereChangeOccurred(UUID.randomUUID())
-                .offenceSummary(List.of(
-                        OffenceSummary.builder()
-                                .offenceCode("1212")
-                                .verdict(getVerdict("GUILTY", "2021-11-12"))
-                                .plea(Plea.builder().value("NOT_GUILTY").pleaDate("2021-11-12").build())
-                                .proceedingsConcludedChangedDate("2021-11-12")
-                                .build()
-                ))
+                .offenceSummary(List.of(OffenceSummary.builder()
+                        .offenceCode("1212")
+                        .verdict(getVerdict("GUILTY", "2021-11-12"))
+                        .plea(Plea.builder()
+                                .value("NOT_GUILTY")
+                                .pleaDate("2021-11-12")
+                                .build())
+                        .proceedingsConcludedChangedDate("2021-11-12")
+                        .build()))
                 .build();
     }
 
@@ -295,12 +305,10 @@ public class TestModelDataBuilder {
                 .caseUrn(TEST_CASE_ID.toString())
                 .resultCodes("code1,code2,code3")
                 .build();
-
     }
 
     public static ProsecutionConcludedEntity getProsecutionConcludedEntity() {
-        return ProsecutionConcludedEntity
-                .builder()
+        return ProsecutionConcludedEntity.builder()
                 .maatId(TEST_REP_ID)
                 .caseData(getCaseData().getBytes(StandardCharsets.UTF_8))
                 .status(CaseConclusionStatus.PENDING.name())
@@ -381,8 +389,9 @@ public class TestModelDataBuilder {
 
     public static ApiCalculateEvidenceFeeResponse getApiCalculateEvidenceFeeResponse() {
         ApiCalculateEvidenceFeeResponse response = new ApiCalculateEvidenceFeeResponse();
-        response.setEvidenceFee(new ApiEvidenceFee().withFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
-                                        .withDescription(EvidenceFeeLevel.LEVEL1.getDescription()));
+        response.setEvidenceFee(new ApiEvidenceFee()
+                .withFeeLevel(EvidenceFeeLevel.LEVEL1.getFeeLevel())
+                .withDescription(EvidenceFeeLevel.LEVEL1.getDescription()));
         return response;
     }
 
@@ -391,7 +400,6 @@ public class TestModelDataBuilder {
         evidence.setDateReceived(dataReceived);
         evidence.setEvidenceType(evidenceType);
         return evidence;
-
     }
 
     public static ApiCalculateEvidenceFeeRequest getApiCalculateEvidenceFeeRequest() {
@@ -418,7 +426,7 @@ public class TestModelDataBuilder {
         response.setCrownCourtSummary(summary);
         return response;
     }
-    
+
     public static ApiDetermineMagsRepDecisionRequest getApiDetermineMagsRepDecisionRequest(boolean isValid) {
         return new ApiDetermineMagsRepDecisionRequest()
                 .withCaseType(CaseType.INDICTABLE)
@@ -438,8 +446,7 @@ public class TestModelDataBuilder {
     }
 
     public static ProsecutionConcludedEntity getProsecutionConcludedEntity(LocalDateTime createdTime) {
-        return ProsecutionConcludedEntity
-                .builder()
+        return ProsecutionConcludedEntity.builder()
                 .maatId(TEST_REP_ID)
                 .caseData(getCaseData().getBytes(StandardCharsets.UTF_8))
                 .createdTime(createdTime)

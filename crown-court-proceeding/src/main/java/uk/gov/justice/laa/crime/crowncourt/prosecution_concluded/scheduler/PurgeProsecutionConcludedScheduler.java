@@ -3,10 +3,11 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.scheduler;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 
 @Slf4j
 @Getter

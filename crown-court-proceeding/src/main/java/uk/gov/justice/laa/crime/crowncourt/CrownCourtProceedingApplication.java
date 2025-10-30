@@ -1,15 +1,16 @@
 package uk.gov.justice.laa.crime.crowncourt;
 
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Hooks;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import reactor.core.publisher.Hooks;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-@EnableAspectJAutoProxy(proxyTargetClass=true)
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @Slf4j
 public class CrownCourtProceedingApplication {
 
@@ -18,5 +19,4 @@ public class CrownCourtProceedingApplication {
         Hooks.enableAutomaticContextPropagation();
         SpringApplication.run(CrownCourtProceedingApplication.class);
     }
-
 }

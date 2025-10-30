@@ -17,8 +17,10 @@ import java.time.LocalDateTime;
 public class MagsDecisionResult {
     @NotNull
     private LocalDate decisionDate;
+
     @NotNull
     private LocalDateTime timestamp;
+
     @NotNull
     private DecisionReason decisionReason;
 }

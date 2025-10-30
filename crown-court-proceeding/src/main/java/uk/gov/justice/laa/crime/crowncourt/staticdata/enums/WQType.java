@@ -4,7 +4,6 @@ package uk.gov.justice.laa.crime.crowncourt.staticdata.enums;
  * <Code>WQType</Code> list of work queue types.
  */
 public enum WQType {
-
     COMMITTAL_QUEUE(1),
     INDICTABLE_QUEUE(2),
     CONCLUSION_QUEUE(7),
@@ -24,7 +23,6 @@ public enum WQType {
     }
 
     public static boolean isActionableQueue(int wqNumber) {
-        return INDICTABLE_QUEUE.value == wqNumber
-                || CONCLUSION_QUEUE.value == wqNumber;
+        return INDICTABLE_QUEUE.value == wqNumber || CONCLUSION_QUEUE.value == wqNumber;
     }
 }

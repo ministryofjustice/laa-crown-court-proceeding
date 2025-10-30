@@ -9,14 +9,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-import java.util.UUID;
-import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQLinkRegisterDTO;
@@ -24,6 +16,16 @@ import uk.gov.justice.laa.crime.crowncourt.model.UpdateCCOutcome;
 import uk.gov.justice.laa.crime.crowncourt.model.UpdateSentenceOrder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.client.MaatCourtDataNonServletApiClient;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
@@ -40,56 +42,49 @@ class CourtDataAPIServiceTest {
 
     @Test
     void givenAInvalidParameter_whenRetrieveHearingForCaseConclusionIsInvoked_thenEmptyIsReturned() {
-        WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(
-                ProsecutionConcluded.builder().hearingIdWhereChangeOccurred(UUID.randomUUID())
-                        .maatId(TestModelDataBuilder.TEST_REP_ID).build()
-        );
+        WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(ProsecutionConcluded.builder()
+                .hearingIdWhereChangeOccurred(UUID.randomUUID())
+                .maatId(TestModelDataBuilder.TEST_REP_ID)
+                .build());
         assertThat(wqHearingDTO).isNull();
     }
 
     @Test
-    void givenNoHearingDetailsAndProsecutionIsConcluded_whenRetrieveHearingForCaseConclusionIsInvoked_thenHearingProcessingIsTriggered() {
-        WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(
-                ProsecutionConcluded.builder().hearingIdWhereChangeOccurred(UUID.randomUUID())
-                        .maatId(TestModelDataBuilder.TEST_REP_ID)
-                        .isConcluded(true)
-                        .build()
-        );
+    void givenNoHearingDetailsAndProsecutionConcluded_whenRetrieveHearingInvoked_thenTriggersHearingProcessing() {
+        WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(ProsecutionConcluded.builder()
+                .hearingIdWhereChangeOccurred(UUID.randomUUID())
+                .maatId(TestModelDataBuilder.TEST_REP_ID)
+                .isConcluded(true)
+                .build());
         assertThat(wqHearingDTO).isNull();
         verify(courtDataAdapterService, times(1)).triggerHearingProcessing(any());
     }
 
     @Test
-    void givenProsecutionNotConcluded_whenRetrieveHearingForCaseConclusionIsInvoked_thenHearingDetailsAreReturnedAndHearingProcessingIsNotTriggered() {
+    void givenProsecutionNotConcluded_whenRetrieveHearingInvoked_thenReturnsHearingDetailsWithoutProcessingTriggered() {
         when(maatAPIClient.getWorkQueueHearing(anyString(), anyInt()))
-                .thenReturn(
-                        List.of(WQHearingDTO.builder()
-                                .caseId(TestModelDataBuilder.TEST_CASE_ID)
-                                .build()
-                        )
-                );
-        WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(
-                ProsecutionConcluded.builder().hearingIdWhereChangeOccurred(UUID.randomUUID())
-                        .maatId(TestModelDataBuilder.TEST_REP_ID)
-                        .isConcluded(false)
-                        .build()
-        );
+                .thenReturn(List.of(WQHearingDTO.builder()
+                        .caseId(TestModelDataBuilder.TEST_CASE_ID)
+                        .build()));
+        WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(ProsecutionConcluded.builder()
+                .hearingIdWhereChangeOccurred(UUID.randomUUID())
+                .maatId(TestModelDataBuilder.TEST_REP_ID)
+                .isConcluded(false)
+                .build());
         assertThat(wqHearingDTO).isNotNull();
         verify(courtDataAdapterService, never()).triggerHearingProcessing(any());
     }
 
     @Test
     void givenAInvalidParameter_whenFindWQLinkRegisterByMaatIdIsInvoked_thenNullIsReturned() {
-        when(maatAPIClient.getWorkQueueLinkRegister(anyInt()))
-                .thenReturn(null);
+        when(maatAPIClient.getWorkQueueLinkRegister(anyInt())).thenReturn(null);
         int caseId = courtDataAPIService.findWQLinkRegisterByMaatId(TestModelDataBuilder.TEST_REP_ID);
         assertThat(caseId).isZero();
     }
 
     @Test
     void givenAInvalidParameter_whenFindWQLinkRegisterByMaatIdIsInvoked_thenEmptyIsReturned() {
-        when(maatAPIClient.getWorkQueueLinkRegister(anyInt()))
-                .thenReturn(List.of());
+        when(maatAPIClient.getWorkQueueLinkRegister(anyInt())).thenReturn(List.of());
         int caseId = courtDataAPIService.findWQLinkRegisterByMaatId(TestModelDataBuilder.TEST_REP_ID);
         assertThat(caseId).isZero();
     }
@@ -97,12 +92,9 @@ class CourtDataAPIServiceTest {
     @Test
     void givenAValidParameter_whenFindWQLinkRegisterByMaatIdIsInvoked_thenResponseIsReturned() {
         when(maatAPIClient.getWorkQueueLinkRegister(anyInt()))
-                .thenReturn(
-                        List.of(WQLinkRegisterDTO.builder()
-                                .caseId(TestModelDataBuilder.TEST_CASE_ID)
-                                .build()
-                        )
-                );
+                .thenReturn(List.of(WQLinkRegisterDTO.builder()
+                        .caseId(TestModelDataBuilder.TEST_CASE_ID)
+                        .build()));
         int caseId = courtDataAPIService.findWQLinkRegisterByMaatId(TestModelDataBuilder.TEST_REP_ID);
         assertThat(caseId).isEqualTo(TestModelDataBuilder.TEST_CASE_ID);
     }
@@ -115,41 +107,33 @@ class CourtDataAPIServiceTest {
 
     @Test
     void givenAInvalidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenReturnZero() {
-        when(maatAPIClient.getOffenceNewOffenceCount(anyString(), anyInt()))
-                .thenReturn(0);
+        when(maatAPIClient.getOffenceNewOffenceCount(anyString(), anyInt())).thenReturn(0);
         long offenceCount = courtDataAPIService.getOffenceNewOffenceCount(
-                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
-        );
+                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
         assertThat(offenceCount).isZero();
     }
 
     @Test
     void givenAValidParameter_whenGetOffenceNewOffenceCountIsInvoked_thenResponseIsReturned() {
-        when(maatAPIClient.getOffenceNewOffenceCount(anyString(), anyInt()))
-                .thenReturn(5);
+        when(maatAPIClient.getOffenceNewOffenceCount(anyString(), anyInt())).thenReturn(5);
         long offenceCount = courtDataAPIService.getOffenceNewOffenceCount(
-                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
-        );
+                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
         assertThat(offenceCount).isEqualTo(5);
     }
 
     @Test
     void givenAInvalidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenReturnZero() {
-        when(maatAPIClient.getWorkQueueOffenceCount(anyString(), anyInt()))
-                .thenReturn(0);
+        when(maatAPIClient.getWorkQueueOffenceCount(anyString(), anyInt())).thenReturn(0);
         long offenceCount = courtDataAPIService.getWQOffenceNewOffenceCount(
-                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
-        );
+                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
         assertThat(offenceCount).isZero();
     }
 
     @Test
     void givenAValidParameter_whenGetWQOffenceNewOffenceCountIsInvoked_thenResponseIsReturned() {
-        when(maatAPIClient.getWorkQueueOffenceCount(anyString(), anyInt()))
-                .thenReturn(5);
+        when(maatAPIClient.getWorkQueueOffenceCount(anyString(), anyInt())).thenReturn(5);
         long offenceCount = courtDataAPIService.getWQOffenceNewOffenceCount(
-                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
-        );
+                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
         assertThat(offenceCount).isEqualTo(5);
     }
 
@@ -162,16 +146,14 @@ class CourtDataAPIServiceTest {
     @Test
     void givenAValidParameter_whenGetResultCodeByCaseIdAndAsnSeqIsInvoked_thenResponseIsReturned() {
         courtDataAPIService.getResultCodeByCaseIdAndAsnSeq(
-                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
-        );
+                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
         verify(maatAPIClient).getResultCodeByCaseIdAndAsnSeq(anyInt(), anyString());
     }
 
     @Test
     void givenAInvalidParameter_whenGetWqResultCodeByCaseIdAndAsnSeqIsInvoked_thenResponseIsReturned() {
         courtDataAPIService.getWqResultCodeByCaseIdAndAsnSeq(
-                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID
-        );
+                TestModelDataBuilder.TEST_CASE_ID, TestModelDataBuilder.TEST_OFFENCE_ID);
         verify(maatAPIClient).getWorkQueueResultCodeByCaseIdAndAsnSeq(anyInt(), anyString());
     }
 

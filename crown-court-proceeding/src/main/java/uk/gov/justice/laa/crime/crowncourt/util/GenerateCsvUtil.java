@@ -16,7 +16,7 @@ import java.util.Set;
 @UtilityClass
 @Slf4j
 public class GenerateCsvUtil {
-    
+
     private static final String FILE_PERMISSIONS = "rwx------";
 
     public File generateCsvFile(List<String> lines, String fileName) throws IOException {
@@ -31,18 +31,19 @@ public class GenerateCsvUtil {
         return targetFile;
     }
 
-    private void writeCsvRows(List<String> lines, FileWriter fw){
+    private void writeCsvRows(List<String> lines, FileWriter fw) {
         lines.forEach(line -> {
-                try {
-                    fw.append(line + System.lineSeparator());
-                } catch (IOException ioException) {
-                    log.error("Error writing line to file  - {}", ioException.getMessage());
-                }
-            });
+            try {
+                fw.append(line + System.lineSeparator());
+            } catch (IOException ioException) {
+                log.error("Error writing line to file  - {}", ioException.getMessage());
+            }
+        });
     }
 
     private File createCsvFile(String fileName) throws IOException {
-        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(FILE_PERMISSIONS));
+        FileAttribute<Set<PosixFilePermission>> attr =
+                PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(FILE_PERMISSIONS));
         return Files.createTempFile(fileName, ".csv", attr).toFile();
     }
 }

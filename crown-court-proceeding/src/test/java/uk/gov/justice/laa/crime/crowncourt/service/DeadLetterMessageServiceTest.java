@@ -4,6 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import uk.gov.justice.laa.crime.crowncourt.entity.DeadLetterMessageEntity;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
+import uk.gov.justice.laa.crime.crowncourt.repository.DeadLetterMessageRepository;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -11,10 +16,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.laa.crime.crowncourt.entity.DeadLetterMessageEntity;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
-import uk.gov.justice.laa.crime.crowncourt.repository.DeadLetterMessageRepository;
 
 @ExtendWith(MockitoExtension.class)
 class DeadLetterMessageServiceTest {
@@ -30,9 +31,8 @@ class DeadLetterMessageServiceTest {
     @Test
     void givenErrorReasonAndQueueMessage_whenLogDeadLetterMessageIsInvoked_thenDeadLetterMessageIsCreated() {
         String errorReason = ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL;
-        ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
-                .maatId(123456)
-                .build();
+        ProsecutionConcluded prosecutionConcluded =
+                ProsecutionConcluded.builder().maatId(123456).build();
         String reportingStatus = "PENDING";
 
         deadLetterMessageService.logDeadLetterMessage(errorReason, prosecutionConcluded);

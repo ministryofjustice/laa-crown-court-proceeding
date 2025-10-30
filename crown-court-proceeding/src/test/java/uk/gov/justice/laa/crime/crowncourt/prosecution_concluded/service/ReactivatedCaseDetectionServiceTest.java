@@ -1,10 +1,11 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.entity.ReactivatedProsecutionCase;
 import uk.gov.justice.laa.crime.crowncourt.model.Metadata;
@@ -18,18 +19,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ReactivatedCaseDetectionServiceTest {
     @InjectMocks
     ReactivatedCaseDetectionService reactivatedCaseDetectionService;
+
     @Mock
     private CourtDataAPIService maatCourtDataService;
+
     @Mock
     private ReactivatedProsecutionCaseRepository reactivatedProsecutionCaseRepository;
 
@@ -41,8 +44,7 @@ class ReactivatedCaseDetectionServiceTest {
 
         when(reactivatedProsecutionCaseRepository.existsByMaatIdAndReportingStatus(maatId, "PENDING"))
                 .thenReturn(false);
-        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(maatId))
-                .thenReturn(getPreviousOutComes(maatId));
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(maatId)).thenReturn(getPreviousOutComes(maatId));
 
         reactivatedCaseDetectionService.processCase(prosecutionConcludedRequest);
 
@@ -73,8 +75,7 @@ class ReactivatedCaseDetectionServiceTest {
 
         when(reactivatedProsecutionCaseRepository.existsByMaatIdAndReportingStatus(maatId, "PENDING"))
                 .thenReturn(false);
-        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(maatId))
-                .thenReturn(List.of());
+        when(maatCourtDataService.getRepOrderCCOutcomeByRepId(maatId)).thenReturn(List.of());
 
         reactivatedCaseDetectionService.processCase(prosecutionConcludedRequest);
 
@@ -88,7 +89,9 @@ class ReactivatedCaseDetectionServiceTest {
                 .offenceSummary(List.of(getOffenceSummary()))
                 .prosecutionCaseId(UUID.fromString("ce60cac9-ab22-468e-8af9-a3ba2ecece5b"))
                 .hearingIdWhereChangeOccurred(UUID.fromString("ce60cac9-ab22-468e-8af9-a3ba2ecece5b"))
-                .metadata(Metadata.builder().laaTransactionId(UUID.randomUUID().toString()).build())
+                .metadata(Metadata.builder()
+                        .laaTransactionId(UUID.randomUUID().toString())
+                        .build())
                 .build();
     }
 
@@ -102,8 +105,7 @@ class ReactivatedCaseDetectionServiceTest {
     }
 
     private List<RepOrderCCOutcomeDTO> getPreviousOutComes(Integer maatId) {
-        return List.of(RepOrderCCOutcomeDTO
-                .builder()
+        return List.of(RepOrderCCOutcomeDTO.builder()
                 .repId(maatId)
                 .caseNumber("Mock-CaseID")
                 .outcome("Mock-Outcome")
@@ -112,8 +114,7 @@ class ReactivatedCaseDetectionServiceTest {
     }
 
     private ReactivatedProsecutionCase getReactivatedProsecutionCase(Integer maatId) {
-        return ReactivatedProsecutionCase
-                .builder()
+        return ReactivatedProsecutionCase.builder()
                 .maatId(maatId)
                 .hearingId("ce60cac9-ab22-468e-8af9-a3ba2ecece5b")
                 .caseUrn("Mock-CaseID")

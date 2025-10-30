@@ -7,10 +7,9 @@ import uk.gov.justice.laa.crime.exception.ValidationException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum CrownCourtCaseType {
-
     INDICTABLE("INDICTABLE"),
     SUMMARY_ONLY("SUMMARY ONLY"),
     CC_ALREADY("CC ALREADY"),
@@ -18,7 +17,6 @@ public enum CrownCourtCaseType {
     APPEAL_CC("APPEAL CC");
 
     private final String value;
-
 
     public static boolean caseTypeForTrial(final String caseType) {
 
@@ -30,9 +28,7 @@ public enum CrownCourtCaseType {
         return APPEAL_CC.getValue().equalsIgnoreCase(notEmpty(caseType));
     }
 
-
     private static String notEmpty(String caseType) {
-        return Optional.ofNullable(caseType).orElseThrow(
-                () -> new ValidationException("Case type can't be empty."));
+        return Optional.ofNullable(caseType).orElseThrow(() -> new ValidationException("Case type can't be empty."));
     }
 }

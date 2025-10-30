@@ -2,8 +2,6 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.OffenceDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderCCOutcomeDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
@@ -16,15 +14,17 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Prosecuti
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.stereotype.Service;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CourtDataAPIService {
-    
+
     private final MaatCourtDataNonServletApiClient maatAPIClient;
     private final CourtDataAdapterService courtDataAdapterService;
     public static final String RESPONSE_STRING = "Response from Court Data API: {}";
-
 
     public RepOrderDTO getRepOrder(Integer repId) {
         RepOrderDTO response = maatAPIClient.getRepOrderByRepId(repId);
@@ -39,16 +39,11 @@ public class CourtDataAPIService {
     public WQHearingDTO retrieveHearingForCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
 
         List<WQHearingDTO> wqHearingList = maatAPIClient.getWorkQueueHearing(
-            prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), 
-            prosecutionConcluded.getMaatId());
+                prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), prosecutionConcluded.getMaatId());
 
         WQHearingDTO wqHearingDTO = CollectionUtils.isNotEmpty(wqHearingList) ? wqHearingList.get(0) : null;
-        if (wqHearingDTO == null
-                && prosecutionConcluded.isConcluded()) {
-            courtDataAdapterService.
-                    triggerHearingProcessing(
-                            prosecutionConcluded.getHearingIdWhereChangeOccurred()
-                    );
+        if (wqHearingDTO == null && prosecutionConcluded.isConcluded()) {
+            courtDataAdapterService.triggerHearingProcessing(prosecutionConcluded.getHearingIdWhereChangeOccurred());
         }
         return wqHearingDTO;
     }

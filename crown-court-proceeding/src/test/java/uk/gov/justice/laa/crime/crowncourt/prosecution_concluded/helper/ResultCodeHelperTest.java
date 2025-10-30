@@ -1,24 +1,28 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.AQUITTED;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.CONVICTED;
+import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.PART_CONVICTED;
+
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAPIService;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome.*;
 
 @ExtendWith(MockitoExtension.class)
 class ResultCodeHelperTest {
 
     public static final List<String> HEARING_RESULT_CODES = List.of("1002");
+
     @InjectMocks
     private ResultCodeHelper resultCodeHelper;
 
@@ -71,12 +75,11 @@ class ResultCodeHelperTest {
         when(courtDataAPIService.fetchResultCodesForCCImprisonment()).thenReturn(null);
         assertThatThrownBy(() -> resultCodeHelper.isImprisoned("CONVICTED", HEARING_RESULT_CODES))
                 .isInstanceOf(NullPointerException.class);
-
     }
 
     @Test
     void whenCCOutcomeIsAquittedAndResultCodeWithBW_thenBWarFlagIsY() {
-        //when
+        // when
         when(courtDataAPIService.findByCjsResultCodeIn()).thenReturn(null);
 
         assertThatThrownBy(() -> resultCodeHelper.isBenchWarrantIssued("AQUITTED", HEARING_RESULT_CODES))
@@ -88,11 +91,10 @@ class ResultCodeHelperTest {
         when(courtDataAPIService.findByCjsResultCodeIn()).thenReturn(imprisonmentResultCodes());
         String status = resultCodeHelper.isBenchWarrantIssued(CONVICTED.getValue(), HEARING_RESULT_CODES);
 
-        //then
+        // then
         verify(courtDataAPIService).findByCjsResultCodeIn();
         assertThat(status).isEqualTo("Y");
     }
-
 
     @Test
     void whenCCOutcomeIsConvictedAndResultCodeWithBW_thenReturnNull() {

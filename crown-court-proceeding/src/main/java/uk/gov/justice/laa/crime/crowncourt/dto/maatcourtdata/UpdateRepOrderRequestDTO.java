@@ -43,5 +43,4 @@ public class UpdateRepOrderRequestDTO {
     private Integer preferredPaymentDay;
     private String sortCode;
     private LocalDateTime dateModified;
-
 }

@@ -1,8 +1,9 @@
 package uk.gov.justice.laa.crime.crowncourt.builder;
 
+import static java.util.Optional.ofNullable;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.common.model.proceeding.common.ApiCrownCourtSummary;
 import uk.gov.justice.laa.crime.common.model.proceeding.response.ApiProcessRepOrderResponse;
 import uk.gov.justice.laa.crime.crowncourt.dto.CrownCourtDTO;
@@ -12,14 +13,14 @@ import uk.gov.justice.laa.crime.proceeding.MagsDecisionResult;
 
 import java.time.LocalDateTime;
 
-import static java.util.Optional.ofNullable;
+import org.springframework.stereotype.Component;
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateRepOrderDTOBuilder {
 
-    public static UpdateRepOrderRequestDTO build(CrownCourtDTO crownCourtDTO,
-                                                 ApiProcessRepOrderResponse apiProcessRepOrderResponse) {
+    public static UpdateRepOrderRequestDTO build(
+            CrownCourtDTO crownCourtDTO, ApiProcessRepOrderResponse apiProcessRepOrderResponse) {
 
         ApiCrownCourtSummary crownCourtSummary = crownCourtDTO.getCrownCourtSummary();
         return UpdateRepOrderRequestDTO.builder()
@@ -27,21 +28,16 @@ public class UpdateRepOrderDTOBuilder {
                 .crownRepId(crownCourtDTO.getCrownRepId())
                 .crownRepOrderDecision(apiProcessRepOrderResponse.getRepOrderDecision())
                 .crownRepOrderType(apiProcessRepOrderResponse.getRepType())
-                .crownRepOrderDate(
-                        ofNullable(apiProcessRepOrderResponse.getRepOrderDate())
-                                .map(LocalDateTime::toLocalDate)
-                                .orElse(null))
-                .crownWithdrawalDate(
-                        ofNullable(crownCourtSummary.getWithdrawalDate())
-                                .map(LocalDateTime::toLocalDate)
-                                .orElse(null)
-                )
+                .crownRepOrderDate(ofNullable(apiProcessRepOrderResponse.getRepOrderDate())
+                        .map(LocalDateTime::toLocalDate)
+                        .orElse(null))
+                .crownWithdrawalDate(ofNullable(crownCourtSummary.getWithdrawalDate())
+                        .map(LocalDateTime::toLocalDate)
+                        .orElse(null))
                 .sentenceOrderDate(crownCourtSummary.getSentenceOrderDate())
-                .evidenceFeeLevel(
-                        ofNullable(crownCourtSummary.getEvidenceFeeLevel())
-                                .map(EvidenceFeeLevel::getFeeLevel)
-                                .orElse(null)
-                )
+                .evidenceFeeLevel(ofNullable(crownCourtSummary.getEvidenceFeeLevel())
+                        .map(EvidenceFeeLevel::getFeeLevel)
+                        .orElse(null))
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
                 .build();
@@ -54,11 +50,9 @@ public class UpdateRepOrderDTOBuilder {
                 .isImprisoned(crownCourtDTO.getIsImprisoned())
                 .isWarrantIssued(crownCourtSummary.getIsWarrantIssued())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
-                .evidenceFeeLevel(
-                        ofNullable(crownCourtSummary.getEvidenceFeeLevel())
-                                .map(EvidenceFeeLevel::getFeeLevel)
-                                .orElse(null)
-                )
+                .evidenceFeeLevel(ofNullable(crownCourtSummary.getEvidenceFeeLevel())
+                        .map(EvidenceFeeLevel::getFeeLevel)
+                        .orElse(null))
                 .build();
     }
 
@@ -69,6 +63,5 @@ public class UpdateRepOrderDTOBuilder {
                 .decisionReasonCode(decisionResult.getDecisionReason())
                 .userModified(crownCourtDTO.getUserSession().getUserName())
                 .build();
-
     }
 }

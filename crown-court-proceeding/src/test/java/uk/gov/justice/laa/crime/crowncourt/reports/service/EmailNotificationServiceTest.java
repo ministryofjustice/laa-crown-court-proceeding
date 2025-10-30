@@ -1,19 +1,15 @@
 package uk.gov.justice.laa.crime.crowncourt.reports.service;
 
-import org.apache.commons.io.FileUtils;
-import org.json.JSONObject;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -26,16 +22,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
 class EmailNotificationServiceTest {
@@ -46,10 +46,12 @@ class EmailNotificationServiceTest {
     @InjectMocks
     private EmailNotificationService emailNotificationService;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @ParameterizedTest
     @MethodSource("emailAddressesTestData")
-    void testSendEmailSuccessfully(int noOfInvokes, List<String> emailAddresses) throws IOException, NotificationClientException {
+    void testSendEmailSuccessfully(int noOfInvokes, List<String> emailAddresses)
+            throws IOException, NotificationClientException {
 
         String fileName = "testFile";
         JSONObject expectedJsonFileObject = getExpectedJsonObject(fileName);
@@ -57,26 +59,29 @@ class EmailNotificationServiceTest {
         byte[] fileContents = "test data".getBytes(StandardCharsets.UTF_8);
 
         LocalDate date = LocalDate.now();
-        Map<String, Object> mockPersonalisation = Map.of(
-                "date", date,
-                "link_to_file", NotificationClient.prepareUpload(fileContents, fileName + ".csv"));
+        Map<String, Object> mockPersonalisation =
+                Map.of("date", date, "link_to_file", NotificationClient.prepareUpload(fileContents, fileName + ".csv"));
 
         try (MockedStatic<NotificationClient> mockedNotificationClient = Mockito.mockStatic(NotificationClient.class)) {
-            mockedNotificationClient.when(() -> NotificationClient.prepareUpload(fileContents, fileName + ".csv")).thenReturn(expectedJsonFileObject);
+            mockedNotificationClient
+                    .when(() -> NotificationClient.prepareUpload(fileContents, fileName + ".csv"))
+                    .thenReturn(expectedJsonFileObject);
         }
 
         emailNotificationService.send("test-template-id", emailAddresses, mockFile, fileName);
 
         verify(client, times(noOfInvokes)).sendEmail(anyString(), anyString(), anyMap(), isNull());
-        assertEquals(date, mockPersonalisation.get("date"));
-        JSONAssert.assertEquals(expectedJsonFileObject, (JSONObject) mockPersonalisation.get("link_to_file"), JSONCompareMode.STRICT);
+        assertThat(date).isEqualTo(mockPersonalisation.get("date"));
 
+        assertThat(objectMapper.readTree(expectedJsonFileObject.toString()))
+                .isEqualTo(objectMapper.readTree(
+                        mockPersonalisation.get("link_to_file").toString()));
     }
 
     private JSONObject getExpectedJsonObject(String fileName) {
         JSONObject expectedJsonFileObject = new JSONObject();
-        expectedJsonFileObject.put("file","dGVzdCBkYXRh");
-        expectedJsonFileObject.put("filename", fileName +".csv");
+        expectedJsonFileObject.put("file", "dGVzdCBkYXRh");
+        expectedJsonFileObject.put("filename", fileName + ".csv");
         expectedJsonFileObject.put("confirm_email_before_download", JSONObject.NULL);
         expectedJsonFileObject.put("retention_period", JSONObject.NULL);
         return expectedJsonFileObject;
@@ -86,8 +91,7 @@ class EmailNotificationServiceTest {
         return Stream.of(
                 Arguments.of(1, List.of("recipient1")),
                 Arguments.of(2, List.of("recipient1", "recipient2")),
-                Arguments.of(3, List.of("recipient1", "recipient2", "recipient3"))
-        );
+                Arguments.of(3, List.of("recipient1", "recipient2", "recipient3")));
     }
 
     @Test
@@ -97,10 +101,14 @@ class EmailNotificationServiceTest {
         String fileName = "testFile";
 
         try (MockedStatic<FileUtils> mockedFileUtils = Mockito.mockStatic(FileUtils.class)) {
-            mockedFileUtils.when(() -> FileUtils.readFileToByteArray(reportFile)).thenThrow(new IOException("Test IOException"));
-            IOException exception = assertThrows(IOException.class, () -> emailNotificationService.send("test-template-id", List.of("test"), reportFile, fileName));
+            mockedFileUtils
+                    .when(() -> FileUtils.readFileToByteArray(reportFile))
+                    .thenThrow(new IOException("Test IOException"));
 
-            assertEquals("Test IOException", exception.getMessage());
+            assertThatThrownBy(() ->
+                            emailNotificationService.send("test-template-id", List.of("test"), reportFile, fileName))
+                    .isInstanceOf(IOException.class)
+                    .hasMessage("Test IOException");
         }
 
         verify(client, never()).sendEmail(anyString(), anyString(), anyMap(), isNull());
