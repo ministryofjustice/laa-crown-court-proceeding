@@ -14,6 +14,7 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.impl.Prosecutio
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
+import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
@@ -37,6 +38,7 @@ public class ProsecutionConcludedService {
     private final CourtDataAPIService courtDataAPIService;
     private final ReactivatedCaseDetectionService reactivatedCaseDetectionService;
     private final CrownCourtCodeHelper crownCourtCodeHelper;
+    private final DeadLetterMessageService deadLetterMessageService;
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
         log.info("CC Outcome process is kicked off for  maat-id {}", prosecutionConcluded.getMaatId());
@@ -113,7 +115,15 @@ public class ProsecutionConcludedService {
                 concludedDTO.getProsecutionConcluded().getMaatId());
 
         if (Objects.isNull(prosecutionConcluded.getApplicationConcluded())) {
-            prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
+
+            if (repOrderDTO.getMagsOutcome() == null) {
+                log.info("Mags outcome exists for this maat-id {}", prosecutionConcluded.getMaatId());
+                prosecutionConcludedDataService.execute(prosecutionConcluded);
+                if (deadLetterMessageService.existsInDeadLetterQueue(prosecutionConcluded.getMaatId())) {
+                    prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
+                }
+            }
+
             prosecutionConcludedValidator.validateIsAppealMissing(repOrderDTO.getCatyCaseType());
         } else {
             prosecutionConcludedValidator.validateApplicationResultCode(
