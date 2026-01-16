@@ -282,8 +282,6 @@ class ProsecutionConcludedServiceTest {
 
         when(deadLetterMessageService.existsInDeadLetterQueue(MAAT_ID)).thenReturn(true);
 
-        ProsecutionConcluded updatedProsecutionConcluded = getProsecutionConcluded();
-        updatedProsecutionConcluded.setApplicationConcluded(getApplicationConcluded());
         prosecutionConcludedService.execute(getProsecutionConcluded());
         verify(prosecutionConcludedDataService, atLeastOnce()).execute(any());
         verify(prosecutionConcludedValidator, atLeastOnce()).validateMagsCourtOutcomeExists(any());
