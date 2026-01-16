@@ -58,9 +58,8 @@ public class ProsecutionConcludedService {
                         prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
                         executeCCOutCome(prosecutionConcluded, wqHearingDTO);
                     } else if (JurisdictionType.MAGISTRATES
-                                    .name()
-                                    .equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())
-                            && Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
+                            .name()
+                            .equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
                         executeCCOutCome(prosecutionConcluded, wqHearingDTO);
                     }
                 }

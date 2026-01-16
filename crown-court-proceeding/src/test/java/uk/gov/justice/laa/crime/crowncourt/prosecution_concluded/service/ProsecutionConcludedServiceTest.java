@@ -284,7 +284,7 @@ class ProsecutionConcludedServiceTest {
 
         ProsecutionConcluded updatedProsecutionConcluded = getProsecutionConcluded();
         updatedProsecutionConcluded.setApplicationConcluded(getApplicationConcluded());
-        prosecutionConcludedService.execute(updatedProsecutionConcluded);
+        prosecutionConcludedService.execute(getProsecutionConcluded());
         verify(prosecutionConcludedDataService, atLeastOnce()).execute(any());
         verify(prosecutionConcludedValidator, atLeastOnce()).validateMagsCourtOutcomeExists(any());
     }
