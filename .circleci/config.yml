@@ -130,6 +130,7 @@ jobs:
     executor: build-executor
     steps:
       - checkout:
+          method: full
           path: ~/laa-crown-court-proceeding
       - setup_remote_docker:
           docker_layer_caching: true
