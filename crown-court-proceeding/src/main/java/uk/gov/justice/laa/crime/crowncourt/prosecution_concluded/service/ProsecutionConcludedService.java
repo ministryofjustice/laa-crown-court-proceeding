@@ -117,7 +117,7 @@ public class ProsecutionConcludedService {
         if (Objects.isNull(prosecutionConcluded.getApplicationConcluded())) {
 
             if (repOrderDTO.getMagsOutcome() == null) {
-                log.info("Mags outcome exists for this maat-id {}", prosecutionConcluded.getMaatId());
+                log.info("Mags outcome does not exists for this maat-id {}", prosecutionConcluded.getMaatId());
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
                 if (deadLetterMessageService.hasNoDeadLetterMessageForMaatId(prosecutionConcluded.getMaatId())) {
                     prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
