@@ -22,8 +22,7 @@ public interface DeadLetterMessageRepository extends JpaRepository<DeadLetterMes
     void updateReportingStatusForIds(List<Integer> ids, String newStatus);
 
     @Query(
-            value = "SELECT * FROM crown_court_proceeding.DEAD_LETTER_MESSAGE d "
-                    + "WHERE d.MESSAGE->>'maatId' = :maatId",
+            value = "SELECT * FROM dead_letter_message dlm WHERE CAST(dlm.message->>'maatId' AS INTEGER) = :maatId",
             nativeQuery = true)
     List<DeadLetterMessageEntity> findByMaatId(@Param("maatId") Integer maatId);
 }

@@ -28,7 +28,7 @@ public class DeadLetterMessageService {
         deadLetterMessageRepository.save(entity);
     }
 
-    public boolean existsInDeadLetterQueue(Integer maatId) {
-        return !deadLetterMessageRepository.findByMaatId(maatId).isEmpty();
+    public boolean hasNoDeadLetterMessageForMaatId(Integer maatId) {
+        return deadLetterMessageRepository.findByMaatId(maatId).isEmpty();
     }
 }

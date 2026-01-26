@@ -59,9 +59,9 @@ class DeadLetterMessageServiceTest {
                 .build();
         when(deadLetterMessageRepository.findByMaatId(maatId)).thenReturn(List.of(entity));
 
-        boolean result = deadLetterMessageService.existsInDeadLetterQueue(maatId);
+        boolean result = deadLetterMessageService.hasNoDeadLetterMessageForMaatId(maatId);
 
-        assertThat(result).isTrue();
+        assertThat(result).isFalse();
         verify(deadLetterMessageRepository, times(1)).findByMaatId(maatId);
     }
 
@@ -70,9 +70,9 @@ class DeadLetterMessageServiceTest {
         Integer maatId = 111111;
         when(deadLetterMessageRepository.findByMaatId(maatId)).thenReturn(Collections.emptyList());
 
-        boolean result = deadLetterMessageService.existsInDeadLetterQueue(maatId);
+        boolean result = deadLetterMessageService.hasNoDeadLetterMessageForMaatId(maatId);
 
-        assertThat(result).isFalse();
+        assertThat(result).isTrue();
         verify(deadLetterMessageRepository, times(1)).findByMaatId(maatId);
     }
 }

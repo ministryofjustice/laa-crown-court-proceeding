@@ -58,8 +58,9 @@ public class ProsecutionConcludedService {
                         prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
                         executeCCOutCome(prosecutionConcluded, wqHearingDTO);
                     } else if (JurisdictionType.MAGISTRATES
-                            .name()
-                            .equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
+                                    .name()
+                                    .equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())
+                            && Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
                         executeCCOutCome(prosecutionConcluded, wqHearingDTO);
                     }
                 }
@@ -118,7 +119,7 @@ public class ProsecutionConcludedService {
             if (repOrderDTO.getMagsOutcome() == null) {
                 log.info("Mags outcome exists for this maat-id {}", prosecutionConcluded.getMaatId());
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
-                if (deadLetterMessageService.existsInDeadLetterQueue(prosecutionConcluded.getMaatId())) {
+                if (deadLetterMessageService.hasNoDeadLetterMessageForMaatId(prosecutionConcluded.getMaatId())) {
                     prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
                 }
             }

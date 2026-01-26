@@ -269,7 +269,7 @@ class ProsecutionConcludedServiceTest {
     @Test
     void whenMessageExistsInDeadLetterQueue_thenExtraValidationIsInvoked() {
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
-                .thenReturn(getWQHearingEntity(JurisdictionType.MAGISTRATES.name()));
+                .thenReturn(getWQHearingEntity(JurisdictionType.CROWN.name()));
         when(courtDataAPIService.isMaatRecordLocked(any())).thenReturn(false);
         when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(List.of(getOffenceSummary("OF121")));
         when(caseConclusionDTOBuilder.build(any(), any(), any(), any()))
@@ -280,7 +280,7 @@ class ProsecutionConcludedServiceTest {
                 .thenReturn(RepOrderDTO.builder().magsOutcome(null).build());
         when(calculateOutcomeHelper.calculate(any())).thenReturn("CONVICTED");
 
-        when(deadLetterMessageService.existsInDeadLetterQueue(MAAT_ID)).thenReturn(true);
+        when(deadLetterMessageService.hasNoDeadLetterMessageForMaatId(MAAT_ID)).thenReturn(true);
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
         verify(prosecutionConcludedDataService, atLeastOnce()).execute(any());
@@ -290,12 +290,12 @@ class ProsecutionConcludedServiceTest {
     @Test
     void whenMagsOutcomeIsNotEmpty_thenProsecutionConcludedDataServiceIsNeverInvoked() {
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
-                .thenReturn(getWQHearingEntity(JurisdictionType.MAGISTRATES.name()));
+                .thenReturn(getWQHearingEntity(JurisdictionType.CROWN.name()));
         when(courtDataAPIService.isMaatRecordLocked(any())).thenReturn(false);
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
 
-        verify(deadLetterMessageService, never()).existsInDeadLetterQueue(any());
+        verify(deadLetterMessageService, never()).hasNoDeadLetterMessageForMaatId(any());
         verify(prosecutionConcludedDataService, never()).execute(any());
         verify(prosecutionConcludedValidator, never()).validateMagsCourtOutcomeExists(any());
     }
@@ -303,7 +303,7 @@ class ProsecutionConcludedServiceTest {
     @Test
     void whenMessageNotInDeadLetterQueue_thenExtraValidationNotInvoked() {
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
-                .thenReturn(getWQHearingEntity(JurisdictionType.MAGISTRATES.name()));
+                .thenReturn(getWQHearingEntity(JurisdictionType.CROWN.name()));
         when(courtDataAPIService.isMaatRecordLocked(any())).thenReturn(false);
         when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(List.of(getOffenceSummary("OF121")));
         when(caseConclusionDTOBuilder.build(any(), any(), any(), any()))
@@ -313,11 +313,11 @@ class ProsecutionConcludedServiceTest {
         when(courtDataAPIService.getRepOrder(any()))
                 .thenReturn(RepOrderDTO.builder().magsOutcome(null).build());
         when(calculateOutcomeHelper.calculate(any())).thenReturn("CONVICTED");
-        when(deadLetterMessageService.existsInDeadLetterQueue(MAAT_ID)).thenReturn(false);
+        when(deadLetterMessageService.hasNoDeadLetterMessageForMaatId(MAAT_ID)).thenReturn(false);
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
 
-        verify(deadLetterMessageService, atLeastOnce()).existsInDeadLetterQueue(MAAT_ID);
+        verify(deadLetterMessageService, atLeastOnce()).hasNoDeadLetterMessageForMaatId(MAAT_ID);
         verify(prosecutionConcludedValidator, never()).validateApplicationResultCode(any());
         verify(prosecutionConcludedImpl, atLeast(1)).execute(any(), any());
     }
