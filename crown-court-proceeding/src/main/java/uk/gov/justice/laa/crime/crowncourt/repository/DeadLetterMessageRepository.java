@@ -22,7 +22,15 @@ public interface DeadLetterMessageRepository extends JpaRepository<DeadLetterMes
     void updateReportingStatusForIds(List<Integer> ids, String newStatus);
 
     @Query(
-            value = "SELECT * FROM dead_letter_message dlm WHERE CAST(dlm.message->>'maatId' AS INTEGER) = :maatId",
+            value =
+                    """
+                SELECT *
+                FROM crown_court_proceeding.DEAD_LETTER_MESSAGE dlm
+                WHERE (dlm.MESSAGE->>'maatId') ~ '^[0-9]+$'
+                  AND CAST(dlm.MESSAGE->>'maatId' AS INTEGER) = :maatId
+                  AND dlm.REASON IS DISTINCT FROM :excludedReason
+                """,
             nativeQuery = true)
-    List<DeadLetterMessageEntity> findByMaatId(@Param("maatId") Integer maatId);
+    List<DeadLetterMessageEntity> findByMaatIdAndDeadLetterReasonNot(
+            @Param("maatId") Integer maatId, @Param("excludedReason") String excludedReason);
 }

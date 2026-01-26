@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
+import static uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator.CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
@@ -119,7 +121,8 @@ public class ProsecutionConcludedService {
             if (repOrderDTO.getMagsOutcome() == null) {
                 log.info("Mags outcome does not exists for this maat-id {}", prosecutionConcluded.getMaatId());
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
-                if (deadLetterMessageService.hasNoDeadLetterMessageForMaatId(prosecutionConcluded.getMaatId())) {
+                if (deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
+                        prosecutionConcluded.getMaatId(), CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME)) {
                     prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
                 }
             }

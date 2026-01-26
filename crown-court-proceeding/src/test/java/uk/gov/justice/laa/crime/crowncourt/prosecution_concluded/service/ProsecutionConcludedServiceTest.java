@@ -7,6 +7,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator.CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME;
 
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.WQHearingDTO;
@@ -280,7 +281,9 @@ class ProsecutionConcludedServiceTest {
                 .thenReturn(RepOrderDTO.builder().magsOutcome(null).build());
         when(calculateOutcomeHelper.calculate(any())).thenReturn("CONVICTED");
 
-        when(deadLetterMessageService.hasNoDeadLetterMessageForMaatId(MAAT_ID)).thenReturn(true);
+        when(deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
+                        MAAT_ID, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME))
+                .thenReturn(true);
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
         verify(prosecutionConcludedDataService, atLeastOnce()).execute(any());
@@ -295,7 +298,7 @@ class ProsecutionConcludedServiceTest {
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
 
-        verify(deadLetterMessageService, never()).hasNoDeadLetterMessageForMaatId(any());
+        verify(deadLetterMessageService, never()).hasNoDeadLetterMessageForMaatId(any(), any());
         verify(prosecutionConcludedDataService, never()).execute(any());
         verify(prosecutionConcludedValidator, never()).validateMagsCourtOutcomeExists(any());
     }
@@ -313,11 +316,14 @@ class ProsecutionConcludedServiceTest {
         when(courtDataAPIService.getRepOrder(any()))
                 .thenReturn(RepOrderDTO.builder().magsOutcome(null).build());
         when(calculateOutcomeHelper.calculate(any())).thenReturn("CONVICTED");
-        when(deadLetterMessageService.hasNoDeadLetterMessageForMaatId(MAAT_ID)).thenReturn(false);
+        when(deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
+                        MAAT_ID, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME))
+                .thenReturn(false);
 
         prosecutionConcludedService.execute(getProsecutionConcluded());
 
-        verify(deadLetterMessageService, atLeastOnce()).hasNoDeadLetterMessageForMaatId(MAAT_ID);
+        verify(deadLetterMessageService, atLeastOnce())
+                .hasNoDeadLetterMessageForMaatId(MAAT_ID, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
         verify(prosecutionConcludedValidator, never()).validateApplicationResultCode(any());
         verify(prosecutionConcludedImpl, atLeast(1)).execute(any(), any());
     }
