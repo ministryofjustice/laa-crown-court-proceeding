@@ -96,4 +96,4 @@ Run './gradlew spotlessApply' to fix these violations.
 
 - You don’t need to install any IDE plugin — Spotless ensures consistent results across environments.
 - You can safely ignore `.git/hooks/pre-push` — formatting is enforced in CI.
-- It’s good practice to run `./gradlew spotlessApply` before opening a PR to avoid unnecessary CI failures. 
+- It’s good practice to run `./gradlew spotlessApply` before opening a PR to avoid unnecessary CI failures.
