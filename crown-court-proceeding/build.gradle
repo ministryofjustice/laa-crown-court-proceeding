@@ -111,7 +111,9 @@ dependencies {
 }
 
 spotless {
+    encoding 'UTF-8' // all formats will be interpreted as UTF-8
     java {
+        encoding 'UTF-8'
         target 'src/*/java/**/*.java'
         targetExclude '**/generated/**', '**/build/**'
 
