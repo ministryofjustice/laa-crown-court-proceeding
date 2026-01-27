@@ -118,7 +118,7 @@ spotless {
         targetExclude '**/generated/**', '**/build/**'
 
         formatAnnotations()
-        palantirJavaFormat()
+        palantirJavaFormat('2.50.0')
         importOrder('', 'java', 'javax', 'org', 'com')
 
         endWithNewline()
