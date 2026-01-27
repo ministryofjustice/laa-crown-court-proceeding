@@ -221,10 +221,11 @@ public class RepOrderService {
         String repOrderDecision = crownCourtSummary.getRepOrderDecision();
         if (StringUtils.isNotBlank(repOrderDecision) && crownCourtSummary.getRepOrderDate() == null) {
             switch (requestDTO.getCaseType()) {
-                case INDICTABLE -> crownCourtSummary.setRepOrderDate(DateUtil.convertDateToDateTime(
-                        requestDTO.getMagsDecisionResult().getDecisionDate()));
-                case EITHER_WAY -> crownCourtSummary.setRepOrderDate(
-                        determineMagsRepOrderDate(requestDTO, repOrderDecision));
+                case INDICTABLE ->
+                    crownCourtSummary.setRepOrderDate(DateUtil.convertDateToDateTime(
+                            requestDTO.getMagsDecisionResult().getDecisionDate()));
+                case EITHER_WAY ->
+                    crownCourtSummary.setRepOrderDate(determineMagsRepOrderDate(requestDTO, repOrderDecision));
                 case CC_ALREADY, COMMITAL -> crownCourtSummary.setRepOrderDate(requestDTO.getDateReceived());
                 case APPEAL_CC -> {
                     IOJAppealDTO iojAppealDTO =
