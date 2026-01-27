@@ -1,1 +1,16 @@
+# Normalize text files to LF in the repo (prevents CI-only Spotless diffs)
 * text=auto eol=lf
+
+# Keep Windows scripts as CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Common project file types
+*.sh    text eol=lf
+*.gradle text eol=lf
+*.kts   text eol=lf
+*.java  text eol=lf
+*.sql   text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
