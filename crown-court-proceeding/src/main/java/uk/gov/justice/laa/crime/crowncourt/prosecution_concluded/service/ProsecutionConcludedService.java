@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
+import static uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator.CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.justice.laa.crime.crowncourt.dto.maatcourtdata.RepOrderDTO;
@@ -14,6 +16,7 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.impl.Prosecutio
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
+import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
@@ -37,6 +40,7 @@ public class ProsecutionConcludedService {
     private final CourtDataAPIService courtDataAPIService;
     private final ReactivatedCaseDetectionService reactivatedCaseDetectionService;
     private final CrownCourtCodeHelper crownCourtCodeHelper;
+    private final DeadLetterMessageService deadLetterMessageService;
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
         log.info("CC Outcome process is kicked off for  maat-id {}", prosecutionConcluded.getMaatId());
@@ -113,7 +117,16 @@ public class ProsecutionConcludedService {
                 concludedDTO.getProsecutionConcluded().getMaatId());
 
         if (Objects.isNull(prosecutionConcluded.getApplicationConcluded())) {
-            prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
+
+            if (repOrderDTO.getMagsOutcome() == null) {
+                log.info("Mags outcome does not exists for this maat-id {}", prosecutionConcluded.getMaatId());
+                prosecutionConcludedDataService.execute(prosecutionConcluded);
+                if (deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
+                        prosecutionConcluded.getMaatId(), CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME)) {
+                    prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
+                }
+            }
+
             prosecutionConcludedValidator.validateIsAppealMissing(repOrderDTO.getCatyCaseType());
         } else {
             prosecutionConcludedValidator.validateApplicationResultCode(

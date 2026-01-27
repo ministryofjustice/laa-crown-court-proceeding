@@ -3,11 +3,16 @@ package uk.gov.justice.laa.crime.crowncourt.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator.CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME;
 
 import uk.gov.justice.laa.crime.crowncourt.entity.DeadLetterMessageEntity;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
 import uk.gov.justice.laa.crime.crowncourt.repository.DeadLetterMessageRepository;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,5 +48,40 @@ class DeadLetterMessageServiceTest {
         assertThat(deadLetterMessageEntity.getDeadLetterReason()).isEqualTo(errorReason);
         assertThat(deadLetterMessageEntity.getMessage()).isEqualTo(prosecutionConcluded);
         assertThat(deadLetterMessageEntity.getReportingStatus()).isEqualTo(reportingStatus);
+    }
+
+    @Test
+    void existsInDeadLetterQueueReturnsTrueWhenEntriesFoundForMaatId() {
+        Integer maatId = 987654;
+        DeadLetterMessageEntity entity = DeadLetterMessageEntity.builder()
+                .message(uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded.builder()
+                        .maatId(maatId)
+                        .build())
+                .build();
+        when(deadLetterMessageRepository.findByMaatIdAndDeadLetterReasonNot(
+                        maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME))
+                .thenReturn(List.of(entity));
+
+        boolean result = deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
+                maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
+
+        assertThat(result).isFalse();
+        verify(deadLetterMessageRepository, times(1))
+                .findByMaatIdAndDeadLetterReasonNot(maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
+    }
+
+    @Test
+    void existsInDeadLetterQueueReturnsFalseWhenNoEntriesFoundForMaatId() {
+        Integer maatId = 111111;
+        when(deadLetterMessageRepository.findByMaatIdAndDeadLetterReasonNot(
+                        maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME))
+                .thenReturn(Collections.emptyList());
+
+        boolean result = deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
+                maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
+
+        assertThat(result).isTrue();
+        verify(deadLetterMessageRepository, times(1))
+                .findByMaatIdAndDeadLetterReasonNot(maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
     }
 }

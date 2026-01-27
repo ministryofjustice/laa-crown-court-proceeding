@@ -1,0 +1,19 @@
+{
+  "name": "api_internal_v1_assessment_wq-hearing_1bbdf9ee-f426-488d-9fb2-c690377d6fd6_maatid_6158011",
+  "request": {
+    "url": "/api/internal/v1/assessment/wq-hearing/1bbdf9ee-f426-488d-9fb2-c690377d6fd6/maatId/6158011",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "[{\"txId\":8072786,\"caseId\":665471,\"hearingUUID\":\"1bbdf9ee-f426-488d-9fb2-c690377d6fd6\",\"maatId\":6158011,\"wqJurisdictionType\":\"MAGISTRATES\",\"ouCourtLocation\":\"B01LY\",\"createdDateTime\":\"2022-01-10T00:11:50.615843\",\"updatedDateTime\":\"2022-01-10T00:11:50.615861\",\"caseUrn\":\"21GN1208521\",\"resultCodes\":\"3045,1000\"}]",
+    "headers": {
+      "Date": "Mon, 18 Sep 2023 10:56:33 GMT",
+      "Content-Type": "application/json",
+      "apigw-requestid": "LcvzNjFBLPEEM0g=",
+      "X-Amzn-Trace-Id": "Root=1-65082ce1-3335142f16d1a0b5224f38c6;"
+    }
+  },
+  "persistent": true,
+  "insertionIndex": 13
+}
