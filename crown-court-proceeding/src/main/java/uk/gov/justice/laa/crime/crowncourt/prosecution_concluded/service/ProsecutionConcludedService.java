@@ -123,9 +123,7 @@ public class ProsecutionConcludedService {
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
                 if (deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
                         prosecutionConcluded.getMaatId(), CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME)) {
-                    log.info(
-                            "Logging dead letter message for this maat-id {}",
-                            prosecutionConcluded.getMaatId());
+                    log.info("Logging dead letter message for this maat-id {}", prosecutionConcluded.getMaatId());
                     prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
                 }
             }
