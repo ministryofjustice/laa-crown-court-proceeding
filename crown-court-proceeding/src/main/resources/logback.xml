@@ -2,6 +2,8 @@
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} traceId: %X{traceId:-} spanId: %X{spanId:-} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} traceId: %X{traceId:-} spanId: %X{spanId:-} sqsMessageId: %X{sqsMessageId:-} maatId: %X{maatId:-} laaTransactionId: %X{laaTransactionId:-} [%thread] %-5level %logger{36} - %msg%n</pattern>
+
         </encoder>
     </appender>
 

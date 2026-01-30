@@ -6,6 +6,10 @@ logging:
     root: ${LOG_LEVEL}
     org.springframework.web: ${LOG_LEVEL}
     org.springframework.security: ${LOG_LEVEL}
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.springframework.transaction: DEBUG
+    org.springframework.orm.jpa: DEBUG
 
 management:
   server:
