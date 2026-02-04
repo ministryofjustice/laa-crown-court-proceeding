@@ -28,14 +28,9 @@ public class DeadLetterMessageService {
         deadLetterMessageRepository.save(entity);
     }
 
-    public boolean hasNoDeadLetterMessageForMaatId(Integer maatId, String reasonToExclude) {
-
-        log.debug("Checking for dead letter messages for maatId: {} excluding reason: {}", maatId, reasonToExclude);
-
-        boolean response = deadLetterMessageRepository
-                .findByMaatIdAndDeadLetterReason(maatId, reasonToExclude)
+    public boolean hasNoDeadLetterMessageForMaatId(Integer maatId, String reason) {
+        return deadLetterMessageRepository
+                .findByMaatIdAndDeadLetterReason(maatId, reason)
                 .isEmpty();
-        log.debug("Dead letter message presence check result for maatId {}: {}", maatId, response);
-        return response;
     }
 }

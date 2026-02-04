@@ -109,17 +109,13 @@ public class ProsecutionConcludedService {
         } else {
             calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences);
         }
-        log.info("calculated outcome is {} for this maat-id {}", calculatedOutcome, prosecutionConcluded.getMaatId());
-        log.info("Building concluded DTO for this maat-id {}", prosecutionConcluded.getMaatId());
         ConcludedDTO concludedDTO =
                 caseConclusionDTOBuilder.build(prosecutionConcluded, wqHearingDTO, calculatedOutcome, crownCourtCode);
         RepOrderDTO repOrderDTO = courtDataAPIService.getRepOrder(
                 concludedDTO.getProsecutionConcluded().getMaatId());
-        log.info("Rep order retrieved for this maat-id {}", prosecutionConcluded.getMaatId());
+
         if (Objects.isNull(prosecutionConcluded.getApplicationConcluded())) {
-            log.info("Validating Mags outcome for this maat-id {}", prosecutionConcluded.getMaatId());
             if (repOrderDTO.getMagsOutcome() == null) {
-                log.info("Mags outcome does not exists for this maat-id {}", prosecutionConcluded.getMaatId());
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
                 if (deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
                         prosecutionConcluded.getMaatId(), CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME)) {
