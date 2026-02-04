@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.entity.DeadLetterMessageEntity;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
@@ -113,7 +115,19 @@ class ProsecutionListenerDeadLetterMockTest {
         ProsecutionConcluded expectedMessage = gson.fromJson(queueMessage, ProsecutionConcluded.class);
         setReservationState(ProsecutionListenerTest.ReservationScenarioState.STATE_2.getValue());
 
-        amazonSQS.sendMessage(queueUrl, queueMessage);
+        SendMessageRequest request = new SendMessageRequest()
+                .withQueueUrl(queueUrl)
+                .withMessageBody(queueMessage)
+                .addMessageAttributesEntry(
+                        "MessageId",
+                        new MessageAttributeValue()
+                                .withDataType("String")
+                                .withStringValue("343434")
+                );
+
+        amazonSQS.sendMessage(request);
+
+
 
         with().pollDelay(5, SECONDS)
                 .pollInterval(2, SECONDS)
