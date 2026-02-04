@@ -33,7 +33,7 @@ public class DeadLetterMessageService {
         log.debug("Checking for dead letter messages for maatId: {} excluding reason: {}", maatId, reasonToExclude);
 
         boolean response = deadLetterMessageRepository
-                .findByMaatIdAndDeadLetterReasonNot(maatId, reasonToExclude)
+                .findByMaatIdAndDeadLetterReason(maatId, reasonToExclude)
                 .isEmpty();
         log.debug("Dead letter message presence check result for maatId {}: {}", maatId, response);
         return response;

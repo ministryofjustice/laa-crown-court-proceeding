@@ -26,8 +26,8 @@ public interface DeadLetterMessageRepository extends JpaRepository<DeadLetterMes
                 FROM crown_court_proceeding.DEAD_LETTER_MESSAGE dlm
                 WHERE (dlm.MESSAGE->>'maatId') ~ '^[0-9]+$'
                   AND CAST(dlm.MESSAGE->>'maatId' AS INTEGER) = :maatId
-                  AND dlm.REASON NOT LIKE :excludedReason
+                  AND dlm.REASON LIKE :excludedReason
                 """, nativeQuery = true)
-    List<DeadLetterMessageEntity> findByMaatIdAndDeadLetterReasonNot(
+    List<DeadLetterMessageEntity> findByMaatIdAndDeadLetterReason(
             @Param("maatId") Integer maatId, @Param("excludedReason") String excludedReason);
 }
