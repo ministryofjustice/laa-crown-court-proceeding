@@ -12,13 +12,15 @@ import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.crowncourt.util.LogCorrelation;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
+import java.util.Optional;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+
 import com.google.gson.Gson;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -45,16 +47,16 @@ public class ProsecutionConcludedListener {
 
             correlationIds = deriveCorrelationIds(prosecutionConcluded);
 
-            try (LogCorrelation ignored = LogCorrelation.fromHeadersAndPayload(
-                    headers, correlationIds.maatId(), correlationIds.txId())) {
+            try (LogCorrelation ignored =
+                    LogCorrelation.fromHeadersAndPayload(headers, correlationIds.maatId(), correlationIds.txId())) {
 
                 queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
                 prosecutionConcludedService.execute(prosecutionConcluded);
                 log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
             }
         } catch (ValidationException exception) {
-            try (LogCorrelation ignored = LogCorrelation.fromHeadersAndPayload(
-                    headers, correlationIds.maatId(), correlationIds.txId())) {
+            try (LogCorrelation ignored =
+                    LogCorrelation.fromHeadersAndPayload(headers, correlationIds.maatId(), correlationIds.txId())) {
 
                 log.warn("ProsecutionConcluded validation failed: {}", exception.getMessage());
 
@@ -66,8 +68,7 @@ public class ProsecutionConcludedListener {
     }
 
     private CorrelationIds deriveCorrelationIds(ProsecutionConcluded prosecutionConcluded) {
-        Optional<Integer> maatId = Optional.ofNullable(prosecutionConcluded)
-                .map(ProsecutionConcluded::getMaatId);
+        Optional<Integer> maatId = Optional.ofNullable(prosecutionConcluded).map(ProsecutionConcluded::getMaatId);
 
         Optional<String> txId = Optional.ofNullable(prosecutionConcluded)
                 .map(ProsecutionConcluded::getMetadata)
@@ -76,5 +77,5 @@ public class ProsecutionConcludedListener {
         return new CorrelationIds(maatId, txId);
     }
 
-    private record CorrelationIds(Optional<Integer> maatId, Optional<String> txId) { }
+    private record CorrelationIds(Optional<Integer> maatId, Optional<String> txId) {}
 }

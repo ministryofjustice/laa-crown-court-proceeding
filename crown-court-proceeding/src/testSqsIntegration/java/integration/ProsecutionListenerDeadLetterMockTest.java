@@ -6,8 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.with;
 
-import com.amazonaws.services.sqs.model.MessageAttributeValue;
-import com.amazonaws.services.sqs.model.SendMessageRequest;
 import uk.gov.justice.laa.crime.crowncourt.CrownCourtProceedingApplication;
 import uk.gov.justice.laa.crime.crowncourt.entity.DeadLetterMessageEntity;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
@@ -43,6 +41,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -120,14 +120,9 @@ class ProsecutionListenerDeadLetterMockTest {
                 .withMessageBody(queueMessage)
                 .addMessageAttributesEntry(
                         "MessageId",
-                        new MessageAttributeValue()
-                                .withDataType("String")
-                                .withStringValue("343434")
-                );
+                        new MessageAttributeValue().withDataType("String").withStringValue("343434"));
 
         amazonSQS.sendMessage(request);
-
-
 
         with().pollDelay(5, SECONDS)
                 .pollInterval(2, SECONDS)

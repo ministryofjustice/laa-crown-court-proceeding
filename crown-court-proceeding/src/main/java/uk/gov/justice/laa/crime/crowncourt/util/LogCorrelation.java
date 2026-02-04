@@ -11,9 +11,8 @@ public final class LogCorrelation implements AutoCloseable {
     static final String MDC_MAAT_ID = "maatId";
     static final String MDC_TX_ID = "laaTransactionId";
 
-    public static LogCorrelation fromHeadersAndPayload(final MessageHeaders headers,
-                                                       final Optional<Integer> maatId,
-                                                       final Optional<String> txId) {
+    public static LogCorrelation fromHeadersAndPayload(
+            final MessageHeaders headers, final Optional<Integer> maatId, final Optional<String> txId) {
         final LogCorrelation scope = new LogCorrelation();
 
         final Object messageId = headers.get("MessageId");
