@@ -9,6 +9,7 @@ logging:
     org.hibernate.SQL: INFO
     org.hibernate.orm.jdbc.bind: INFO
     org.springframework.transaction: INFO
+    org.springframework.jdbc.core: INFO
     org.springframework.orm.jpa: INFO
 
 management:
