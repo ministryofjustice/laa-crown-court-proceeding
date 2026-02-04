@@ -58,7 +58,7 @@ class DeadLetterMessageServiceTest {
                         .maatId(maatId)
                         .build())
                 .build();
-        when(deadLetterMessageRepository.findByMaatIdAndDeadLetterReasonNot(
+        when(deadLetterMessageRepository.findByMaatIdAndDeadLetterReason(
                         maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME))
                 .thenReturn(List.of(entity));
 
@@ -67,13 +67,13 @@ class DeadLetterMessageServiceTest {
 
         assertThat(result).isFalse();
         verify(deadLetterMessageRepository, times(1))
-                .findByMaatIdAndDeadLetterReasonNot(maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
+                .findByMaatIdAndDeadLetterReason(maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
     }
 
     @Test
     void existsInDeadLetterQueueReturnsFalseWhenNoEntriesFoundForMaatId() {
         Integer maatId = 111111;
-        when(deadLetterMessageRepository.findByMaatIdAndDeadLetterReasonNot(
+        when(deadLetterMessageRepository.findByMaatIdAndDeadLetterReason(
                         maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME))
                 .thenReturn(Collections.emptyList());
 
@@ -82,6 +82,6 @@ class DeadLetterMessageServiceTest {
 
         assertThat(result).isTrue();
         verify(deadLetterMessageRepository, times(1))
-                .findByMaatIdAndDeadLetterReasonNot(maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
+                .findByMaatIdAndDeadLetterReason(maatId, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
     }
 }
