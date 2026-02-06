@@ -7,7 +7,7 @@ import org.springframework.messaging.MessageHeaders;
 
 public final class LogCorrelation implements AutoCloseable {
 
-    static final String MDC_MESSAGE_ID = "sqsMessageId";
+    static final String MDC_MESSAGE_ID = "MessageId";
     static final String MDC_MAAT_ID = "maatId";
     static final String MDC_TX_ID = "laaTransactionId";
 
@@ -15,7 +15,7 @@ public final class LogCorrelation implements AutoCloseable {
             final MessageHeaders headers, final Optional<Integer> maatId, final Optional<String> txId) {
         final LogCorrelation scope = new LogCorrelation();
 
-        final Object messageId = headers.get("MessageId");
+        final Object messageId = headers.get(MDC_MESSAGE_ID);
         if (messageId != null) {
             MDC.put(MDC_MESSAGE_ID, String.valueOf(messageId));
         }
