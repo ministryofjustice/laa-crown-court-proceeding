@@ -45,7 +45,7 @@ public class ProsecutionConcludedListener {
             prosecutionConcludedValidator.validateMaatId(message);
             prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
 
-            correlationIds = deriveCorrelationIds(prosecutionConcluded);
+            correlationIds = populateCorrelationIds(prosecutionConcluded);
 
             try (LogCorrelation ignored =
                     LogCorrelation.fromHeadersAndPayload(headers, correlationIds.maatId(), correlationIds.txId())) {
@@ -67,7 +67,7 @@ public class ProsecutionConcludedListener {
         }
     }
 
-    private CorrelationIds deriveCorrelationIds(ProsecutionConcluded prosecutionConcluded) {
+    private CorrelationIds populateCorrelationIds(ProsecutionConcluded prosecutionConcluded) {
         Optional<Integer> maatId = Optional.ofNullable(prosecutionConcluded).map(ProsecutionConcluded::getMaatId);
 
         Optional<String> txId = Optional.ofNullable(prosecutionConcluded)
