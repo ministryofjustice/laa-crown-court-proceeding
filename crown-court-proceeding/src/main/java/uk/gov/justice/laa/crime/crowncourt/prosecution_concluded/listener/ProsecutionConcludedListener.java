@@ -3,16 +3,16 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.justice.laa.crime.crowncourt.model.Metadata;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.logs.CorrelationIds;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.logs.LogCorrelation;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
 import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
-import uk.gov.justice.laa.crime.crowncourt.util.LogCorrelation;
 import uk.gov.justice.laa.crime.exception.ValidationException;
-
-import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.MessageHeaders;
@@ -37,7 +37,7 @@ public class ProsecutionConcludedListener {
     @SqsListener(value = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
     public void receive(@Payload final String message, final @Headers MessageHeaders headers) {
         ProsecutionConcluded prosecutionConcluded = null;
-        CorrelationIds correlationIds = new CorrelationIds(Optional.empty(), Optional.empty());
+        CorrelationIds correlationIds = new CorrelationIds(null, null);
 
         try {
             log.debug("message-id {}", headers.get("MessageId"));
@@ -47,16 +47,14 @@ public class ProsecutionConcludedListener {
 
             correlationIds = populateCorrelationIds(prosecutionConcluded);
 
-            try (LogCorrelation ignored =
-                    LogCorrelation.fromHeadersAndPayload(headers, correlationIds.maatId(), correlationIds.txId())) {
+            try (LogCorrelation ignored = LogCorrelation.fromHeadersAndPayload(headers, correlationIds)) {
 
                 queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
                 prosecutionConcludedService.execute(prosecutionConcluded);
                 log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
             }
         } catch (ValidationException exception) {
-            try (LogCorrelation ignored =
-                    LogCorrelation.fromHeadersAndPayload(headers, correlationIds.maatId(), correlationIds.txId())) {
+            try (LogCorrelation ignored = LogCorrelation.fromHeadersAndPayload(headers, correlationIds)) {
 
                 log.warn("ProsecutionConcluded validation failed: {}", exception.getMessage());
 
@@ -67,15 +65,17 @@ public class ProsecutionConcludedListener {
         }
     }
 
-    private CorrelationIds populateCorrelationIds(ProsecutionConcluded prosecutionConcluded) {
-        Optional<Integer> maatId = Optional.ofNullable(prosecutionConcluded).map(ProsecutionConcluded::getMaatId);
-
-        Optional<String> txId = Optional.ofNullable(prosecutionConcluded)
+    private CorrelationIds populateCorrelationIds(ProsecutionConcluded pc) {
+        if (pc == null) {
+            return CorrelationIds.empty();
+        }
+        Integer maatId = pc.getMaatId();
+        String txId = java.util.Optional.ofNullable(pc)
                 .map(ProsecutionConcluded::getMetadata)
-                .map(metadata -> metadata.getLaaTransactionId());
+                .map(Metadata::getLaaTransactionId)
+                .filter(val -> !val.isBlank())
+                .orElse(null);
 
         return new CorrelationIds(maatId, txId);
     }
-
-    private record CorrelationIds(Optional<Integer> maatId, Optional<String> txId) {}
 }
