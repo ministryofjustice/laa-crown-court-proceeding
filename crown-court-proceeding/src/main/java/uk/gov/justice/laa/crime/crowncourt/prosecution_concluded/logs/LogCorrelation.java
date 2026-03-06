@@ -9,24 +9,24 @@ public final class LogCorrelation implements AutoCloseable {
 
     private LogCorrelation() {}
 
-    public static LogCorrelation fromHeadersAndPayload(final MessageHeaders headers, CorrelationIds ids) {
-        if (ids == null) {
-            ids = CorrelationIds.empty();
-        }
-
+    public static LogCorrelation fromHeaders(final MessageHeaders headers) {
         final Object messageId = headers.get(HEADER_MESSAGE_ID);
         if (messageId != null) {
             MDC.put(LogCorrelationField.MESSAGE_ID.getFieldName(), String.valueOf(messageId));
         }
+        return new LogCorrelation();
+    }
 
+    public void enrichWith(CorrelationIds ids) {
+        if (ids == null) {
+            return;
+        }
         if (ids.hasMaatId()) {
             MDC.put(LogCorrelationField.MAAT_ID.getFieldName(), String.valueOf(ids.maatId()));
         }
         if (ids.hasTxId()) {
             MDC.put(LogCorrelationField.LAA_TRANSACTION_ID.getFieldName(), ids.txId());
         }
-
-        return new LogCorrelation();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener;
 
+import com.google.gson.JsonParseException;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,31 +38,26 @@ public class ProsecutionConcludedListener {
     @SqsListener(value = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
     public void receive(@Payload final String message, final @Headers MessageHeaders headers) {
         ProsecutionConcluded prosecutionConcluded = null;
-        CorrelationIds correlationIds = new CorrelationIds(null, null);
-
-        try {
-            log.debug("message-id {}", headers.get("MessageId"));
+        try (LogCorrelation logContext = LogCorrelation.fromHeaders(headers)) {
+            prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
+            logContext.enrichWith(populateCorrelationIds(prosecutionConcluded));
 
             prosecutionConcludedValidator.validateMaatId(message);
-            prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
 
-            correlationIds = populateCorrelationIds(prosecutionConcluded);
-
-            try (LogCorrelation ignored = LogCorrelation.fromHeadersAndPayload(headers, correlationIds)) {
-
-                queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
-                prosecutionConcludedService.execute(prosecutionConcluded);
-                log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
-            }
+            queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
+            prosecutionConcludedService.execute(prosecutionConcluded);
+            log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
         } catch (ValidationException exception) {
-            try (LogCorrelation ignored = LogCorrelation.fromHeadersAndPayload(headers, correlationIds)) {
-
-                log.warn("ProsecutionConcluded validation failed: {}", exception.getMessage());
-
-                if (!exception.getMessage().equalsIgnoreCase(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT)) {
-                    deadLetterMessageService.logDeadLetterMessage(exception.getMessage(), prosecutionConcluded);
-                }
+            log.warn("ProsecutionConcluded validation failed: {}", exception.getMessage());
+            if (!exception.getMessage().equalsIgnoreCase(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT)) {
+                deadLetterMessageService.logDeadLetterMessage(exception.getMessage(), prosecutionConcluded);
             }
+        } catch (JsonParseException exception) {
+            log.warn("Invalid JSON payload: {}", exception.getMessage());
+            deadLetterMessageService.logDeadLetterMessage("Invalid JSON", prosecutionConcluded);
+        } catch (Exception exception) {
+            log.error("Unexpected error handling ProsecutionConcluded", exception);
+            deadLetterMessageService.logDeadLetterMessage("Unexpected error", prosecutionConcluded);
         }
     }
 
