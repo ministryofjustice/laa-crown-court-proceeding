@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener;
 
-import com.google.gson.JsonParseException;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,12 +51,6 @@ public class ProsecutionConcludedListener {
             if (!exception.getMessage().equalsIgnoreCase(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT)) {
                 deadLetterMessageService.logDeadLetterMessage(exception.getMessage(), prosecutionConcluded);
             }
-        } catch (JsonParseException exception) {
-            log.warn("Invalid JSON payload: {}", exception.getMessage());
-            deadLetterMessageService.logDeadLetterMessage("Invalid JSON", prosecutionConcluded);
-        } catch (Exception exception) {
-            log.error("Unexpected error handling ProsecutionConcluded", exception);
-            deadLetterMessageService.logDeadLetterMessage("Unexpected error", prosecutionConcluded);
         }
     }
 
