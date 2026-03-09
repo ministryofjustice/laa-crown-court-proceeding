@@ -1,4 +1,5 @@
-FROM amazoncorretto:21-alpine
+FROM amazoncorretto:21-alpine3.23-jdk
+RUN apk add --no-cache --upgrade zlib=1.3.2-r0
 RUN mkdir -p /opt/laa-crown-court-proceeding/
 WORKDIR /opt/laa-crown-court-proceeding/
 COPY ./build/libs/crown-court-proceeding.jar /opt/laa-crown-court-proceeding/app.jar
