@@ -21,7 +21,7 @@ def versions = [
         crimeCommonsClasses     : "4.32.0",
         commonsModSchemas       : "1.49.0",
         springDoc               : "2.8.14",
-        awsSTS                  : "2.39.2",
+        awsSTS                  : "2.42.25",
         awsJavaSDK              : "1.12.793",
         testcontainers          : "1.21.4",
         resilience4j            : "2.3.0",
