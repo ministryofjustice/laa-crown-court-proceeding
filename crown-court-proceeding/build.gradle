@@ -19,7 +19,7 @@ def versions = [
         sqsMessaging            : "2.1.4",
         springCloud             : "3.4.1",
         crimeCommonsClasses     : "4.32.0",
-        commonsModSchemas       : "1.36.0",
+        commonsModSchemas       : "1.49.0",
         springDoc               : "2.8.14",
         awsSTS                  : "2.39.2",
         awsJavaSDK              : "1.12.793",
