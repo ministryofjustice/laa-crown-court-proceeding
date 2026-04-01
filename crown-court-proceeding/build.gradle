@@ -23,7 +23,7 @@ def versions = [
         springDoc               : "2.8.14",
         awsSTS                  : "2.39.2",
         awsJavaSDK              : "1.12.793",
-        testcontainers          : "1.21.3",
+        testcontainers          : "1.21.4",
         resilience4j            : "2.3.0",
         wiremock                : "4.0.8",
         notifyClient            : "5.2.1-RELEASE"
