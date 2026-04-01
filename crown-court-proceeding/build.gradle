@@ -18,7 +18,7 @@ def versions = [
         sentry                  : "8.37.1",
         sqsMessaging            : "2.1.4",
         springCloud             : "3.4.1",
-        crimeCommonsClasses     : "4.10.0",
+        crimeCommonsClasses     : "4.32.0",
         commonsModSchemas       : "1.36.0",
         springDoc               : "2.8.14",
         awsSTS                  : "2.39.2",
