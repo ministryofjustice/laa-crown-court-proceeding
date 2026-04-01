@@ -15,7 +15,7 @@ jacoco {
 }
 
 def versions = [
-        sentry                  : "8.26.0",
+        sentry                  : "8.37.1",
         sqsMessaging            : "2.1.4",
         springCloud             : "3.4.1",
         crimeCommonsClasses     : "4.10.0",
