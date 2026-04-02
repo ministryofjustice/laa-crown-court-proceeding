@@ -1,4 +1,4 @@
-package integration;
+package uk.gov.justice.laa.crime.crowncourt.integration;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
 import static com.github.tomakehurst.wiremock.client.WireMock.findAll;

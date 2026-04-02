@@ -1,4 +1,4 @@
-package integration;
+package uk.gov.justice.laa.crime.crowncourt.integration;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.setScenarioState;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -23,11 +23,11 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.containers.localstack.LocalStackContainer.Service;
 import org.testcontainers.junit.jupiter.Container;
@@ -73,7 +73,7 @@ class ProsecutionListenerDeadLetterMockTest {
     @Autowired
     private DeadLetterMessageRepository deadLetterMessageRepository;
 
-    @MockBean
+    @MockitoBean
     private DeadLetterMessageRepository mockedDeadLetterMessageRepository;
 
     @DynamicPropertySource
