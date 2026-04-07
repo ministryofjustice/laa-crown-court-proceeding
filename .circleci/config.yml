@@ -252,7 +252,7 @@ workflows:
 
       - build_scan_and_push_image:
           requires:
-            - build_and_scan
+            - build_and_scan_app
           context: laa-crime-apps-slack
 
       - deploy-dev:
@@ -301,7 +301,7 @@ workflows:
 
       - build_scan_and_push_image:
           requires:
-            - build_and_scan
+            - build_and_scan_app
           context: laa-crime-apps-slack
 
       - hold_install_on_dev:
