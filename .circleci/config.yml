@@ -126,7 +126,7 @@ commands:
 # JOBS
 # ------------------
 jobs:
-  build_and_scan:
+  build_and_scan_app:
     executor: build-executor
     steps:
       - checkout:
@@ -243,7 +243,7 @@ workflows:
 
   build-deploy-master:
     jobs:
-      - build_and_scan:
+      - build_and_scan_app:
           filters:
             branches:
               only:
@@ -292,7 +292,7 @@ workflows:
 
   build-deploy-branch:
     jobs:
-      - build_and_scan:
+      - build_and_scan_app:
           filters:
             branches:
               ignore:
