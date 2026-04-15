@@ -42,6 +42,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import com.amazonaws.services.sqs.model.MessageAttributeValue;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -115,7 +117,14 @@ class ProsecutionListenerDeadLetterMockTest {
         ProsecutionConcluded expectedMessage = gson.fromJson(queueMessage, ProsecutionConcluded.class);
         setReservationState(ProsecutionListenerTest.ReservationScenarioState.STATE_2.getValue());
 
-        amazonSQS.sendMessage(queueUrl, queueMessage);
+        SendMessageRequest request = new SendMessageRequest()
+                .withQueueUrl(queueUrl)
+                .withMessageBody(queueMessage)
+                .addMessageAttributesEntry(
+                        "MessageId",
+                        new MessageAttributeValue().withDataType("String").withStringValue("343434"));
+
+        amazonSQS.sendMessage(request);
 
         with().pollDelay(5, SECONDS)
                 .pollInterval(2, SECONDS)
