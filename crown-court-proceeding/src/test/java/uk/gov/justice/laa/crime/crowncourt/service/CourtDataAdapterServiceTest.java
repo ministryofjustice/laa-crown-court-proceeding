@@ -1,11 +1,13 @@
 package uk.gov.justice.laa.crime.crowncourt.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.argThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 
+import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.client.CourtDataAdaptorNonServletApiClient;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAdapterService;
 
@@ -49,5 +51,15 @@ class CourtDataAdapterServiceTest {
 
         assertThatThrownBy(() -> courtDataAdapterService.triggerHearingProcessing(testHearingId))
                 .isInstanceOf(WebClientResponseException.class);
+    }
+
+    @Test
+    void givenAValidHearingId_whenTriggerHearingProcessingIsInvokedAndTheCallFails_thenFailureIsHandled1() {
+
+        courtDataAdapterService.getHearingResult(
+                TestModelDataBuilder.getProsecutionConcluded(true, false, false, false), UUID.randomUUID());
+
+        verify(cdaAPIClient).getHearingResult(any(UUID.class), argThat(params -> "false"
+                .equals(params.getFirst("publish_to_queue"))));
     }
 }
