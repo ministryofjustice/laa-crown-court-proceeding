@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.ResultCode;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Result;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
@@ -14,6 +15,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -34,6 +36,10 @@ public class ProsecutionConcludedValidator {
     public static final String APPEAL_IS_MISSING = "application concluded is missing for appeal.";
     public static final String INVALID_APPLICATION_RESULT_CODE = "Application Result Code is invalid.";
     public static final String MISSING_APPLICATION_RESULT_CODE = "Application Result Code is missing.";
+
+    public static final String HEARING_RESULT_MISSING =
+            "Hearing result is missing when pleas and verdict is not available.";
+
     protected static final List<String> RESULT_CODE =
             Arrays.stream(ResultCode.values()).map(ResultCode::name).toList();
 
@@ -92,6 +98,12 @@ public class ProsecutionConcludedValidator {
                             && applicationResult.contains(ResultCode.AASA.name())))) {
                 throw new ValidationException(INVALID_APPLICATION_RESULT_CODE);
             }
+        }
+    }
+
+    public void validateHearingResultIsMissing(List<Result> results) {
+        if (CollectionUtils.isEmpty(results)) {
+            throw new ValidationException(HEARING_RESULT_MISSING);
         }
     }
 }

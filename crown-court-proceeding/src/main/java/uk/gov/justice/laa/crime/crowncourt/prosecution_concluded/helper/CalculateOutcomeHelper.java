@@ -3,7 +3,10 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.OffenceSummary;
-import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedDataService;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Result;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.CourtDataAdapterService;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.CrownCourtTrialOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.PleaTrialOutcome;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.VerdictTrialOutcome;
@@ -20,16 +23,19 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CalculateOutcomeHelper {
 
-    private final ProsecutionConcludedDataService prosecutionConcludedDataService;
+    private final CourtDataAdapterService courtDataAdapterService;
 
-    public String calculate(List<OffenceSummary> offenceSummaryList) {
-        List<String> outcomes = buildOffenceOutComes(offenceSummaryList);
+    private final ProsecutionConcludedValidator prosecutionConcludedValidator;
+
+    public String calculate(List<OffenceSummary> offenceSummaryList, ProsecutionConcluded prosecutionConcluded) {
+        List<String> outcomes = buildOffenceOutComes(offenceSummaryList, prosecutionConcluded);
 
         log.info("Offence count: " + outcomes.size());
         return outcomes.size() == 1 ? outcomes.get(0) : CrownCourtTrialOutcome.PART_CONVICTED.getValue();
     }
 
-    private List<String> buildOffenceOutComes(List<OffenceSummary> offenceSummaryList) {
+    private List<String> buildOffenceOutComes(
+            List<OffenceSummary> offenceSummaryList, ProsecutionConcluded prosecutionConcluded) {
         List<String> offenceOutcomeList = new ArrayList<>();
         offenceSummaryList.forEach(offence -> {
             if (isVerdictAvailable(offence)) {
@@ -50,7 +56,7 @@ public class CalculateOutcomeHelper {
                 offenceOutcomeList.add(
                         PleaTrialOutcome.getTrialOutcome(offence.getPlea().getValue()));
             } else {
-                offenceOutcomeList.add(CrownCourtTrialOutcome.AQUITTED.getValue());
+                determineOffenceOutcomeIfMissing(offence, prosecutionConcluded, offenceOutcomeList);
             }
         });
 
@@ -85,5 +91,24 @@ public class CalculateOutcomeHelper {
         return offence.getVerdict() != null
                 && offence.getVerdict().getVerdictType() != null
                 && offence.getVerdict().getVerdictType().getCategoryType() != null;
+    }
+
+    private String getOutcomeValue(boolean isConvicted) {
+        return isConvicted ? CrownCourtTrialOutcome.CONVICTED.getValue() : CrownCourtTrialOutcome.AQUITTED.getValue();
+    }
+
+    private void determineOffenceOutcomeIfMissing(
+            OffenceSummary offence, ProsecutionConcluded prosecutionConcluded, List<String> offenceOutcomeList) {
+
+        List<Result> results = courtDataAdapterService.getHearingResult(prosecutionConcluded, offence.getOffenceId());
+        prosecutionConcludedValidator.validateHearingResultIsMissing(results);
+        boolean isConvicted = isConvicted(results);
+        offenceOutcomeList.add(getOutcomeValue(isConvicted));
+    }
+
+    private boolean isConvicted(List<Result> results) {
+        return results != null
+                && !results.isEmpty()
+                && results.stream().anyMatch(r -> Boolean.TRUE.equals(r.isConvictedResult()));
     }
 }
