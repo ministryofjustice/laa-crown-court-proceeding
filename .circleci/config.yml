@@ -126,7 +126,7 @@ commands:
 # JOBS
 # ------------------
 jobs:
-  build_and_scan:
+  build_and_scan_app:
     executor: build-executor
     steps:
       - checkout:
@@ -143,7 +143,7 @@ jobs:
           command: ./gradlew clean build
       - run:
           name: Run SonarQube
-          command: ./gradlew sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.organization=${SONAR_ORG}
+          command: ./gradlew sonar
       - save_cache:
           paths:
             - ~/.gradle/wrapper
@@ -243,15 +243,16 @@ workflows:
 
   build-deploy-master:
     jobs:
-      - build_and_scan:
+      - build_and_scan_app:
           filters:
             branches:
               only:
                 - main
+          context: SonarCloud Crime
 
       - build_scan_and_push_image:
           requires:
-            - build_and_scan
+            - build_and_scan_app
           context: laa-crime-apps-slack
 
       - deploy-dev:
@@ -291,15 +292,16 @@ workflows:
 
   build-deploy-branch:
     jobs:
-      - build_and_scan:
+      - build_and_scan_app:
           filters:
             branches:
               ignore:
                 - main
+          context: SonarCloud Crime
 
       - build_scan_and_push_image:
           requires:
-            - build_and_scan
+            - build_and_scan_app
           context: laa-crime-apps-slack
 
       - hold_install_on_dev:
