@@ -74,6 +74,7 @@ class MagsProceedingServiceTest {
         }
 
         softly.assertThat(crownCourtDTO.getMagsDecisionResult()).isEqualTo(decisionResult);
+        softly.assertAll();
 
         if (expectedResult != null) {
             verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
@@ -226,6 +227,7 @@ class MagsProceedingServiceTest {
         softly.assertThat(decisionResult.getDecisionDate()).isNotNull();
         softly.assertThat(decisionResult.getDecisionReason()).isEqualTo(DecisionReason.GRANTED);
         softly.assertThat(decisionResult.getTimestamp()).isEqualTo(TestModelDataBuilder.TEST_DATE_MODIFIED);
+        softly.assertAll();
     }
 
     @Test
@@ -265,6 +267,7 @@ class MagsProceedingServiceTest {
 
         softly.assertThat(decisionResult).isNull();
         softly.assertThat(crownCourtDTO.getMagsDecisionResult()).isNull();
+        softly.assertAll();
 
         verify(maatCourtDataService, never()).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
     }
