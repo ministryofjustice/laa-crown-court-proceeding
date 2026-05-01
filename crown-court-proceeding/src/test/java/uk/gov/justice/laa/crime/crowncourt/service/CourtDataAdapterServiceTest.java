@@ -57,7 +57,7 @@ class CourtDataAdapterServiceTest {
     void givenAValidHearingId_whenTriggerHearingProcessingIsInvokedAndTheCallFails_thenFailureIsHandled1() {
 
         courtDataAdapterService.getHearingResult(
-                TestModelDataBuilder.getProsecutionConcluded(true, false, false, false), UUID.randomUUID());
+                TestModelDataBuilder.getProsecutionConcluded(true, false, false), UUID.randomUUID());
 
         verify(cdaAPIClient).getHearingResult(any(UUID.class), argThat(params -> "false"
                 .equals(params.getFirst("publish_to_queue"))));

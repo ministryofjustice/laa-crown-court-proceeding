@@ -466,8 +466,7 @@ public class TestModelDataBuilder {
                 .build();
     }
 
-    public static ProsecutionConcluded getProsecutionConcluded(
-            boolean hasOffence, boolean hasPlea, boolean verdict, boolean isResult) {
+    public static ProsecutionConcluded getProsecutionConcluded(boolean hasOffence, boolean hasPlea, boolean verdict) {
 
         ProsecutionConcluded prosecutionConcluded = ProsecutionConcluded.builder()
                 .isConcluded(true)
@@ -542,11 +541,5 @@ public class TestModelDataBuilder {
 
     private static JudicialResult getJudicialResult(boolean isConvicted) {
         return JudicialResult.builder().is_convicted_result(isConvicted).build();
-    }
-
-    public static OffenceSummary getOffenceSummary(boolean isResultRequired, boolean isConvicted) {
-        OffenceSummary offenceSummary = OffenceSummary.builder().build();
-        offenceSummary.setOffenceId(OFFENCE_ID);
-        return offenceSummary;
     }
 }
