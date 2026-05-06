@@ -36,7 +36,10 @@ public class MagsProceedingService {
     public MagsDecisionResult determineMagsRepDecision(CrownCourtDTO dto) {
         ApiIOJSummary iojSummary = dto.getIojSummary();
         ReviewResult iojResult = ReviewResult.getFrom(
-                iojSummary.getDecisionResult() != null ? iojSummary.getDecisionResult() : iojSummary.getIojResult());
+                (iojSummary.getDecisionResult() != null
+                                && !iojSummary.getDecisionResult().isBlank())
+                        ? iojSummary.getDecisionResult()
+                        : iojSummary.getIojResult());
         boolean isMagsCourt = magsCourtCaseTypes.contains(dto.getCaseType());
         if (iojResult != null && isMagsCourt) {
             DecisionReason decisionReason = getDecisionReason(dto, iojResult);

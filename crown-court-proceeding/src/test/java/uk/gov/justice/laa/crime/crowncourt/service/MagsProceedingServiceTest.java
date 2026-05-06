@@ -74,6 +74,7 @@ class MagsProceedingServiceTest {
         }
 
         softly.assertThat(crownCourtDTO.getMagsDecisionResult()).isEqualTo(decisionResult);
+        softly.assertAll();
 
         if (expectedResult != null) {
             verify(maatCourtDataService).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
@@ -208,6 +209,28 @@ class MagsProceedingServiceTest {
     }
 
     @Test
+    void givenBlankIojDecisionResult_whenDetermineMagsRepDecisionIsInvoked_thenReturnMagsDecisionResult() {
+        // given
+        CrownCourtDTO crownCourtDTO =
+                buildCrownCourtDTO(new Scenario(ReviewResult.PASS, null, null, ReviewResult.PASS, null));
+        crownCourtDTO.getIojSummary().setIojResult("PASS");
+        crownCourtDTO.getIojSummary().setDecisionResult("");
+
+        // when
+        when(maatCourtDataService.updateRepOrder(any(UpdateRepOrderRequestDTO.class)))
+                .thenReturn(RepOrderDTO.builder()
+                        .dateModified(TestModelDataBuilder.TEST_DATE_MODIFIED)
+                        .build());
+
+        MagsDecisionResult decisionResult = magsProceedingService.determineMagsRepDecision(crownCourtDTO);
+        // then
+        softly.assertThat(decisionResult.getDecisionDate()).isNotNull();
+        softly.assertThat(decisionResult.getDecisionReason()).isEqualTo(DecisionReason.GRANTED);
+        softly.assertThat(decisionResult.getTimestamp()).isEqualTo(TestModelDataBuilder.TEST_DATE_MODIFIED);
+        softly.assertAll();
+    }
+
+    @Test
     void givenPassedIojResultAndCrownCourtCaseType_whenDetermineMagsRepDecisionIsInvoked_thenReturnNull() {
         // given
         CrownCourtDTO crownCourtDTO = CrownCourtDTO.builder()
@@ -244,6 +267,7 @@ class MagsProceedingServiceTest {
 
         softly.assertThat(decisionResult).isNull();
         softly.assertThat(crownCourtDTO.getMagsDecisionResult()).isNull();
+        softly.assertAll();
 
         verify(maatCourtDataService, never()).updateRepOrder(any(UpdateRepOrderRequestDTO.class));
     }
