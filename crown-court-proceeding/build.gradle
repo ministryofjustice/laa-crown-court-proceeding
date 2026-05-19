@@ -99,6 +99,9 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
+    // ---- Pinned to Resolve Vulnerability CVE-2026-43512 ---
+    implementation "org.apache.tomcat.embed:tomcat-embed-core:10.1.55"
+
     // ---- Testing ----
     testImplementation "com.h2database:h2"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
