@@ -4,7 +4,7 @@ plugins {
     id "org.sonarqube" version "7.0.1.6134"
     id "com.diffplug.spotless" version "8.0.0"
     id "info.solidsoft.pitest" version "1.19.0"
-    id "org.springframework.boot" version "3.5.13"
+    id "org.springframework.boot" version "3.5.14"
     id "io.spring.dependency-management" version "1.1.7"
 }
 
@@ -51,6 +51,9 @@ sourceSets {
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://central.sonatype.com/repository/maven-snapshots/'
+    }
 }
 
 dependencies {
@@ -95,6 +98,9 @@ dependencies {
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    // ---- Pinned to Resolve Vulnerability CVE-2026-43512 ---
+    implementation "org.apache.tomcat.embed:tomcat-embed-core:10.1.55"
 
     // ---- Testing ----
     testImplementation "com.h2database:h2"
