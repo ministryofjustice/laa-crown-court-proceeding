@@ -110,10 +110,8 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok"
     testAnnotationProcessor "org.projectlombok:lombok"
 
-    // ---- Integration Testing ----
-    testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk-sqs:$versions.awsJavaSDK"
-    testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainers"
-    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainers"
+    testSqsIntegrationImplementation "org.testcontainers:postgresql:1.19.8"
+    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:1.19.8"
 }
 
 spotless {

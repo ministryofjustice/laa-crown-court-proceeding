@@ -1,0 +1,19 @@
+{
+  "name": "api_internal_v1_assessment_wq-hearing_not-found",
+  "request": {
+    "urlPattern": "/api/internal/v1/assessment/wq-hearing/00000000-0000-0000-0000-000000000000/maatId/[0-9]+",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": [],
+    "headers": {
+      "Date": "Tue, 19 Sep 2023 09:06:19 GMT",
+      "Content-Type": "application/json",
+      "apigw-requestid": "Lfyl6gkWrPEEPgg=",
+      "X-Amzn-Trace-Id": "Root=1-6509648b-03e35e8d7a112b9a2a69d9e3;"
+    }
+  },
+  "persistent": true,
+  "insertionIndex": 4
+}

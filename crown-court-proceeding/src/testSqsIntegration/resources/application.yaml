@@ -10,11 +10,8 @@ spring:
       region:
         static: us-east-1
 
-  datasource:
-    url: jdbc:h2:mem:crime_means_assessment;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
-    username: sa
-    password: sa
-    driver-class-name: org.h2.Driver
+  # Integration tests use a Postgres TestContainer which is configured dynamically, see AbstractProsecutionConcludedTest
+  #datasource:
 
   liquibase:
     enabled: true
@@ -22,7 +19,7 @@ spring:
     contexts: tests
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
     show-sql: true
