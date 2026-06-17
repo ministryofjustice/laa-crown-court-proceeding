@@ -4,12 +4,9 @@ plugins {
     id "org.sonarqube" version "7.0.1.6134"
     id "com.diffplug.spotless" version "8.0.0"
     id "info.solidsoft.pitest" version "1.19.0"
-    id "org.springframework.boot" version "3.5.14"
+    id "org.springframework.boot" version "3.5.15"
     id "io.spring.dependency-management" version "1.1.7"
 }
-
-// springboot tomcat version overide, can be removed when springboot is 3.5.15 or 4+
-ext['tomcat.version'] = '10.1.55'
 
 group = "uk.gov.justice.laa.crime"
 
@@ -110,8 +107,9 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok"
     testAnnotationProcessor "org.projectlombok:lombok"
 
-    testSqsIntegrationImplementation "org.testcontainers:postgresql:1.19.8"
-    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:1.19.8"
+    // ---- Integration Testing ----
+    testSqsIntegrationImplementation "org.testcontainers:postgresql:$versions.testcontainers"
+    testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainers"
 }
 
 spotless {
