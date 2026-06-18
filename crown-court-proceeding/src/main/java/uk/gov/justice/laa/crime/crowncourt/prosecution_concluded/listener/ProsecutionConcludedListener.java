@@ -3,6 +3,9 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.justice.laa.crime.crowncourt.model.Metadata;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.logs.CorrelationIds;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.logs.LogCorrelation;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
@@ -34,22 +37,34 @@ public class ProsecutionConcludedListener {
     @SqsListener(value = "${cloud-platform.aws.sqs.queue.prosecutionConcluded}")
     public void receive(@Payload final String message, final @Headers MessageHeaders headers) {
         ProsecutionConcluded prosecutionConcluded = null;
-
-        try {
-            log.debug("message-id {}", headers.get("MessageId"));
+        try (LogCorrelation logContext = LogCorrelation.fromHeaders(headers)) {
+            prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
+            logContext.enrichWith(populateCorrelationIds(prosecutionConcluded));
 
             prosecutionConcludedValidator.validateMaatId(message);
 
             queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
-            prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
             prosecutionConcludedService.execute(prosecutionConcluded);
             log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
         } catch (ValidationException exception) {
-            log.warn(exception.getMessage());
-
+            log.warn("ProsecutionConcluded validation failed: {}", exception.getMessage());
             if (!exception.getMessage().equalsIgnoreCase(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT)) {
                 deadLetterMessageService.logDeadLetterMessage(exception.getMessage(), prosecutionConcluded);
             }
         }
+    }
+
+    private CorrelationIds populateCorrelationIds(ProsecutionConcluded pc) {
+        if (pc == null) {
+            return CorrelationIds.empty();
+        }
+        Integer maatId = pc.getMaatId();
+        String txId = java.util.Optional.ofNullable(pc)
+                .map(ProsecutionConcluded::getMetadata)
+                .map(Metadata::getLaaTransactionId)
+                .filter(val -> !val.isBlank())
+                .orElse(null);
+
+        return new CorrelationIds(maatId, txId);
     }
 }
