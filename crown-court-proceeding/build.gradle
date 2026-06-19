@@ -25,7 +25,7 @@ def versions = [
         awsJavaSDK              : "1.12.793",
         testcontainers          : "1.21.4",
         resilience4j            : "2.4.0",
-        wiremock                : "4.0.8",
+        wiremock                : "4.2.1",
         notifyClient            : "5.2.1-RELEASE"
 ]
 
