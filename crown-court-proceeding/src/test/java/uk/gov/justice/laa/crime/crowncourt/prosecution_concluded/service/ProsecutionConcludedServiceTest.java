@@ -237,22 +237,7 @@ class ProsecutionConcludedServiceTest {
     }
 
     @Test
-    void givenACaseIsNotConcluded_whenExecuteIsInvoked_thenShouldNotAddToScheduler() {
-        ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
-        prosecutionConcluded.setConcluded(Boolean.FALSE);
-        prosecutionConcludedService.execute(prosecutionConcluded);
-
-        verify(prosecutionConcludedValidator).validateRequestObject(any());
-        verify(courtDataAPIService, never()).retrieveHearingForCaseConclusion(any());
-        verify(prosecutionConcludedDataService, never()).execute(any());
-        verify(prosecutionConcludedImpl, never()).execute(any(), any());
-        verify(calculateOutcomeHelper, never()).calculate(any());
-        verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
-        verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
-    }
-
-    @Test
-    void givenACaseIsNotConcludedAndEmptyHearing_whenExecuteIsInvoked_thenShouldNotAddToScheduler() {
+    void givenACaseIsNotConcluded_whenExecuteIsInvoked_thenShouldNotBeProcessed() {
         ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
         prosecutionConcluded.setConcluded(Boolean.FALSE);
         prosecutionConcludedService.execute(prosecutionConcluded);
@@ -296,8 +281,9 @@ class ProsecutionConcludedServiceTest {
         when(courtDataAPIService.isMaatRecordLocked(any())).thenReturn(false);
         when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(Collections.emptyList());
 
+        ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
         ValidationException validationException = assertThrows(
-                ValidationException.class, () -> prosecutionConcludedService.execute(getProsecutionConcluded()));
+                ValidationException.class, () -> prosecutionConcludedService.execute(prosecutionConcluded));
         assertThat(validationException.getMessage()).isEqualTo("No Trial Offences found.");
     }
 
@@ -307,8 +293,9 @@ class ProsecutionConcludedServiceTest {
                 .thenReturn(getWQHearingEntity("Unrecognised"));
         when(courtDataAPIService.isMaatRecordLocked(any())).thenReturn(false);
 
+        ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
         ValidationException validationException = assertThrows(
-                ValidationException.class, () -> prosecutionConcludedService.execute(getProsecutionConcluded()));
+                ValidationException.class, () -> prosecutionConcludedService.execute(prosecutionConcluded));
         assertThat(validationException.getMessage()).isEqualTo("Unrecognised hearing Jurisdiction");
     }
 
