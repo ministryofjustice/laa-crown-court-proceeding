@@ -10,6 +10,7 @@ import uk.gov.justice.laa.crime.crowncourt.service.QueueMessageLogService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.MessageType;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
+import org.slf4j.MDC;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 
@@ -37,18 +38,30 @@ public class ProsecutionConcludedListenerHelper {
         try {
             log.debug("message-id {}", headers.get("MessageId"));
 
-            prosecutionConcludedValidator.validateMaatId(message);
-
+            // Save a copy of the message
             queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
+
+            // Validate and extract the MAAT ID so it can be tagged on all the log messages
+            int maatId = prosecutionConcludedValidator.validateMaatId(message);
+            MDC.put("maatId", String.valueOf(maatId));
+
+            // Process the message
             prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
             prosecutionConcludedService.execute(prosecutionConcluded);
-            log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
-        } catch (ValidationException exception) {
-            log.warn(exception.getMessage());
+            log.info("Prosecution concluded message processing is complete");
 
-            if (!ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT.equalsIgnoreCase(exception.getMessage())) {
+        } catch (ValidationException exception) {
+            if (ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT.equalsIgnoreCase(exception.getMessage())) {
+                log.error("MAAT ID is missing or not a number.");
+            } else {
+                log.warn("Processing terminated by a validation exception: " + exception.getMessage());
+                log.info("Adding message to dead letter table");
                 deadLetterMessageService.logDeadLetterMessage(exception.getMessage(), prosecutionConcluded);
             }
+        } catch (Exception exception) {
+            log.error("Unexpected error occurred", exception);
+        } finally {
+            MDC.remove("maatId");
         }
     }
 }

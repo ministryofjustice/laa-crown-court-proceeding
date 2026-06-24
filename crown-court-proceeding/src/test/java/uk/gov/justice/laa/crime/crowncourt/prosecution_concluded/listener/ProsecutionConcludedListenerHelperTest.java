@@ -2,9 +2,11 @@ package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator.OU_CODE_IS_MISSING;
 
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service.ProsecutionConcludedService;
@@ -24,10 +26,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.MessageHeaders;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
@@ -133,18 +138,44 @@ class ProsecutionConcludedListenerHelperTest {
     }
 
     @Test
-    void givenInvalidMessage_whenProsecutionConcludedListenerIsInvoked_thenShouldNotCallService() {
+    void givenInvalidMessageWithMissingMaatId_whenExecuteIsInvoked_thenShouldNotCallService() {
+        // given - a message with missing maatId
         String message = getSqsMessagePayload();
-        ProsecutionConcluded prosecutionConcluded = gson.fromJson(message, ProsecutionConcluded.class);
-
-        doThrow(new ValidationException(ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL))
+        JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
+        msgObject.remove("maatId");
+        message = new Gson().toJson(msgObject);
+        // and - the validator throws an exception
+        doThrow(new ValidationException(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT))
                 .when(prosecutionConcludedValidator)
                 .validateMaatId(any());
+
+        // when - execute is invoked
         prosecutionConcludedListenerHelper.receive(message, new MessageHeaders(new HashMap<>()));
-        verify(prosecutionConcludedService, times(0)).execute(any());
-        verify(deadLetterMessageService, times(1))
-                .logDeadLetterMessage(
-                        ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL, prosecutionConcluded);
+
+        // then - should log the message
+        verify(queueMessageLogService, times(1)).createLog(MessageType.PROSECUTION_CONCLUDED, message);
+        // then - should not call service
+        verify(prosecutionConcludedService, never()).execute(any());
+        // then - should not copy message to dead letter table
+        verify(deadLetterMessageService, never()).logDeadLetterMessage(any(), any());
+    }
+
+    @Test
+    void givenAValidationExceptionDuringProcessing_whenExecuteIsInvoked_thenShouldLogDeadLetterMessage() {
+        // given - a message with missing maatId
+        String message = getSqsMessagePayload();
+        // and - the service throws a validation exception
+        doThrow(new ValidationException(OU_CODE_IS_MISSING))
+                .when(prosecutionConcludedService)
+                .execute(any());
+
+        // when - execute is invoked
+        prosecutionConcludedListenerHelper.receive(message, new MessageHeaders(new HashMap<>()));
+
+        // then - should log the message
+        verify(queueMessageLogService, times(1)).createLog(MessageType.PROSECUTION_CONCLUDED, message);
+        // then - should copy message to dead letter table
+        verify(deadLetterMessageService, times(1)).logDeadLetterMessage(Mockito.eq(OU_CODE_IS_MISSING), any());
     }
 
     private String getSqsMessagePayload() {

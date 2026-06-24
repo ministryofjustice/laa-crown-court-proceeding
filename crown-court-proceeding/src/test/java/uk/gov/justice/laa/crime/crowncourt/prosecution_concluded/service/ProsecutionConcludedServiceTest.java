@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.atLeast;
@@ -26,7 +28,9 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Prosecuti
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
 import uk.gov.justice.laa.crime.crowncourt.service.DeadLetterMessageService;
 import uk.gov.justice.laa.crime.crowncourt.staticdata.enums.JurisdictionType;
+import uk.gov.justice.laa.crime.exception.ValidationException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -234,15 +238,12 @@ class ProsecutionConcludedServiceTest {
 
     @Test
     void givenACaseIsNotConcluded_whenExecuteIsInvoked_thenShouldNotAddToScheduler() {
-        when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
-                .thenReturn(getWQHearingEntity(JurisdictionType.CROWN.name()));
-
         ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
         prosecutionConcluded.setConcluded(Boolean.FALSE);
         prosecutionConcludedService.execute(prosecutionConcluded);
 
         verify(prosecutionConcludedValidator).validateRequestObject(any());
-        verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
+        verify(courtDataAPIService, never()).retrieveHearingForCaseConclusion(any());
         verify(prosecutionConcludedDataService, never()).execute(any());
         verify(prosecutionConcludedImpl, never()).execute(any(), any());
         verify(calculateOutcomeHelper, never()).calculate(any());
@@ -252,14 +253,12 @@ class ProsecutionConcludedServiceTest {
 
     @Test
     void givenACaseIsNotConcludedAndEmptyHearing_whenExecuteIsInvoked_thenShouldNotAddToScheduler() {
-        when(courtDataAPIService.retrieveHearingForCaseConclusion(any())).thenReturn(null);
-
         ProsecutionConcluded prosecutionConcluded = getProsecutionConcluded();
         prosecutionConcluded.setConcluded(Boolean.FALSE);
         prosecutionConcludedService.execute(prosecutionConcluded);
 
         verify(prosecutionConcludedValidator).validateRequestObject(any());
-        verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
+        verify(courtDataAPIService, never()).retrieveHearingForCaseConclusion(any());
         verify(prosecutionConcludedDataService, never()).execute(any());
         verify(prosecutionConcludedImpl, never()).execute(any(), any());
         verify(calculateOutcomeHelper, never()).calculate(any());
@@ -291,16 +290,26 @@ class ProsecutionConcludedServiceTest {
     }
 
     @Test
-    void whenMagsOutcomeIsNotEmpty_thenProsecutionConcludedDataServiceIsNeverInvoked() {
+    void whenNoTrialOffencesAreFound_thenValidationExceptionIsThrown() {
         when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
                 .thenReturn(getWQHearingEntity(JurisdictionType.CROWN.name()));
         when(courtDataAPIService.isMaatRecordLocked(any())).thenReturn(false);
+        when(offenceHelper.getTrialOffences(any(), anyInt())).thenReturn(Collections.emptyList());
 
-        prosecutionConcludedService.execute(getProsecutionConcluded());
+        ValidationException validationException = assertThrows(
+                ValidationException.class, () -> prosecutionConcludedService.execute(getProsecutionConcluded()));
+        assertThat(validationException.getMessage()).isEqualTo("No Trial Offences found.");
+    }
 
-        verify(deadLetterMessageService, never()).hasNoDeadLetterMessageForMaatId(any(), any());
-        verify(prosecutionConcludedDataService, never()).execute(any());
-        verify(prosecutionConcludedValidator, never()).validateMagsCourtOutcomeExists(any());
+    @Test
+    void whenJurisdictionIsNotRecognised_thenValidationExceptionIsThrown() {
+        when(courtDataAPIService.retrieveHearingForCaseConclusion(any()))
+                .thenReturn(getWQHearingEntity("Unrecognised"));
+        when(courtDataAPIService.isMaatRecordLocked(any())).thenReturn(false);
+
+        ValidationException validationException = assertThrows(
+                ValidationException.class, () -> prosecutionConcludedService.execute(getProsecutionConcluded()));
+        assertThat(validationException.getMessage()).isEqualTo("Unrecognised hearing Jurisdiction");
     }
 
     @Test

@@ -1,0 +1,40 @@
+{
+  "name": "api_internal_v1_assessment_wq-link-register_1000000",
+  "request": {
+    "urlPattern": "/api/internal/v1/assessment/wq-link-register/1000000",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": [
+      {
+        "createdTxId": 8063696,
+        "caseId": 1000000,
+        "createdDate": "2020-05-22T01:01:01",
+        "createdUserId": "testUser",
+        "removedTxId": null,
+        "removedDate": null,
+        "removedUserId": null,
+        "libraId": "CP665337",
+        "maatId": 1000000,
+        "cjsAreaCode": "16",
+        "cjsLocation": "B16BG",
+        "maatCat": 253,
+        "proceedingId": 665420,
+        "mlrCat": 253,
+        "caseOwnerId": null,
+        "caseUrn": null,
+        "prosecutionConcluded": null
+      }
+    ],
+    "headers": {
+      "Date": "Thu, 14 Sep 2023 21:01:41 GMT",
+      "Content-Type": "application/json",
+      "apigw-requestid": "LQ8sXg1irPEEPIA=",
+      "X-Amzn-Trace-Id": "Root=1-650374b5-29dd86a351968e25147b497d;"
+    }
+  },
+  "persistent": true,
+  "scenarioName": "scenario-1-api-internal-v1-assessment-wq-link-register-5635566",
+  "priority": 1
+}

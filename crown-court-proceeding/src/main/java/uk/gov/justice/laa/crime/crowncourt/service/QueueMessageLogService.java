@@ -44,9 +44,7 @@ public class QueueMessageLogService {
                     .laaTransactionId(Optional.ofNullable(laaTransactionUUID)
                             .map(JsonElement::getAsString)
                             .orElse(null))
-                    .maatId(Optional.ofNullable(maatId)
-                            .map(JsonElement::getAsInt)
-                            .orElse(-1))
+                    .maatId(getMaatId(maatId))
                     .type(prepareMessageType(messageType, msgObject))
                     .message(convertAsByte(message))
                     .createdTime(LocalDateTime.now())
@@ -54,7 +52,15 @@ public class QueueMessageLogService {
 
             queueMessageLogRepository.save(queueMessageLogEntity);
         } else {
-            log.error("Log Message is Empty");
+            log.error("Cannot create QUEUE_MESSAGE_LOG entry as log message is empty");
+        }
+    }
+
+    private int getMaatId(JsonElement maatId) {
+        try {
+            return maatId.getAsInt();
+        } catch (Exception e) {
+            return -1;
         }
     }
 

@@ -1,0 +1,19 @@
+{
+  "name": "api_internal_v1_assessment_offence_00000000-0000-0000-0000-000000000000_case_1000000",
+  "request": {
+    "urlPath": "/api/internal/v1/assessment/offence/00000000-0000-0000-0000-000000000000/case/1000000",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "0",
+    "headers": {
+      "Date": "Sun, 17 Sep 2023 15:49:40 GMT",
+      "apigw-requestid": "LaHzQgKJLPEEM0g=",
+      "X-Amzn-Trace-Id": "Root=1-65072014-07aac4f80f5ab22e0a86b626;",
+      "Content-Type": "application/json"
+    }
+  },
+  "persistent": true,
+  "priority": 1
+}

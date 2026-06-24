@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.request;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -115,7 +116,9 @@ class ProsecutionConcludedValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = {"{}", "{\"maatId\": \"\"}"})
     void givenMessageContainsNoOrMissingMaatId_whenValidateMaatIdIsInvoked_thenNoExceptionIsThrown(String message) {
-        assertDoesNotThrow(() -> prosecutionConcludedValidator.validateMaatId(message));
+        ValidationException validationException =
+                assertThrows(ValidationException.class, () -> prosecutionConcludedValidator.validateMaatId(message));
+        assertThat(validationException.getMessage()).isEqualTo(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT);
     }
 
     @Test

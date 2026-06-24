@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.slf4j.MDC;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -64,11 +65,23 @@ public class ProsecutionConcludedScheduler {
 
     public void processCaseConclusion(ProsecutionConcluded prosecutionConcluded) {
         try {
+            MDC.put("maatId", String.valueOf(prosecutionConcluded.getMaatId()));
+            log.info("Start processing PENDING prosecution concluded.");
             WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
-            if (wqHearingDTO != null && prosecutionConcluded.isConcluded()) {
+            if (wqHearingDTO == null) {
+                log.info("Hearing data is not available, retry later.");
+                prosecutionConcludedDataService.execute(prosecutionConcluded);
+                return;
+            }
+
+            if (prosecutionConcluded.isConcluded()) {
                 if (isCCConclusion(wqHearingDTO)) {
+                    log.info("Hearing data available, CC outcome can now be processed.");
                     prosecutionConcludedService.executeCCOutCome(prosecutionConcluded, wqHearingDTO);
                 } else {
+                    log.info(
+                            "Hearing data available but this is not a crown court case. Marking all records with hearing id {} as PROCESSED.",
+                            prosecutionConcluded.getHearingIdWhereChangeOccurred());
                     updateConclusion(
                             prosecutionConcluded
                                     .getHearingIdWhereChangeOccurred()
@@ -76,18 +89,27 @@ public class ProsecutionConcludedScheduler {
                             CaseConclusionStatus.PROCESSED);
                 }
             } else {
+                /*
+                Andy Roberts - 23/06/2026
+                This might be an error condition, ProsectionConcluded messages are rejected if isConcluded
+                is false (see ProsectionConcludedService.execute()), so not sure how they can be added to the PROSECUTION_CONCLUDED table in the first
+                place.  So in theory this code block should never be reached.
+                */
+                log.info("Case is not concluded, CC outcome cannot be processed.");
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
             }
         } catch (ValidationException exception) {
-            log.error("Prosecution Conclusion failed for MAAT ID :" + prosecutionConcluded.getMaatId());
+            log.error("Prosecution Conclusion failed.");
             deadLetterMessageService.logDeadLetterMessage(exception.getMessage(), prosecutionConcluded);
 
             updateConclusion(
                     prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.ERROR);
         } catch (Exception exception) {
-            log.error("Prosecution Conclusion failed for MAAT ID :" + prosecutionConcluded.getMaatId());
+            log.error("Prosecution Conclusion failed.");
             updateConclusion(
                     prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.ERROR);
+        } finally {
+            MDC.remove("maatId");
         }
     }
 

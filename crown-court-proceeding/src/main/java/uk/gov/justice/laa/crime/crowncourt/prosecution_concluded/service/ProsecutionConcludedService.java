@@ -1,6 +1,8 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.service;
 
 import static uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator.CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME;
+import static uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator.NO_TRIAL_OFFENCES_FOUND;
+import static uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator.UNRECOGNISED_JURISDICTION;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,51 +45,75 @@ public class ProsecutionConcludedService {
     private final DeadLetterMessageService deadLetterMessageService;
 
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
-        log.info("CC Outcome process is kicked off for  maat-id {}", prosecutionConcluded.getMaatId());
+        log.info("CC Outcome process is kicked off");
         prosecutionConcludedValidator.validateRequestObject(prosecutionConcluded);
 
         reactivatedCaseDetectionService.processCase(prosecutionConcluded);
 
+        // We are only interested in concluded cases
+        if (!prosecutionConcluded.isConcluded()) {
+            log.info("Ignoring prosecution concluded message where isConcluded=false");
+            return;
+        }
+
         WQHearingDTO wqHearingDTO = courtDataAPIService.retrieveHearingForCaseConclusion(prosecutionConcluded);
 
-        if (wqHearingDTO != null) {
-            if (prosecutionConcluded.isConcluded()) {
-                if (Boolean.TRUE.equals(courtDataAPIService.isMaatRecordLocked(prosecutionConcluded.getMaatId()))) {
-                    log.info("MAAT record is locked for maat-id {}", prosecutionConcluded.getMaatId());
-                    prosecutionConcludedDataService.execute(prosecutionConcluded);
-                } else {
-                    if (JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
-                        prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
-                        executeCCOutCome(prosecutionConcluded, wqHearingDTO);
-                    } else if (JurisdictionType.MAGISTRATES
-                                    .name()
-                                    .equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())
-                            && Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
-                        executeCCOutCome(prosecutionConcluded, wqHearingDTO);
-                    }
-                }
-            }
-        } else if (prosecutionConcluded.isConcluded()) {
-            log.info(
-                    "The prosecution case is concluded, and no hearing has been received for this MAAT-ID {}",
-                    prosecutionConcluded.getMaatId());
+        // If no hearing data is available, schedule to retry later
+        if (wqHearingDTO == null) {
+            log.info("The prosecution is concluded, but no hearing data has been received yet.");
             prosecutionConcludedDataService.execute(prosecutionConcluded);
+            return;
+        }
+
+        // If the MAAT record is locked, schedule to retry later
+        if (Boolean.TRUE.equals(courtDataAPIService.isMaatRecordLocked(prosecutionConcluded.getMaatId()))) {
+            log.info("MAAT record is locked");
+            prosecutionConcludedDataService.execute(prosecutionConcluded);
+            return;
+        }
+
+        if (JurisdictionType.CROWN.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
+            prosecutionConcludedValidator.validateOuCode(wqHearingDTO.getOuCourtLocation());
+            executeCCOutCome(prosecutionConcluded, wqHearingDTO);
+        } else if (JurisdictionType.MAGISTRATES.name().equalsIgnoreCase(wqHearingDTO.getWqJurisdictionType())) {
+            if (Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
+                executeCCOutCome(prosecutionConcluded, wqHearingDTO);
+            } else {
+                /*
+                Andy Roberts 24/06/2026
+                Raised this JIRA ticket (https://dsdmoj.atlassian.net/browse/LASB-5107) to handle this case properly, it should be re-tried.
+                 */
+                log.warn(
+                        "Hearing jurisdiction type is MAGISTRATES but applicationConcluded is null, this should be retried but logic is currently missing.");
+            }
+        } else {
+            // This shouldn't happen, but if it does, this validation exception will send the message to the dead letter
+            // queue.
+            throw new ValidationException(UNRECOGNISED_JURISDICTION);
         }
     }
 
     public void executeCCOutCome(ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO) {
-        log.info("Processing CC Outcome for maat-id {}", prosecutionConcluded.getMaatId());
+        log.info("Processing CC Outcome");
         List<OffenceSummary> offenceSummaryList = prosecutionConcluded.getOffenceSummary();
 
         List<OffenceSummary> trialOffences =
                 offenceHelper.getTrialOffences(offenceSummaryList, prosecutionConcluded.getMaatId());
 
-        if (!trialOffences.isEmpty() || Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
-            log.info("Number of Valid offences for CC Outcome Calculations : {}", trialOffences.size());
+        if (trialOffences.isEmpty()) {
+            if (Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
+                log.info(
+                        "No trial offences found but application is concluded, proceeding with CC Outcome calculation");
+                processOutcome(prosecutionConcluded, wqHearingDTO, trialOffences);
+            } else {
+                throw new ValidationException(NO_TRIAL_OFFENCES_FOUND);
+            }
+        } else {
+            log.info("{} trial offences found, proceeding with CC Outcome calculation", trialOffences.size());
             processOutcome(prosecutionConcluded, wqHearingDTO, trialOffences);
         }
         prosecutionConcludedDataService.updateConclusion(prosecutionConcluded.getMaatId());
-        log.info("CC Outcome is completed for  maat-id {}", prosecutionConcluded.getMaatId());
+        log.info("CC Outcome is completed");
     }
 
     private void processOutcome(
@@ -97,10 +123,7 @@ public class ProsecutionConcludedService {
         try {
             crownCourtCode = crownCourtCodeHelper.getCode(wqHearingDTO.getOuCourtLocation());
         } catch (ValidationException exception) {
-            log.info(
-                    "Validation exception for maat-id {}: {}",
-                    prosecutionConcluded.getMaatId(),
-                    exception.getMessage());
+            log.info("Validation exception: {}, setting crownCourtCode to null and proceeding", exception.getMessage());
             crownCourtCode = null;
         }
         if (Objects.nonNull(prosecutionConcluded.getApplicationConcluded())) {
@@ -119,18 +142,18 @@ public class ProsecutionConcludedService {
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
                 if (deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
                         prosecutionConcluded.getMaatId(), CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME)) {
-                    log.info("Logging dead letter message for this maat-id {}", prosecutionConcluded.getMaatId());
+                    log.info("Logging dead letter message");
                     prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
                 }
             }
-            log.info("Mags outcome exists for this maat-id {}", prosecutionConcluded.getMaatId());
+            log.info("Mags outcome exists");
             prosecutionConcludedValidator.validateIsAppealMissing(repOrderDTO.getCatyCaseType());
         } else {
-            log.info("Validating Application Result Code for this maat-id {}", prosecutionConcluded.getMaatId());
+            log.info("Validating Application Result Code");
             prosecutionConcludedValidator.validateApplicationResultCode(
                     prosecutionConcluded.getApplicationConcluded().getApplicationResultCode());
         }
-        log.info("Executing CC Outcome update for this maat-id {}", prosecutionConcluded.getMaatId());
+        log.info("Executing CC Outcome update");
         prosecutionConcludedImpl.execute(concludedDTO, repOrderDTO);
     }
 }
