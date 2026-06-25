@@ -51,6 +51,9 @@ public class QueueMessageLogService {
                     .build();
 
             queueMessageLogRepository.save(queueMessageLogEntity);
+            log.info(
+                    "Message logged successfully in QUEUE_MESSAGE_LOG, transactionUUID: {}",
+                    queueMessageLogEntity.getTransactionUUID());
         } else {
             log.error("Cannot create QUEUE_MESSAGE_LOG entry as log message is empty");
         }
