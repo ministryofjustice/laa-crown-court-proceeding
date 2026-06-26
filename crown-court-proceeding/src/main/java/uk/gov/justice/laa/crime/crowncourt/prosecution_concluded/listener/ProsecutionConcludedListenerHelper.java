@@ -42,7 +42,7 @@ public class ProsecutionConcludedListenerHelper {
             queueMessageLogService.createLog(MessageType.PROSECUTION_CONCLUDED, message);
 
             // Validate and extract the MAAT ID so it can be tagged on all the log messages
-            int maatId = prosecutionConcludedValidator.validateMaatId(message);
+            int maatId = prosecutionConcludedValidator.getAndValidateMaatId(message);
             MDC.put("maatId", String.valueOf(maatId));
 
             // Process the message

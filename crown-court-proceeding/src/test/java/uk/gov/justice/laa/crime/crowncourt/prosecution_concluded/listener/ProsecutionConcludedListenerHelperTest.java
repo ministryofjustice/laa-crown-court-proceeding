@@ -149,7 +149,7 @@ class ProsecutionConcludedListenerHelperTest {
         // and - the validator throws an exception
         doThrow(new ValidationException(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT))
                 .when(prosecutionConcludedValidator)
-                .validateMaatId(any());
+                .getAndValidateMaatId(any());
 
         // when - execute is invoked
         prosecutionConcludedListenerHelper.receive(message, new MessageHeaders(new HashMap<>()));

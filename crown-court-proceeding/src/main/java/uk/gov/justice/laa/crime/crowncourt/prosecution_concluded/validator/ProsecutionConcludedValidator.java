@@ -58,7 +58,7 @@ public class ProsecutionConcludedValidator {
         }
     }
 
-    public int validateMaatId(String message) {
+    public int getAndValidateMaatId(String message) {
         try {
             JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
             JsonElement maatIdElement = msgObject.get("maatId");
