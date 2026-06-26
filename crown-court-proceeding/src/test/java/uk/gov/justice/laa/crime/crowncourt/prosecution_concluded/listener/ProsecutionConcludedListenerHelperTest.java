@@ -190,9 +190,9 @@ class ProsecutionConcludedListenerHelperTest {
                 .execute(any());
 
         // when - execute is invoked
+        MessageHeaders headers = new MessageHeaders(new HashMap<>());
         RuntimeException runtimeException = assertThrows(
-                RuntimeException.class,
-                () -> prosecutionConcludedListenerHelper.receive(message, new MessageHeaders(new HashMap<>())));
+                RuntimeException.class, () -> prosecutionConcludedListenerHelper.receive(message, headers));
 
         // then - should log the message
         verify(queueMessageLogService, times(1)).createLog(MessageType.PROSECUTION_CONCLUDED, message);
