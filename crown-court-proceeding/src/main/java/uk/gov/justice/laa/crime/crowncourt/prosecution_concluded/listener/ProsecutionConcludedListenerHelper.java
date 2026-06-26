@@ -60,6 +60,8 @@ public class ProsecutionConcludedListenerHelper {
             }
         } catch (Exception exception) {
             log.error("Unexpected error occurred", exception);
+            // The error is unknown, throwing an exception will mean the message is retried by SQS
+            throw new RuntimeException(exception);
         } finally {
             MDC.remove("maatId");
         }

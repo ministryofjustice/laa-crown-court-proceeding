@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -176,6 +178,26 @@ class ProsecutionConcludedListenerHelperTest {
         verify(queueMessageLogService, times(1)).createLog(MessageType.PROSECUTION_CONCLUDED, message);
         // then - should copy message to dead letter table
         verify(deadLetterMessageService, times(1)).logDeadLetterMessage(Mockito.eq(OU_CODE_IS_MISSING), any());
+    }
+
+    @Test
+    void givenAnUnexpectedExceptionDuringProcessing_whenExecuteIsInvoked_thenRethrowAsARuntimeException() {
+        // given - a message with missing maatId
+        String message = getSqsMessagePayload();
+        // and - the service throws a validation exception
+        doThrow(new RuntimeException("Something bad happened"))
+                .when(prosecutionConcludedService)
+                .execute(any());
+
+        // when - execute is invoked
+        RuntimeException runtimeException = assertThrows(
+                RuntimeException.class,
+                () -> prosecutionConcludedListenerHelper.receive(message, new MessageHeaders(new HashMap<>())));
+
+        // then - should log the message
+        verify(queueMessageLogService, times(1)).createLog(MessageType.PROSECUTION_CONCLUDED, message);
+        // and - runtime exception includes actual exception as the cause
+        assertThat(runtimeException.getCause().getMessage()).isEqualTo("Something bad happened");
     }
 
     private String getSqsMessagePayload() {
