@@ -113,7 +113,7 @@ feature:
     enabled: false
     dbUsername: test
   prosecution-concluded-schedule:
-    enabled: false
+    enabled: true
 
 queue:
   message:

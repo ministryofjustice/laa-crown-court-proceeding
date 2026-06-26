@@ -139,15 +139,19 @@ public class ProsecutionConcludedService {
 
         if (Objects.isNull(prosecutionConcluded.getApplicationConcluded())) {
             if (repOrderDTO.getMagsOutcome() == null) {
+                log.info(
+                        "Mags outcome is not set on Rep Order, cannot proceed with CC outcome, message will be retried later.");
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
                 if (deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
                         prosecutionConcluded.getMaatId(), CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME)) {
-                    log.info("Logging dead letter message");
                     prosecutionConcludedValidator.validateMagsCourtOutcomeExists(repOrderDTO.getMagsOutcome());
                 }
+                log.error("Processing should not continue as Mags outcome is missing,"
+                        + " need to implement LASB-5122 to correct this issue.");
+            } else {
+                log.info("Mags outcome exists");
+                prosecutionConcludedValidator.validateIsAppealMissing(repOrderDTO.getCatyCaseType());
             }
-            log.info("Mags outcome exists");
-            prosecutionConcludedValidator.validateIsAppealMissing(repOrderDTO.getCatyCaseType());
         } else {
             log.info("Validating Application Result Code");
             prosecutionConcludedValidator.validateApplicationResultCode(
