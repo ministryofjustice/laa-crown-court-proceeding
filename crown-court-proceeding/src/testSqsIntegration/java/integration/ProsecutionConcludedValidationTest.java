@@ -113,7 +113,6 @@ class ProsecutionConcludedValidationTest extends AbstractProsecutionConcludedTes
 
     private void thenTheDeadLetterTableContainsOnePendingRecordWithReason(String reason) {
         List<DeadLetterMessageEntity> deadLetterMessages = deadLetterMessageRepository.findAll();
-        deadLetterMessages.forEach(System.out::println);
         assertThat(deadLetterMessages).hasSize(1);
         assertThat(deadLetterMessages.getFirst().getDeadLetterReason()).isEqualTo(reason);
         assertThat(deadLetterMessages.getFirst().getReportingStatus()).isEqualTo("PENDING");
