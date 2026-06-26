@@ -19,7 +19,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.wiremock.spring.EnableWireMock;
 
 /**
- * This class contains tests that where the prosecution concluded message results in a validation error.
+ * This class contains tests where the prosecution concluded message results in a validation error.
  */
 @EnableWireMock
 @AutoConfigureObservability
@@ -29,7 +29,7 @@ import org.wiremock.spring.EnableWireMock;
 class ProsecutionConcludedValidationTest extends AbstractProsecutionConcludedTest {
 
     @Test
-    void givenAnInvalidMessageWithMissingMaatId_whenListenerIsInvoked_thenMessageIsSavedAsADeadLetterMessage() {
+    void givenAnInvalidMessageWithMissingMaatId_whenListenerIsInvoked_thenMessageIsNotSavedAsADeadLetterMessage() {
         // given - the message is missing the maatId field
         String message = getMessageFromFile("SqsPayloadPleaWithMissingMaatId.json");
 
@@ -45,7 +45,7 @@ class ProsecutionConcludedValidationTest extends AbstractProsecutionConcludedTes
     }
 
     @Test
-    void givenAnInvalidMessageWithInvalidMaatId_whenListenerIsInvoked_thenMessageIsNotSaved() {
+    void givenAnInvalidMessageWithInvalidMaatId_whenListenerIsInvoked_thenMessageIsNotSavedAsADeadLetterMessage() {
         // given - the maatId field is invalid (not a number)
         String message = getMessageFromFile("SqsPayloadPleaWithInvalidMaatId.json");
 
@@ -54,7 +54,7 @@ class ProsecutionConcludedValidationTest extends AbstractProsecutionConcludedTes
 
         // then - the message is logged
         thenTheMessageLogTableContainsTheMessage();
-        // then - no message is not copied to the dead letter table, because the MAAT ID is invalid
+        // then - the message is not copied to the dead letter table, because the MAAT ID is invalid
         thenTheDeadLetterTableIsEmpty();
         // then - no processing was done because of the validation error
         thenTheProsectionConcludedTableIsEmpty();
@@ -73,13 +73,13 @@ class ProsecutionConcludedValidationTest extends AbstractProsecutionConcludedTes
         // then - the message is copied to the dead letter table
         thenTheDeadLetterTableContainsOnePendingRecordWithReason(
                 CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
-        // then - not sure this is right, the code puts the message in the dead letter table but keeps the message in
+        // then - not sure if this is right, the code puts the message in the dead letter table but keeps the message in
         // the prosecution concluded table
         thenTheProsectionConcludedTableContainsOneRecord(6158011);
     }
 
     @Test
-    void givenAMessageWithUnknownOffenceId_whenListenerIsInvoked_thenMessageIsMovedToDeadLetterTable() {
+    void givenAMessageWithUnknownOffenceId_whenListenerIsInvoked_thenMessageIsSavedAsADeadLetterMessage() {
         // given - the offenceId in the message does not match any offence for the case
         String message = getMessageFromFile("SqsPayloadWithUnknownOffenceId.json");
 
