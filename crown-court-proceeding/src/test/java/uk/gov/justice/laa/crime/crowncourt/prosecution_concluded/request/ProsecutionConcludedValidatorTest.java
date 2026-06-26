@@ -115,7 +115,7 @@ class ProsecutionConcludedValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"{}", "{\"maatId\": \"\"}"})
-    void givenMessageContainsNoOrMissingMaatId_whenValidateMaatIdIsInvoked_thenNoExceptionIsThrown(String message) {
+    void givenMessageContainsNoOrMissingMaatId_whenValidateMaatIdIsInvoked_thenExceptionIsThrown(String message) {
         ValidationException validationException =
                 assertThrows(ValidationException.class, () -> prosecutionConcludedValidator.validateMaatId(message));
         assertThat(validationException.getMessage()).isEqualTo(ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT);
