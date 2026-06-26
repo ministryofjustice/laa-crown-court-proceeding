@@ -62,7 +62,7 @@ class ProsecutionConcludedValidationTest extends AbstractProsecutionConcludedTes
 
     @Test
     void givenValidMessageWithMissingMagsOutcome_whenListenerIsInvoked_thenMessageIsSavedAsADeadLetterMessage() {
-        // given - the message is linked to a RepOrder (6518011) which has no mags outcome
+        // given - the message is linked to a RepOrder (6158011) which has no mags outcome
         String message = getMessageFromFile("SqsAppealsPayloadMissingOutcome.json");
 
         // when
