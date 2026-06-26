@@ -52,7 +52,7 @@ public class ProsecutionConcludedService {
 
         // We are only interested in concluded cases
         if (!prosecutionConcluded.isConcluded()) {
-            log.info("Ignoring prosecution concluded message where isConcluded=false");
+            log.info("Ignoring message where case is not concluded.");
             return;
         }
 

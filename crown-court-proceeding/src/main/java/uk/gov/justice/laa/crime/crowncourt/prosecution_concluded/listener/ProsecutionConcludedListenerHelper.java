@@ -54,7 +54,7 @@ public class ProsecutionConcludedListenerHelper {
             if (ProsecutionConcludedValidator.MAAT_ID_FORMAT_INCORRECT.equalsIgnoreCase(exception.getMessage())) {
                 log.error("MAAT ID is missing or not a number.");
             } else {
-                log.warn("Processing terminated by a validation exception: " + exception.getMessage());
+                log.warn("Processing terminated by a validation exception: {}", exception.getMessage());
                 log.info("Adding message to dead letter table");
                 deadLetterMessageService.logDeadLetterMessage(exception.getMessage(), prosecutionConcluded);
             }

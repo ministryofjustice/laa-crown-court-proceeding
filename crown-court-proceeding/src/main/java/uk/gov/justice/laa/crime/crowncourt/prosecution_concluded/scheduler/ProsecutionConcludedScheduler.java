@@ -99,13 +99,13 @@ public class ProsecutionConcludedScheduler {
                 prosecutionConcludedDataService.execute(prosecutionConcluded);
             }
         } catch (ValidationException exception) {
-            log.error("Prosecution Conclusion failed.");
+            log.error("Prosecution Conclusion failed.", exception);
             deadLetterMessageService.logDeadLetterMessage(exception.getMessage(), prosecutionConcluded);
 
             updateConclusion(
                     prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.ERROR);
         } catch (Exception exception) {
-            log.error("Prosecution Conclusion failed.");
+            log.error("Prosecution Conclusion failed.", exception);
             updateConclusion(
                     prosecutionConcluded.getHearingIdWhereChangeOccurred().toString(), CaseConclusionStatus.ERROR);
         } finally {
