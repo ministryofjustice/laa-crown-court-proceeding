@@ -19,9 +19,6 @@ import org.mockito.InjectMocks;
 
 class ResultDTOBuilderTest {
 
-    @InjectMocks
-    private ResultDTOBuilder resultDTOBuilder;
-
     @ParameterizedTest
     @MethodSource("getHearingResultScenarios")
     void givenAHearingResult_whenBuildIsInvoked_thenReturnWQHearingDTO(
@@ -29,7 +26,7 @@ class ResultDTOBuilderTest {
             ProsecutionConcluded prosecutionConcluded,
             List<Result> expectedResult) {
         List<Result> results =
-                resultDTOBuilder.build(hearingResult, prosecutionConcluded, TestModelDataBuilder.OFFENCE_ID);
+                ResultDTOBuilder.build(hearingResult, prosecutionConcluded, TestModelDataBuilder.OFFENCE_ID);
         assertThat(results).isEqualTo(expectedResult);
     }
 
