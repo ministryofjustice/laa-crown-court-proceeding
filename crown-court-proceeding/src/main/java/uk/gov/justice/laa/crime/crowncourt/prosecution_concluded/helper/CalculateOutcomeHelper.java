@@ -30,7 +30,7 @@ public class CalculateOutcomeHelper {
     public String calculate(List<OffenceSummary> offenceSummaryList, ProsecutionConcluded prosecutionConcluded) {
         List<String> outcomes = buildOffenceOutComes(offenceSummaryList, prosecutionConcluded);
 
-        log.info("Offence count: " + outcomes.size());
+        log.info("Offence count: {}", outcomes.size());
         return outcomes.size() == 1 ? outcomes.get(0) : CrownCourtTrialOutcome.PART_CONVICTED.getValue();
     }
 
