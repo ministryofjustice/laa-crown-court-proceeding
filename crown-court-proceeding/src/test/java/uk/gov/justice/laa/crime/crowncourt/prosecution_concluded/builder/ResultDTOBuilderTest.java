@@ -49,7 +49,7 @@ class ResultDTOBuilderTest {
                 .setId(UUID.randomUUID());
 
         HearingResultResponse emptyDefendant = TestModelDataBuilder.getHearingResultResponse(true, false, false);
-        invalidDefendant
+        emptyDefendant
                 .getHearing()
                 .getProsecution_cases()
                 .get(0)
