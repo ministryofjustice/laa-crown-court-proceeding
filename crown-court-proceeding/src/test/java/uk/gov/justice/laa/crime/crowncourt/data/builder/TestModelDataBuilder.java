@@ -82,10 +82,10 @@ public class TestModelDataBuilder {
 
     public static final String EMST_CODE = "TEST_CODE";
 
-    public static final UUID PROSECUTION_CASE_ID = UUID.fromString("b169b51-5077-432f-a5c5-8f97865700de");
-    public static final UUID DEFENDANT_ID = UUID.fromString("a169b51-5057-422f-a5c5-8f97865700ad");
+    public static final UUID PROSECUTION_CASE_ID = UUID.fromString("0b169b51-5077-432f-a5c5-8f97865700de");
+    public static final UUID DEFENDANT_ID = UUID.fromString("0a169b51-5057-422f-a5c5-8f97865700ad");
 
-    public static final UUID OFFENCE_ID = UUID.fromString("a169b51-5057-422f-a5c5-8f97865700af");
+    public static final UUID OFFENCE_ID = UUID.fromString("0a169b51-5057-422f-a5c5-8f97865700af");
 
     public static ApiProcessRepOrderRequest getApiProcessRepOrderRequest(boolean isValid) {
         return new ApiProcessRepOrderRequest()
