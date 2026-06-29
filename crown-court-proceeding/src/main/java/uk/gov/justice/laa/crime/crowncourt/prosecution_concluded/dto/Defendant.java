@@ -14,6 +14,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Defendant {
 
-    UUID id;
+    private UUID id;
     private List<Offence> offences;
 }
