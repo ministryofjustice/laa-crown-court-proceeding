@@ -89,7 +89,7 @@ class ProsecutionConcludedServiceTest {
         verify(prosecutionConcludedDataService, atLeast(1)).execute(any());
         verify(courtDataAPIService, atLeast(1)).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, never()).execute(any(), any());
-        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(calculateOutcomeHelper, never()).calculate(any(), any(ProsecutionConcluded.class));
 
         verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
         verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
@@ -114,7 +114,7 @@ class ProsecutionConcludedServiceTest {
         verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(courtDataAPIService, atLeast(1)).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, atLeast(1)).execute(any(), any());
-        verify(calculateOutcomeHelper, atLeast(1)).calculate(any());
+        verify(calculateOutcomeHelper, atLeast(1)).calculate(any(), any(ProsecutionConcluded.class));
         verify(caseConclusionDTOBuilder, atLeast(1)).build(any(), any(), any(), any());
         verify(offenceHelper, atLeast(1)).getTrialOffences(any(), anyInt());
     }
@@ -136,7 +136,7 @@ class ProsecutionConcludedServiceTest {
 
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(courtDataAPIService).isMaatRecordLocked(anyInt());
-        verify(calculateOutcomeHelper).calculate(any());
+        verify(calculateOutcomeHelper).calculate(any(), any(ProsecutionConcluded.class));
     }
 
     @Test
@@ -160,7 +160,7 @@ class ProsecutionConcludedServiceTest {
         verify(prosecutionConcludedValidator).validateRequestObject(any());
         verify(courtDataAPIService).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl).execute(any(), any());
-        verify(calculateOutcomeHelper).calculate(any());
+        verify(calculateOutcomeHelper).calculate(any(), any(ProsecutionConcluded.class));
     }
 
     @Test
@@ -189,7 +189,7 @@ class ProsecutionConcludedServiceTest {
         verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(courtDataAPIService, never()).isMaatRecordLocked(anyInt());
         verify(prosecutionConcludedImpl, never()).execute(any(), any());
-        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(calculateOutcomeHelper, never()).calculate(any(), any(ProsecutionConcluded.class));
         verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
         verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
     }
@@ -245,7 +245,7 @@ class ProsecutionConcludedServiceTest {
         verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(prosecutionConcludedDataService, never()).execute(any());
         verify(prosecutionConcludedImpl, never()).execute(any(), any());
-        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(calculateOutcomeHelper, never()).calculate(any(), any(ProsecutionConcluded.class));
         verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
         verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
     }
@@ -262,7 +262,7 @@ class ProsecutionConcludedServiceTest {
         verify(courtDataAPIService, atLeast(1)).retrieveHearingForCaseConclusion(any());
         verify(prosecutionConcludedDataService, never()).execute(any());
         verify(prosecutionConcludedImpl, never()).execute(any(), any());
-        verify(calculateOutcomeHelper, never()).calculate(any());
+        verify(calculateOutcomeHelper, never()).calculate(any(), any(ProsecutionConcluded.class));
         verify(caseConclusionDTOBuilder, never()).build(any(), any(), any(), any());
         verify(offenceHelper, never()).getTrialOffences(any(), anyInt());
     }
@@ -279,7 +279,8 @@ class ProsecutionConcludedServiceTest {
                         .build());
         when(courtDataAPIService.getRepOrder(any()))
                 .thenReturn(RepOrderDTO.builder().magsOutcome(null).build());
-        when(calculateOutcomeHelper.calculate(any())).thenReturn("CONVICTED");
+        when(calculateOutcomeHelper.calculate(any(), any(ProsecutionConcluded.class)))
+                .thenReturn("CONVICTED");
 
         when(deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
                         MAAT_ID, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME))
@@ -315,7 +316,8 @@ class ProsecutionConcludedServiceTest {
                         .build());
         when(courtDataAPIService.getRepOrder(any()))
                 .thenReturn(RepOrderDTO.builder().magsOutcome(null).build());
-        when(calculateOutcomeHelper.calculate(any())).thenReturn("CONVICTED");
+        when(calculateOutcomeHelper.calculate(any(), any(ProsecutionConcluded.class)))
+                .thenReturn("CONVICTED");
         when(deadLetterMessageService.hasNoDeadLetterMessageForMaatId(
                         MAAT_ID, CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME))
                 .thenReturn(false);

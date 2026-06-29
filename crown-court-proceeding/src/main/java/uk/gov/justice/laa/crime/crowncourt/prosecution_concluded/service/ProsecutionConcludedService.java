@@ -93,7 +93,7 @@ public class ProsecutionConcludedService {
     private void processOutcome(
             ProsecutionConcluded prosecutionConcluded, WQHearingDTO wqHearingDTO, List<OffenceSummary> trialOffences) {
         String crownCourtCode;
-        String calculatedOutcome;
+        String calculatedOutcome = "";
         try {
             crownCourtCode = crownCourtCodeHelper.getCode(wqHearingDTO.getOuCourtLocation());
         } catch (ValidationException exception) {
@@ -107,7 +107,7 @@ public class ProsecutionConcludedService {
             calculatedOutcome = calculateAppealOutcomeHelper.calculate(
                     prosecutionConcluded.getApplicationConcluded().getApplicationResultCode());
         } else {
-            calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences);
+            calculatedOutcome = calculateOutcomeHelper.calculate(trialOffences, prosecutionConcluded);
         }
         ConcludedDTO concludedDTO =
                 caseConclusionDTOBuilder.build(prosecutionConcluded, wqHearingDTO, calculatedOutcome, crownCourtCode);

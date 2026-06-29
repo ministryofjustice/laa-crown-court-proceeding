@@ -9,10 +9,12 @@ import uk.gov.justice.laa.crime.crowncourt.data.builder.TestModelDataBuilder;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.enums.ResultCode;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.helper.CrownCourtCodeHelper;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.ProsecutionConcluded;
+import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.model.Result;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.validator.ProsecutionConcludedValidator;
 import uk.gov.justice.laa.crime.enums.CaseType;
 import uk.gov.justice.laa.crime.exception.ValidationException;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -176,5 +178,25 @@ class ProsecutionConcludedValidatorTest {
     @Test
     void givenMagsCourtOutcomeIsNotNullOrEmpty_whenValidateMagsCourtOutcomeExistsIsInvoked_thenNoExceptionIsThrown() {
         assertDoesNotThrow(() -> prosecutionConcludedValidator.validateMagsCourtOutcomeExists("ACQUITTED"));
+    }
+
+    @Test
+    void givenAResultCodeIsNull_whenValidateHearingResultIsMissingIsInvoked_thenExceptionIsThrown() {
+        assertThatThrownBy(() -> prosecutionConcludedValidator.validateHearingResultIsMissing(null))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.HEARING_RESULT_MISSING);
+    }
+
+    @Test
+    void givenAResultCodeIsEmpty_whenValidateHearingResultIsMissingIsInvoked_thenExceptionIsThrown() {
+        assertThatThrownBy(() -> prosecutionConcludedValidator.validateHearingResultIsMissing(Collections.emptyList()))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage(ProsecutionConcludedValidator.HEARING_RESULT_MISSING);
+    }
+
+    @Test
+    void givenAValidResult_whenValidateHearingResultIsMissingIsInvoked_thenNoExceptionIsThrown() {
+        assertDoesNotThrow(() -> prosecutionConcludedValidator.validateHearingResultIsMissing(
+                List.of(Result.builder().build())));
     }
 }

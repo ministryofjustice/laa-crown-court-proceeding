@@ -172,7 +172,7 @@ class ProsecutionConcludedOutcomeTest extends AbstractProsecutionConcludedTest {
     }
 
     @Test
-    void givenAMultipleOffence_withNoPleaNoVerdictInformationAndIsConvictedResult_thenOutcomeIsAquitted() {
+    void givenAMultipleOffence_withNoPleaNoVerdictInformation_thenOutcomeIsAquitted() {
         // given - the message has multiple offences:
         // 1. Plea = NOT GUILTY, Verdict = None
         // 2. Plea = None, Verdict = None, result is present, isConvictedResult = true
