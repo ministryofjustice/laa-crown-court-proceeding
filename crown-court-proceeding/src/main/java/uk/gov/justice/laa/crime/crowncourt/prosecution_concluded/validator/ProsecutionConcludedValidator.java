@@ -38,8 +38,7 @@ public class ProsecutionConcludedValidator {
     public static final String MISSING_APPLICATION_RESULT_CODE = "Application Result Code is missing.";
 
     public static final String HEARING_RESULT_MISSING =
-            "Hearing result is missing when pleas and verdict is not available.";
-
+            "Hearing result is missing when plea and verdict are not available.";
     protected static final List<String> RESULT_CODE =
             Arrays.stream(ResultCode.values()).map(ResultCode::name).toList();
 
