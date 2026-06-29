@@ -31,7 +31,7 @@ import com.google.gson.Gson;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SoftAssertionsExtension.class)
-class ProsecutionConcludedListenerTest {
+class ProsecutionConcludedListenerHelperTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -40,7 +40,7 @@ class ProsecutionConcludedListenerTest {
     private Gson gson;
 
     @InjectMocks
-    private ProsecutionConcludedListener prosecutionConcludedListener;
+    private ProsecutionConcludedListenerHelper prosecutionConcludedListenerHelper;
 
     @Mock
     private DeadLetterMessageService deadLetterMessageService;
@@ -63,7 +63,7 @@ class ProsecutionConcludedListenerTest {
         String originatingHearingId = "61600a90-89e2-4717-aa9b-a01fc66130c1";
 
         when(gson.fromJson(message, ProsecutionConcluded.class)).thenReturn(prosecutionConcluded);
-        prosecutionConcludedListener.receive(message, new MessageHeaders(new HashMap<>()));
+        prosecutionConcludedListenerHelper.receive(message, new MessageHeaders(new HashMap<>()));
 
         verify(prosecutionConcludedService).execute(prosecutionConcluded);
         verify(queueMessageLogService).createLog(MessageType.PROSECUTION_CONCLUDED, message);
@@ -140,7 +140,7 @@ class ProsecutionConcludedListenerTest {
         doThrow(new ValidationException(ProsecutionConcludedValidator.PAYLOAD_IS_NOT_AVAILABLE_OR_NULL))
                 .when(prosecutionConcludedValidator)
                 .validateMaatId(any());
-        prosecutionConcludedListener.receive(message, new MessageHeaders(new HashMap<>()));
+        prosecutionConcludedListenerHelper.receive(message, new MessageHeaders(new HashMap<>()));
         verify(prosecutionConcludedService, times(0)).execute(any());
         verify(deadLetterMessageService, times(1))
                 .logDeadLetterMessage(

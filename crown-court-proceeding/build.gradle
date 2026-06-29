@@ -4,7 +4,7 @@ plugins {
     id "org.sonarqube" version "7.0.1.6134"
     id "com.diffplug.spotless" version "8.0.0"
     id "info.solidsoft.pitest" version "1.19.0"
-    id "org.springframework.boot" version "3.5.13"
+    id "org.springframework.boot" version "3.5.15"
     id "io.spring.dependency-management" version "1.1.7"
 }
 
@@ -51,6 +51,9 @@ sourceSets {
 
 repositories {
     mavenCentral()
+    maven {
+        url = 'https://central.sonatype.com/repository/maven-snapshots/'
+    }
 }
 
 dependencies {
@@ -105,8 +108,7 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok"
 
     // ---- Integration Testing ----
-    testSqsIntegrationImplementation "com.amazonaws:aws-java-sdk-sqs:$versions.awsJavaSDK"
-    testSqsIntegrationImplementation "org.testcontainers:localstack:$versions.testcontainers"
+    testSqsIntegrationImplementation "org.testcontainers:postgresql:$versions.testcontainers"
     testSqsIntegrationImplementation "org.testcontainers:junit-jupiter:$versions.testcontainers"
 }
 
