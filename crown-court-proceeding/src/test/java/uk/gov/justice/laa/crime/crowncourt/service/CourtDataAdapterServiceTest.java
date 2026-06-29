@@ -54,7 +54,7 @@ class CourtDataAdapterServiceTest {
     }
 
     @Test
-    void givenAValidHearingId_whenTriggerHearingProcessingIsInvokedAndTheCallFails_thenFailureIsHandled1() {
+    void givenAValidHearingId_whenGetHearingResultIsInvoked_thenPublishToQueueIsFalse() {
 
         courtDataAdapterService.getHearingResult(
                 TestModelDataBuilder.getProsecutionConcluded(true, false, false), UUID.randomUUID());
