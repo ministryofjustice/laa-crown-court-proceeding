@@ -16,6 +16,7 @@ import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.scheduler.Prose
 
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
@@ -91,24 +92,29 @@ class ProsecutionConcludedValidationTest extends AbstractProsecutionConcludedTes
         thenTheProsectionConcludedTableContainsOneRecord(6158011);
         // and - the outcome is not sent to MAAT
         thenTheOutcomeIsNotSendToMAAT();
+    }
+
+    @Test
+    @Disabled("Need to fix LASB-5122 before this test case will pass.")
+    void
+            givenValidMessageWithMissingMagsOutcomeIsRetried_whenListenerIsInvoked_thenMessageIsReTriedAgainAndNoAdditionalDeadLetterMessageIsCreated() {
+        // given - the message has been tried once and failed validation for
+        // CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME
+        givenValidMessageWithMissingMagsOutcome_whenListenerIsInvoked_thenMessageIsReTriedAndSavedAsADeadLetterMessage();
 
         // when - the message is retried
         prosecutionConcludedScheduler.process();
 
         // then - the original message remains in the log table
         thenTheMessageLogTableContainsTheMessage();
-        /*
-        The following assertions are commented out because they are failing.
-        Need to implement LASB-5122 to correct this issue.
 
         // and - the original message remains in the dead letter table
         thenTheDeadLetterTableContainsOnePendingRecordWithReason(
-            CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
+                CANNOT_HAVE_CROWN_COURT_OUTCOME_WITHOUT_MAGS_COURT_OUTCOME);
         // and - the prosecution concluded record remains in the table in PENDING state
         thenTheProsectionConcludedTableContainsOneRecord(6158011);
         // and - the outcome is not sent to MAAT
         thenTheOutcomeIsNotSendToMAAT();
-         */
     }
 
     private void thenTheOutcomeIsNotSendToMAAT() {
