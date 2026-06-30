@@ -29,7 +29,7 @@ public class ProsecutionConcludedDataService {
     public void execute(final ProsecutionConcluded prosecutionConcluded) {
 
         Integer maatId = prosecutionConcluded.getMaatId();
-        log.info("Scheduling MAAT -ID {} for later processing", maatId);
+        log.info("Scheduling message for later processing");
 
         List<ProsecutionConcludedEntity> prosecutionConcludedEntityList =
                 prosecutionConcludedRepository.getByMaatId(maatId);
@@ -47,7 +47,7 @@ public class ProsecutionConcludedDataService {
             });
             prosecutionConcludedRepository.saveAll(prosecutionConcludedEntityList);
         }
-        log.info("MAAT -ID {} scheduling is complete", maatId);
+        log.info("Scheduling is complete");
     }
 
     private ProsecutionConcludedEntity build(ProsecutionConcluded prosecutionConcluded, Integer maatId)

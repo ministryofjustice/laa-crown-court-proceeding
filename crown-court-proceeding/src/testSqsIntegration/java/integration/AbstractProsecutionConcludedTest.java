@@ -7,6 +7,7 @@ import static uk.gov.justice.laa.crime.util.FileUtils.readFileToString;
 import uk.gov.justice.laa.crime.crowncourt.prosecution_concluded.listener.ProsecutionConcludedListenerHelper;
 import uk.gov.justice.laa.crime.crowncourt.repository.DeadLetterMessageRepository;
 import uk.gov.justice.laa.crime.crowncourt.repository.ProsecutionConcludedRepository;
+import uk.gov.justice.laa.crime.crowncourt.repository.QueueMessageLogRepository;
 
 import java.util.Map;
 import java.util.UUID;
@@ -40,6 +41,9 @@ abstract class AbstractProsecutionConcludedTest {
 
     @Autowired
     protected ProsecutionConcludedRepository prosecutionConcludedRepository;
+
+    @Autowired
+    protected QueueMessageLogRepository queueMessageLogRepository;
 
     @Autowired
     protected ProsecutionConcludedListenerHelper prosecutionConcludedListenerHelper;
@@ -106,6 +110,7 @@ abstract class AbstractProsecutionConcludedTest {
     }
 
     protected void givenTheDBIsEmpty() {
+        queueMessageLogRepository.deleteAll();
         prosecutionConcludedRepository.deleteAll();
         deadLetterMessageRepository.deleteAll();
     }

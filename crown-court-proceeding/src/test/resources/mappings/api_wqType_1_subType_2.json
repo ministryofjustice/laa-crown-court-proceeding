@@ -15,8 +15,5 @@
     }
   },
   "persistent": true,
-  "scenarioName": "scenario-1-api-internal-v1-assessment-xlat-result-wqType-1-subType-2",
-  "requiredScenarioState": "Started",
-  "newScenarioState": "scenario-1-api-internal-v1-assessment-xlat-result-wqType-1-subType-2-2",
   "insertionIndex": 5
 }

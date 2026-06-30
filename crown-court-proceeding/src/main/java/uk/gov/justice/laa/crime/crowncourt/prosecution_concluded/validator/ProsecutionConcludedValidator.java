@@ -34,6 +34,9 @@ public class ProsecutionConcludedValidator {
     public static final String APPEAL_IS_MISSING = "application concluded is missing for appeal.";
     public static final String INVALID_APPLICATION_RESULT_CODE = "Application Result Code is invalid.";
     public static final String MISSING_APPLICATION_RESULT_CODE = "Application Result Code is missing.";
+    public static final String NO_TRIAL_OFFENCES_FOUND = "No Trial Offences found.";
+    public static final String UNRECOGNISED_JURISDICTION = "Unrecognised hearing Jurisdiction";
+
     protected static final List<String> RESULT_CODE =
             Arrays.stream(ResultCode.values()).map(ResultCode::name).toList();
 
@@ -55,16 +58,14 @@ public class ProsecutionConcludedValidator {
         }
     }
 
-    public void validateMaatId(String message) {
+    public int getAndValidateMaatId(String message) {
         try {
             JsonObject msgObject = JsonParser.parseString(message).getAsJsonObject();
             JsonElement maatIdElement = msgObject.get("maatId");
-
-            // MAAT ID is checked for a null value in validateRequestObject, after the message has
-            // been deserialised from JSON. This method is called before that happens, so the check
-            // here is that it is of the correct type.
             if (maatIdElement != null && !StringUtils.isEmpty(maatIdElement.getAsString())) {
-                msgObject.get("maatId").getAsInt();
+                return msgObject.get("maatId").getAsInt();
+            } else {
+                throw new ValidationException(MAAT_ID_FORMAT_INCORRECT);
             }
         } catch (NumberFormatException ex) {
             throw new ValidationException(MAAT_ID_FORMAT_INCORRECT);
