@@ -129,8 +129,8 @@ emailClient:
   notify_dropped_prosecution_recipient: LAACrimeApps@justice.gov.uk
 
 cron:
-  report_reactivated_cases: '0 20 14 * * *'
-  report_dropped_prosecution: '0 20 14 * * *'
+  report_reactivated_cases: '0 35 14 * * *'
+  report_dropped_prosecution: '0 35 14 * * *'
 
 logging:
   level: INFO
